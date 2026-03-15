@@ -8,6 +8,7 @@ docker compose run --rm --entrypoint certbot certbot certonly \
   --webroot -w /var/www/certbot \
   -d open-reporting.dev \
   -d portal.open-reporting.dev \
+  -d www.open-reporting.dev \
   --cert-name open-reporting.dev \
   --expand \
   --non-interactive \

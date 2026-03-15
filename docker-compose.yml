@@ -47,6 +47,17 @@ services:
       - ./nginx/certs:/etc/letsencrypt:ro
       - ./nginx/www:/var/www/certbot:ro
 
+  ghost:
+    image: ghost:5-alpine
+    restart: unless-stopped
+    environment:
+      url: https://www.open-reporting.dev
+      database__client: sqlite3
+      database__connection__filename: /var/lib/ghost/content/data/ghost.db
+      mail__transport: sendmail
+    volumes:
+      - ghost_data:/var/lib/ghost/content
+
   certbot:
     image: certbot/certbot:latest
     volumes:
@@ -56,3 +67,4 @@ services:
 volumes:
   postgres_data:
   metabase_data:
+  ghost_data:
