@@ -28,7 +28,7 @@ services:
       MB_DB_USER: ${POSTGRES_USER:-reporting}
       MB_DB_PASS: ${POSTGRES_PASSWORD}
       MB_DB_HOST: postgres
-      MB_SITE_URL: https://${DOMAIN}
+      MB_SITE_URL: https://portal.open-reporting.dev
     volumes:
       - metabase_data:/metabase-data
 
@@ -42,25 +42,15 @@ services:
       - "443:443"
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
-      - certbot_www:/var/www/certbot:ro
-      - certbot_certs:/etc/letsencrypt:ro
+      - ./nginx/certs:/etc/letsencrypt:ro
+      - ./nginx/www:/var/www/certbot:ro
 
   certbot:
     image: certbot/certbot:latest
     volumes:
-      - certbot_www:/var/www/certbot
-      - certbot_certs:/etc/letsencrypt
-    # Run once then exit; renewal via cron or manual re-run
-    entrypoint: >
-      certbot certonly --webroot
-      --webroot-path=/var/www/certbot
-      --email ${CERTBOT_EMAIL}
-      --agree-tos
-      --no-eff-email
-      -d ${DOMAIN}
+      - ./nginx/certs:/etc/letsencrypt
+      - ./nginx/www:/var/www/certbot
 
 volumes:
   postgres_data:
   metabase_data:
-  certbot_www:
-  certbot_certs:
