@@ -1,4 +1,4 @@
 .env
 nginx/certs/
 nginx/www/
-charts/
+charts/*.html
