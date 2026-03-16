@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """Create 3 Metabase charts for national budget article."""
 
+import os
 import jwt, time, requests, json
 
-MB_URL = "http://172.18.0.4:3000"
-KEY_ID = "69b715b8f257cc00016fc4c8"
-KEY_SECRET = "2839026c1e8186efad8adf7b63aa934faa5ff0ba7f47875c7dbbb8d5b410403d"
+MB_URL = os.environ.get("MB_URL", "http://172.18.0.4:3000")
+KEY_ID = os.environ["GHOST_KEY_ID"]
+KEY_SECRET = os.environ["GHOST_KEY_SECRET"]
 
 def get_token():
     iat = int(time.time())

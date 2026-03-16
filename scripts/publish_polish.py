@@ -1,3 +1,4 @@
+import os
 import jwt
 import time
 import requests
@@ -5,8 +6,8 @@ import json
 import sqlite3
 
 # Ghost Admin API key
-KEY_ID = "69b715b8f257cc00016fc4c8"
-KEY_SECRET = "2839026c1e8186efad8adf7b63aa934faa5ff0ba7f47875c7dbbb8d5b410403d"
+KEY_ID = os.environ["GHOST_KEY_ID"]
+KEY_SECRET = os.environ["GHOST_KEY_SECRET"]
 POST_ID = "69b7166df257cc00016fc701"
 GHOST_URL = "http://172.18.0.3:2368"
 

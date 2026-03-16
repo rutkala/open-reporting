@@ -13,6 +13,7 @@ Usage:
 
 import argparse
 import io
+import os
 import time
 import sys
 import psycopg2
@@ -22,8 +23,13 @@ from datetime import date, datetime, timedelta
 # -------------------------------------------------------
 # Config
 # -------------------------------------------------------
-DB = dict(host="172.18.0.2", port=5432, dbname="reporting",
-          user="reporting", password="OpenReporting2603!")
+DB = dict(
+    host=os.environ.get("POSTGRES_HOST", "172.18.0.2"),
+    port=int(os.environ.get("POSTGRES_PORT", "5432")),
+    dbname=os.environ.get("POSTGRES_DB", "reporting"),
+    user=os.environ.get("POSTGRES_USER", "reporting"),
+    password=os.environ["POSTGRES_PASSWORD"],
+)
 
 STOOQ_URL = "https://stooq.com/q/d/l/?s={ticker}&i=d&d1={d1}&d2={d2}"
 STOOQ_FULL = "https://stooq.com/q/d/l/?s={ticker}&i=d"

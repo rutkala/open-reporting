@@ -5,17 +5,23 @@ All figures in billions PLN. State budget (budżet państwa) only.
 Sources: NIK annual budget execution analyses, Ministerstwo Finansów.
 """
 
+import os
 import psycopg2
 import jwt, time, requests, json
 
 # DB config
-DB = dict(host="172.18.0.2", port=5432, dbname="reporting",
-          user="reporting", password="OpenReporting2603!")
+DB = dict(
+    host=os.environ.get("POSTGRES_HOST", "172.18.0.2"),
+    port=int(os.environ.get("POSTGRES_PORT", "5432")),
+    dbname=os.environ.get("POSTGRES_DB", "reporting"),
+    user=os.environ.get("POSTGRES_USER", "reporting"),
+    password=os.environ["POSTGRES_PASSWORD"],
+)
 
 # Metabase config
-MB_URL = "http://172.18.0.4:3000"
-MB_KEY_ID = "69b715b8f257cc00016fc4c8"
-MB_KEY_SECRET = "2839026c1e8186efad8adf7b63aa934faa5ff0ba7f47875c7dbbb8d5b410403d"
+MB_URL = os.environ.get("MB_URL", "http://172.18.0.4:3000")
+MB_KEY_ID = os.environ["GHOST_KEY_ID"]
+MB_KEY_SECRET = os.environ["GHOST_KEY_SECRET"]
 
 # -------------------------------------------------------
 # Data: state budget (budżet państwa) execution 2008-2024
