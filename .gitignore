@@ -2,3 +2,4 @@
 nginx/certs/
 nginx/www/
 charts/*.html
+.claude/
