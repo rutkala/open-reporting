@@ -10,42 +10,30 @@
   - Every session should end with something committed or deployed
   - Use AI for boring/repetitive parts, I handle design decisions
 
-## Project goal
-Build a public-facing analytical web service showing Polish regional
-economic indicators, hosted on this Hetzner VPS (CX22, 4GB RAM).
-
-## Current stack (lean, fits on CX22)
-- PostgreSQL — data warehouse
-- Metabase — public dashboards
-- Nginx — reverse proxy + SSL
-- Python ingestion scripts — pull from GUS BDL API
-- dbt — SQL transformations (future)
-- All orchestrated via Docker Compose
-
-## Data source
-GUS BDL API (bdl.stat.gov.pl) — Polish regional statistics
-- REST API, JSON, free API key
-- Key indicators: unemployment rate, avg wage, population, GDP per capita
-- All data by voivodship (16 Polish regions)
-
-## Project phases
-1. (NOW) Deploy lean Docker stack + first GUS BDL ingestion script
-2. Public Metabase dashboard with regional indicators
-3. Monetization + consulting positioning
-4. Scale + academic path exploration
-
-## How to work with me
+## Working style
+- I am Product Owner, you are Developer/Engineer/Analyst
 - One task at a time, small and concrete
 - Always tell me what the deliverable is before starting
 - If something is repetitive or boring — just do it, don't ask
 - If you need a decision from me — ask one question, not five
-- Commit progress to git regularly so I can see what changed
+- Commit progress to git regularly
 
-## Repo
-GitHub: open-reporting (to be connected)
-VPS: /opt/open-reporting
+## At session start — always read these files
+- **PRODUCT.md** — full product vision, domains, audience, business model
+- **ROADMAP.md** — phased plan, what's done, what's next
+
+These are the source of truth for what to build and why.
+
+## Current stack
+- PostgreSQL 16 — data warehouse
+- Nginx — reverse proxy + SSL (Let's Encrypt)
+- Ghost CMS — blog (www.open-reporting.dev)
+- Python + Plotly — interactive dashboards (portal.open-reporting.dev)
+- Python ingestion scripts — GUS BDL API, stooq.com
+- All orchestrated via Docker Compose on Hetzner CX22
 
 ## Environment
-- VPS IP: 91.98.118.153
-- OS: Ubuntu, Docker installed
-- Claude Code: v2.1.76 at ~/.local/bin/claude
+- VPS: 91.98.118.153 (Hetzner CX22, 4GB RAM, Ubuntu)
+- Repo: /opt/open-reporting
+- GitHub: github.com/rutkala/open-reporting (SSH auth configured)
+- Claude Code: ~/.local/bin/claude
