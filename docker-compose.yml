@@ -17,28 +17,9 @@ services:
       timeout: 5s
       retries: 5
 
-  metabase:
-    image: metabase/metabase:latest
-    restart: unless-stopped
-    depends_on:
-      postgres:
-        condition: service_healthy
-    environment:
-      MB_DB_TYPE: postgres
-      MB_DB_DBNAME: ${METABASE_DB:-metabase}
-      MB_DB_PORT: 5432
-      MB_DB_USER: ${POSTGRES_USER:-reporting}
-      MB_DB_PASS: ${POSTGRES_PASSWORD}
-      MB_DB_HOST: postgres
-      MB_SITE_URL: https://portal.open-reporting.dev
-    volumes:
-      - metabase_data:/metabase-data
-
   nginx:
     image: nginx:alpine
     restart: unless-stopped
-    depends_on:
-      - metabase
     ports:
       - "80:80"
       - "443:443"
@@ -46,6 +27,7 @@ services:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - ./nginx/certs:/etc/letsencrypt:ro
       - ./nginx/www:/var/www/certbot:ro
+      - ./charts:/usr/share/nginx/charts:ro
 
   ghost:
     image: ghost:5-alpine
@@ -66,5 +48,4 @@ services:
 
 volumes:
   postgres_data:
-  metabase_data:
   ghost_data:
