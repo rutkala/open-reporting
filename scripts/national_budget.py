@@ -7,7 +7,6 @@ Sources: NIK annual budget execution analyses, Ministerstwo Finansów.
 
 import os
 import psycopg2
-import jwt, time, requests, json
 
 # DB config
 DB = dict(
@@ -17,11 +16,6 @@ DB = dict(
     user=os.environ.get("POSTGRES_USER", "reporting"),
     password=os.environ["POSTGRES_PASSWORD"],
 )
-
-# Metabase config
-MB_URL = os.environ.get("MB_URL", "http://172.18.0.4:3000")
-MB_KEY_ID = os.environ["GHOST_KEY_ID"]
-MB_KEY_SECRET = os.environ["GHOST_KEY_SECRET"]
 
 # -------------------------------------------------------
 # Data: state budget (budżet państwa) execution 2008-2024
