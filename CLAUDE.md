@@ -21,6 +21,7 @@
 ## At session start — always read these files
 - **PRODUCT.md** — full product vision, domains, audience, business model
 - **ROADMAP.md** — phased plan, what's done, what's next
+- **DATA_CATALOG.md** — all data sources, tables, columns, ingestion scripts, and dashboard usage
 
 These are the source of truth for what to build and why.
 
