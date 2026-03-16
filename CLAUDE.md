@@ -43,7 +43,7 @@ GUS BDL API (bdl.stat.gov.pl) — Polish regional statistics
 
 ## Repo
 GitHub: open-reporting (to be connected)
-VPS: /root/open-reporting
+VPS: /opt/open-reporting
 
 ## Environment
 - VPS IP: 91.98.118.153
