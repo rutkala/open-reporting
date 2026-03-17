@@ -24,6 +24,14 @@ DASHBOARDS = [
         "tags": ["Regional", "GUS BDL"],
     },
     {
+        "href": "labour_market.html",
+        "icon": "👷",
+        "title": "Labour Market",
+        "subtitle": "2002–2025",
+        "desc": "Unemployment rate, average wages, and GDP per capita across all 16 voivodships. Regional comparison and historical trends.",
+        "tags": ["Labour", "GUS BDL"],
+    },
+    {
         "href": "gpw_market.html",
         "icon": "📈",
         "title": "GPW Stock Market",

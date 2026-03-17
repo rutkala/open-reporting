@@ -118,6 +118,7 @@ NAV_LINKS = [
     ("portal.open-reporting.dev/", "Portal"),
     ("state_budget.html", "State Budget"),
     ("voivodship.html", "Regional Budgets"),
+    ("labour_market.html", "Labour Market"),
     ("gpw_market.html", "GPW Market"),
 ]
 

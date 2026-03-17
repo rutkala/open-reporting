@@ -25,10 +25,10 @@ Goal: something live, end-to-end, real data, real URL.
 Goal: more data, more content, automated updates, visible online.
 
 **Data & dashboards**
-- [ ] GUS BDL — unemployment rate by voivodship
-- [ ] GUS BDL — average wages by voivodship
-- [ ] GUS BDL — GDP per capita by voivodship
-- [ ] Add Labour Market dashboard to portal
+- [x] GUS BDL — unemployment rate by voivodship
+- [x] GUS BDL — average wages by voivodship
+- [x] GUS BDL — GDP per capita by voivodship
+- [x] Add Labour Market dashboard to portal
 - [ ] Automated daily/weekly ingestion (cron or simple scheduler)
 
 **Content**

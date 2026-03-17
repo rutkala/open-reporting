@@ -155,10 +155,52 @@ Full list in `ingestion/gpw_ingest.py` — `GPW_TICKERS` constant.
 
 ---
 
-## What's not yet ingested (planned — see ROADMAP.md)
+---
 
-| Indicator | Source | BDL Variable | Target table |
-|-----------|--------|-------------|--------------|
-| Unemployment rate by voivodship | GUS BDL | TBD | `raw.bdl_unemployment` |
-| Average wages by voivodship | GUS BDL | TBD | `raw.bdl_wages` |
-| GDP per capita by voivodship | GUS BDL | TBD | `raw.bdl_gdp` |
+## 4. GUS BDL — Labour Market by Voivodship
+
+| Field | Value |
+|-------|-------|
+| **Source name** | GUS Bank Danych Lokalnych (BDL) |
+| **URL** | https://bdl.stat.gov.pl/api/v1 |
+| **License** | Public domain — Polish public statistics (open government data) |
+| **Update frequency** | Annual (unemployment quarterly, wages/GDP annually) |
+| **Ingestion script** | `ingestion/labour_ingest.py` |
+| **PostgreSQL table** | `raw.bdl_labour` |
+| **Coverage** | All 16 voivodships (NUTS-2) |
+| **Dashboards** | Labour Market (`charts/dashboards/labour_market.py`) |
+
+### Columns — `raw.bdl_labour`
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | SERIAL PK | Auto-increment row ID |
+| `variable_id` | INTEGER | BDL variable code |
+| `variable_name` | TEXT | `unemployment_rate`, `avg_wages`, or `gdp_per_capita` |
+| `unit_id` | TEXT | BDL unit identifier for the voivodship |
+| `unit_name` | TEXT | Voivodship name in Polish |
+| `year` | INTEGER | Data year |
+| `value` | NUMERIC | Value (see units below) |
+| `flag` | TEXT | BDL data quality flag |
+| `loaded_at` | TIMESTAMPTZ | Ingestion timestamp |
+
+### BDL Variables used
+
+| Variable ID | Name | Unit | Coverage |
+|-------------|------|------|----------|
+| 60270 | unemployment_rate | % | 2004–present |
+| 64428 | avg_wages | PLN/month | 2002–present |
+| 458421 | gdp_per_capita | PLN | 2000–present |
+
+---
+
+## Summary table
+
+| Table | Schema | Rows (approx) | Updated | Used by |
+|-------|--------|--------------|---------|---------|
+| `raw.bdl_budget` | raw | ~500 | Manually / annually | voivodship.py |
+| `raw.bdl_labour` | raw | ~1,200 | Manually / annually | labour_market.py |
+| `national_budget` | public | 17 | Manually / annually | state_budget.py |
+| `stock_prices` | public | 500k+ | Daily | gpw_market.py |
+| `companies` | public | 140+ | On ingestion | gpw_market.py |
+| `ingestion_log` | public | grows daily | Daily | (ops only) |
