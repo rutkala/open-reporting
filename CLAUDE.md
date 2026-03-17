@@ -45,6 +45,7 @@ Linear URL: https://linear.app/open-reporting
 - Read Linear issues to understand what task to work on
 - Update Linear issue status (In Progress → Done)
 - Add a comment on the Linear issue summarizing what was done
+- **Only work on the assigned Linear issue.** Do not take on extra work beyond the issue scope. If you see something else that needs doing, flag it to Radek — do not build it yourself.
 
 ## What You Don't Do
 
