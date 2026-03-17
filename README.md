@@ -28,6 +28,7 @@ exists is in scope.
 **Current dashboards:**
 - State budget (Poland, 2008–2024)
 - Regional budgets (16 voivodships)
+- Labour market (unemployment, wages, GDP per capita by voivodship)
 - GPW stock market (140+ WSE tickers)
 
 ---
@@ -67,10 +68,10 @@ nginx/          reverse proxy config
 
 ---
 
-## Roadmap
+## Project management
 
-See [ROADMAP.md](ROADMAP.md) for phased plan.
-See [PRODUCT.md](PRODUCT.md) for full product vision.
+All documentation (product vision, roadmap, data catalog, architecture decisions)
+lives in [Linear](https://linear.app/open-reporting). This repo contains code only.
 
 ---
 
