@@ -1,16 +1,20 @@
 # AGENTS.md — Open Reporting
 
-Comprehensive guidelines for agentic coding agents working in this repository.
+## Overview
+
+This file contains rules and guidelines for AI coding agents working in this repository. Follow these instructions precisely.
+
+---
 
 ## Source of Truth
 
 | What | Where |
 | :--- | :--- |
-| **Tasks, issues, roadmap** | GitHub Issues (github.com/rutkala/open-reporting/issues) |
-| **Code** | GitHub (github.com/rutkala/open-reporting) |
-| **This file** | Root directory AGENTS.md |
+| Tasks, issues, roadmap | GitHub Issues |
+| Code | GitHub |
+| This file | Root: AGENTS.md |
 
-**Note:** Linear is no longer used. All project management is via GitHub Issues.
+**Linear is no longer used.**
 
 ---
 
@@ -20,50 +24,46 @@ Comprehensive guidelines for agentic coding agents working in this repository.
 
 ### Four Product Lines
 
-1. **Analytical Portal** — Interactive dashboards organized by domain. portal.open-reporting.dev
-2. **Content Portal / Blog** — Data-driven articles and reports. www.open-reporting.dev
-3. **Mobile App** — Same data pipeline, mobile-first interface. Future phase.
-4. **Social Media** — High-frequency short-form content across LinkedIn, X, Instagram.
+1. **Analytical Portal** — Interactive dashboards by domain (portal.open-reporting.dev)
+2. **Content Portal / Blog** — Data-driven articles (www.open-reporting.dev)
+3. **Mobile App** — Future phase
+4. **Social Media** — Short-form content (LinkedIn, X, Instagram)
 
 ### Audience
-- General public — Polish citizens curious about their country
-- Analysts & researchers — journalists, academics, think tanks
-- Professionals — consultants, financial analysts, policy makers
-- International — EU researchers, investors, expats studying Poland and CEE
+- Polish citizens curious about their country
+- Analysts, researchers, journalists, academics
+- Professionals: consultants, financial analysts, policy makers
+- International: EU researchers, investors, expats
 
-### Language Strategy
-Polish-first. English available for key content and the portal. Write once, publish in both.
-
-### Team
-- **Radek** — ideas, planning, product decisions, editorial direction, approves outputs
-- **AI Agents** — development, engineering, analytics. Work only on assigned GitHub issues
+### Language
+Polish-first. English available. Write once, publish in both.
 
 ---
 
 ## Domain Taxonomy (18 Categories)
 
-This is the master list of content domains. Domains drive everything: portal sections, dashboard groupings, article categories, data pipelines, and GitHub issue labels.
+All dashboards, data ingestion, and articles are organized by these domains:
 
-| ID | Domain | Eurostat Theme | GUS Equivalent |
-| :--- | :--- | :--- | :--- |
-| 1 | **Public Finance** | Economy and finance | Finanse publiczne |
-| 2 | **National Accounts & Macro** | Economy and finance | Rachunki narodowe |
-| 3 | **Prices & Inflation** | Economy and finance | Ceny |
-| 4 | **Financial Markets** | Economy and finance | NBP, GPW, KNF |
-| 5 | **Population & Demographics** | Population and social | Ludność |
-| 6 | **Labour Market** | Population and social | Rynek pracy |
-| 7 | **Health** | Population and social | Ochrona zdrowia |
-| 8 | **Education** | Population and social | Edukacja |
-| 9 | **Income, Living & Social** | Population and social | Warunki życia |
-| 10 | **Crime & Justice** | Population and social | Wymiar sprawiedliwości |
-| 11 | **Culture, Tourism & Sport** | Population and social | Kultura, Turystyka |
-| 12 | **Business & Industry** | Industry, trade, services | Podmioty gospodarcze |
-| 13 | **Agriculture & Forestry** | Agriculture, fisheries | Rolnictwo, Leśnictwo |
-| 14 | **International Trade** | International trade | Handel zagraniczny |
-| 15 | **Transport** | Transport | Transport |
-| 16 | **Environment & Climate** | Environment and energy | Środowisko |
-| 17 | **Energy** | Environment and energy | Energia |
-| 18 | **Science, Tech & Digital** | Science, technology | Nauka i technika |
+| ID | Domain | Data Sources |
+| :--- | :--- | :--- |
+| 1 | Public Finance | GUS BDL, MF, NIK |
+| 2 | National Accounts & Macro | GUS BDL, Eurostat |
+| 3 | Prices & Inflation | GUS BDL, NBP |
+| 4 | Financial Markets | stooq.com, NBP, KNF |
+| 5 | Population & Demographics | GUS BDL, GUS DBW |
+| 6 | Labour Market | GUS BDL, GUS DBW |
+| 7 | Health | GUS BDL, NFZ, MZ |
+| 8 | Education | GUS BDL, MEN |
+| 9 | Income, Living & Social | GUS BDL, GUS DBW, ZUS |
+| 10 | Crime & Justice | GUS BDL, MS |
+| 11 | Culture, Tourism & Sport | GUS BDL, MKiDN |
+| 12 | Business & Industry | GUS BDL, GUS DBW |
+| 13 | Agriculture & Forestry | GUS BDL, MRiRW |
+| 14 | International Trade | GUS BDL, NBP, Eurostat |
+| 15 | Transport | GUS BDL, UTK, ULC |
+| 16 | Environment & Climate | GUS BDL, GIOŚ, Eurostat |
+| 17 | Energy | GUS BDL, URE, Eurostat |
+| 18 | Science, Tech & Digital | GUS BDL, GUS DBW, Eurostat |
 
 ---
 
@@ -76,16 +76,22 @@ This is the master list of content domains. Domains drive everything: portal sec
 | Dashboards | Python + Plotly (static HTML) |
 | Blog | Ghost CMS |
 | Reverse proxy | Nginx + Let's Encrypt |
-| Data ingestion | Python scripts (GUS BDL API, stooq.com) |
+| Data ingestion | Python scripts |
 | Project management | GitHub Issues |
 | Code hosting | GitHub |
 
+### Key Libraries
+- psycopg2, pandas (database)
+- plotly (charts)
+- requests (API calls)
+- langgraph, litellm (agents - experimental)
+
 ### API Keys (in .env)
-- `BDL_API_KEY`: GUS BDL API
-- `DBW_API_KEY`: GUS DBW API  
-- `POSTGRES_PASSWORD`: PostgreSQL
-- `GHOST_KEY_ID`, `GHOST_KEY_SECRET`: Ghost Admin API
-- `GEMINI_API_KEY`, `ANTHROPIC_API_KEY`, etc.: LLM providers
+- BDL_API_KEY: GUS BDL API
+- DBW_API_KEY: GUS DBW API
+- POSTGRES_PASSWORD: PostgreSQL
+- GHOST_KEY_ID, GHOST_KEY_SECRET: Ghost CMS
+- LLM keys: GEMINI_API_KEY, etc.
 
 ---
 
@@ -93,131 +99,139 @@ This is the master list of content domains. Domains drive everything: portal sec
 
 ```
 /opt/open-reporting/
-├── agent-team/          # AI agent orchestration (LangGraph, litellm)
-├── charts/              # Plotly dashboard generation
-│   ├── dashboards/      # Individual dashboard modules
-│   └── lib/             # Shared utilities (db.py, theme.py)
-├── content/             # Ghost CMS publishing scripts
-├── docs/                # Reference documentation
+├── agent-team/          # AI agent infrastructure (experimental)
+├── charts/             # Plotly dashboards
+│   ├── dashboards/      # Dashboard modules
+│   └── lib/            # Shared utilities (db.py, theme.py)
+├── content/            # Ghost CMS publishing
+├── docs/               # Reference docs
 ├── ingestion/           # Data ingestion scripts
-├── nginx/               # Nginx config, SSL certificates
-├── processing/          # Data processing scripts
-└── docker-compose.yml   # Service orchestration
+├── nginx/              # Nginx, SSL
+├── processing/          # Data processing
+├── .opencode/          # Agent configurations
+│   ├── agents/         # Custom agents
+│   ├── commands/       # Slash commands
+│   └── templates/      # File templates
+└── docker-compose.yml
 ```
 
 ---
 
-## Environment Setup
+## Dashboard Development Framework (DDF)
 
-```bash
-# Copy environment template
-cp .env.example .env
+### Mandatory Stages
 
-# Start services
-docker compose up -d
+Every dashboard follows this sequence. **Do not skip stages.**
 
-# Verify services
-docker compose ps
+#### Stage 1: Source Research
+- Identify data sources (GUS BDL, Eurostat, etc.)
+- Evaluate API availability, rate limits, authentication
+- Document data structure, variables, time range
+- **Gate: Present findings, get approval**
+
+#### Stage 2: Metric Definition
+- Define KPIs based on domain taxonomy
+- Specify calculations, aggregations, comparisons
+- Identify data transformations needed
+- **Gate: Review metrics, get approval**
+
+#### Stage 3: Ingestion Implementation
+- Build ETL script following code standards
+- Create database schema (raw schema for source data)
+- Implement error handling, retries, logging
+- Validate data quality
+- **Gate: Test ingestion, get approval**
+
+#### Stage 4: UI/Presentation
+- Design dashboard layout
+- Build charts following theme standards
+- Add interactivity (filters, selectors)
+- Write source attribution
+- **Gate: Review dashboard, get approval**
+
+### Agent Responsibilities
+
+| Agent | Owns Stages |
+|-------|-------------|
+| **Data Engineer** | Stage 1, Stage 3 |
+| **Analytics Lead** | Stage 2 |
+| **Presenter** | Stage 4 |
+
+---
+
+## Agent Workflow
+
+### How to Work with Agents
+
+1. **Create GitHub Issue** for the dashboard domain
+2. **Assign issue** to yourself (agent)
+3. **Use DDF stages** - complete each stage in order
+4. **Request approval** at each gate
+5. **Update issue status** when complete
+
+### Stage Workflow Example
+
+```
+GitHub Issue: OPE-XX: Dashboard: Energy
+
+Agent: "Stage 1 complete. Sources identified:
+- GUS BDL: variable 6450 (energy production)
+- URE: electricity prices API
+Shall I proceed to Stage 2?"
+
+Radek: "Yes, approved. Define metrics."
+
+Agent: "Stage 2 complete. KPIs defined:
+- Primary: Energy mix (coal %, renewable %)
+- Secondary: Production vs consumption
+Proceed to Stage 3?"
+
+Radek: "Approved. Build ingestion."
+
+Agent: *builds ingestion script*
+
+Agent: "Stage 3 complete. Script ready. 
+Tested with 10 years of data. Proceed to Stage 4?"
+
+Radek: "Approved. Build dashboard."
+
+Agent: *builds dashboard*
+
+Agent: "Dashboard complete. Here is the final result.
+Please review and close the issue if satisfactory."
 ```
 
 ---
 
-## Running Scripts
+## Code Standards
 
-### Chart Generation
-```bash
-# All dashboards
-POSTGRES_PASSWORD=xxx python3 charts/generate.py
+### General
+- Use `#!/usr/bin/env python3` shebang
+- Module docstrings with purpose and usage
+- `logging.getLogger(__name__)` for logging
+- f-strings for formatting
+- `load_dotenv()` at module level
 
-# Single dashboard
-POSTGRES_PASSWORD=xxx python3 charts/dashboards/state_budget.py
-POSTGRES_PASSWORD=xxx python3 charts/dashboards/voivodship.py
-POSTGRES_PASSWORD=xxx python3 charts/dashboards/gpw_market.py
+### Imports
 ```
-
-### Data Ingestion
-```bash
-# GPW stock data
-POSTGRES_PASSWORD=xxx python3 ingestion/gpw_ingest.py           # incremental
-POSTGRES_PASSWORD=xxx python3 ingestion/gpw_ingest.py --backfill  # full history
-
-# BDL budget data
-BDL_API_KEY=xxx POSTGRES_PASSWORD=xxx python3 ingestion/budget_ingest.py
-
-# National budget
-POSTGRES_PASSWORD=xxx python3 processing/national_budget.py
-```
-
-### Agent Team (Experimental)
-```bash
-source agent-team/venv/bin/activate
-python3 agent-team/test_foundation.py        # Test connectivity
-python3 agent-team/agent_orchestrator.py    # Run orchestrator
-```
-
----
-
-## Testing
-
-Manual testing only. No formal test framework.
-
-```bash
-# Test database
-python3 -c "from charts.lib.db import query; print(query('SELECT 1'))"
-
-# Test API
-python3 -c "import requests; print(requests.get('https://bdl.stat.gov.pl/api/v1').status_code)"
-```
-
----
-
-## Code Style Guidelines
-
-### General Rules
-- Use `#!/usr/bin/env python3` shebang for executable scripts
-- Add module-level docstrings with purpose and usage
-- Use `logging` module with `logging.getLogger(__name__)` instead of print
-- Use f-strings for string formatting
-- Call `load_dotenv()` at module level
-
-### Imports (order)
 1. Standard library (os, sys, time, logging)
 2. Third-party (psycopg2, pandas, requests)
-3. Local imports (use relative paths)
-
-### Type Hints
-```python
-def fetch_data(ticker: str, limit: int = 100) -> list[dict]:
-    ...
-
-from typing import Optional, List, Dict
-def process(rows: List[Dict], threshold: Optional[float] = None) -> pd.DataFrame:
-    ...
+3. Local imports
 ```
 
-### Naming Conventions
+### Naming
 | Type | Convention | Example |
 | :--- | :--- | :--- |
-| Modules | lowercase_with_underscores | `budget_ingest.py` |
+| Modules | snake_case | `budget_ingest.py` |
 | Classes | PascalCase | `AgentState` |
-| Functions | lowercase_with_underscores | `fetch_data` |
-| Constants | UPPERCASE_WITH_UNDERSCORES | `API_BASE` |
-| Private | leading_underscore | `_config` |
+| Functions | snake_case | `fetch_data` |
+| Constants | UPPER_SNAKE | `API_BASE` |
+| Private | _leading | `_config` |
 
-### Database Operations
-```python
-# Always parameterized (prevent SQL injection)
-cur.execute("INSERT INTO t (a, b) VALUES (%s, %s)", (val1, val2))
-
-# Bulk inserts
-execute_values(cur, "INSERT INTO t (a, b) VALUES %s", records)
-
-# Upserts
-cur.execute("""
-    INSERT INTO t (id, name) VALUES (%s, %s)
-    ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name
-""", (id, name))
-```
+### Database
+- **Always parameterized** - prevent SQL injection
+- `execute_values()` for bulk inserts
+- `ON CONFLICT DO UPDATE` for upserts
 
 ### Error Handling
 ```python
@@ -225,44 +239,130 @@ try:
     response = requests.get(url, timeout=30)
     response.raise_for_status()
 except requests.Timeout:
-    log.error(f"Request timed out: {url}")
+    log.error(f"Timeout: {url}")
     raise
 except requests.HTTPError as e:
-    log.error(f"HTTP error {e.response.status_code}: {url}")
-    raise
-except Exception:
-    log.exception("Unexpected error")
+    log.error(f"HTTP {e.response.status_code}: {url}")
     raise
 ```
 
 ### Logging Levels
-- `log.debug()` — Detailed debugging info
-- `log.info()` — Normal operation
-- `log.warning()` — Unexpected but recoverable
-- `log.error()` — Serious problem
-- `log.exception()` — Error with traceback
+- `debug()` - Detailed debugging
+- `info()` - Normal operation
+- `warning()` - Unexpected but recoverable
+- `error()` - Serious problem
+- `exception()` - Error with traceback
 
 ---
 
-## Security
+## Dashboard Code Standards
 
-- **Never commit .env files** — contain API keys and credentials
-- Use environment variables for all sensitive config
-- Never log sensitive data (API keys, passwords)
-- Always use parameterized database queries
-- Validate and sanitize external input
+### Theme Usage
+```python
+from charts.lib.theme import C, apply, page, kpi_card
+
+# Colors from theme
+C["blue"]   # Primary data color
+C["red"]    # Negative/spending
+C["green"]  # Positive/revenue
+C["bg"]     # Background
+C["text"]   # Text color
+```
+
+### Chart Pattern
+```python
+def build():
+    # 1. Query data
+    df = query("SELECT ...")
+    
+    # 2. Create figure
+    fig = go.Figure()
+    fig.add_trace(go.Bar(...))
+    
+    # 3. Apply theme
+    apply(fig, title, subtitle, height=400)
+    
+    # 4. Save HTML
+    html = page(title, body=pio.to_html(fig))
+    with open(out_path, "w") as f:
+        f.write(html)
+```
+
+---
+
+## Security Rules
+
+1. **Never commit .env** - contains API keys
+2. **Use env vars** for all secrets
+3. **Never log secrets** - API keys, passwords
+4. **Parameterized queries** - prevent injection
+5. **Validate input** - sanitize external data
+
+---
+
+## Testing
+
+### Manual Testing
+```bash
+# Database
+python3 -c "from charts.lib.db import query; print(query('SELECT 1'))"
+
+# API
+python3 -c "import requests; print(requests.get('https://bdl.stat.gov.pl/api/v1').status_code)"
+```
+
+### Ingestion Validation
+- Check row counts
+- Verify date ranges
+- Compare totals against source
+- Log all validation results
 
 ---
 
 ## Docker Commands
 
 ```bash
-docker compose up -d          # Start all services
-docker compose logs -f       # View logs
-docker compose restart nginx # Restart service
-docker compose down          # Stop services
-docker compose up -d --build # Rebuild and restart
+docker compose up -d          # Start
+docker compose logs -f         # View logs
+docker compose restart nginx   # Restart
+docker compose down           # Stop
+docker compose up -d --build  # Rebuild
 ```
+
+---
+
+## Useful Commands
+
+```bash
+# Start OpenCode in project
+cd /opt/open-reporting && opencode
+
+# Initialize (create/update AGENTS.md)
+/init
+
+# Generate dashboards
+POSTGRES_PASSWORD=xxx python3 charts/generate.py
+
+# Ingest GPW data
+POSTGRES_PASSWORD=xxx python3 ingestion/gpw_ingest.py --backfill
+
+# Ingest BDL data
+BDL_API_KEY=xxx POSTGRES_PASSWORD=xxx python3 ingestion/budget_ingest.py
+```
+
+---
+
+## Agent Configuration
+
+Custom agents are configured in `.opencode/agents/`:
+- `dashboard-dev.md` - Builds dashboards following DDF
+- `data-engineer.md` - Builds ingestion pipelines
+- `reviewer.md` - Reviews code quality
+
+Custom commands are in `.opencode/commands/`:
+- `/dash <domain>` - Start dashboard development
+- `/ingest <source>` - Start data ingestion
+- `/review` - Code review
 
 ---
 
@@ -270,54 +370,34 @@ docker compose up -d --build # Rebuild and restart
 
 - **IP:** 91.98.118.153
 - **Specs:** Hetzner CX22, 4GB RAM, Ubuntu
-- **Repo path:** `/opt/open-reporting`
+- **Repo:** `/opt/open-reporting`
 
 ---
 
-## Agent Infrastructure (Experimental)
+## Starting a New Dashboard
 
-The `agent-team/` directory contains a LangGraph-based multi-agent system:
-
-### Architecture
-- **Orchestrator** — High-level planning, task routing
-- **Data Engineer** — Data pipelines, ETL, validation
-- **Analytics Lead** — Metrics, KPIs, transformations
-- **Presenter** — UI, content, portal integration
-
-### Agent Responsibilities
-- **Orchestrator**: Manages the DDF flow and routes tasks based on current stage
-- **Data Engineer**: Owns Stages 1 (Source Research) & 3 (Ingestion Implementation)
-- **Analytics Lead**: Owns Stage 2 (Metric Definition)
-- **Presenter**: Owns Stage 4 (UI/Presentation)
-
-### Model Fallbacks
-All agents use a fallback hierarchy: Gemini → Groq → DeepSeek
-
-### Current Status
-This is an experimental feature. Not validated in production. Use with caution.
+1. Create GitHub issue: "Dashboard: [Domain Name]"
+2. Use `/dash energy` to invoke dashboard-dev agent
+3. Follow DDF stages with approval gates
+4. Commit code after each stage
+5. Close issue when complete
 
 ---
 
-## Dashboard Development Framework
+## Starting Data Ingestion
 
-When developing a new dashboard, follow this stage-gate process:
-
-1. **Source Research** — Identify data sources, evaluate API/file availability
-2. **Metric Definition** — Define KPIs, business logic, transformations
-3. **Ingestion Implementation** — Build ETL scripts with validation
-4. **UI/Presentation** — Design layout, build charts, integrate content
-
-Each stage requires approval before proceeding to the next.
+1. Create GitHub issue: "Ingest: [Data Source]"
+2. Use `/ingest gusz_bdl` to invoke data-engineer agent
+3. Follow ingestion patterns in `ingestion/`
+4. Test with small dataset first
+5. Document variables and schema
 
 ---
 
-## Working with AI Agents
+## Remember
 
-When you start a session:
-1. Read AGENTS.md for project guidelines
-2. Check GitHub Issues for the task queue
-3. Assign the issue to yourself and move to "In Progress"
-4. Work on the task
-5. Commit changes and update the issue when done
-
-Use the `/init` command in OpenCode to initialize the session with proper context.
+- **Approval gates** - Do not skip stages without approval
+- **Budget aware** - Use free-tier models (Gemini, Groq)
+- **Document everything** - Comment code, update README
+- **Test thoroughly** - Manual validation before claiming done
+- **Git workflow** - Commit after each stage, push regularly
