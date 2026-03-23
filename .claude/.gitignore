@@ -1,0 +1,7 @@
+# Claude Code runtime files — do NOT commit these
+agent-activity.log
+agent-activity.jsonl
+.agent-timers/
+.session-pushed
+.lead-last-log
+.hook-errors.log
