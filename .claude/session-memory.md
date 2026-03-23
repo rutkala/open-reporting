@@ -3,22 +3,28 @@
 <!-- last-updated: 2026-03-23 -->
 
 ## Current Focus
-Setting up Claude Code environment with Linear workflow integration. Setup complete — ready to start first dashboard.
+Reviewing and refining `.claude/` config file by file. Next: review `CLAUDE.md`.
 
 ## Last Session Summary
-Implemented full Claude Code setup from template:
-- Removed OpenCode artifacts (`.opencode/`)
-- Copied and customised `.claude/` (minimal subset: no watch-agents-ui, no stop-hook enforcement)
-- Created `CLAUDE.md` (lead architect instructions, Linear workflow, subagents table)
-- Created domain agents: `dashboard-dev.md` (DDF stages) and `data-engineer.md` (ETL patterns)
-- Created `docs/` folder: PROJECT.md, DOMAINS.md, DATA_SOURCES.md, WORKFLOW.md, ARCHITECTURE.md
-- Slimmed `AGENTS.md` to code standards only (removed OpenCode refs, DDF, agent definitions)
-- Configured `settings.local.json`: added `docker compose` and `python3` permissions, removed deleted hooks
+Full review and redesign of `.claude/` configuration:
+- Removed all agents except `debug` — start lean, add back when codebase warrants it
+- Removed `agent-memory/` empty folder
+- Set Polish as primary content language (English for agent communication)
+- Fixed hook model names (sonnet), updated agent colours for dashboard-dev/data-engineer
+- Renamed `/linear` skill to `/kickoff` (tool-agnostic naming)
+- Built complete skill workflow: `/kickoff` → `/research` → `/plan` → implement → `/review` → `/commit` → `/document`
+- All gates now present in plain business language — product owner approves deliverables, not code
+- `/commit` now prompts memory update + Linear issue close after each commit
+- Moved `renew-certs.sh` to `nginx/`, removed empty `charts/` folder, deleted `AGENTS.md` and `claude-code-template/`
 
 ## Recent Changes
 - 2026-03-23: Claude Code environment set up from scratch
+- 2026-03-23: `.claude/` config reviewed and redesigned — skills, hooks, agents, languages
 
 ## Open Items
+- Review and update `CLAUDE.md` (next step)
+- Review `docs/` folder
+- Add agent threshold note: create `dashboard-dev` + `data-engineer` agents when 3+ dashboards or pipelines exist and context fills up
 - Choose first domain/dashboard from Linear backlog
-- DB schemas not yet created (no ingestion pipelines built yet)
+- DB schemas not yet created
 - Ghost CMS live but no articles published
