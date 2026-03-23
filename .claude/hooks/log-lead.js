@@ -83,7 +83,7 @@ process.stdin.on('end', () => {
       time,
       timeShort,
       agent: 'lead',
-      model: 'opus',
+      model: 'sonnet',
       color: '#f59e0b',
       tool: toolName,
       task

@@ -37,6 +37,11 @@ Recent commit messages (for style reference):
 4. **Generate message** — Concise, descriptive, focuses on "why" not "what"
 5. **Present to user** — Show the proposed commit message and files to be committed
 6. **Wait for approval** — NEVER auto-commit. Always wait for user to confirm
+7. **Update session memory** — ask: "Should I update session memory?" If yes, summarise what was done this session and update `.claude/session-memory.md` (Current Focus, Last Session Summary, Recent Changes, Open Items). Keep it under 100 lines.
+8. **Update Linear** — if this commit completes a Linear issue, update it:
+   - Set status to **Done**
+   - Add a comment with a plain-language summary of what was delivered
+   - Ask the user: "Should I mark Linear issue ORE-XXX as done?"
 
 If user provided a hint: `$ARGUMENTS` — use it to inform the commit message.
 

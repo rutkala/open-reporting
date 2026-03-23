@@ -4,10 +4,10 @@
   "agent_language": "English",
   "_agent_language_help": "Language for agent output: responses, commit messages, code reviews, documentation. Set to the language you want Claude to communicate in.",
 
-  "content_languages": ["English", "Polish"],
-  "_content_languages_help": "Languages supported in user-facing content. The translate agent will ensure all these languages have entries in the dictionary/locale files.",
+  "content_languages": ["Polish"],
+  "_content_languages_help": "Languages supported in user-facing content. Polish-only for V1. English can be added later as a toggle.",
 
-  "primary_content_language": "English",
+  "primary_content_language": "Polish",
   "_primary_help": "The source language — strings are written in this language first, then translated to others.",
 
   "documentation_language": "English",

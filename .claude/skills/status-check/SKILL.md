@@ -1,36 +1,33 @@
 ---
 name: status-check
-description: "Quick diagnostic check of the project — git status, running processes, recent changes, and potential issues."
-disable-model-invocation: true
+description: "Quick diagnostic of the project — git state, Docker services, recent changes, and open items from session memory."
 user-invocable: true
 ---
 
-# System Status Check
+# Status Check
 
 Run a quick diagnostic across the project.
 
 ## Git Status
 
-Root repo:
 !`git status --short 2>/dev/null`
 
 Current branch:
 !`git branch --show-current 2>/dev/null`
 
-## Recent Changes
-
 Last 5 commits:
 !`git log --oneline -5 2>/dev/null`
 
-## Process Check
+## Docker Services
 
-Node processes running:
-!`tasklist /FI "IMAGENAME eq node.exe" 2>/dev/null || ps aux | grep node 2>/dev/null | head -10 || echo "Cannot check processes"`
+!`docker compose ps 2>/dev/null || echo "docker compose not available"`
 
 ## Report
 
-Present a clear summary:
-1. **Git state** — Any uncommitted changes? Current branch?
+Present a clear plain-language summary:
+
+1. **Git state** — Any uncommitted changes? What branch?
 2. **Recent work** — What was last committed?
-3. **Running services** — Are expected processes active?
-4. **Potential issues** — Anything that looks wrong?
+3. **Services** — Are nginx, postgres, and ghost running? Any stopped or unhealthy?
+4. **Open items** — Read `.claude/session-memory.md` and list any open items
+5. **Issues** — Anything that looks wrong or needs attention?

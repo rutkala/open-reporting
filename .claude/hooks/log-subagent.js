@@ -19,13 +19,9 @@ const event = process.argv[2]; // "pre" or "stop"
 
 // Default model mapping — add your custom agents here
 const DEFAULT_MODELS = {
-  'backend':        'sonnet',
-  'frontend':       'sonnet',
-  'data':           'sonnet',
-  'feature':        'sonnet',
+  'dashboard-dev':  'sonnet',
+  'data-engineer':  'sonnet',
   'debug':          'sonnet',
-  'translate':      'sonnet',
-  'mobile':         'sonnet',
   'Explore':        'sonnet',
   'Plan':           'sonnet',
   'general-purpose':'sonnet',
@@ -33,13 +29,9 @@ const DEFAULT_MODELS = {
 
 // Color mapping — add your custom agents here
 const AGENT_COLORS = {
-  'backend':        '#3b82f6',
-  'frontend':       '#10b981',
-  'data':           '#8b5cf6',
-  'feature':        '#f97316',
+  'dashboard-dev':  '#10b981',
+  'data-engineer':  '#3b82f6',
   'debug':          '#a855f7',
-  'translate':      '#06b6d4',
-  'mobile':         '#f472b6',
   'Explore':        '#6b7280',
   'Plan':           '#ec4899',
   'general-purpose':'#6b7280',

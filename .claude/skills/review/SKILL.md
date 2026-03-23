@@ -1,65 +1,92 @@
 ---
 name: review
-description: "Review current code changes for quality, security, and correctness before committing. Analyzes git diff, checks for common pitfalls, and provides actionable feedback."
-disable-model-invocation: true
+description: "Review completed implementation for quality, security, and correctness. Presents both a technical code review and a plain-language business summary for user approval before committing."
 user-invocable: true
 argument-hint: "[scope or directory]"
 ---
 
 # Code Review
 
-Review the current uncommitted changes for quality, security, and correctness.
+Review the completed implementation — first technically, then present a plain-language summary for user approval.
 
 ## Context
 
-Current git diff (staged + unstaged):
+Current changes:
 !`git diff HEAD --stat 2>/dev/null || echo "No changes found"`
 
 Detailed diff:
 !`git diff HEAD 2>/dev/null | head -500`
 
-## Review Scope
+Review scope: `$ARGUMENTS` (if provided, focus here only — otherwise review all changes)
 
-If argument provided, focus on `$ARGUMENTS` only. Otherwise review all changes.
+---
 
-## Review Checklist
+## Part 1 — Technical Review (internal)
 
-For each changed file, check:
+Work through this checklist internally before presenting to the user.
 
 ### Code Quality
 - [ ] Functions are well-named and single-purpose
-- [ ] No duplicated logic (check if a utility already exists)
-- [ ] Error handling follows project patterns
-- [ ] No leftover debug code (console.log, TODO, FIXME)
+- [ ] No duplicated logic
+- [ ] Error handling follows project patterns (try/except with logging, not bare except)
+- [ ] No leftover debug code, print statements, TODOs, or FIXMEs
+- [ ] Logging uses `logging.getLogger(__name__)`, not `print()`
 
 ### Security
-- [ ] No hardcoded secrets, tokens, or credentials
-- [ ] User input is validated/sanitized
-- [ ] SQL queries use parameterized queries (never string concatenation)
-- [ ] Auth/authorization checks are present where needed
+- [ ] No hardcoded secrets, passwords, or API keys
+- [ ] SQL queries use parameterised queries — no string concatenation
+- [ ] External data is validated before storing
+- [ ] `.env` not committed
 
-### Best Practices
-- [ ] No unnecessary dependencies added
-- [ ] Tests cover new functionality (if test framework exists)
-- [ ] API responses follow project conventions
-- [ ] No breaking changes without migration path
+### Python Conventions
+- [ ] `#!/usr/bin/env python3` shebang on scripts
+- [ ] Imports ordered: stdlib → third-party → local
+- [ ] Type hints present on function signatures
+- [ ] Line length ≤ 100 characters
+- [ ] f-strings used for formatting
 
-### Translations (if applicable)
-- [ ] User-facing strings use i18n calls (not hardcoded)
-- [ ] Translation keys added for ALL languages listed in `.claude/languages.json` → `content_languages`
-- [ ] Translations follow the `style_notes` register (formal/informal, spelling conventions)
+### Data & Database
+- [ ] Raw data lands in `raw.` schema, processed data in `public.` schema
+- [ ] `ON CONFLICT DO UPDATE` used for upserts
+- [ ] `fetched_at` timestamp included in ingestion tables
+- [ ] Connection closed in `finally` block
 
-### {PROJECT-SPECIFIC CHECKLIST}
-<!-- ADD YOUR PROJECT-SPECIFIC CHECKS HERE -->
-<!-- Examples: -->
-<!-- - [ ] Database migrations included for schema changes -->
-<!-- - [ ] Socket event names match between server and client -->
+### Dashboard Output
+- [ ] Output HTML written to `nginx/html/dashboards/`
+- [ ] Theme applied via `apply()` and `page()` from `charts.lib.theme`
+- [ ] Source attribution visible in the dashboard
+- [ ] `include_plotlyjs="cdn"` used (not bundled)
 
-## Output Format
+### Content Language
+- [ ] User-facing text (chart titles, labels, tooltips) is in Polish
+- [ ] Polish diacritics correct (ą, ć, ę, ł, ń, ó, ś, ź, ż)
 
-Organize feedback by priority:
-1. **CRITICAL** — Must fix before committing (security issues, broken logic)
-2. **WARNING** — Should fix (pattern violations, missing validation)
-3. **SUGGESTION** — Nice to have (style, minor improvements)
+---
 
-For each item, include the file path, line reference, and specific fix.
+## Part 2 — Business Summary (present to user)
+
+After the technical review, present this — in plain language, no code:
+
+```
+## Review: {what was built}
+
+### What was built
+{1-2 sentences describing what was implemented, in plain language}
+
+### Does it match the plan?
+{Yes / Mostly (with minor differences) / No (explain)}
+
+### Technical issues found
+{CRITICAL: must fix before committing — list if any, "None" if clean}
+{WARNING: should fix — list if any, "None" if clean}
+{SUGGESTION: optional improvements — list if any}
+
+### Ready to commit?
+{Yes — all clear | No — fix required first (explain what)}
+```
+
+## Step 3 — Wait for Approval
+
+- If issues found: fix them, then run `/review` again
+- If clean: wait for user to say "commit" or `/commit`
+- **Never commit without explicit user approval**
