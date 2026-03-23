@@ -1,31 +1,49 @@
 # Open Reporting — Data Sources
 
-Known public data sources, their access methods, and status.
+## Data Source Policy
 
-## Tier 1: Free API, No Auth Required
+All data used in Open Reporting must come from official, publicly accessible sources. No third-party commercial data providers. No scraping — API or official file download only.
 
-### Eurostat
-- **URL**: `https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/{dataset_id}`
-- **Format**: JSON-stat
-- **Docs**: `https://wikis.ec.europa.eu/display/EUROSTATHELP/API+Statistics+-+data+query`
-- **Rate limit**: Generous, no key required
-- **Notes**: Use `?format=JSON` param; pyjstat library helpful for parsing
+### Source Hierarchy
 
-### OpenBudget (Ministry of Finance)
-- **URL**: `https://openbudget.gov.pl/api/`
-- **Format**: JSON
-- **Coverage**: Central government budget execution by year and chapter
-- **Notes**: Data updated quarterly; good for revenue/expenditure breakdowns
+When selecting a data source for a new dashboard or dataset, follow this hierarchy. Start at Level 1 and only move down if the required data is not available at the current level.
 
-### NBP (National Bank of Poland)
-- **URL**: `https://api.nbp.pl/api/`
-- **Format**: JSON or XML
-- **Docs**: `https://api.nbp.pl/`
-- **Coverage**: Exchange rates (table A, B, C), interest rates, gold price
+**Level 1: Official government and EU institutions**
+The default and preferred source for all data. No justification needed.
+- GUS BDL, GUS StatsAPI — Polish national statistics
+- OpenBudget, Ministry of Finance — public finances
+- NBP — monetary data, exchange rates
+- NFZ — health fund data
+- MEN — education data
+- Eurostat — EU-wide statistics
 
-## Tier 2: Free API, Key Required
+**Level 2: Official Polish institutional sources**
+Acceptable when Level 1 does not cover the required data. Document why Level 1 was insufficient.
+- KNF — financial supervision
+- GDDKiA — road infrastructure
+- NIZP-PZH — epidemiology and public health
+- ZUS — social insurance and pensions
 
-### GUS BDL (Local Data Bank)
+**Level 3: Trusted international organisations**
+Acceptable for international comparisons or when Polish-specific data is unavailable.
+- World Bank, IMF, OECD, UN statistical divisions
+
+**Level 4: Additional sources**
+Requires explicit user approval before use. Must document source credibility and why Level 1-3 were insufficient. No commercial data providers.
+
+### Rules
+- No scraping — API or official file download only
+- No private or commercial data providers
+- Source must be publicly accessible without payment
+- If nothing found in Level 1-3 → present research findings and get approval before proceeding
+
+---
+
+## Known Sources
+
+### Level 1: Official Government & EU
+
+#### GUS BDL (Local Data Bank)
 - **URL**: `https://bdl.stat.gov.pl/api/v1/`
 - **Auth**: `BDL_API_KEY` env var (register at `https://bdl.stat.gov.pl/`)
 - **Format**: JSON
@@ -33,26 +51,46 @@ Known public data sources, their access methods, and status.
 - **Rate limit**: 1000 requests/day on free tier
 - **Notes**: Variable IDs required; use `/variables` endpoint to discover
 
-### GUS StatsAPI (newer, experimental)
+#### GUS StatsAPI (newer, experimental)
 - **URL**: `https://stat.gov.pl/api/`
 - **Notes**: Complements BDL for some newer datasets
 
-## Tier 3: File Downloads (No API)
+#### OpenBudget (Ministry of Finance)
+- **URL**: `https://openbudget.gov.pl/api/`
+- **Format**: JSON
+- **Coverage**: Central government budget execution by year and chapter
+- **Notes**: Data updated quarterly; good for revenue/expenditure breakdowns
 
-### MEN (Ministry of Education)
-- **URL**: `https://www.gov.pl/web/edukacja/`
-- **Format**: XLSX files, annual releases
-- **Notes**: Manual download, import with pandas
+#### NBP (National Bank of Poland)
+- **URL**: `https://api.nbp.pl/api/`
+- **Format**: JSON or XML
+- **Docs**: `https://api.nbp.pl/`
+- **Coverage**: Exchange rates (table A, B, C), interest rates, gold price
 
-### NFZ (National Health Fund)
+#### Eurostat
+- **URL**: `https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/{dataset_id}`
+- **Format**: JSON-stat
+- **Rate limit**: Generous, no key required
+- **Notes**: Use `?format=JSON` param; pyjstat library helpful for parsing
+
+#### NFZ (National Health Fund)
 - **URL**: `https://dane.nfz.gov.pl/`
 - **Format**: API available for some datasets
 - **Notes**: API quality varies by dataset
 
-### KNF (Financial Supervision Authority)
+#### MEN (Ministry of Education)
+- **URL**: `https://www.gov.pl/web/edukacja/`
+- **Format**: XLSX files, annual releases
+- **Notes**: Manual download, import with pandas
+
+### Level 2: Official Polish Institutional
+
+#### KNF (Financial Supervision Authority)
 - **URL**: `https://www.knf.gov.pl/dane_statystyczne`
 - **Format**: XLSX, PDF
-- **Notes**: No API; scraping or manual download
+- **Notes**: No API; file download only
+
+---
 
 ## DB Schema Convention
 
