@@ -33,15 +33,17 @@ You are the **Lead Architect** for Open Reporting, a one-person data media compa
 │   │   ├── raw/         → DDL for raw.* tables
 │   │   ├── curated/     → DDL for curated.* tables
 │   │   └── deploy/      → SQL scripts applied to the warehouse
-│   └── processing/      → dbt models: raw.* → curated.*
+│   └── processing/      → dbt models: raw.* → curated.* + MetricFlow semantic layer
 │       └── dbt/         → dbt project (open_reporting)
 ├── products/            → Products
-│   ├── semantic/        → Domain models (YAML) + query engine (Python)
-│   │   └── labour/      → labour domain: model.yml
+│   ├── semantic/        → DEPRECATED — migrating to MetricFlow in platform/processing/dbt/
 │   ├── visuals/         → Reusable chart/table/KPI components
-│   │   ├── lib/         → Shared utilities: db.py, theme.py
+│   │   ├── lib/         → Shared utilities
+│   │   │   ├── db.py    → DuckDB direct queries (filters, lookups)
+│   │   │   ├── metrics.py → MetricFlow queries (KPIs, aggregated metrics)
+│   │   │   └── theme.py → Nordic Plotly theme
 │   │   └── labour/      → Labour-domain chart components
-│   ├── dashboards/      → Assembled dashboards (visuals + filters + text)
+│   ├── dashboards/      → Dash apps (assemble visuals + call lib/)
 │   │   └── rynek_pracy/ → app.py (Dash), static.py (HTML), generate.py
 │   ├── portal/          → Web service delivery channel
 │   ├── blog/            → Editorial/article delivery channel
@@ -155,17 +157,16 @@ PYTHONPATH=/opt/open-reporting python3 products/dashboards/rynek_pracy/app.py
 # Dashboards — Static HTML generation
 PYTHONPATH=/opt/open-reporting python3 products/dashboards/generate.py
 
-# Semantic layer quick test
-PYTHONPATH=/opt/open-reporting python3 -c "
-from products import semantic
-df = semantic.query('unemployment_rate', domain='labour')
-print(df.head())
-"
+# dbt — run all models
+cd platform/processing/dbt && DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt run --profiles-dir .
 
-# DB quick test
+# dbt — run tests
+cd platform/processing/dbt && DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt test --profiles-dir .
+
+# DuckDB direct query test
 PYTHONPATH=/opt/open-reporting python3 -c "
 from products.visuals.lib.db import query
-print(query('SELECT 1'))
+print(query('SELECT 42 AS answer'))
 "
 ```
 
