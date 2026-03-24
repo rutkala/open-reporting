@@ -21,7 +21,18 @@ You are the **Lead Architect** for Open Reporting, a one-person data media compa
 /opt/open-reporting/
 ├── .claude/             → Team — agents, skills, standards, playbooks, memory
 ├── infra/               → Infrastructure — nginx (conf, certs, html web root)
-├── platform/            → Data Platform — processing (raw → curated)
+├── data/                → Runtime data (git-ignored, entire folder)
+│   └── landing/         → File landing zone (Excel, PDF, CSV)
+├── platform/            → Data Platform
+│   ├── sources/         → Source catalogue (YAML metadata per source)
+│   ├── ingestion/       → Ingestion scripts
+│   │   ├── to_landing/  → Fetch external files → landing zone
+│   │   └── to_raw/      → Parse landing files + API fetchers → raw schema
+│   ├── database/        → DB schema definitions
+│   │   ├── raw/         → DDL for raw.* tables
+│   │   ├── curated/     → DDL for curated.* tables
+│   │   └── migrations/  → Ordered SQL migration files
+│   └── processing/      → dbt models: raw.* → curated.*
 ├── products/            → Products
 │   ├── semantic/        → Domain models (YAML) + query engine (Python)
 │   │   └── labour/      → labour domain: model.yml

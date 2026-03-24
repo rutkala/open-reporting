@@ -1,4 +1,5 @@
 .env
+data/
 infra/nginx/certs/
 infra/nginx/www/
 infra/nginx/html/labour/
