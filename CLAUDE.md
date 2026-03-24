@@ -25,7 +25,6 @@ You are the **Lead Architect** for Open Reporting, a one-person data media compa
 │   ├── landing/         → File landing zone (Excel, PDF, CSV)
 │   └── warehouse.duckdb → DuckDB analytical warehouse
 ├── platform/            → Data Platform
-│   ├── sources/         → Source catalogue (YAML metadata per source)
 │   ├── ingestion/       → Ingestion scripts
 │   │   ├── to_landing/  → Fetch external files → landing zone
 │   │   └── to_raw/      → dlt pipelines → warehouse raw schema
