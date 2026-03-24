@@ -29,10 +29,13 @@ You are the **Lead Architect** for Open Reporting, a one-person data media compa
 │   ├── ingestion/       → Ingestion scripts
 │   │   ├── to_landing/  → Fetch external files → landing zone
 │   │   └── to_raw/      → dlt pipelines → warehouse raw schema
-│   ├── warehouse/       → Warehouse schema definitions
+│   ├── warehouse/       → DuckDB analytical schema definitions
 │   │   ├── raw/         → DDL for raw.* tables
 │   │   ├── curated/     → DDL for curated.* tables
-│   │   └── deploy/      → SQL scripts applied to the warehouse
+│   │   └── deploy/      → SQL scripts applied to DuckDB
+│   ├── database/        → PostgreSQL operational schema definitions
+│   │   ├── catalogue/   → DDL for catalogue.* tables (sources, domains, mappings)
+│   │   └── deploy/      → SQL scripts applied to PostgreSQL
 │   └── processing/      → dbt models: raw.* → curated.* + MetricFlow semantic layer
 │       └── dbt/         → dbt project (open_reporting)
 ├── products/            → Products
