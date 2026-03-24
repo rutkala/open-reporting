@@ -1,0 +1,18 @@
+# Data platform
+dbt-core
+dbt-duckdb
+dlt[duckdb]
+duckdb
+
+# Dashboards & visualisation
+dash
+plotly
+pandas
+ibis-framework
+
+# Database (PostgreSQL — Ghost CMS only)
+psycopg2-binary
+
+# Utilities
+python-dotenv
+requests
