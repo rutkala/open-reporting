@@ -1,0 +1,90 @@
+domain: labour
+label: Rynek pracy
+description: Dane o zatrudnieniu, wynagrodzeniach i PKB według województw (GUS BDL)
+
+facts:
+  - id: labour_market_regional
+    schema: curated
+    table: labour_market_regional
+    grain: [region, year]
+
+dimensions:
+  - id: region
+    column: region
+    label: Województwo
+    type: categorical
+
+  - id: year
+    column: year
+    label: Rok
+    type: temporal
+
+measures:
+  - id: unemployment_rate
+    label: Stopa bezrobocia
+    column: unemployment_rate
+    fact: labour_market_regional
+    aggregation: avg
+    unit: "%"
+    direction: lower_is_better
+    description: Stopa bezrobocia rejestrowanego według województw
+
+  - id: avg_wages
+    label: Przeciętne wynagrodzenie brutto
+    column: avg_wages
+    fact: labour_market_regional
+    aggregation: avg
+    unit: PLN
+    direction: higher_is_better
+    description: Przeciętne miesięczne wynagrodzenie brutto
+
+  - id: gdp_per_capita
+    label: PKB per capita
+    column: gdp_per_capita
+    fact: labour_market_regional
+    aggregation: avg
+    unit: PLN
+    direction: higher_is_better
+    description: Produkt krajowy brutto per capita
+
+sections:
+  - id: bezrobocie
+    label: Bezrobocie
+    measures: [unemployment_rate]
+
+  - id: wynagrodzenia
+    label: Wynagrodzenia
+    measures: [avg_wages]
+
+  - id: pkb
+    label: Produkt Krajowy Brutto
+    measures: [gdp_per_capita]
+
+kpis:
+  - id: unemployment_rate_yoy
+    label: Zmiana bezrobocia r/r
+    base_measure: unemployment_rate
+    calculation: yoy_diff
+    unit: pp
+    description: Zmiana stopy bezrobocia rok do roku w punktach procentowych
+
+  - id: avg_wages_yoy
+    label: Wzrost wynagrodzeń r/r
+    base_measure: avg_wages
+    calculation: yoy_pct
+    unit: "%"
+    description: Procentowy wzrost przeciętnego wynagrodzenia rok do roku
+
+  - id: unemployment_rate_rank
+    label: Ranking bezrobocia
+    base_measure: unemployment_rate
+    calculation: rank_asc
+    unit: ""
+    description: Pozycja województwa w rankingu bezrobocia (1 = najniższe)
+
+  - id: avg_wages_rank
+    label: Ranking wynagrodzeń
+    base_measure: avg_wages
+    calculation: rank_desc
+    unit: ""
+    description: Pozycja województwa w rankingu wynagrodzeń (1 = najwyższe)

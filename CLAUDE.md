@@ -15,26 +15,33 @@ You are the **Lead Architect** for Open Reporting, a one-person data media compa
 - Analyse code and explain findings
 - Draft plans and suggestions
 
-## System Architecture
+## Repo Structure
 
 ```
 /opt/open-reporting/
-├── charts/              → Plotly dashboards (static HTML output)
-│   ├── dashboards/      → Dashboard modules (one file per dashboard)
-│   └── lib/             → Shared utilities: db.py, theme.py
-├── ingestion/           → ETL scripts (fetch → raw schema)
-├── processing/          → Data transformations (raw → public schema)
-├── nginx/               → Nginx config + SSL certs + static HTML output
-│   ├── conf.d/          → Virtual host configs
-│   └── html/            → Served files (dashboards go here)
-├── content/             → Ghost CMS data volume
-├── .claude/             → Claude Code config (agents, hooks, skills)
+├── .claude/             → Team — agents, skills, standards, playbooks, memory
+├── infra/               → Infrastructure — nginx (conf, certs, html web root)
+├── platform/            → Data Platform — processing (raw → curated)
+├── products/            → Products
+│   ├── semantic/        → Domain models (YAML) + query engine (Python)
+│   │   └── labour/      → labour domain: model.yml
+│   ├── visuals/         → Reusable chart/table/KPI components
+│   │   ├── lib/         → Shared utilities: db.py, theme.py
+│   │   └── labour/      → Labour-domain chart components
+│   ├── dashboards/      → Assembled dashboards (visuals + filters + text)
+│   │   └── rynek_pracy/ → app.py (Dash), static.py (HTML), generate.py
+│   ├── portal/          → Web service delivery channel
+│   ├── blog/            → Editorial/article delivery channel
+│   ├── mobile/          → Mobile app delivery channel
+│   └── social/          → Social media delivery channel
 ├── docs/                → Project documentation
-└── docker-compose.yml   → All services defined here
+├── docker-compose.yml   → All services defined here (root, always)
+├── .env                 → Secrets (never committed)
+└── .env.example         → Secret template
 ```
 
 **Docker services:**
-- `nginx` — Reverse proxy, serves dashboards (port 80/443)
+- `nginx` — Reverse proxy, serves dashboards (port 80/443), web root: `infra/nginx/html/`
 - `postgres` — PostgreSQL 16 (port 5432, internal only)
 - `ghost` — Ghost CMS (port 2368, internal only)
 
@@ -58,13 +65,13 @@ Shared session memory at `.claude/session-memory.md` provides continuity across 
 | Agent | Scope | Mode | Description |
 |-------|-------|------|-------------|
 | `debug` | All directories | Read-only (plan) | Debugging, tracing, diagnostics |
-| `dashboard-dev` | `charts/` | Full dev | Plotly dashboard building (follows DDF) |
-| `data-engineer` | `ingestion/`, `processing/` | Full dev | ETL pipeline building |
+| `dashboard-dev` | `products/dashboards/`, `products/visuals/` | Full dev | Dashboard and chart building |
+| `data-engineer` | `platform/` | Full dev | ETL pipeline building |
 
 **When to delegate:**
 - Bug investigation → `debug` (read-only, safe)
-- Dashboard work entirely in `charts/` → `dashboard-dev`
-- ETL/ingestion work → `data-engineer`
+- Dashboard/visual work → `dashboard-dev`
+- ETL/processing work → `data-engineer`
 - Architecture decisions, schema changes, git ops → orchestrator handles directly
 
 ## Linear Workflow
@@ -79,6 +86,7 @@ Claude Code has MCP access to Linear for the `ORE` project.
 **Linear MCP tools available:** `get_issue`, `save_issue`, `list_issues`, `save_comment`, `get_project`
 
 **When implementing a Linear issue:**
+0. Validate issue meets requirements standard (`.claude/standards/requirements.md`)
 1. Read the issue with `get_issue`
 2. Confirm scope with user before starting
 3. Update status to "In Progress" when starting
@@ -89,28 +97,63 @@ Claude Code has MCP access to Linear for the `ORE` project.
 
 | Skill | Description |
 |-------|-------------|
+| `/kickoff <ORE-XXX>` | Read Linear issue, assess feasibility, confirm scope before starting |
+| `/research` | Research data sources, APIs, and existing patterns before planning |
+| `/plan <task>` | Design implementation plan, get user approval before coding |
+| `/review [scope]` | Code review for quality, security, correctness |
 | `/commit [hint]` | Smart conventional commit with auto-generated message |
-| `/review [scope]` | Code review current changes for quality, security, correctness |
-| `/plan <task>` | Design implementation plan before coding, get approval first |
+| `/document` | Update docs after implementation |
 | `/status-check` | Quick diagnostic of git state + running processes |
+
+## Standards
+
+Reference files in `.claude/standards/` — followed by agents when building:
+
+| File | Applies to | Purpose |
+|------|-----------|---------|
+| `requirements.md` | All Linear issues | Definition of ready, issue templates per type, acceptance criteria rules |
+| `ingestion.md` | ETL scripts | ELT phases, raw loading rules, update methods, script structure |
+| `processing.md` | Transform scripts | 6-category DQ framework, quality logging, processing script structure |
+| `storage.md` | All DB work | Schema naming, data types, upsert pattern, indexes |
+| `visualisation.md` | Dashboards | Nordic design, colour palette, Plotly template, chart types, layout |
+
+## Playbooks
+
+Step-by-step process guides in `.claude/playbooks/`:
+
+| File | Covers |
+|------|--------|
+| `dashboard.md` | Full pipeline: kickoff → data source → ingestion → processing → visualisation → publish |
+
+The dashboard playbook defines gates at every phase — no phase is skipped, every gate requires user approval before proceeding.
 
 ## Development Commands
 
 ```bash
 # Infrastructure
-docker compose up -d              # Start all services
-docker compose ps                 # Check service status
-docker compose logs -f postgres   # View logs
+docker compose up -d                        # Start all services
+docker compose ps                           # Check service status
+docker compose logs -f postgres             # View logs
+docker compose up -d --force-recreate nginx # Reload nginx after config/html changes
 
-# Dashboards
-POSTGRES_PASSWORD=xxx python3 charts/generate.py          # Generate all dashboards
+# Dashboards — Dash (live, dynamic)
+PYTHONPATH=/opt/open-reporting python3 products/dashboards/rynek_pracy/app.py
 
-# Ingestion
-POSTGRES_PASSWORD=xxx python3 ingestion/gpw_ingest.py --backfill
-BDL_API_KEY=xxx POSTGRES_PASSWORD=xxx python3 ingestion/budget_ingest.py
+# Dashboards — Static HTML generation
+PYTHONPATH=/opt/open-reporting python3 products/dashboards/generate.py
+
+# Semantic layer quick test
+PYTHONPATH=/opt/open-reporting python3 -c "
+from products import semantic
+df = semantic.query('unemployment_rate', domain='labour')
+print(df.head())
+"
 
 # DB quick test
-python3 -c "from charts.lib.db import query; print(query('SELECT 1'))"
+PYTHONPATH=/opt/open-reporting python3 -c "
+from products.visuals.lib.db import query
+print(query('SELECT 1'))
+"
 ```
 
 ## Git Workflow
@@ -128,10 +171,9 @@ python3 -c "from charts.lib.db import query; print(query('SELECT 1'))"
 
 ## Code Standards
 
-See `AGENTS.md` for full Python conventions, SQL patterns, and security rules.
-
-Key rules:
+Key rules (full details in `.claude/standards/`):
 - Parameterised queries always (no string concatenation in SQL)
 - Never commit `.env` — use env vars for all secrets
 - 100 char line length, 4-space indent
 - `logging.getLogger(__name__)` — no print() in scripts
+- `load_dotenv(override=True)` + lazy `_dsn()` for DB connections

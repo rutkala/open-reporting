@@ -24,10 +24,10 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d:ro
-      - ./nginx/certs:/etc/letsencrypt:ro
-      - ./nginx/www:/var/www/certbot:ro
-      - ./charts:/usr/share/nginx/charts:ro
+      - ./infra/nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./infra/nginx/certs:/etc/letsencrypt:ro
+      - ./infra/nginx/www:/var/www/certbot:ro
+      - ./infra/nginx/html:/usr/share/nginx/charts:ro
 
   ghost:
     image: ghost:5-alpine

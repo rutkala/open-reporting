@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open Reporting — Portal analityczny</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, 'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif;
+      background: #F7F8FA;
+      color: #2C3A4A;
+      min-height: 100vh;
+    }
+    header {
+      background: #FFFFFF;
+      border-bottom: 1px solid #DDE2E8;
+      padding: 20px 32px;
+    }
+    header h1 { font-size: 20px; font-weight: 700; }
+    header p  { font-size: 13px; color: #6B7A8D; margin-top: 4px; }
+
+    main {
+      max-width: 960px;
+      margin: 40px auto;
+      padding: 0 24px;
+    }
+
+    h2 {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #6B7A8D;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #DDE2E8;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .dashboard-card {
+      background: #FFFFFF;
+      border-radius: 6px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07), 0 0 1px rgba(0,0,0,0.04);
+      padding: 24px;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: box-shadow 0.15s;
+    }
+    .dashboard-card:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.10), 0 0 1px rgba(0,0,0,0.06);
+    }
+    .dashboard-card .tag {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #4A7FB5;
+      margin-bottom: 10px;
+    }
+    .dashboard-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .dashboard-card p  { font-size: 13px; color: #6B7A8D; line-height: 1.5; }
+
+    footer {
+      background: #FFFFFF;
+      border-top: 1px solid #DDE2E8;
+      padding: 20px 32px;
+      font-size: 12px;
+      color: #6B7A8D;
+      margin-top: 64px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Open Reporting</h1>
+  <p>Polskie dane publiczne — przejrzyście i dostępnie</p>
+</header>
+
+<main>
+  <h2>Dashboardy analityczne</h2>
+  <div class="dashboard-grid">
+
+    <a class="dashboard-card" href="/labour/rynek-pracy.html">
+      <div class="tag">Rynek pracy</div>
+      <h3>Rynek pracy w Polsce</h3>
+      <p>Bezrobocie, wynagrodzenia i PKB per capita według województw — dane GUS BDL (2000–2025).</p>
+    </a>
+
+  </div>
+</main>
+
+<footer>
+  Dane ze źródeł publicznych (GUS, Eurostat, NBP) · <a href="https://www.open-reporting.dev" style="color:#6B7A8D">open-reporting.dev</a>
+</footer>
+
+</body>
+</html>
