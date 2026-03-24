@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """
-Catalogue loader — upserts domains, sources, and source_domains into PostgreSQL.
+Catalogue loader — upserts domains, domain_details, sources, and
+domain_detail_sources into PostgreSQL from CSV files.
+
 Run after any change to platform/database/data/*.csv
 
 Usage:
@@ -33,7 +35,7 @@ def _dsn() -> str:
 
 def _read_csv(filename: str) -> list[dict]:
     with open(DATA_DIR / filename, newline="", encoding="utf-8") as f:
-        return list(csv.DictReader(f))
+        return [r for r in csv.DictReader(f) if any(r.values())]
 
 
 def apply_schema(conn) -> None:
@@ -47,24 +49,58 @@ def apply_schema(conn) -> None:
 
 def load_domains(conn) -> int:
     rows = _read_csv("domains.csv")
+    if not rows:
+        log.info("domains.csv is empty — skipping")
+        return 0
     cur = conn.cursor()
     execute_values(cur, """
-        INSERT INTO catalogue.domains (domain_id, name, group_name, description)
+        INSERT INTO catalogue.domains (domain_id, name, domain_group, description)
         VALUES %s
         ON CONFLICT (domain_id) DO UPDATE SET
-            name        = EXCLUDED.name,
-            group_name  = EXCLUDED.group_name,
-            description = EXCLUDED.description,
-            updated_at  = NOW()
-    """, [(r["domain_id"], r["name"], r["group_name"], r["description"] or None)
+            name         = EXCLUDED.name,
+            domain_group = EXCLUDED.domain_group,
+            description  = EXCLUDED.description,
+            updated_at   = NOW()
+    """, [(r["domain_id"], r["name"], r["domain_group"], r["description"] or None)
           for r in rows])
     conn.commit()
     log.info("Upserted %d domains", len(rows))
     return len(rows)
 
 
+def load_domain_details(conn) -> int:
+    rows = _read_csv("domain_details.csv")
+    if not rows:
+        log.info("domain_details.csv is empty — skipping")
+        return 0
+    cur = conn.cursor()
+    execute_values(cur, """
+        INSERT INTO catalogue.domain_details
+            (detail_id, domain_id, name, unit, frequency, description, notes)
+        VALUES %s
+        ON CONFLICT (detail_id) DO UPDATE SET
+            domain_id   = EXCLUDED.domain_id,
+            name        = EXCLUDED.name,
+            unit        = EXCLUDED.unit,
+            frequency   = EXCLUDED.frequency,
+            description = EXCLUDED.description,
+            notes       = EXCLUDED.notes,
+            updated_at  = NOW()
+    """, [(
+        r["detail_id"], r["domain_id"], r["name"],
+        r["unit"] or None, r["frequency"] or None,
+        r["description"] or None, r["notes"] or None,
+    ) for r in rows])
+    conn.commit()
+    log.info("Upserted %d domain details", len(rows))
+    return len(rows)
+
+
 def load_sources(conn) -> int:
     rows = _read_csv("sources.csv")
+    if not rows:
+        log.info("sources.csv is empty — skipping")
+        return 0
     cur = conn.cursor()
     execute_values(cur, """
         INSERT INTO catalogue.sources
@@ -95,28 +131,31 @@ def load_sources(conn) -> int:
     return len(rows)
 
 
-def load_source_domains(conn) -> int:
-    rows = _read_csv("source_domains.csv")
+def load_domain_detail_sources(conn) -> int:
+    rows = _read_csv("domain_detail_sources.csv")
+    if not rows:
+        log.info("domain_detail_sources.csv is empty — skipping")
+        return 0
     cur = conn.cursor()
     execute_values(cur, """
-        INSERT INTO catalogue.source_domains
-            (source_id, domain_id, geo_levels, year_from, year_to, coverage_notes)
+        INSERT INTO catalogue.domain_detail_sources
+            (detail_id, source_id, geo_levels, year_from, year_to, coverage_notes)
         VALUES %s
-        ON CONFLICT (source_id, domain_id) DO UPDATE SET
+        ON CONFLICT (detail_id, source_id) DO UPDATE SET
             geo_levels     = EXCLUDED.geo_levels,
             year_from      = EXCLUDED.year_from,
             year_to        = EXCLUDED.year_to,
             coverage_notes = EXCLUDED.coverage_notes,
             updated_at     = NOW()
     """, [(
-        r["source_id"], r["domain_id"],
+        r["detail_id"], r["source_id"],
         r["geo_levels"] or None,
         int(r["year_from"]) if r["year_from"] else None,
         int(r["year_to"]) if r["year_to"] else None,
         r["coverage_notes"] or None,
     ) for r in rows])
     conn.commit()
-    log.info("Upserted %d source_domain mappings", len(rows))
+    log.info("Upserted %d domain_detail_source mappings", len(rows))
     return len(rows)
 
 
@@ -126,8 +165,9 @@ def main() -> None:
         conn = psycopg2.connect(_dsn())
         apply_schema(conn)
         load_domains(conn)
+        load_domain_details(conn)
         load_sources(conn)
-        load_source_domains(conn)
+        load_domain_detail_sources(conn)
         log.info("Catalogue load complete")
     except Exception:
         log.exception("Catalogue load failed")

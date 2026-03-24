@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS catalogue.sources (
     updated_at          TIMESTAMPTZ     NOT NULL DEFAULT NOW()
 );
 
-COMMENT ON TABLE  catalogue.sources                  IS 'Data source systems available for ingestion';
+COMMENT ON TABLE  catalogue.sources                  IS 'Public data source systems available for ingestion';
 COMMENT ON COLUMN catalogue.sources.tier             IS '1=GUS API, 2=International API, 3=File-based/scrape';
 COMMENT ON COLUMN catalogue.sources.auth_env_var     IS 'Name of env var holding the API key or secret';
 COMMENT ON COLUMN catalogue.sources.active           IS 'FALSE = source decommissioned or temporarily disabled';
