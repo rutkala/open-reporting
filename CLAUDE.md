@@ -32,7 +32,7 @@ You are the **Lead Architect** for Open Reporting, a one-person data media compa
 │   ├── warehouse/       → Warehouse schema definitions
 │   │   ├── raw/         → DDL for raw.* tables
 │   │   ├── curated/     → DDL for curated.* tables
-│   │   └── migrations/  → Ordered SQL migration files
+│   │   └── deploy/      → SQL scripts applied to the warehouse
 │   └── processing/      → dbt models: raw.* → curated.*
 │       └── dbt/         → dbt project (open_reporting)
 ├── products/            → Products
