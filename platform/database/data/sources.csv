@@ -1,22 +1,22 @@
-source_id,name,provider,tier,url,api_url,auth_type,auth_env_var,format,update_frequency,notes
-bdl,Bank Danych Lokalnych,GUS,1,https://bdl.stat.gov.pl,https://bdl.stat.gov.pl/api/v1,api_key,BDL_API_KEY,json,annual,Largest Polish local statistics DB. Anonymous access works but api_key raises limits (5→10 req/s). Header: X-ClientId.
-dbw,Dziedzinowe Bazy Wiedzy,GUS,1,https://dbw.stat.gov.pl,https://api-dbw.stat.gov.pl/api/v1,api_key,DBW_API_KEY,json,annual,Thematic knowledge bases. Same rate limits as BDL. Docs at api-dbw.stat.gov.pl/apidocs.
-sdp,Składnica Danych Publikacyjnych,GUS,1,https://api.stat.gov.pl/Home/SDPApi,https://api-sdp.stat.gov.pl/api/v1,api_key,SDP_API_KEY,json,monthly,Full public statistics — data and metadata in consistent structure. Docs at api-sdp.stat.gov.pl/apidocs.
-smup,System Monitorowania Usług Publicznych,GUS,1,https://smup.gov.pl,https://api.stat.gov.pl/Home/SMUPApi,none,,json,annual,Public services monitoring at municipality level.
-strateg,Strateg,GUS,1,https://strateg.stat.gov.pl,https://api.stat.gov.pl/Home/StrategApi,none,,json,annual,Regional development and social cohesion monitoring.
-sdg,Krajowa Platforma Raportująca SDG,GUS,1,https://sdg.gov.pl,https://api.stat.gov.pl/Home/SDGApi,none,,json,annual,UN Sustainable Development Goals monitoring for Poland.
-regon,Rejestr REGON,GUS,1,https://api.stat.gov.pl/Home/RegonApi,https://api.stat.gov.pl/regon,api_key,REGON_API_KEY,xml,daily,Official Polish business register. Requires registration. Returns XML only.
-teryt,Rejestr TERYT,GUS,1,https://api.stat.gov.pl/Home/TerytApi,https://api.stat.gov.pl/teryt,none,,xml,irregular,Official administrative division codes and names. Historical data available.
-transtat,TranStat,GUS,1,https://transtat.stat.gov.pl,https://api-transtat.stat.gov.pl,none,,json,quarterly,Experimental road and maritime transport statistics. Docs at api-transtat.stat.gov.pl/apidocs.
-bdm,Bank Danych Makroekonomicznych,GUS,3,https://bdm.stat.gov.pl,,none,,xlsx,monthly,Key macroeconomic indicators. No public API — data available as file downloads only.
-demografia,Baza Demografia,GUS,3,https://demografia.stat.gov.pl,,none,,xlsx,annual,Demographic data portal. File download only.
-bdp,Bank Danych Polska,GUS,3,https://bdp.stat.gov.pl,,none,,xlsx,annual,Multi-sector local statistics. File download only.
-dekompozycje,Dekompozycje,GUS,3,https://dekompozycje.stat.gov.pl,,none,,xlsx,irregular,Statistical decomposition analyses. File download only.
-eurostat,Eurostat,Eurostat,2,https://ec.europa.eu/eurostat,https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0,none,,json,monthly,Main EU statistical office. REST API with SDMX support. No auth required.
-oecd,OECD Data Explorer,OECD,2,https://data-explorer.oecd.org,https://sdmx.oecd.org/public/rest,none,,json,quarterly,OECD macroeconomic and policy data. SDMX REST API.
-worldbank,World Development Indicators,World Bank,2,https://databank.worldbank.org,https://api.worldbank.org/v2,none,,json,quarterly,Global development indicators. Free REST API — no auth required.
-ilostat,ILOSTAT,ILO,2,https://ilostat.ilo.org/data,https://sdmx.ilo.org/rest,none,,json,quarterly,International Labour Organization statistics. SDMX REST API.
-imf,World Economic Outlook,IMF,2,https://www.imf.org/en/Publications/SPROLLs/world-economic-outlook-databases,https://www.imf.org/external/datamapper/api/v1,none,,json,biannual,IMF macroeconomic data for most countries. Free API — no auth required.
-faostat,FAOSTAT,FAO,2,https://www.fao.org/faostat,https://fenixservices.fao.org/faostat/api/v1,none,,json,annual,UN Food and Agriculture data. Free REST API.
-wto,WTO STATS,WTO,2,https://stats.wto.org,https://api.wto.org/timeseries/v1,api_key,WTO_API_KEY,json,quarterly,World trade statistics. Free API key required after registration.
-un_wpp,UN World Population Prospects,UN,2,https://population.un.org/wpp,https://population.un.org/dataportal/api/v1,none,,json,biannual,UN demographic estimates and projections to 2100 by age and sex.
+source_id,name,provider,category,tier,url,api_url,auth_type,auth_env_var,format,update_frequency,notes
+bdl,Bank Danych Lokalnych,GUS,statistical_office,1,https://bdl.stat.gov.pl,https://bdl.stat.gov.pl/api/v1,api_key,BDL_API_KEY,json,annual,Largest Polish local statistics DB. Anonymous access works but api_key raises limits (5→10 req/s). Header: X-ClientId.
+dbw,Dziedzinowe Bazy Wiedzy,GUS,statistical_office,1,https://dbw.stat.gov.pl,https://api-dbw.stat.gov.pl/api/v1,api_key,DBW_API_KEY,json,annual,Thematic knowledge bases. Same rate limits as BDL. Docs at api-dbw.stat.gov.pl/apidocs.
+sdp,Składnica Danych Publikacyjnych,GUS,statistical_office,1,https://api.stat.gov.pl/Home/SDPApi,https://api-sdp.stat.gov.pl/api/v1,api_key,SDP_API_KEY,json,monthly,Full public statistics — data and metadata in consistent structure. Docs at api-sdp.stat.gov.pl/apidocs.
+smup,System Monitorowania Usług Publicznych,GUS,statistical_office,1,https://smup.gov.pl,https://api.stat.gov.pl/Home/SMUPApi,none,,json,annual,Public services monitoring at municipality level.
+strateg,Strateg,GUS,statistical_office,1,https://strateg.stat.gov.pl,https://api.stat.gov.pl/Home/StrategApi,none,,json,annual,Regional development and social cohesion monitoring.
+sdg,Krajowa Platforma Raportująca SDG,GUS,statistical_office,1,https://sdg.gov.pl,https://api.stat.gov.pl/Home/SDGApi,none,,json,annual,UN Sustainable Development Goals monitoring for Poland.
+regon,Rejestr REGON,GUS,statistical_office,1,https://api.stat.gov.pl/Home/RegonApi,https://api.stat.gov.pl/regon,api_key,REGON_API_KEY,xml,daily,Official Polish business register. Requires registration. Returns XML only.
+teryt,Rejestr TERYT,GUS,statistical_office,1,https://api.stat.gov.pl/Home/TerytApi,https://api.stat.gov.pl/teryt,none,,xml,irregular,Official administrative division codes and names. Historical data available.
+transtat,TranStat,GUS,statistical_office,1,https://transtat.stat.gov.pl,https://api-transtat.stat.gov.pl,none,,json,quarterly,Experimental road and maritime transport statistics.
+bdm,Bank Danych Makroekonomicznych,GUS,statistical_office,2,https://bdm.stat.gov.pl,,none,,xlsx,monthly,Key macroeconomic indicators. No public API — file downloads only.
+demografia,Baza Demografia,GUS,statistical_office,2,https://demografia.stat.gov.pl,,none,,xlsx,annual,Demographic data portal. File download only.
+bdp,Bank Danych Polska,GUS,statistical_office,2,https://bdp.stat.gov.pl,,none,,xlsx,annual,Multi-sector local statistics. File download only.
+dekompozycje,Dekompozycje,GUS,statistical_office,2,https://dekompozycje.stat.gov.pl,,none,,xlsx,irregular,Statistical decomposition analyses. File download only.
+eurostat,Eurostat,Eurostat,statistical_office,1,https://ec.europa.eu/eurostat,https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0,none,,json,monthly,Main EU statistical office. REST API with SDMX support. No auth required.
+oecd,OECD Data Explorer,OECD,international_body,1,https://data-explorer.oecd.org,https://sdmx.oecd.org/public/rest,none,,json,quarterly,OECD macroeconomic and policy data. SDMX REST API.
+worldbank,World Development Indicators,World Bank,international_body,1,https://databank.worldbank.org,https://api.worldbank.org/v2,none,,json,quarterly,Global development indicators. Free REST API — no auth required.
+ilostat,ILOSTAT,ILO,international_body,1,https://ilostat.ilo.org/data,https://sdmx.ilo.org/rest,none,,json,quarterly,International Labour Organization statistics. SDMX REST API.
+imf,World Economic Outlook,IMF,international_body,1,https://www.imf.org/en/Publications/SPROLLs/world-economic-outlook-databases,https://www.imf.org/external/datamapper/api/v1,none,,json,biannual,IMF macroeconomic data for most countries. Free API.
+faostat,FAOSTAT,FAO,international_body,1,https://www.fao.org/faostat,https://fenixservices.fao.org/faostat/api/v1,none,,json,annual,UN Food and Agriculture data. Free REST API.
+wto,WTO STATS,WTO,international_body,1,https://stats.wto.org,https://api.wto.org/timeseries/v1,api_key,WTO_API_KEY,json,quarterly,World trade statistics. Free API key required after registration.
+un_wpp,UN World Population Prospects,UN,international_body,1,https://population.un.org/wpp,https://population.un.org/dataportal/api/v1,none,,json,biannual,UN demographic estimates and projections to 2100 by age and sex.

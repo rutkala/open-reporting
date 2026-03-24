@@ -104,12 +104,13 @@ def load_sources(conn) -> int:
     cur = conn.cursor()
     execute_values(cur, """
         INSERT INTO catalogue.sources
-            (source_id, name, provider, tier, url, api_url,
+            (source_id, name, provider, category, tier, url, api_url,
              auth_type, auth_env_var, format, update_frequency, notes)
         VALUES %s
         ON CONFLICT (source_id) DO UPDATE SET
             name             = EXCLUDED.name,
             provider         = EXCLUDED.provider,
+            category         = EXCLUDED.category,
             tier             = EXCLUDED.tier,
             url              = EXCLUDED.url,
             api_url          = EXCLUDED.api_url,
@@ -120,7 +121,7 @@ def load_sources(conn) -> int:
             notes            = EXCLUDED.notes,
             updated_at       = NOW()
     """, [(
-        r["source_id"], r["name"], r["provider"], int(r["tier"]),
+        r["source_id"], r["name"], r["provider"], r["category"], int(r["tier"]),
         r["url"] or None, r["api_url"] or None,
         r["auth_type"] or None, r["auth_env_var"] or None,
         r["format"] or None, r["update_frequency"] or None,
