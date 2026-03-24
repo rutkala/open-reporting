@@ -1,0 +1,5 @@
+[destination.duckdb.credentials]
+database = "${DUCKDB_PATH}"
+
+[runtime]
+log_level = "WARNING"
