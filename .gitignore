@@ -2,7 +2,7 @@
 data/
 __pycache__/
 *.pyc
-platform/processing/logs/
+platform/processing/dbt/logs/
 infra/nginx/certs/
 infra/nginx/www/
 infra/nginx/html/labour/

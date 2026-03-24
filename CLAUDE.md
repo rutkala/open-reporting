@@ -33,6 +33,7 @@ You are the **Lead Architect** for Open Reporting, a one-person data media compa
 │   │   ├── curated/     → DDL for curated.* tables
 │   │   └── migrations/  → Ordered SQL migration files
 │   └── processing/      → dbt models: raw.* → curated.*
+│       └── dbt/         → dbt project (open_reporting)
 ├── products/            → Products
 │   ├── semantic/        → Domain models (YAML) + query engine (Python)
 │   │   └── labour/      → labour domain: model.yml
