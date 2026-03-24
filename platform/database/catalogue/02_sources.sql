@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS catalogue.sources (
     auth_type           VARCHAR(20)     CHECK (auth_type IN ('none', 'api_key', 'oauth', 'basic')),
     auth_env_var        VARCHAR(100),
     format              VARCHAR(20)     CHECK (format IN ('json', 'xml', 'csv', 'xlsx', 'html')),
-    update_frequency    VARCHAR(20)     CHECK (update_frequency IN ('daily', 'weekly', 'monthly', 'quarterly', 'annual', 'irregular')),
+    update_frequency    VARCHAR(20)     CHECK (update_frequency IN ('daily', 'weekly', 'monthly', 'quarterly', 'biannual', 'annual', 'irregular')),
     notes               TEXT,
     active              BOOLEAN         NOT NULL DEFAULT TRUE,
     created_at          TIMESTAMPTZ     NOT NULL DEFAULT NOW(),
