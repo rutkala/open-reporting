@@ -22,13 +22,14 @@ You are the **Lead Architect** for Open Reporting, a one-person data media compa
 ├── .claude/             → Team — agents, skills, standards, playbooks, memory
 ├── infra/               → Infrastructure — nginx (conf, certs, html web root)
 ├── data/                → Runtime data (git-ignored, entire folder)
-│   └── landing/         → File landing zone (Excel, PDF, CSV)
+│   ├── landing/         → File landing zone (Excel, PDF, CSV)
+│   └── warehouse.duckdb → DuckDB analytical warehouse
 ├── platform/            → Data Platform
 │   ├── sources/         → Source catalogue (YAML metadata per source)
 │   ├── ingestion/       → Ingestion scripts
 │   │   ├── to_landing/  → Fetch external files → landing zone
-│   │   └── to_raw/      → Parse landing files + API fetchers → raw schema
-│   ├── database/        → DB schema definitions
+│   │   └── to_raw/      → dlt pipelines → warehouse raw schema
+│   ├── warehouse/       → Warehouse schema definitions
 │   │   ├── raw/         → DDL for raw.* tables
 │   │   ├── curated/     → DDL for curated.* tables
 │   │   └── migrations/  → Ordered SQL migration files

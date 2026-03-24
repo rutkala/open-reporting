@@ -3,5 +3,5 @@ open_reporting:
   outputs:
     dev:
       type: duckdb
-      path: "{{ env_var('DUCKDB_PATH', '/opt/open-reporting/data/reporting.duckdb') }}"
+      path: "{{ env_var('DUCKDB_PATH', '/opt/open-reporting/data/warehouse.duckdb') }}"
       threads: 4
