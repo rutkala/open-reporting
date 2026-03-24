@@ -1,19 +1,19 @@
 domain_id,name,domain_group,description
-financial_markets,Financial Markets,Economy,Stock exchange (GPW), interest rates, exchange rates, bond yields, banking sector
-public_finance,Public Finance,Economy,State budget, regional and local government budgets, public debt, taxes, EU funds absorption
-national_accounts,National Accounts & Macroeconomics,Economy,GDP, GNI, economic growth, sector accounts, economic sentiment
-prices_inflation,Prices & Inflation,Economy,CPI, HICP, housing prices, purchasing power parities, consumer price indices by category
-labour_market,Labour Market,Economy,Employment, unemployment (registered and LFS), wages, job vacancies, labour costs
-business_industry,Business & Industry,Economy,Enterprise statistics, business demography, industrial production, construction, manufacturing
-international_trade,International Trade,Economy,Imports/exports by country and commodity, trade balance, terms of trade, FDI
-agriculture_forestry,Agriculture & Forestry,Economy,Crop production, livestock, agricultural prices, farm structure, forestry, fisheries
-transport,Transport,Economy,Road, rail, air and maritime transport, road accidents, vehicle registration, infrastructure
-energy,Energy,Economy,Energy production, consumption, mix, electricity prices, energy efficiency, renewables
-population_demographics,Population & Demographics,Society,Population size and structure, age pyramid, birth/death rates, fertility, life expectancy, migration
-health,Health,Society,Healthcare spending, hospital infrastructure, causes of death, life expectancy, disease statistics
-education,Education,Society,Schools, student numbers, graduation rates, exam results, education spending, PISA
-income_social,Income Living Conditions & Social Protection,Society,Household income, poverty, inequality (Gini), social transfers, housing conditions, pensions
-crime_justice,Crime & Justice,Society,Crime statistics by type and region, court cases, prison population, police data, road safety
-culture_tourism,Culture Tourism & Sport,Society,Museums, theatres, libraries, cultural spending, tourist arrivals, sport, media
-environment_climate,Environment & Climate,Environment,Air quality, GHG emissions, waste management, water quality, protected areas, climate indicators
-science_technology,Science Technology & Digital Society,Environment,R&D spending, patents, innovation, internet usage, e-commerce, digital skills, broadband
+FIN,Financial Markets,Economy,Equities, currencies, interest rates, bond yields, and the banking sector.
+PUB,Public Finance,Economy,Government revenues, expenditures, deficits, public debt, and tax collection.
+MAC,National Accounts & Macroeconomics,Economy,Overall economic output, growth, national accounts, and economic sentiment.
+PRC,Prices & Inflation,Economy,Consumer prices, inflation rates, and purchasing power across spending categories.
+LAB,Labour Market,Economy,Employment, unemployment, wages, job vacancies, and labour force participation.
+BUS,Business & Industry,Economy,Enterprise activity, industrial output, construction, and business sentiment.
+TRD,International Trade,Economy,Goods and services flows across Polish borders and bilateral trade relationships.
+AGR,Agriculture & Forestry,Economy,Farming output, land use, livestock, forestry, and fisheries.
+TRP,Transport,Economy,Passenger and freight movement by road, rail, air, and water.
+ENE,Energy,Economy,Energy production, consumption, mix, and the transition to renewables.
+POP,Population & Demographics,Society,Population size, structure, births, deaths, migration, and life expectancy.
+HLT,Health,Society,Healthcare system, disease burden, mortality, and population wellbeing.
+EDU,Education,Society,Schools, enrolment, attainment, outcomes, and education spending.
+SOC,Income Living Conditions & Social Protection,Society,Household income, poverty, inequality, social benefits, and living conditions.
+CRM,Crime & Justice,Society,Crime rates, court activity, prison population, and road safety.
+CLT,Culture Tourism & Sport,Society,Cultural participation, tourism flows, sport infrastructure, and media.
+ENV,Environment & Climate,Environment,Air quality, emissions, waste, water, biodiversity, and climate indicators.
+SCI,Science Technology & Digital Society,Environment,Research, innovation, digital infrastructure, and technology adoption.

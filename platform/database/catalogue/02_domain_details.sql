@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS catalogue.domain_details (
     detail_id       VARCHAR(100)    PRIMARY KEY,
-    domain_id       VARCHAR(50)     NOT NULL REFERENCES catalogue.domains(domain_id),
+    domain_id       VARCHAR(5)      NOT NULL REFERENCES catalogue.domains(domain_id),
     name            VARCHAR(200)    NOT NULL,
     unit            VARCHAR(50),
     frequency       VARCHAR(20)     CHECK (frequency IN ('real_time', 'daily', 'weekly', 'monthly', 'quarterly', 'biannual', 'annual', 'irregular')),
