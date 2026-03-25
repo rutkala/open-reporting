@@ -47,6 +47,12 @@ You are the **Lead Architect** for Open Reporting, a one-person data media compa
 │   │   └── labour/      → Labour-domain chart components
 │   ├── dashboards/      → Dash apps (assemble visuals + call lib/)
 │   │   └── rynek_pracy/ → app.py (Dash), static.py (HTML), generate.py
+│   ├── research/        → Academic research (econometrics, economic models)
+│   │   ├── CLAUDE.md    → Research agent instructions
+│   │   ├── library/     → Knowledge base: theory, models, equations (INDEX.md)
+│   │   ├── references/  → Bibliography index
+│   │   ├── notebooks/   → Jupyter notebooks for analysis
+│   │   └── models/      → Reusable Python model implementations
 │   ├── portal/          → Web service delivery channel
 │   ├── blog/            → Editorial/article delivery channel
 │   ├── mobile/          → Mobile app delivery channel
