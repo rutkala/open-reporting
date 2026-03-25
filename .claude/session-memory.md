@@ -3,9 +3,28 @@
 <!-- last-updated: 2026-03-25 -->
 
 ## Current Focus
-Source catalogue complete (87 sources, all 18 domains). Next: populate domain_details.csv with atomic indicators per domain, then domain_detail_sources.csv mappings.
+Research product created with theory library (micro + macro). Open items: domain_details.csv, first ingestion pipeline, MetricFlow migration.
 
 ## Last Session Summary (2026-03-25)
+Two areas covered: source catalogue completion and new research product.
+
+### Research product created (`products/research/`):
+- `CLAUDE.md` — research workflow instructions (theory-first approach)
+- `library/INDEX.md` — index of all library entries
+- `references/index.md` — bibliography (Wooldridge, Greene, Hamilton, Mankiw, Blanchard, etc.)
+- 7 library entries seeded:
+  - Macro: Solow Growth Model, IS-LM, Phillips Curve, Taylor Rule
+  - Micro: Consumer Theory, Production Theory, Market Equilibrium
+- Each entry: equations (LaTeX), assumptions, data requirements mapped to catalogue, empirical applications for Poland, limitations, cross-links
+- Committed: `595b2cce`
+- Next library additions: AS-AD, Okun's Law, Mundell-Fleming, then econometrics (OLS, time series)
+
+### Source catalogue finalised (87 sources):
+- Committed: `caaed777`
+- 34 tier-1 (API), 46 tier-2 (files), 7 tier-3 (reports)
+- All 18 domains covered
+
+### Previous Session Summary (2026-03-25 earlier):
 Built out the full data source catalogue in PostgreSQL, domain by domain.
 
 ### What was done:
