@@ -3,105 +3,57 @@
 <!-- last-updated: 2026-03-25 -->
 
 ## Current Focus
-Research product created with theory library (micro + macro). Open items: domain_details.csv, first ingestion pipeline, MetricFlow migration.
+Ready to populate domain_details.csv + bus_matrix.md domain by domain.
+Schema, dimensions, and bus matrix blueprint all in place.
 
 ## Last Session Summary (2026-03-25)
-Two areas covered: source catalogue completion and new research product.
+Three areas covered: source catalogue, research product, warehouse architecture.
 
-### Research product created (`products/research/`):
-- `CLAUDE.md` — research workflow instructions (theory-first approach)
-- `library/INDEX.md` — index of all library entries
-- `references/index.md` — bibliography (Wooldridge, Greene, Hamilton, Mankiw, Blanchard, etc.)
-- 7 library entries seeded:
-  - Macro: Solow Growth Model, IS-LM, Phillips Curve, Taylor Rule
-  - Micro: Consumer Theory, Production Theory, Market Equilibrium
-- Each entry: equations (LaTeX), assumptions, data requirements mapped to catalogue, empirical applications for Poland, limitations, cross-links
-- Committed: `595b2cce`
+### Warehouse architecture built (`e8ed1bd6`):
+- `catalogue.domain_details` extended: +`detail_type` (indicator/micro_indicator/sentiment/reference) +`entity_level` (national/regional/local/sectoral/company/individual)
+- `platform/warehouse/bus_matrix.md` — Kimball bus matrix blueprint (7 conformed dimensions)
+- `platform/warehouse/dimensions/` — DDL stubs for all 7 conformed dimensions:
+  - dim_date, dim_geography (TERYT hierarchy), dim_sector (NACE/PKD)
+  - dim_company (KRS/GPW/SCD2), dim_demographic, dim_commodity, dim_institution
+
+### Data model design decisions:
+- domain_details has 4 types: indicator (aggregate TS) | micro_indicator (entity-level) | sentiment (text-derived) | reference (doc pointer only)
+- Text data (articles, laws, rulings) → never stored as full text; store derived scores/counts or reference links only
+- Bus matrix maps facts to 7 dimensions: Date, Geography, Sector, Company, Demographic, Commodity, Institution
+- domain_details + bus_matrix populated in parallel domain by domain
+
+### Research product created (`595b2cce`):
+- `products/research/` — academic research workspace
+- Library seeded with 7 entries: Solow, IS-LM, Phillips Curve, Taylor Rule, Consumer Theory, Production Theory, Market Equilibrium
 - Next library additions: AS-AD, Okun's Law, Mundell-Fleming, then econometrics (OLS, time series)
 
-### Source catalogue finalised (87 sources):
-- Committed: `caaed777`
-- 34 tier-1 (API), 46 tier-2 (files), 7 tier-3 (reports)
-- All 18 domains covered
-
-### Previous Session Summary (2026-03-25 earlier):
-Built out the full data source catalogue in PostgreSQL, domain by domain.
-
-### What was done:
-- Researched and added 65 new sources to `platform/database/data/sources.csv`
-- Ran `platform/database/loader.py` after each batch — 87 sources upserted cleanly
-- Reviewed all 18 domains for coverage gaps, filled them systematically
-- Committed and pushed to main (commit `caaed777`)
-
-### Final catalogue state:
-- **87 sources** total: 34 tier-1 (API), 46 tier-2 (files), 7 tier-3 (reports)
-- All 18 domains covered with both vertical (domain-specific) and horizontal (cross-domain) sources
-
-### Domain → primary vertical sources:
-- FIN: nbp, gpw, knf, ecb, bis, tge, gpw_benchmark, mf_dlug
-- PUB: mf, mf_dlug, kas, bgk
-- MAC: nbp, bdm, ec_bcs, ameco
-- PRC: nbp, ure, tge, uokik
-- LAB: mrpips, zus, cbop, pracuj_pl, linkedin_eg
-- BUS: regon, gunb, pmi_pl, ec_bcs
-- TRD: un_comtrade, puesc, wto
-- AGR: kowr, arimir, mrirw, lasy_panstwowe, iung, faostat
-- TRP: utk, gddkia, ulc, pkp_plk, transtat
-- ENE: pse, ure, are, tge, entso_e, iea, kobize, gaz_system
-- POP: demografia, un_wpp
-- HLT: nfz, gis, nizp_pzh, who, ecdc, csioz
-- EDU: sio, polon
-- SOC: zus, mrpips, pfron
-- CRM: policja, ms_stat, sw, prokuratura
-- CLT: pot, mkidn, msit, bn
-- ENV: gios, kobize, imgw, eea, copernicus, wody_polskie
-- SCI: uke, opi_pib, ncn, nask
-
-### Horizontal sources (cover many domains):
-- GUS: bdl, dbw, sdp, smup, strateg, sdg, regon, teryt, transtat, bdm, demografia, bdp, dekompozycje
-- International: eurostat, oecd, worldbank, ilostat, imf, faostat, wto, un_wpp, ecb, bis
-
-## Previous Session Summary (2026-03-24)
-Full platform/ architecture designed and built. Analytical stack installed and configured.
-
-### Platform structure finalised:
-```
-platform/
-├── ingestion/
-│   ├── to_landing/     → plain Python fetch scripts
-│   └── to_raw/         → dlt pipelines → DuckDB raw schema
-├── warehouse/          → DuckDB schema definitions (raw/, curated/, deploy/)
-├── database/           → PostgreSQL operational schema
-│   ├── catalogue/      → DDL files (01-04)
-│   ├── data/           → CSV source-of-truth files
-│   └── deploy/
-└── processing/
-    └── dbt/            → dbt project (open_reporting)
-```
-
-### Analytical stack installed:
-- DuckDB 1.5.1 — analytical warehouse at data/warehouse.duckdb (git-ignored)
-- dbt-core 1.11.7 + dbt-duckdb 1.10.1 — transformations + MetricFlow semantic layer
-- dlt 1.24.0 — ingestion pipelines into DuckDB raw schema
-
-### Key architectural decisions:
-- PostgreSQL retained for Ghost CMS + operational catalogue — no analytical use
-- DuckDB is the analytical warehouse (raw + curated schemas via dbt)
-- MetricFlow (dbt semantic layer) replaces hand-rolled products/semantic/ — migration pending
-- products/semantic/ is DEPRECATED — will be deleted once MetricFlow is in place
+### Source catalogue finalised (`caaed777`):
+- 87 sources, 18 domains, 34 tier-1 APIs / 46 tier-2 files / 7 tier-3 reports
 
 ## Key Technical Facts
 - DB (analytical): DuckDB at data/warehouse.duckdb (DUCKDB_PATH env var)
 - DB (operational): PostgreSQL localhost:5432 db=reporting user=reporting
 - Catalogue loader: `PYTHONPATH=/opt/open-reporting python3 platform/database/loader.py`
 - dbt: `cd platform/processing/dbt && dbt run --profiles-dir .`
-- Dash: portal.open-reporting.dev/dash/ via nginx reverse proxy
 - PYTHONPATH=/opt/open-reporting required for all python3 commands
 
+## Domain → Primary Vertical Sources
+- FIN: nbp, gpw, knf, ecb, bis, tge, gpw_benchmark, mf_dlug
+- PUB: mf, mf_dlug, kas, bgk | MAC: nbp, bdm, ec_bcs, ameco
+- PRC: nbp, ure, tge, uokik | LAB: mrpips, zus, cbop, pracuj_pl
+- BUS: regon, gunb, pmi_pl | TRD: un_comtrade, puesc, wto
+- AGR: kowr, arimir, mrirw, lasy_panstwowe, iung | TRP: utk, gddkia, ulc, pkp_plk
+- ENE: pse, ure, are, tge, entso_e, iea, gaz_system | POP: demografia, un_wpp
+- HLT: nfz, gis, nizp_pzh, who, ecdc, csioz | EDU: sio, polon
+- SOC: zus, mrpips, pfron | CRM: policja, ms_stat, sw, prokuratura
+- CLT: pot, mkidn, msit, bn | ENV: gios, kobize, imgw, eea, copernicus
+- SCI: uke, opi_pib, ncn, nask
+
 ## Open Items
-- Populate `domain_details.csv` with atomic indicators per domain
-- Populate `domain_detail_sources.csv` mapping indicators to sources
+- Populate domain_details.csv + bus_matrix.md domain by domain (next)
+- Populate domain_detail_sources.csv mapping indicators to sources
 - Install dbt-metricflow, migrate products/semantic/ → dbt metrics/
 - Create products/visuals/lib/metrics.py (MetricFlow query wrapper)
-- Write first dlt ingestion pipeline (platform/ingestion/to_raw/pipelines/)
-- Write first dbt model (platform/processing/dbt/models/)
+- Write first dlt ingestion pipeline
+- Write first dbt model
+- Fix infra: gitignore certs, fix certbot volume paths in docker-compose
