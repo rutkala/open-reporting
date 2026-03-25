@@ -5,32 +5,70 @@
 Open Reporting uses **ELT (Extract → Load → Transform)**:
 
 ```
+catalogue.domain_detail_sources (verified=true)
+      ↓  series_id confirmed
 Source API / file
       ↓
 Extract (Python script)
       ↓
 raw.{source}_{entity}       ← untouched, native format, PostgreSQL
       ↓
-Transform (Python / SQL)
+Transform (dbt / SQL)
       ↓
-public.{domain}_{metric}    ← clean, structured, analysis-ready
+curated.{domain}_{metric}   ← clean, structured, analysis-ready
       ↓
 Dashboard
 ```
 
-Raw data is never modified after landing. Transformations always run from raw, not from public. This means data can be re-transformed at any time if definitions change.
+Raw data is never modified after landing. Transformations always run from raw, not from curated. This means data can be re-transformed at any time if definitions change.
+
+---
+
+## Phase 0: Catalogue Verification (REQUIRED BEFORE ANY CODE)
+
+Before writing a single line of ingestion code, the catalogue must be in a verified state for the indicator and source being built.
+
+**Step 1 — Confirm the detail exists in `catalogue.domain_details`:**
+```sql
+SELECT detail_id, name, unit, frequency, detail_type, entity_level
+FROM catalogue.domain_details
+WHERE detail_id = '{detail_id}';
+```
+If missing: add the row to `platform/database/data/domain_details.csv` and re-run the loader.
+
+**Step 2 — Confirm the source mapping exists and is verified in `catalogue.domain_detail_sources`:**
+```sql
+SELECT detail_id, source_id, series_id, verified, coverage_notes
+FROM catalogue.domain_detail_sources
+WHERE detail_id = '{detail_id}' AND source_id = '{source_id}';
+```
+- If the row is missing: add it to `platform/database/data/domain_detail_sources.csv`
+- If `verified = false` or `series_id IS NULL`: **stop here**. Find the exact series in the source (endpoint, dataset code, variable ID), test it, then update the CSV:
+  - Set `series_id` to the exact locator (see format per source type below)
+  - Set `verified = true`
+  - Re-run the catalogue loader
+- Only proceed to Phase 1 once `verified = true` and `series_id` is populated
+
+**`series_id` format by source type:**
+
+| Source type | Format | Example |
+|-------------|--------|---------|
+| REST API (NBP, PSE, GIOS) | `endpoint_path?key=value` | `exchangerates/rates/A/USD` |
+| SDMX API (Eurostat, ECB, ILO) | `dataset_code?filter_expression` | `une_rt_m?geo=PL&s_adj=SA&age=TOTAL&unit=PC_ACT&sex=T` |
+| BDL API | `variables/{variable_id}` | `variables/72305` |
+| XLSX / CSV file | `filename::sheet::column_header` | `bezrobocie_miesiac.xlsx::Tabl.1::Stopa bezrobocia` |
+| HTML/report (tier-3) | `report_url#section` | `https://www.pmi.spglobal.com/...#manufacturing-pl` |
 
 ---
 
 ## Phase 1: Source Selection
 
-Follow the hierarchy defined in `docs/DATA_SOURCES.md`:
-1. Level 1 — Official government and EU (GUS, Eurostat, NBP, OpenBudget)
-2. Level 2 — Official Polish institutional (KNF, ZUS, GDDKiA)
-3. Level 3 — Trusted international (World Bank, IMF, OECD)
-4. Level 4 — Requires explicit user approval
+Source authority is defined in the catalogue (`catalogue.sources`, tier column):
+- Tier 1 — API sources: preferred; can be automated
+- Tier 2 — File downloads (XLSX/CSV): acceptable; requires landing zone step
+- Tier 3 — Reports/HTML: last resort; manual extraction only
 
-No scraping. No commercial data providers. API or official file download only.
+No scraping. No undocumented commercial data providers. API or official file download only. If a source is not in `catalogue.sources`, add it there first.
 
 ---
 
@@ -87,6 +125,7 @@ Transformations run as separate scripts in `processing/`:
 ## Phase 6: Validation Checklist
 
 Run after every ingestion, before marking complete:
+- [ ] `catalogue.domain_detail_sources` row exists with `verified=true` and `series_id` populated
 - [ ] Row count matches expected range
 - [ ] Date ranges complete — no unexpected gaps
 - [ ] Spot-check 3-5 values against source website
@@ -101,11 +140,15 @@ Run after every ingestion, before marking complete:
 #!/usr/bin/env python3
 """
 Ingestion: {Source Name}
-Tool: Python / requests
-API: {API URL}
-Update method: upsert / incremental / full load
+Tool: Python / requests | dlt
+API / File: {URL or path}
+Update method: upsert | incremental | full load
 Schema: raw.{source}_{entity}
-Usage: python3 ingestion/{name}_ingest.py [--backfill]
+Catalogue:
+  detail_id  : {detail_id}          (catalogue.domain_details)
+  source_id  : {source_id}          (catalogue.sources)
+  series_id  : {series_id}          (catalogue.domain_detail_sources — verified=true)
+Usage: PYTHONPATH=/opt/open-reporting python3 platform/ingestion/to_raw/{name}_ingest.py [--backfill]
 """
 import logging
 import os
@@ -174,5 +217,5 @@ if __name__ == "__main__":
 ## Scheduling
 
 - Default: manual trigger
-- Scheduled refresh: cron job (follow pattern from `nginx/renew-certs.sh`)
-- Schedule defined per dataset — document in script header and in `docs/DATA_SOURCES.md`
+- Scheduled refresh: cron job
+- Schedule defined per dataset — document in script header; frequency must match `catalogue.domain_details.frequency` for the indicator

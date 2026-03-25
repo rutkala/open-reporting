@@ -1,1 +1,223 @@
 detail_id,domain_id,name,unit,frequency,detail_type,entity_level,description,notes
+fin.exchange_rate_usd_pln,FIN,USD/PLN Exchange Rate,PLN,daily,indicator,national,US dollar to Polish zloty mid-rate,NBP table A
+fin.exchange_rate_eur_pln,FIN,EUR/PLN Exchange Rate,PLN,daily,indicator,national,Euro to Polish zloty mid-rate,NBP table A
+fin.exchange_rate_chf_pln,FIN,CHF/PLN Exchange Rate,PLN,daily,indicator,national,Swiss franc to Polish zloty mid-rate,NBP table A; high relevance for CHF-mortgage borrowers
+fin.exchange_rate_gbp_pln,FIN,GBP/PLN Exchange Rate,PLN,daily,indicator,national,British pound to Polish zloty mid-rate,NBP table A
+fin.reference_rate,FIN,NBP Reference Rate,%,irregular,indicator,national,NBP monetary policy reference interest rate,Set by RPP; irregular — decision dates only
+fin.wibor_1m,FIN,WIBOR 1M,%,daily,indicator,national,1-month Warsaw Interbank Offered Rate,Published daily on fixing days
+fin.wibor_3m,FIN,WIBOR 3M,%,daily,indicator,national,3-month Warsaw Interbank Offered Rate,Benchmark for most variable-rate mortgages
+fin.wibor_6m,FIN,WIBOR 6M,%,daily,indicator,national,6-month Warsaw Interbank Offered Rate,Published daily on fixing days
+fin.wig20_index,FIN,WIG20 Index,index,daily,indicator,national,Warsaw Stock Exchange blue-chip index (top 20 companies),GPW; base 1000 = 16 April 1994
+fin.wig_index,FIN,WIG Total Return Index,index,daily,indicator,national,Broad Warsaw Stock Exchange total-return index,GPW; includes dividends
+fin.bond_yield_10y,FIN,10Y Government Bond Yield,%,daily,indicator,national,Polish 10-year sovereign bond yield on secondary market,MF / Bloomberg benchmark
+fin.bond_yield_2y,FIN,2Y Government Bond Yield,%,daily,indicator,national,Polish 2-year sovereign bond yield on secondary market,MF / Bloomberg benchmark
+fin.banking_npl_ratio,FIN,Banking Sector NPL Ratio,%,quarterly,indicator,sectoral,Share of non-performing loans in total bank loan portfolio,KNF supervisory data
+fin.banking_capital_ratio,FIN,Banking Sector Capital Adequacy Ratio,%,quarterly,indicator,sectoral,Total capital ratio (TCR) of the banking sector,KNF; Basel III definition
+fin.stock_price,FIN,Stock Price (GPW),PLN,daily,micro_indicator,company,Closing price of individual equity listed on GPW,GPW; entity = company (dim_company)
+fin.stock_volume,FIN,Stock Trading Volume (GPW),shares,daily,micro_indicator,company,Daily trading volume for individual GPW-listed equity,GPW; entity = company (dim_company)
+fin.tge_electricity_price,FIN,TGE Day-Ahead Electricity Price,PLN/MWh,daily,indicator,national,BASE day-ahead electricity market price on TGE,Towarowa Giełda Energii (TGE)
+pub.state_budget_revenue,PUB,State Budget Revenue,PLN mn,monthly,indicator,national,Total state budget revenue (cumulative year-to-date),MF monthly budget execution report
+pub.state_budget_expenditure,PUB,State Budget Expenditure,PLN mn,monthly,indicator,national,Total state budget expenditure (cumulative year-to-date),MF monthly budget execution report
+pub.state_budget_balance,PUB,State Budget Balance,PLN mn,monthly,indicator,national,State budget surplus/deficit (cumulative year-to-date),MF monthly budget execution report
+pub.public_debt_total,PUB,Total Public Debt (EDP),PLN mn,quarterly,indicator,national,General government gross debt under EU EDP methodology,MF / NBP
+pub.public_debt_gdp,PUB,Public Debt as % of GDP,%,quarterly,indicator,national,General government gross debt as share of nominal GDP,MF / NBP; Maastricht reference value = 60%
+pub.tax_revenue_vat,PUB,VAT Revenue,PLN mn,monthly,indicator,national,Value-added tax revenue collected,KAS (Krajowa Administracja Skarbowa)
+pub.tax_revenue_pit,PUB,PIT Revenue,PLN mn,monthly,indicator,national,Personal income tax revenue collected,KAS
+pub.tax_revenue_cit,PUB,CIT Revenue,PLN mn,monthly,indicator,national,Corporate income tax revenue collected,KAS
+pub.tax_revenue_excise,PUB,Excise Duty Revenue,PLN mn,monthly,indicator,national,Excise duty revenue collected,KAS
+pub.eu_funds_absorption,PUB,EU Funds Absorption,PLN mn,quarterly,indicator,national,Certified EU structural & cohesion fund expenditure,MF; depends on programming period
+pub.local_govt_debt,PUB,Local Government Debt,PLN mn,annual,indicator,regional,Total debt of local self-government units by voivodeship,MF; breakdown by entity level available
+pub.bgk_guarantees,PUB,BGK Guarantee Portfolio,PLN mn,quarterly,indicator,national,Value of active state guarantees issued via BGK,Bank Gospodarstwa Krajowego
+pub.social_insurance_fund_balance,PUB,Social Insurance Fund Balance (FUS),PLN mn,quarterly,indicator,national,FUS surplus/deficit before state subsidy,ZUS financial reporting
+mac.gdp_real_growth,MAC,Real GDP Growth Rate,%,quarterly,indicator,national,Year-on-year real GDP growth (chain-linked),GUS; flash and final estimates
+mac.gdp_nominal,MAC,Nominal GDP,PLN mn,quarterly,indicator,national,Gross domestic product at current prices,GUS national accounts
+mac.gdp_per_capita,MAC,GDP Per Capita,PLN,annual,indicator,national,Nominal GDP divided by mid-year population estimate,GUS
+mac.gdp_per_capita_regional,MAC,Regional GDP Per Capita,PLN,annual,indicator,regional,Nominal GDP per capita by voivodeship (NUTS2),GUS BDL; ~2-year lag
+mac.household_consumption_growth,MAC,Household Consumption Growth,%,quarterly,indicator,national,Year-on-year real growth in private household expenditure,GUS national accounts
+mac.gross_fixed_capital_formation_growth,MAC,Gross Fixed Capital Formation Growth,%,quarterly,indicator,national,Year-on-year real growth in investment (GFCF),GUS national accounts
+mac.current_account_balance,MAC,Current Account Balance,EUR mn,monthly,indicator,national,Balance of payments current account,NBP
+mac.current_account_gdp,MAC,Current Account Balance as % of GDP,%,quarterly,indicator,national,Current account balance as share of nominal GDP,NBP
+mac.industrial_output_growth,MAC,Industrial Output Growth,%,monthly,indicator,national,Year-on-year growth in industrial production index (sold output),GUS; covers mining, manufacturing, utilities
+mac.retail_sales_growth,MAC,Retail Sales Volume Growth,%,monthly,indicator,national,Year-on-year real growth in retail sales volume,GUS
+mac.business_confidence_bcs,MAC,Business Confidence Index (EC BCS),index,monthly,indicator,national,EU Business and Consumer Survey composite indicator for Poland,European Commission / GUS
+mac.consumer_confidence,MAC,Consumer Confidence Index,index,monthly,indicator,national,GUS Current Consumer Confidence Index (BIEŻĄCY WSKAŹNIK UFNOŚCI KONSUMENCKIEJ),GUS flash estimate
+mac.pmi_manufacturing,MAC,Manufacturing PMI,index,monthly,indicator,national,S&P Global / IHS Markit Poland Manufacturing PMI,PMI reading >50 = expansion
+prc.cpi_total,PRC,CPI Headline Inflation,%,monthly,indicator,national,Year-on-year change in Consumer Price Index (all items),GUS; flash and final estimates
+prc.cpi_food,PRC,CPI Food & Non-Alcoholic Beverages,%,monthly,indicator,national,Year-on-year change in food & non-alcoholic beverages sub-index,GUS CPI component
+prc.cpi_energy,PRC,CPI Energy,%,monthly,indicator,national,Year-on-year change in energy sub-index (fuel + household energy),GUS CPI component
+prc.cpi_core,PRC,Core Inflation (excl. food & energy),%,monthly,indicator,national,Year-on-year CPI excluding volatile food and energy prices,NBP / GUS derived series
+prc.ppi,PRC,Producer Price Index Growth,%,monthly,indicator,national,Year-on-year change in industrial producer prices (PPI),GUS; sold output prices at factory gate
+prc.ppi_sectoral,PRC,Producer Price Index by Industry Section,%,monthly,indicator,sectoral,Year-on-year PPI growth by NACE section,GUS; entity = sector (dim_sector)
+prc.real_estate_price_national,PRC,Average Residential Property Price (National),PLN/m²,quarterly,indicator,national,Average transaction price of residential property (primary + secondary market),NBP AMRON/SARFiN data
+prc.real_estate_price_regional,PRC,Average Residential Property Price (Regional),PLN/m²,quarterly,indicator,regional,Average transaction price of residential property by city/voivodeship,NBP AMRON/SARFiN; major cities + voivodeships
+prc.electricity_retail_price,PRC,Retail Electricity Price (Households),PLN/kWh,quarterly,indicator,national,Average household retail electricity price including all levies,URE tariff data
+prc.gas_retail_price,PRC,Retail Gas Price (Households),PLN/m³,quarterly,indicator,national,Average household retail natural gas price including distribution,URE tariff data
+prc.fuel_price_petrol,PRC,Retail Petrol Price (Pb95),PLN/L,weekly,indicator,national,Average national retail price of 95-octane petrol,POPiHN / e-petrol weekly survey
+prc.fuel_price_diesel,PRC,Retail Diesel Price (ON),PLN/L,weekly,indicator,national,Average national retail price of diesel fuel,POPiHN / e-petrol weekly survey
+lab.unemployment_rate,LAB,Registered Unemployment Rate,%,monthly,indicator,national,Share of registered unemployed in economically active population,MRPiPS; administrative definition
+lab.unemployment_rate_regional,LAB,Registered Unemployment Rate (Regional),%,monthly,indicator,regional,Registered unemployment rate by voivodeship,MRPiPS; entity = geography (dim_geography)
+lab.unemployment_count,LAB,Registered Unemployed,persons,monthly,indicator,national,Number of persons registered as unemployed at powiat labour offices,MRPiPS
+lab.employed_total,LAB,Total Employed (LFS),persons,quarterly,indicator,national,Total employed persons aged 15+ (Labour Force Survey),GUS BAEL / LFS; seasonally adjusted version available
+lab.employment_rate,LAB,Employment Rate 15-64 (LFS),%,quarterly,indicator,national,Employment rate of population aged 15-64 (LFS),GUS BAEL; EU comparison standard
+lab.activity_rate,LAB,Labour Force Participation Rate (LFS),%,quarterly,indicator,national,Activity rate (employed + unemployed) aged 15-64 (LFS),GUS BAEL
+lab.average_wage,LAB,Average Gross Monthly Wage,PLN,monthly,indicator,national,Average gross monthly remuneration in enterprise sector (10+ employees),GUS; enterprise sector only
+lab.average_wage_sectoral,LAB,Average Gross Wage by Sector,PLN,monthly,indicator,sectoral,Average gross monthly wage by NACE section,GUS; entity = sector (dim_sector)
+lab.wage_growth,LAB,Nominal Wage Growth,%,monthly,indicator,national,Year-on-year growth in average gross wages (enterprise sector),GUS
+lab.real_wage_growth,LAB,Real Wage Growth,%,monthly,indicator,national,Year-on-year growth in average wages deflated by CPI,Derived: GUS wages / GUS CPI
+lab.job_vacancies,LAB,Job Vacancies,count,quarterly,indicator,national,Number of unfilled job vacancies (survey-based),GUS / Eurostat LCS methodology
+lab.vacancy_rate,LAB,Job Vacancy Rate,%,quarterly,indicator,national,Vacancies as share of (filled + unfilled) posts,GUS / Eurostat
+lab.youth_unemployment_rate,LAB,Youth Unemployment Rate (15-24),%,quarterly,indicator,national,Unemployment rate of persons aged 15-24 (LFS),GUS BAEL
+lab.long_term_unemployment_share,LAB,Long-Term Unemployment Share,%,quarterly,indicator,national,Share of unemployed out of work for 12+ months (LFS),GUS BAEL / Eurostat
+lab.minimum_wage,LAB,Statutory Minimum Wage,PLN,annual,reference,national,Gross monthly statutory minimum wage,MRPiPS / Council of Ministers regulation
+bus.company_registrations,BUS,New Company Registrations,count,monthly,indicator,national,New entities entered into REGON national business register,GUS / CEIDG+KRS combined
+bus.company_deregistrations,BUS,Company Deregistrations,count,monthly,indicator,national,Entities removed from REGON register (closures + transformations),GUS REGON
+bus.active_companies,BUS,Active Entities in REGON Register,count,monthly,indicator,national,Total active legal persons and natural persons in REGON,GUS REGON; includes dormant entities
+bus.company_registrations_sectoral,BUS,New Company Registrations by Sector,count,monthly,indicator,sectoral,New REGON entries by NACE section,GUS; entity = sector (dim_sector)
+bus.construction_permits,BUS,Building Permits Issued,count,monthly,indicator,national,Number of construction permits for new residential and non-residential buildings,GUNB
+bus.construction_permits_area,BUS,Building Permits Floor Area,m²,monthly,indicator,national,Usable floor area covered by issued building permits,GUNB
+bus.construction_completions,BUS,Dwellings Completed,count,monthly,indicator,national,New dwellings completed and reported to GUNB,GUS / GUNB
+bus.industrial_output_sectoral,BUS,Industrial Output Index by Section,index,monthly,indicator,sectoral,Sold production volume index by NACE section (manufacturing / mining / utilities),GUS; entity = sector (dim_sector)
+bus.construction_output_value,BUS,Construction Output Value,PLN mn,monthly,indicator,national,Value of construction and assembly production,GUS
+bus.pmi_manufacturing,BUS,Manufacturing PMI Poland,index,monthly,indicator,national,S&P Global Poland Manufacturing PMI composite,PMI; >50 = expansion; same series as mac.pmi_manufacturing
+bus.enterprise_confidence,BUS,Enterprise Confidence Index (GUS),index,monthly,indicator,national,GUS general business climate indicator (ogólny klimat koniunktury),GUS monthly business survey
+bus.company_financials,BUS,Company Annual Financials (KRS),PLN,annual,micro_indicator,company,Revenue / net profit / total assets from KRS annual financial statements,KRS e-KRS; entity = company (dim_company)
+trd.exports_goods_total,TRD,Total Goods Exports,EUR mn,monthly,indicator,national,Polish goods exports FOB (balance of payments basis),NBP / GUS foreign trade
+trd.imports_goods_total,TRD,Total Goods Imports,EUR mn,monthly,indicator,national,Polish goods imports CIF (balance of payments basis),NBP / GUS foreign trade
+trd.trade_balance_goods,TRD,Goods Trade Balance,EUR mn,monthly,indicator,national,Goods exports minus imports (trade surplus/deficit),NBP
+trd.exports_services,TRD,Services Exports,EUR mn,quarterly,indicator,national,Polish services exports (BoP),NBP balance of payments
+trd.imports_services,TRD,Services Imports,EUR mn,quarterly,indicator,national,Polish services imports (BoP),NBP balance of payments
+trd.exports_by_commodity,TRD,Goods Exports by Commodity Section,EUR mn,monthly,indicator,national,Export value by SITC commodity section,GUS / UN Comtrade; entity = commodity (dim_commodity)
+trd.imports_by_commodity,TRD,Goods Imports by Commodity Section,EUR mn,monthly,indicator,national,Import value by SITC commodity section,GUS / UN Comtrade; entity = commodity (dim_commodity)
+trd.exports_by_country,TRD,Goods Exports by Destination Country,EUR mn,monthly,indicator,national,Export value by partner country,GUS / PUESC / Comtrade
+trd.imports_by_country,TRD,Goods Imports by Origin Country,EUR mn,monthly,indicator,national,Import value by partner country,GUS / PUESC / Comtrade
+trd.fdi_inflows,TRD,FDI Inflows,EUR mn,quarterly,indicator,national,Foreign direct investment inflows to Poland (BoP),NBP balance of payments
+trd.fdi_outflows,TRD,FDI Outflows,EUR mn,quarterly,indicator,national,Polish direct investment outflows abroad (BoP),NBP balance of payments
+agr.crop_production_cereals,AGR,Cereal Production,thousand t,annual,indicator,national,Total harvest of cereals (wheat + rye + barley + oats + maize + triticale),GUS / MRiRW
+agr.crop_production_rapeseed,AGR,Rapeseed Production,thousand t,annual,indicator,national,Total rapeseed (colza) harvest,GUS / MRiRW; key biofuel feedstock
+agr.crop_area_arable,AGR,Arable Land Area,thousand ha,annual,indicator,national,Total arable land in agricultural use,GUS; from agricultural census / annual estimation
+agr.livestock_cattle,AGR,Cattle Headcount,thousand head,biannual,indicator,national,Total cattle population (June and December surveys),GUS
+agr.livestock_pigs,AGR,Pig Headcount,thousand head,biannual,indicator,national,Total pig population (June and December surveys),GUS; Poland is major EU pork producer
+agr.milk_production,AGR,Raw Cow's Milk Production,thousand t,monthly,indicator,national,Monthly milk collected from farms by dairies,GUS / KOWR
+agr.wheat_purchase_price,AGR,Wheat Purchase Price,PLN/t,monthly,indicator,national,Average producer price for bread wheat,GUS / KOWR market monitoring
+agr.pig_purchase_price,AGR,Pig Purchase Price,PLN/100 kg,monthly,indicator,national,Average producer price for live pigs (slaughter weight),GUS / KOWR
+agr.milk_purchase_price,AGR,Raw Milk Purchase Price,PLN/100 l,monthly,indicator,national,Average producer price for raw cow's milk,GUS / KOWR
+agr.timber_harvest,AGR,Timber Harvest Volume,thousand m³,annual,indicator,national,Timber harvested from State Forests (Lasy Państwowe),LP annual report
+agr.agricultural_area_used,AGR,Agricultural Land in Use,thousand ha,annual,indicator,national,Total utilised agricultural area (UAA),GUS agricultural census
+agr.soil_erosion_risk,AGR,Area at Risk of Water Erosion,thousand ha,annual,indicator,regional,Agricultural land area at risk of water erosion by voivodeship,IUNG-PIB
+trp.freight_rail_volume,TRP,Rail Freight Volume,million t-km,monthly,indicator,national,Tonne-kilometres performed by rail freight,UTK railway market monitoring
+trp.passenger_rail_volume,TRP,Rail Passenger Volume,million pass-km,monthly,indicator,national,Passenger-kilometres performed by rail,UTK
+trp.freight_road_volume,TRP,Road Freight Volume,million t-km,quarterly,indicator,national,Tonne-kilometres performed by road freight (Polish carriers),GUS transport statistics
+trp.passenger_air_volume,TRP,Air Passenger Volume,thousand passengers,monthly,indicator,national,Total passenger throughput at Polish airports,ULC / Eurostat
+trp.freight_air_volume,TRP,Air Freight Volume,tonnes,monthly,indicator,national,Total cargo + mail at Polish airports,ULC
+trp.vehicle_registrations,TRP,New Vehicle Registrations,count,monthly,indicator,national,New passenger cars and commercial vehicles first registered in Poland,PZPM / CEPiK
+trp.road_accidents,TRP,Road Accidents,count,monthly,indicator,national,Police-recorded road accidents with casualties,Policja / GDDKiA
+trp.road_fatalities,TRP,Road Fatalities,count,monthly,indicator,national,Deaths within 30 days of police-recorded road accident,Policja
+trp.motorway_expressway_length,TRP,Motorway and Expressway Network Length,km,annual,indicator,national,Total length of motorways (A) and expressways (S) open to traffic,GDDKiA
+trp.port_cargo_volume,TRP,Sea Port Cargo Volume,thousand t,monthly,indicator,national,Total cargo handled at Polish seaports (Gdańsk + Gdynia + Szczecin + Świnoujście),Urząd Morski / GUS
+ene.electricity_production_total,ENE,Total Electricity Production,GWh,monthly,indicator,national,Gross electricity production by all sources,ARE / PSE
+ene.electricity_consumption_total,ENE,Total Electricity Consumption,GWh,monthly,indicator,national,Final electricity consumption (excl. own use of power plants),ARE / PSE
+ene.electricity_mix_coal,ENE,Hard Coal Share in Electricity Mix,%,monthly,indicator,national,Share of hard coal in gross electricity generation,PSE / ARE
+ene.electricity_mix_lignite,ENE,Lignite Share in Electricity Mix,%,monthly,indicator,national,Share of lignite (brown coal) in gross electricity generation,PSE / ARE
+ene.electricity_mix_renewables,ENE,Total Renewables Share in Electricity Mix,%,monthly,indicator,national,Share of all RES in gross electricity generation,PSE / ARE / URE
+ene.electricity_mix_wind,ENE,Wind Power Share in Electricity Mix,%,monthly,indicator,national,Share of wind (onshore + offshore) in gross electricity generation,PSE / ARE
+ene.electricity_mix_solar,ENE,Solar PV Share in Electricity Mix,%,monthly,indicator,national,Share of solar photovoltaic in gross electricity generation,PSE / ARE
+ene.electricity_price_day_ahead,ENE,Day-Ahead Electricity Price (TGE BASE),PLN/MWh,daily,indicator,national,TGE day-ahead BASE product closing price,TGE; same physical series as fin.tge_electricity_price — sourced from energy domain
+ene.natural_gas_consumption,ENE,Natural Gas Consumption,million m³,monthly,indicator,national,Total natural gas consumption by all end-users,GAZ-SYSTEM / ARE
+ene.natural_gas_storage_level,ENE,Natural Gas Storage Level,%,daily,indicator,national,Working gas in storage as share of total working capacity,GAZ-SYSTEM transparency data
+ene.renewable_capacity_installed,ENE,Installed Renewable Capacity,MW,monthly,indicator,national,Total installed capacity of all RES (wind + solar + hydro + biogas),URE MIOZE register
+ene.wind_capacity_installed,ENE,Installed Wind Capacity,MW,monthly,indicator,national,Total installed onshore + offshore wind capacity,URE MIOZE
+ene.solar_capacity_installed,ENE,Installed Solar PV Capacity,MW,monthly,indicator,national,Total installed solar photovoltaic capacity (utility + prosumer),URE MIOZE; rapid growth since 2020
+ene.energy_intensity,ENE,Energy Intensity of GDP,toe/EUR mn,annual,indicator,national,Total primary energy supply per unit of real GDP,Eurostat / IEA
+pop.population_total,POP,Total Population,persons,annual,indicator,national,Total resident population of Poland as of 31 December,GUS / BDL
+pop.population_regional,POP,Population by Voivodeship,persons,annual,indicator,regional,Resident population by voivodeship as of 31 December,GUS BDL; entity = geography (dim_geography)
+pop.births,POP,Live Births,count,monthly,indicator,national,Number of live births registered,GUS vital statistics
+pop.deaths,POP,Deaths,count,monthly,indicator,national,Number of deaths registered,GUS vital statistics
+pop.natural_increase,POP,Natural Population Increase,count,monthly,indicator,national,Live births minus deaths,Derived from GUS vital statistics
+pop.net_migration,POP,Net International Migration,persons,annual,indicator,national,Immigration minus emigration (permanent residence basis),GUS; acknowledged undercount of emigration
+pop.life_expectancy_m,POP,Male Life Expectancy at Birth,years,annual,indicator,national,Period life expectancy at birth for males,GUS life tables
+pop.life_expectancy_f,POP,Female Life Expectancy at Birth,years,annual,indicator,national,Period life expectancy at birth for females,GUS life tables
+pop.fertility_rate,POP,Total Fertility Rate,ratio,annual,indicator,national,Average number of live births per woman of childbearing age,GUS; TFR in Poland well below replacement (2.1)
+pop.median_age,POP,Median Age of Population,years,annual,indicator,national,Median age of the resident population,GUS; ageing trend driven by low fertility + emigration
+pop.old_age_dependency_ratio,POP,Old-Age Dependency Ratio,%,annual,indicator,national,Population 65+ as share of working-age population 15-64,GUS / Eurostat
+pop.urbanisation_rate,POP,Urban Population Share,%,annual,indicator,national,Share of population living in urban areas,GUS; Polish definition of urban (city with municipal rights)
+hlt.life_expectancy_m,HLT,Male Life Expectancy at Birth (Health),years,annual,indicator,national,Period life expectancy at birth for males (health monitoring series),GUS / NFZ; same source as pop.life_expectancy_m — health-domain copy
+hlt.life_expectancy_f,HLT,Female Life Expectancy at Birth (Health),years,annual,indicator,national,Period life expectancy at birth for females (health monitoring series),GUS / NFZ
+hlt.infant_mortality_rate,HLT,Infant Mortality Rate,per 1000 births,annual,indicator,national,Deaths of infants under 1 year per 1000 live births,GUS vital statistics
+hlt.cancer_incidence,HLT,Cancer Incidence Rate,per 100k,annual,indicator,national,New malignant cancer cases per 100 000 population,NIZP-PZH / KRN cancer registry
+hlt.cardiovascular_mortality,HLT,Cardiovascular Disease Mortality Rate,per 100k,annual,indicator,national,Deaths from cardiovascular disease per 100 000 population,GUS / CSIOZ
+hlt.hospital_bed_density,HLT,Hospital Bed Density,per 1000 pop,annual,indicator,national,Acute hospital beds per 1 000 population,CSIOZ / NFZ
+hlt.physician_density,HLT,Physicians per 1000 Population,per 1000 pop,annual,indicator,national,Active licensed physicians per 1 000 population,CSIOZ / NIL
+hlt.nfz_expenditure,HLT,NFZ Total Expenditure,PLN mn,annual,indicator,national,Total health care expenditure by Narodowy Fundusz Zdrowia,NFZ annual report
+hlt.vaccination_coverage_childhood,HLT,Childhood Vaccination Coverage (MMR),%,annual,indicator,national,Share of children vaccinated against measles-mumps-rubella,GIS / NIZP-PZH
+hlt.obesity_rate,HLT,Adult Obesity Prevalence,%,annual,indicator,national,Share of adults (18+) with BMI ≥ 30,GUS health survey / WHO STEPS
+hlt.smoking_rate,HLT,Adult Smoking Prevalence,%,annual,indicator,national,Share of adults who smoke tobacco daily or occasionally,GUS health survey / NIZP-PZH
+hlt.waiting_time_specialist,HLT,Average Waiting Time for Specialist Care,days,quarterly,indicator,national,Average statutory queue time for outpatient specialist consultations (NFZ),NFZ kolejki data
+hlt.mental_health_hospitalisations,HLT,Mental Health Hospital Admissions,count,annual,indicator,national,Total inpatient admissions for mental and behavioural disorders,CSIOZ
+edu.school_enrolment_primary,EDU,Primary School Enrolment,count,annual,indicator,national,Pupils enrolled in primary schools (klasy I–VIII),SIO (System Informacji Oświatowej)
+edu.school_enrolment_secondary,EDU,Secondary School Enrolment,count,annual,indicator,national,Pupils enrolled in secondary schools (LO + technikum + branżowe),SIO
+edu.school_enrolment_tertiary,EDU,Tertiary Education Enrolment,count,annual,indicator,national,Students enrolled in higher education institutions,GUS / POLON
+edu.matura_pass_rate,EDU,Matura Exam Pass Rate,%,annual,indicator,national,Share of candidates passing the matura (secondary school leaving) examination,CKE (Centralna Komisja Egzaminacyjna)
+edu.university_count,EDU,Active Higher Education Institutions,count,annual,indicator,national,Number of active higher education institutions in POLON register,MNiSW / POLON
+edu.academic_staff_count,EDU,Academic Staff in Higher Education,count,annual,indicator,national,Total employed academic staff (nauczyciele akademiccy),GUS / POLON
+edu.phd_candidates,EDU,PhD Candidates,count,annual,indicator,national,Students enrolled in doctoral schools or PhD programmes,GUS / POLON
+edu.education_expenditure_gdp,EDU,Public Education Expenditure as % of GDP,%,annual,indicator,national,General government expenditure on education as share of GDP,Eurostat / GUS
+edu.teachers_count,EDU,Employed Teachers (Primary + Secondary),count,annual,indicator,national,Total full-time equivalent teaching staff in schools,SIO
+edu.early_school_leavers,EDU,Early School Leavers Rate,%,annual,indicator,national,Share of 18-24 year olds who left education with at most lower-secondary,GUS LFS / Eurostat
+edu.tertiary_attainment_rate,EDU,Tertiary Education Attainment Rate (30-34),%,annual,indicator,national,Share of 30-34 year olds with tertiary education qualification,GUS LFS / Eurostat
+soc.household_income_avg,SOC,Average Household Disposable Income per Capita,PLN,annual,indicator,national,Average annual equivalised disposable income per person,GUS EU-SILC
+soc.poverty_rate,SOC,At-Risk-of-Poverty Rate,%,annual,indicator,national,Share of persons with equivalised income below 60% of national median,GUS EU-SILC
+soc.severe_material_deprivation,SOC,Severe Material Deprivation Rate,%,annual,indicator,national,Share of persons lacking ≥4 of 9 material items (EU definition),GUS EU-SILC
+soc.gini_coefficient,SOC,Gini Coefficient of Income Inequality,index,annual,indicator,national,Gini index of equivalised household disposable income,GUS EU-SILC; 0 = perfect equality
+soc.social_benefits_total,SOC,Total Social Benefits Paid,PLN mn,monthly,indicator,national,Total social transfers (pensions + disability + child benefits + unemployment),ZUS + MRPiPS
+soc.pension_average,SOC,Average Monthly Pension (ZUS),PLN,quarterly,indicator,national,Average gross monthly old-age pension paid by ZUS,ZUS statistical bulletin
+soc.disability_benefit_recipients,SOC,Disability Benefit Recipients (PFRON),count,monthly,indicator,national,Persons receiving PFRON-funded disability support,PFRON
+soc.childcare_coverage_0_3,SOC,Formal Childcare Coverage (0-3 years),%,annual,indicator,national,Children aged 0-3 in registered formal childcare (żłobek/klub dziecięcy),GUS / MRPiPS
+soc.child_benefit_beneficiaries,SOC,Child Benefit (800+) Beneficiaries,count,monthly,indicator,national,Number of children covered by 800+ (formerly 500+) child benefit programme,MRPiPS
+soc.social_assistance_recipients,SOC,Social Assistance Recipients,count,annual,indicator,national,Persons/households receiving means-tested social assistance,MRPiPS
+soc.minimum_wage,SOC,National Minimum Wage,PLN,annual,reference,national,Gross monthly statutory minimum wage (same as lab.minimum_wage),MRPiPS; listed in SOC domain as income reference
+crm.crime_total,CRM,Total Detected Crimes,count,annual,indicator,national,Total criminal offences detected by Police (all categories),Policja statistical yearbook
+crm.crime_rate,CRM,Crime Rate,per 100k,annual,indicator,national,Detected crimes per 100 000 population,Policja; calculated vs GUS population
+crm.crime_regional,CRM,Detected Crimes by Voivodeship,count,annual,indicator,regional,Total detected offences by police voivodeship command,Policja; entity = geography (dim_geography)
+crm.violent_crime,CRM,Violent Crime Offences,count,annual,indicator,national,Offences involving physical violence or threat thereof,Policja
+crm.theft_total,CRM,Theft and Burglary Offences,count,annual,indicator,national,Kradzieże + włamania combined,Policja
+crm.cybercrime,CRM,Cybercrime Offences,count,annual,indicator,national,Criminal offences related to computer systems and internet,Policja
+crm.court_cases_filed,CRM,Court Cases Filed,count,annual,indicator,national,Total new cases filed across all court levels (common courts),MS (Ministerstwo Sprawiedliwości)
+crm.court_cases_resolved,CRM,Court Cases Resolved,count,annual,indicator,national,Cases closed (with or without judgment) in all common courts,MS
+crm.court_pending_backlog,CRM,Court Pending Case Backlog,count,annual,indicator,national,Cases pending at end of reporting year across all courts,MS; key judicial efficiency indicator
+crm.prison_population,CRM,Prison Population,count,monthly,indicator,national,Total inmates held in prison and remand institutions (Służba Więzienna),SW (Służba Więzienna)
+crm.road_accidents,CRM,Road Accidents,count,monthly,indicator,national,Police-recorded road accidents with personal injury,Policja (also in trp.road_accidents — same source)
+crm.domestic_violence_incidents,CRM,Domestic Violence Incidents (Niebieska Karta),count,annual,indicator,national,Niebieska Karta procedures initiated by Police,Policja / MRPiPS
+clt.tourist_arrivals_intl,CLT,International Tourist Arrivals,thousand persons,annual,indicator,national,Inbound tourists visiting Poland (overnight trips),POT / GUS; border survey method
+clt.overnight_stays_domestic,CLT,Domestic Tourism Overnight Stays,thousand,monthly,indicator,national,Overnight stays of domestic tourists in accommodation establishments,GUS
+clt.hotel_occupancy_rate,CLT,Hotel Bed Occupancy Rate,%,monthly,indicator,national,Bed-night occupancy rate in hotels and similar accommodation,GUS
+clt.museum_visits,CLT,Museum Visits,thousand,annual,indicator,national,Total visitors to registered museums,GUS / MKiDN
+clt.cinema_admissions,CLT,Cinema Admissions,million,annual,indicator,national,Total cinema tickets sold,MKiDN / PISF
+clt.library_borrowings,CLT,Library Book Borrowings,million,annual,indicator,national,Total book loans issued by public libraries,BN / GUS
+clt.tourism_revenue_intl,CLT,International Tourism Revenue,EUR mn,annual,indicator,national,Expenditure by inbound tourists in Poland,NBP / POT
+clt.culture_expenditure_gdp,CLT,Public Culture Expenditure as % of GDP,%,annual,indicator,national,Government spending on culture and arts as share of GDP,GUS / Eurostat
+clt.sport_facilities_count,CLT,Sport Facilities Count,count,annual,indicator,national,Number of registered sport facilities (stadiums + halls + pools) in MSIT database,MSIT
+env.pm25_annual_mean,ENV,PM2.5 Annual Mean Concentration,µg/m³,annual,indicator,national,Area-weighted annual mean PM2.5 concentration across monitoring stations,GIOŚ; WHO guideline = 5 µg/m³
+env.pm10_annual_mean,ENV,PM10 Annual Mean Concentration,µg/m³,annual,indicator,national,Area-weighted annual mean PM10 concentration,GIOŚ
+env.pm25_station,ENV,PM2.5 Hourly Measurement (Station),µg/m³,real_time,micro_indicator,local,Hourly PM2.5 reading at individual air quality monitoring station,GIOŚ GZIOŚ portal; entity = local station
+env.ghg_emissions_total,ENV,Total GHG Emissions,million t CO2eq,annual,indicator,national,Total greenhouse gas emissions (CO2 + CH4 + N2O + F-gases) in CO2 equivalent,KOBIZE National Inventory; 2-year lag
+env.ghg_emissions_sectoral,ENV,GHG Emissions by Sector,million t CO2eq,annual,indicator,sectoral,GHG emissions by IPCC sector (energy / industry / agriculture / LULUCF / waste),KOBIZE; entity = sector (dim_sector)
+env.renewable_energy_share,ENV,Renewable Energy Share in Final Consumption,%,annual,indicator,national,RES share in gross final energy consumption (EU RED target metric),URE / Eurostat
+env.forest_area,ENV,Forest Area,thousand ha,annual,indicator,national,Total forest area including State Forests and private forests,GUS / LP
+env.municipal_waste_generated,ENV,Municipal Waste Generated Per Capita,kg/capita,annual,indicator,national,Municipal waste generated per person per year,GUS / Eurostat
+env.municipal_waste_recycling_rate,ENV,Municipal Waste Recycling Rate,%,annual,indicator,national,Share of municipal waste prepared for reuse and recycling,GUS / Eurostat
+env.water_abstractions,ENV,Freshwater Abstractions,million m³,annual,indicator,national,Total freshwater abstraction by all sectors,GUS environmental statistics
+env.temperature_anomaly,ENV,Annual Mean Temperature Anomaly,°C,annual,indicator,national,Deviation of annual mean temperature from 1961-1990 baseline,IMGW-PIB; indicator of climate change trend
+env.precipitation_anomaly,ENV,Annual Precipitation Anomaly,%,annual,indicator,national,Deviation of annual precipitation from 1961-1990 mean (%),IMGW-PIB
+env.bathing_water_quality,ENV,Excellent Bathing Water Quality Share,%,annual,indicator,national,Share of designated bathing sites rated 'excellent' quality,GIOŚ / EEA bathing water register
+env.air_quality_index_cities,ENV,Air Quality Index — Major Cities,index,daily,indicator,local,Daily AQI composite (PM2.5 + PM10 + NO2 + O3) for major Polish cities,GIOŚ GZIOŚ portal
+sci.rd_expenditure_gdp,SCI,R&D Expenditure as % of GDP,%,annual,indicator,national,Gross domestic expenditure on R&D (GERD) as share of GDP,GUS; EU target = 3%
+sci.rd_expenditure_total,SCI,Total R&D Expenditure (GERD),PLN mn,annual,indicator,national,Gross domestic expenditure on R&D at current prices,GUS
+sci.researchers_count,SCI,Researchers (FTE),count,annual,indicator,national,Researchers in R&D employment (full-time equivalent),GUS
+sci.patent_applications,SCI,Patent Applications (UPRP + EPO),count,annual,indicator,national,Patent applications filed at UPRP and European Patent Office by Polish entities,UPRP / EPO
+sci.ncn_grants_awarded,SCI,NCN Research Grants Awarded,count,annual,indicator,national,Research grants awarded by Narodowe Centrum Nauki,NCN annual report
+sci.broadband_coverage,SCI,Broadband Coverage ≥30 Mbps,% households,annual,indicator,national,Share of households covered by fixed broadband ≥30 Mbps,UKE / Eurostat DESI
+sci.internet_usage_rate,SCI,Internet Usage Rate (16-74),%,annual,indicator,national,Share of individuals aged 16-74 using internet in the last 3 months,GUS / Eurostat
+sci.ecommerce_participation,SCI,E-Commerce Participation (Individuals),%,annual,indicator,national,Share of individuals aged 16-74 who bought online in the last 12 months,GUS / Eurostat
+sci.mobile_subscriptions,SCI,Mobile Subscriptions per 100 Persons,per 100,annual,indicator,national,Active mobile SIM subscriptions per 100 population,UKE market data
+sci.digital_public_services,SCI,Digital Public Services Usage Rate,%,annual,indicator,national,Share of individuals who used e-government services online in last 12 months,GUS / Eurostat DESI
+sci.cybersecurity_incidents,SCI,CERT/NASK Reported Incidents,count,annual,indicator,national,Cybersecurity incidents reported to CERT Polska / NASK,NASK annual report

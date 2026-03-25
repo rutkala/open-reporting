@@ -1,1 +1,484 @@
-detail_id,source_id,geo_levels,year_from,year_to,coverage_notes
+detail_id,source_id,geo_levels,year_from,year_to,coverage_notes,series_id,verified
+fin.exchange_rate_usd_pln,nbp,country,2002,,NBP Table A mid-rates; daily fixing. API endpoint: /api/exchangerates/tables/A,,false
+fin.exchange_rate_usd_pln,ecb,country,1999,,ECB reference rates via SDMX; EUR/PLN base — USD/PLN derived,,false
+fin.exchange_rate_eur_pln,nbp,country,2004,,NBP Table A mid-rates daily. Pre-2004 as EEK/DEM legacy reference,,false
+fin.exchange_rate_eur_pln,ecb,country,1999,,ECB EUR/PLN reference rate; direct series,,false
+fin.exchange_rate_chf_pln,nbp,country,2002,,NBP Table A mid-rates daily,,false
+fin.exchange_rate_chf_pln,ecb,country,1999,,ECB reference rate CHF/EUR cross used for CHF/PLN derivation,,false
+fin.exchange_rate_gbp_pln,nbp,country,2002,,NBP Table A mid-rates daily,,false
+fin.exchange_rate_gbp_pln,ecb,country,1999,,ECB reference rate GBP/EUR cross,,false
+fin.reference_rate,nbp,country,1998,,RPP decision dates only; NBP publishes current and historical reference rates,,false
+fin.reference_rate,ecb,country,1999,,ECB tracks Polish rate in euro area comparison datasets,,false
+fin.wibor_1m,gpw_benchmark,country,2010,,Primary fixing administrator; WIBID/WIBOR daily files,,false
+fin.wibor_1m,nbp,country,1993,,NBP historical WIBOR archive (pre-GPW Benchmark era),,false
+fin.wibor_3m,gpw_benchmark,country,2010,,Primary fixing administrator; key mortgage benchmark rate,,false
+fin.wibor_3m,nbp,country,1993,,NBP historical archive,,false
+fin.wibor_6m,gpw_benchmark,country,2010,,Daily fixing file,,false
+fin.wibor_6m,nbp,country,1993,,NBP historical archive,,false
+fin.wig20_index,gpw,country,1994,,WIG20 daily close; GPW website CSV/XLS download,,false
+fin.wig_index,gpw,country,1991,,WIG total-return index daily close,,false
+fin.bond_yield_10y,mf_dlug,country,2000,,Secondary market benchmark yield; MF debt portal publications,,false
+fin.bond_yield_10y,ecb,country,2004,,Eurostat long-term interest rates (convergence criterion) for Poland,,false
+fin.bond_yield_10y,bis,country,2000,,BIS debt securities statistics,,false
+fin.bond_yield_2y,mf_dlug,country,2000,,Secondary market 2Y benchmark yield,,false
+fin.bond_yield_2y,ecb,country,2004,,ECB / Eurostat short-term rates series,,false
+fin.banking_npl_ratio,knf,country,2004,,KNF quarterly banking sector data; Polish-only reporting,,false
+fin.banking_npl_ratio,ecb,country,2014,,ECB supervisory statistics (SSM adjacent); EU comparable series,,false
+fin.banking_capital_ratio,knf,country,2004,,KNF quarterly capital adequacy; Basel III from 2014,,false
+fin.banking_capital_ratio,ecb,country,2014,,ECB supervisory statistics (TCR),,false
+fin.stock_price,gpw,country,1994,,GPW historical prices per ISIN; CSV download per equity,,false
+fin.stock_volume,gpw,country,1994,,GPW daily trading volume per ISIN,,false
+fin.tge_electricity_price,tge,country,2010,,TGE day-ahead BASE product closing price; daily XLSX download,,false
+pub.state_budget_revenue,mf,country,2005,,MF monthly budget execution report (Sprawozdanie z wykonania budżetu),,false
+pub.state_budget_expenditure,mf,country,2005,,MF monthly report; year-to-date cumulative,,false
+pub.state_budget_balance,mf,country,2005,,Surplus/deficit derived from revenue − expenditure,,false
+pub.public_debt_total,mf_dlug,country,2000,,EDP methodology; quarterly and annual; MF public debt portal,,false
+pub.public_debt_total,eurostat,country,2004,,Eurostat government finance statistics (EDP notification tables),,false
+pub.public_debt_gdp,mf_dlug,country,2000,,Calculated by MF as EDP debt / GDP,,false
+pub.public_debt_gdp,eurostat,country,2004,,Eurostat government deficit and debt (GFS); EU comparable,,false
+pub.public_debt_gdp,ameco,country,2004,,AMECO UDGGL / UVGDP ratio; EC forecast comparison,,false
+pub.tax_revenue_vat,kas,country,2010,,KAS monthly VAT collection bulletin,,false
+pub.tax_revenue_vat,mf,country,2005,,MF budget execution includes VAT line,,false
+pub.tax_revenue_pit,kas,country,2010,,KAS monthly PIT collection,,false
+pub.tax_revenue_pit,mf,country,2005,,MF budget execution PIT line,,false
+pub.tax_revenue_cit,kas,country,2010,,KAS monthly CIT collection,,false
+pub.tax_revenue_cit,mf,country,2005,,MF budget execution CIT line,,false
+pub.tax_revenue_excise,kas,country,2010,,KAS monthly excise duty collection,,false
+pub.tax_revenue_excise,mf,country,2005,,MF budget execution excise line,,false
+pub.eu_funds_absorption,mf,country,2007,,MF EU funds absorption report by programming period,,false
+pub.eu_funds_absorption,bgk,country,2007,,BGK disburses part of EU structural funds; separate reporting,,false
+pub.local_govt_debt,mf,country|voivodeship,2010,,MF annual local government finance report by entity,,false
+pub.local_govt_debt,bdl,country|voivodeship,2005,,BDL local government debt indicators (strateg module),,false
+pub.bgk_guarantees,bgk,country,2010,,BGK quarterly guarantee portfolio report,,false
+pub.social_insurance_fund_balance,zus,country,2005,,ZUS annual/quarterly FUS financial statements,,false
+mac.gdp_real_growth,sdp,country,2000,,GUS quarterly flash and final estimates; SDP series ID available,,false
+mac.gdp_real_growth,eurostat,country,2004,,Eurostat national accounts; chain-linked; EU comparable,,false
+mac.gdp_real_growth,ameco,country,1995,,AMECO OVGD series; long historical run; updated twice yearly,,false
+mac.gdp_real_growth,imf,country,1992,,IMF WEO historical + forecast; annual,,false
+mac.gdp_nominal,sdp,country,2000,,GUS quarterly GDP at current prices,,false
+mac.gdp_nominal,eurostat,country,2004,,Eurostat national accounts B1GQ,,false
+mac.gdp_nominal,ameco,country,1995,,AMECO UVGD; annual,,false
+mac.gdp_per_capita,sdp,country,2000,,GUS national accounts per capita,,false
+mac.gdp_per_capita,eurostat,country,2004,,Eurostat GDP per capita in PPS and EUR,,false
+mac.gdp_per_capita,worldbank,country,2000,,World Bank WDI NY.GDP.PCAP.CD; current USD,,false
+mac.gdp_per_capita_regional,bdl,country|voivodeship,2005,,BDL regional accounts; ~2y lag; NUTS2 comparable to Eurostat,,false
+mac.gdp_per_capita_regional,eurostat,country|voivodeship,2004,,Eurostat regional accounts NUTS2; EU structural funds reference,,false
+mac.household_consumption_growth,sdp,country,2000,,GUS quarterly P3 household consumption expenditure,,false
+mac.household_consumption_growth,eurostat,country,2004,,Eurostat national accounts P3; chain-linked,,false
+mac.household_consumption_growth,ameco,country,1995,,AMECO UCPH series,,false
+mac.gross_fixed_capital_formation_growth,sdp,country,2000,,GUS quarterly GFCF (nakłady brutto na środki trwałe),,false
+mac.gross_fixed_capital_formation_growth,eurostat,country,2004,,Eurostat P51G; chain-linked,,false
+mac.gross_fixed_capital_formation_growth,ameco,country,1995,,AMECO UIGP,,false
+mac.current_account_balance,nbp,country,2000,,NBP balance of payments monthly statistics,,false
+mac.current_account_balance,eurostat,country,2004,,Eurostat BOP current account (BPM6); EU comparable,,false
+mac.current_account_balance,imf,country,2000,,IMF BOP statistics,,false
+mac.current_account_gdp,nbp,country,2000,,Derived by NBP from CA balance and GDP,,false
+mac.current_account_gdp,eurostat,country,2004,,Eurostat BOP / GDP ratio,,false
+mac.current_account_gdp,ameco,country,1995,,AMECO UBCA,,false
+mac.industrial_output_growth,sdp,country,2004,,GUS monthly industrial production (sold output); SDP API,,false
+mac.industrial_output_growth,eurostat,country,2004,,Eurostat short-term business statistics NACE Rev2,,false
+mac.retail_sales_growth,sdp,country,2004,,GUS monthly retail sales (constant prices),,false
+mac.retail_sales_growth,eurostat,country,2004,,Eurostat short-term statistics for retail trade,,false
+mac.business_confidence_bcs,ec_bcs,country,2000,,EC DG ECFIN BCS composite; ESI; monthly survey,,false
+mac.consumer_confidence,sdp,country,2000,,GUS BWUK (flash) monthly consumer confidence survey,,false
+mac.consumer_confidence,ec_bcs,country,2000,,EC BCS Consumer Confidence Indicator for Poland,,false
+mac.pmi_manufacturing,pmi_pl,country,2012,,S&P Global Poland Manufacturing PMI; press release monthly,,false
+prc.cpi_total,sdp,country,2000,,GUS monthly CPI flash and final estimates (rok poprzedni = 100),,false
+prc.cpi_total,eurostat,country,2004,,Eurostat HICP (EU-harmonised) for Poland,,false
+prc.cpi_total,ameco,country,1992,,AMECO ZCPIH historical,,false
+prc.cpi_food,sdp,country,2000,,GUS CPI sub-index 01 (food and non-alcoholic beverages),,false
+prc.cpi_food,eurostat,country,2004,,Eurostat HICP CP01,,false
+prc.cpi_energy,sdp,country,2000,,GUS CPI sub-index energy (housing + fuel combined),,false
+prc.cpi_energy,eurostat,country,2004,,Eurostat HICP CP04+CP07 energy components,,false
+prc.cpi_core,nbp,country,2001,,NBP calculates and publishes core CPI (excl. food and energy),,false
+prc.cpi_core,sdp,country,2004,,GUS derived series in statistical publications,,false
+prc.ppi,sdp,country,2000,,GUS monthly PPI (ceny produkcji sprzedanej przemysłu),,false
+prc.ppi,eurostat,country,2004,,Eurostat PPI domestic output prices NACE Rev2,,false
+prc.ppi_sectoral,sdp,country,2004,,GUS PPI by NACE section A–E,,false
+prc.real_estate_price_national,nbp,country,2006,,NBP quarterly real estate price survey (AMRON/SARFiN partnership),,false
+prc.real_estate_price_national,bdl,country,2010,,BDL property price module (limited coverage),,false
+prc.real_estate_price_regional,nbp,country|voivodeship,2006,,NBP regional property prices; 17 major cities + voivodeships,,false
+prc.real_estate_price_regional,bdl,country|voivodeship,2010,,BDL regional data; city-level where available,,false
+prc.electricity_retail_price,ure,country,2000,,URE tariff approval data and energy price statistics,,false
+prc.electricity_retail_price,eurostat,country,2004,,Eurostat electricity prices for households (nrg_pc_204),,false
+prc.gas_retail_price,ure,country,2000,,URE tariff data for natural gas,,false
+prc.gas_retail_price,eurostat,country,2004,,Eurostat gas prices for households (nrg_pc_202),,false
+prc.fuel_price_petrol,dane_gov,country,2015,,Weekly fuel prices published on dane.gov.pl (POPiHN data),,false
+prc.fuel_price_diesel,dane_gov,country,2015,,Weekly diesel prices on dane.gov.pl,,false
+lab.unemployment_rate,mrpips,country,2000,,MRPiPS monthly registered unemployment (stopa bezrobocia rejestrowanego),,false
+lab.unemployment_rate,bdl,country,2004,,BDL labour market module; monthly,,false
+lab.unemployment_rate,eurostat,country,2004,,Eurostat LFS harmonised unemployment rate (different definition: LFS),,false
+lab.unemployment_rate,ilostat,country,2004,,ILO modelled estimates; annual; international comparable,,false
+lab.unemployment_rate_regional,mrpips,country|voivodeship|county,2000,,MRPiPS monthly by voivodeship and powiat,,false
+lab.unemployment_rate_regional,bdl,country|voivodeship|county,2004,,BDL with voivodeship + powiat breakdown,,false
+lab.unemployment_count,mrpips,country,2000,,MRPiPS monthly registered count,,false
+lab.unemployment_count,bdl,country|voivodeship,2004,,BDL aggregates,,false
+lab.employed_total,sdp,country,2004,,GUS quarterly LFS (BAEL) employed persons,,false
+lab.employed_total,eurostat,country,2004,,Eurostat LFS employed (lfsa_empgan),,false
+lab.employed_total,ilostat,country,2004,,ILO ILOSTAT employment by sector,,false
+lab.employment_rate,sdp,country,2004,,GUS BAEL quarterly; 15-64 age group,,false
+lab.employment_rate,eurostat,country,2004,,Eurostat LFS employment rate (lfsq_ergan),,false
+lab.employment_rate,ilostat,country,2004,,ILO comparable series,,false
+lab.activity_rate,sdp,country,2004,,GUS BAEL activity rate (15-64),,false
+lab.activity_rate,eurostat,country,2004,,Eurostat LFS activity rate (lfsq_agan),,false
+lab.activity_rate,ilostat,country,2004,,ILO ILOSTAT participation rate,,false
+lab.average_wage,sdp,country,2000,,GUS monthly average gross wage in enterprise sector (10+ emp),,false
+lab.average_wage,bdl,country,2004,,BDL wage series; includes sectoral and regional cuts,,false
+lab.average_wage_sectoral,sdp,country,2004,,GUS wage by NACE section; monthly SDP series,,false
+lab.average_wage_sectoral,bdl,country,2004,,BDL wage by section,,false
+lab.wage_growth,sdp,country,2000,,GUS monthly y/y nominal wage growth,,false
+lab.wage_growth,eurostat,country,2004,,Eurostat labour cost index; quarterly,,false
+lab.wage_growth,ameco,country,2000,,AMECO HWCDE nominal wage per employee,,false
+lab.real_wage_growth,sdp,country,2004,,GUS derived; wage growth deflated by CPI,,false
+lab.real_wage_growth,ameco,country,2000,,AMECO real compensation per employee,,false
+lab.job_vacancies,cbop,country,2015,,CBOP central job vacancies; daily-updated database,,false
+lab.job_vacancies,eurostat,country,2004,,Eurostat job vacancy statistics (jvs_q_nace2),,false
+lab.vacancy_rate,sdp,country,2010,,GUS quarterly job vacancy survey,,false
+lab.vacancy_rate,eurostat,country,2004,,Eurostat vacancy rate by NACE (jvs_q_nace2),,false
+lab.youth_unemployment_rate,sdp,country,2004,,GUS BAEL 15-24 quarterly,,false
+lab.youth_unemployment_rate,eurostat,country,2004,,Eurostat youth unemployment (yth_empl_090),,false
+lab.youth_unemployment_rate,ilostat,country,2004,,ILO modelled,,false
+lab.long_term_unemployment_share,sdp,country,2004,,GUS BAEL long-term unemployment (12+ months),,false
+lab.long_term_unemployment_share,eurostat,country,2004,,Eurostat LFS long-term unemployment (lfsq_ugad),,false
+lab.long_term_unemployment_share,ilostat,country,2004,,ILO modelled share,,false
+lab.minimum_wage,mrpips,country,2000,,MRPiPS publishes annual statutory minimum wage regulations,,false
+lab.minimum_wage,eurostat,country,2004,,Eurostat statutory minimum wages series (earn_mw_cur),,false
+bus.company_registrations,regon,country,2000,,REGON API monthly new entity entries; all legal forms,,false
+bus.company_registrations,dane_gov,country,2015,,dane.gov.pl publishes REGON aggregate statistics,,false
+bus.company_deregistrations,regon,country,2000,,REGON API monthly deregistrations,,false
+bus.company_deregistrations,dane_gov,country,2015,,dane.gov.pl aggregate,,false
+bus.active_companies,regon,country,2000,,REGON total active entities; monthly snapshot,,false
+bus.company_registrations_sectoral,regon,country,2005,,REGON PKD/NACE sectoral breakdown available via API,,false
+bus.company_registrations_sectoral,bdl,country,2005,,BDL enterprise statistics by NACE section,,false
+bus.construction_permits,gunb,country|voivodeship,2008,,GUNB monthly building permit statistics CSV,,false
+bus.construction_permits,bdl,country|voivodeship,2005,,BDL construction module,,false
+bus.construction_permits_area,gunb,country|voivodeship,2008,,GUNB monthly floor area by permit type,,false
+bus.construction_permits_area,bdl,country|voivodeship,2005,,BDL building permits area,,false
+bus.construction_completions,gunb,country|voivodeship,2008,,GUNB monthly completed dwellings,,false
+bus.construction_completions,sdp,country,2004,,GUS construction statistics monthly,,false
+bus.industrial_output_sectoral,sdp,country,2004,,GUS sold production volume index by NACE section,,false
+bus.industrial_output_sectoral,eurostat,country,2004,,Eurostat STS industrial production NACE Rev2,,false
+bus.construction_output_value,sdp,country,2004,,GUS construction and assembly production value,,false
+bus.pmi_manufacturing,pmi_pl,country,2012,,S&P Global Poland Manufacturing PMI; press release,,false
+bus.enterprise_confidence,sdp,country,2004,,GUS monthly business climate indicator (koniunktury),,false
+bus.enterprise_confidence,ec_bcs,country,2000,,EC BCS industry confidence indicator for Poland,,false
+bus.company_financials,dane_gov,country,2016,,KRS annual financial statements available via e-KRS / dane.gov.pl,,false
+trd.exports_goods_total,sdp,country,2004,,GUS monthly goods trade statistics,,false
+trd.exports_goods_total,eurostat,country,2004,,Eurostat Comext trade database,,false
+trd.exports_goods_total,un_comtrade,country,2000,,UN Comtrade HS-based; monthly; free tier available,,false
+trd.imports_goods_total,sdp,country,2004,,GUS monthly goods trade statistics,,false
+trd.imports_goods_total,eurostat,country,2004,,Eurostat Comext,,false
+trd.imports_goods_total,un_comtrade,country,2000,,UN Comtrade HS-based monthly,,false
+trd.trade_balance_goods,sdp,country,2004,,Derived by GUS from exports − imports,,false
+trd.trade_balance_goods,eurostat,country,2004,,Eurostat Comext trade balance,,false
+trd.trade_balance_goods,nbp,country,2000,,NBP BoP goods balance (different from customs statistics),,false
+trd.exports_services,nbp,country,2000,,NBP BoP services credit; quarterly,,false
+trd.exports_services,eurostat,country,2004,,Eurostat BoP services credit (bop_its6_det),,false
+trd.imports_services,nbp,country,2000,,NBP BoP services debit; quarterly,,false
+trd.imports_services,eurostat,country,2004,,Eurostat BoP services debit,,false
+trd.exports_by_commodity,un_comtrade,country,2000,,UN Comtrade HS6/SITC by commodity; monthly,,false
+trd.exports_by_commodity,puesc,country,2010,,PUESC Polish customs declarations; commodity detail,,false
+trd.imports_by_commodity,un_comtrade,country,2000,,UN Comtrade HS6/SITC commodity breakdown,,false
+trd.imports_by_commodity,puesc,country,2010,,PUESC customs declarations,,false
+trd.exports_by_country,un_comtrade,country,2000,,UN Comtrade by reporter+partner country; monthly,,false
+trd.exports_by_country,eurostat,country,2004,,Eurostat Comext by partner country,,false
+trd.imports_by_country,un_comtrade,country,2000,,UN Comtrade imports by origin country,,false
+trd.imports_by_country,eurostat,country,2004,,Eurostat Comext by partner,,false
+trd.fdi_inflows,nbp,country,2000,,NBP BoP FDI credit (direct investment in Poland); quarterly,,false
+trd.fdi_inflows,eurostat,country,2004,,Eurostat BoP FDI flows (bop_fdi6_flow),,false
+trd.fdi_inflows,oecd,country,2004,,OECD FDI statistics; annual,,false
+trd.fdi_outflows,nbp,country,2000,,NBP BoP FDI debit (Polish investment abroad); quarterly,,false
+trd.fdi_outflows,eurostat,country,2004,,Eurostat BoP FDI outflows,,false
+trd.fdi_outflows,oecd,country,2004,,OECD FDI statistics; annual,,false
+agr.crop_production_cereals,bdl,country|voivodeship,2004,,BDL agricultural production module; GUS survey data,,false
+agr.crop_production_cereals,eurostat,country,2004,,Eurostat crop production (apro_cpsh1),,false
+agr.crop_production_cereals,faostat,country,2000,,FAOSTAT Crops domain; longer historical series,,false
+agr.crop_production_rapeseed,bdl,country|voivodeship,2004,,BDL rapeseed/colza production,,false
+agr.crop_production_rapeseed,eurostat,country,2004,,Eurostat (apro_cpsh1 oilseeds),,false
+agr.crop_production_rapeseed,faostat,country,2000,,FAOSTAT oilseeds,,false
+agr.crop_area_arable,bdl,country|voivodeship,2004,,BDL land use module; annual,,false
+agr.crop_area_arable,eurostat,country,2004,,Eurostat UAA and arable land (ef_m_farmleg),,false
+agr.crop_area_arable,faostat,country,2000,,FAOSTAT Land Use domain,,false
+agr.livestock_cattle,bdl,country|voivodeship,2004,,BDL livestock headcount; June and December surveys,,false
+agr.livestock_cattle,eurostat,country,2004,,Eurostat livestock population (apro_ms_pigs),,false
+agr.livestock_cattle,faostat,country,2000,,FAOSTAT Livestock Primary domain,,false
+agr.livestock_pigs,bdl,country|voivodeship,2004,,BDL pig headcount; biannual surveys,,false
+agr.livestock_pigs,eurostat,country,2004,,Eurostat pig population (apro_ms_pigs),,false
+agr.livestock_pigs,faostat,country,2000,,FAOSTAT,,false
+agr.milk_production,bdl,country|voivodeship,2004,,BDL dairy production; monthly,,false
+agr.milk_production,kowr,country,2010,,KOWR milk collection monitoring,,false
+agr.wheat_purchase_price,kowr,country,2005,,KOWR agricultural market price monitoring; weekly,,false
+agr.wheat_purchase_price,bdl,country,2004,,BDL agricultural prices module,,false
+agr.pig_purchase_price,kowr,country,2005,,KOWR pork market price bulletin,,false
+agr.pig_purchase_price,bdl,country,2004,,BDL producer prices,,false
+agr.milk_purchase_price,kowr,country,2005,,KOWR dairy market monitoring,,false
+agr.milk_purchase_price,bdl,country,2004,,BDL dairy producer prices,,false
+agr.timber_harvest,lasy_panstwowe,country,2000,,LP annual reports; State Forests data only (covers ~80% of forest area),,false
+agr.timber_harvest,bdl,country|voivodeship,2004,,BDL forestry module includes private forests,,false
+agr.agricultural_area_used,bdl,country|voivodeship,2004,,BDL land use; census years + annual estimates,,false
+agr.agricultural_area_used,eurostat,country,2004,,Eurostat FSS / UAA (ef_m_farmleg),,false
+agr.soil_erosion_risk,iung,country|voivodeship,2010,,IUNG-PIB soil erosion risk maps; irregular updates,,false
+agr.soil_erosion_risk,bdl,country|voivodeship,2010,,BDL environmental-agricultural module,,false
+trp.freight_rail_volume,utk,country,2006,,UTK open data portal; tonne-km by operator; monthly and annual,,false
+trp.freight_rail_volume,eurostat,country,2004,,Eurostat rail freight transport (rail_go_quartal),,false
+trp.passenger_rail_volume,utk,country,2006,,UTK passenger-km by operator; monthly,,false
+trp.passenger_rail_volume,eurostat,country,2004,,Eurostat rail passenger transport (rail_pa_quartal),,false
+trp.freight_road_volume,transtat,country,2010,,GUS TranStat road freight statistics (experimental),,false
+trp.freight_road_volume,eurostat,country,2004,,Eurostat road freight transport (road_go_ta_tott),,false
+trp.passenger_air_volume,ulc,country,2010,,ULC annual civil aviation statistics; airport breakdown available,,false
+trp.passenger_air_volume,eurostat,country,2004,,Eurostat air passenger transport (avia_paoa),,false
+trp.freight_air_volume,ulc,country,2010,,ULC cargo + mail statistics,,false
+trp.freight_air_volume,eurostat,country,2004,,Eurostat air transport cargo (avia_gooa),,false
+trp.vehicle_registrations,dane_gov,country,2012,,CEPiK vehicle registration data via dane.gov.pl,,false
+trp.vehicle_registrations,sdp,country,2004,,GUS transport statistics,,false
+trp.road_accidents,policja,country|voivodeship,2000,,Policja annual road accident statistics; monthly aggregates available,,false
+trp.road_accidents,eurostat,country,2004,,Eurostat road accident fatalities (tran_sf_roadse),,false
+trp.road_fatalities,policja,country|voivodeship,2000,,Policja; 30-day definition,,false
+trp.road_fatalities,eurostat,country,2004,,Eurostat road safety statistics; EU harmonised 30-day rule,,false
+trp.motorway_expressway_length,gddkia,country,2005,,GDDKiA national road database; annual,,false
+trp.motorway_expressway_length,bdl,country|voivodeship,2004,,BDL transport infrastructure module,,false
+trp.port_cargo_volume,sdp,country,2004,,GUS sea transport statistics; monthly,,false
+trp.port_cargo_volume,eurostat,country,2004,,Eurostat maritime transport (mar_mg_am_pwhc),,false
+ene.electricity_production_total,pse,country,2015,,PSE API; daily and monthly totals by source,,false
+ene.electricity_production_total,are,country,2005,,ARE monthly and annual energy statistics,,false
+ene.electricity_production_total,entso_e,country,2015,,ENTSO-E Transparency Platform Actual Generation,,false
+ene.electricity_consumption_total,pse,country,2015,,PSE actual load / consumption data,,false
+ene.electricity_consumption_total,are,country,2005,,ARE final consumption statistics,,false
+ene.electricity_consumption_total,entso_e,country,2015,,ENTSO-E actual load,,false
+ene.electricity_mix_coal,pse,country,2015,,PSE generation by source (hard coal unit output),,false
+ene.electricity_mix_coal,are,country,2005,,ARE monthly statistics by fuel,,false
+ene.electricity_mix_coal,entso_e,country,2015,,ENTSO-E aggregated generation by type,,false
+ene.electricity_mix_lignite,pse,country,2015,,PSE lignite (brown coal) generation,,false
+ene.electricity_mix_lignite,are,country,2005,,ARE monthly fuel mix,,false
+ene.electricity_mix_lignite,entso_e,country,2015,,ENTSO-E generation B02 (lignite),,false
+ene.electricity_mix_renewables,pse,country,2015,,PSE combined RES generation,,false
+ene.electricity_mix_renewables,are,country,2005,,ARE renewable electricity statistics,,false
+ene.electricity_mix_renewables,ure,country,2010,,URE RES registry (MIOZE); capacity and generation certificates,,false
+ene.electricity_mix_renewables,entso_e,country,2015,,ENTSO-E all RES generation types,,false
+ene.electricity_mix_wind,pse,country,2015,,PSE wind generation daily,,false
+ene.electricity_mix_wind,are,country,2010,,ARE wind statistics,,false
+ene.electricity_mix_wind,entso_e,country,2015,,ENTSO-E generation B06 (wind onshore) + B19 (offshore),,false
+ene.electricity_mix_solar,pse,country,2018,,PSE solar PV generation (significant only from ~2020),,false
+ene.electricity_mix_solar,are,country,2018,,ARE solar statistics,,false
+ene.electricity_mix_solar,entso_e,country,2015,,ENTSO-E generation B16 (solar),,false
+ene.electricity_price_day_ahead,tge,country,2010,,TGE day-ahead BASE closing price; daily XLSX,,false
+ene.electricity_price_day_ahead,entso_e,country,2015,,ENTSO-E day-ahead prices (Publication_DayAheadPrices),,false
+ene.natural_gas_consumption,gaz_system,country,2016,,Gaz-System via ENTSOG TP; daily and monthly totals,,false
+ene.natural_gas_consumption,are,country,2005,,ARE annual energy balance; gas consumption by sector,,false
+ene.natural_gas_storage_level,gaz_system,country,2016,,Gaz-System transparency data; storage working gas daily,,false
+ene.renewable_capacity_installed,ure,country,2010,,URE MIOZE registry of RES installations; monthly,,false
+ene.renewable_capacity_installed,are,country,2010,,ARE installed capacity statistics,,false
+ene.wind_capacity_installed,ure,country,2010,,URE MIOZE wind register,,false
+ene.wind_capacity_installed,are,country,2010,,ARE wind capacity data,,false
+ene.solar_capacity_installed,ure,country,2018,,URE MIOZE solar PV registry; rapid growth series from 2020,,false
+ene.solar_capacity_installed,are,country,2018,,ARE solar statistics,,false
+ene.energy_intensity,iea,country,2000,,IEA TPES/GDP ratio; annual,,false
+ene.energy_intensity,eurostat,country,2004,,Eurostat energy intensity indicator (sdg_07_30),,false
+ene.energy_intensity,are,country,2005,,ARE energy balance denominator data,,false
+pop.population_total,bdl,country,2004,,BDL population module; 31 December annual estimate,,false
+pop.population_total,eurostat,country,2004,,Eurostat demo_gind; EU comparable,,false
+pop.population_total,un_wpp,country,1950,,UN WPP historical + projections to 2100,,false
+pop.population_regional,bdl,country|voivodeship|county|municipality,2004,,BDL TERYT-linked population by administrative unit,,false
+pop.population_regional,eurostat,country|voivodeship,2004,,Eurostat NUTS2/NUTS3 regional population (demo_r_pjanaggr3),,false
+pop.births,bdl,country|voivodeship,2004,,BDL vital statistics; monthly,,false
+pop.births,eurostat,country,2004,,Eurostat live births (demo_gind),,false
+pop.deaths,bdl,country|voivodeship,2004,,BDL vital statistics; monthly,,false
+pop.deaths,eurostat,country,2004,,Eurostat deaths (demo_gind),,false
+pop.natural_increase,bdl,country|voivodeship,2004,,BDL derived vital statistics,,false
+pop.births,demografia,country|voivodeship,2000,,GUS demografia portal; detailed age-sex breakdowns,,false
+pop.deaths,demografia,country|voivodeship,2000,,GUS demografia portal,,false
+pop.natural_increase,demografia,country|voivodeship,2000,,GUS demografia portal,,false
+pop.net_migration,bdl,country,2004,,BDL net migration (permanent residence basis),,false
+pop.net_migration,eurostat,country,2004,,Eurostat migration (migr_imm5prv),,false
+pop.life_expectancy_m,bdl,country|voivodeship,2004,,BDL GUS life tables; annual,,false
+pop.life_expectancy_m,eurostat,country,2004,,Eurostat complete life tables (demo_mlexpec),,false
+pop.life_expectancy_m,who,country,2000,,WHO GHO life expectancy,,false
+pop.life_expectancy_f,bdl,country|voivodeship,2004,,BDL GUS female life tables,,false
+pop.life_expectancy_f,eurostat,country,2004,,Eurostat demo_mlexpec,,false
+pop.life_expectancy_f,who,country,2000,,WHO GHO,,false
+pop.fertility_rate,bdl,country|voivodeship,2004,,BDL TFR annual,,false
+pop.fertility_rate,eurostat,country,2004,,Eurostat total fertility rate (demo_gind),,false
+pop.fertility_rate,un_wpp,country,1950,,UN WPP TFR historical + projections,,false
+pop.median_age,bdl,country|voivodeship,2004,,BDL age structure,,false
+pop.median_age,eurostat,country,2004,,Eurostat median age (demo_pjagc),,false
+pop.median_age,un_wpp,country,1950,,UN WPP median age series,,false
+pop.old_age_dependency_ratio,bdl,country,2004,,BDL derived from age structure,,false
+pop.old_age_dependency_ratio,eurostat,country,2004,,Eurostat old age dependency ratio (demo_r_d2jan),,false
+pop.urbanisation_rate,bdl,country|voivodeship,2004,,BDL urban/rural population classification,,false
+pop.urbanisation_rate,eurostat,country,2004,,Eurostat urban share (demo_r_gind3),,false
+pop.urbanisation_rate,worldbank,country,2000,,World Bank SP.URB.TOTL.IN.ZS,,false
+hlt.life_expectancy_m,bdl,country|voivodeship,2004,,BDL via GUS life tables,,false
+hlt.life_expectancy_m,who,country,2000,,WHO GHO global health observatory,,false
+hlt.life_expectancy_m,eurostat,country,2004,,Eurostat demo_mlexpec,,false
+hlt.life_expectancy_f,bdl,country|voivodeship,2004,,BDL female life tables,,false
+hlt.life_expectancy_f,who,country,2000,,WHO GHO,,false
+hlt.life_expectancy_f,eurostat,country,2004,,Eurostat,,false
+hlt.infant_mortality_rate,bdl,country|voivodeship,2004,,BDL infant mortality; GUS vital statistics,,false
+hlt.infant_mortality_rate,eurostat,country,2004,,Eurostat (demo_minfind),,false
+hlt.infant_mortality_rate,who,country,2000,,WHO GHO,,false
+hlt.cancer_incidence,csioz,country|voivodeship,2005,,CeZ / KRN cancer registry; 2-year publication lag,,false
+hlt.cancer_incidence,nizp_pzh,country,2005,,NIZP-PZH KRN data; published in annual bulletins,,false
+hlt.cancer_incidence,who,country,2000,,WHO GCO / IARC Globocan,,false
+hlt.cardiovascular_mortality,csioz,country|voivodeship,2005,,CeZ ICD-10 mortality statistics,,false
+hlt.cardiovascular_mortality,eurostat,country,2004,,Eurostat causes of death (hlth_cd_anr),,false
+hlt.cardiovascular_mortality,who,country,2000,,WHO GHO cause-of-death estimates,,false
+hlt.hospital_bed_density,csioz,country|voivodeship,2005,,CeZ hospital register statistics,,false
+hlt.hospital_bed_density,nfz,country,2010,,NFZ contracted hospital capacity data,,false
+hlt.hospital_bed_density,eurostat,country,2004,,Eurostat health care resources (hlth_rs_bds),,false
+hlt.hospital_bed_density,who,country,2000,,WHO GHO hospital beds per 1000,,false
+hlt.physician_density,csioz,country|voivodeship,2005,,CeZ medical staff register,,false
+hlt.physician_density,eurostat,country,2004,,Eurostat health care professionals (hlth_rs_prshp1),,false
+hlt.physician_density,who,country,2000,,WHO GHO,,false
+hlt.nfz_expenditure,nfz,country,2004,,NFZ annual reports and financial plans; total expenditure,,false
+hlt.nfz_expenditure,eurostat,country,2004,,Eurostat health expenditure (hlth_sha11_hf); NFZ = compulsory schemes,,false
+hlt.vaccination_coverage_childhood,gis,country|voivodeship,2005,,GIS annual immunisation programme report,,false
+hlt.vaccination_coverage_childhood,nizp_pzh,country,2005,,NIZP-PZH szczepienia bulletin,,false
+hlt.vaccination_coverage_childhood,ecdc,country,2004,,ECDC Vaccine Preventable Diseases monitoring,,false
+hlt.obesity_rate,sdp,country,2004,,GUS health surveys (badanie stanu zdrowia ludności),,false
+hlt.obesity_rate,who,country,2000,,WHO STEPS / NCD prevalence estimates,,false
+hlt.obesity_rate,eurostat,country,2004,,Eurostat EHIS health determinants (hlth_ehis_bm1i),,false
+hlt.smoking_rate,sdp,country,2004,,GUS health survey,,false
+hlt.smoking_rate,nizp_pzh,country,2005,,NIZP-PZH tobacco use surveillance,,false
+hlt.smoking_rate,who,country,2000,,WHO STEPS tobacco estimates,,false
+hlt.waiting_time_specialist,nfz,country|voivodeship,2012,,NFZ kolejki portal; outpatient specialist queues; quarterly,,false
+hlt.mental_health_hospitalisations,csioz,country|voivodeship,2005,,CeZ hospital morbidity study; ICD-10 F00-F99,,false
+hlt.mental_health_hospitalisations,nfz,country,2010,,NFZ hospitalisation data by diagnosis,,false
+hlt.mental_health_hospitalisations,eurostat,country,2004,,Eurostat hospital discharges by ICD-10 (hlth_co_disch1),,false
+edu.school_enrolment_primary,sio,country|voivodeship,2008,,SIO annual data as of 30 September school year,,false
+edu.school_enrolment_primary,bdl,country|voivodeship,2004,,BDL education module,,false
+edu.school_enrolment_primary,eurostat,country,2004,,Eurostat education statistics (educ_uoe_enrt01),,false
+edu.school_enrolment_secondary,sio,country|voivodeship,2008,,SIO secondary school enrolment (LO + technikum + branżowe),,false
+edu.school_enrolment_secondary,bdl,country|voivodeship,2004,,BDL,,false
+edu.school_enrolment_secondary,eurostat,country,2004,,Eurostat ISCED 3,,false
+edu.school_enrolment_tertiary,polon,country|voivodeship,2012,,POL-on student registration; annual,,false
+edu.school_enrolment_tertiary,eurostat,country,2004,,Eurostat ISCED 5-8 (educ_uoe_enrt01),,false
+edu.matura_pass_rate,dane_gov,country,2012,,CKE matura results published on dane.gov.pl,,false
+edu.matura_pass_rate,sdp,country,2005,,GUS SDP education statistics,,false
+edu.university_count,polon,country|voivodeship,2012,,POL-on institution register; active HEIs,,false
+edu.academic_staff_count,polon,country|voivodeship,2012,,POL-on academic staff register,,false
+edu.academic_staff_count,bdl,country,2004,,BDL higher education module,,false
+edu.phd_candidates,polon,country|voivodeship,2019,,POL-on doctoral school register (post-2018 reform),,false
+edu.phd_candidates,eurostat,country,2004,,Eurostat ISCED 8 doctoral enrolment,,false
+edu.education_expenditure_gdp,mf,country,2005,,MF budget execution education expenditure,,false
+edu.education_expenditure_gdp,eurostat,country,2004,,Eurostat general government expenditure by function (gov_10a_exp); COFOG 09,,false
+edu.teachers_count,sio,country|voivodeship,2008,,SIO teacher counts per school year,,false
+edu.teachers_count,bdl,country|voivodeship,2004,,BDL teachers in primary and secondary education,,false
+edu.early_school_leavers,sdp,country,2004,,GUS LFS BAEL-derived; persons 18-24 with at most ISCED 2,,false
+edu.early_school_leavers,eurostat,country,2004,,Eurostat early leavers from education (edat_lfse_14),,false
+edu.tertiary_attainment_rate,sdp,country,2004,,GUS LFS 30-34 with ISCED 5+ attainment,,false
+edu.tertiary_attainment_rate,eurostat,country,2004,,Eurostat tertiary attainment (edat_lfse_03),,false
+soc.household_income_avg,sdp,country,2004,,GUS EU-SILC (badanie spójności społecznej); annual,,false
+soc.household_income_avg,eurostat,country,2004,,Eurostat EU-SILC (ilc_di03),,false
+soc.poverty_rate,sdp,country,2004,,GUS EU-SILC at-risk-of-poverty rate (ARPR),,false
+soc.poverty_rate,eurostat,country,2004,,Eurostat ilc_li02; EU comparable 60% median threshold,,false
+soc.severe_material_deprivation,sdp,country,2004,,GUS EU-SILC severe material deprivation (SMD),,false
+soc.severe_material_deprivation,eurostat,country,2004,,Eurostat ilc_mddd11,,false
+soc.gini_coefficient,sdp,country,2004,,GUS EU-SILC Gini coefficient,,false
+soc.gini_coefficient,eurostat,country,2004,,Eurostat Gini (ilc_di12),,false
+soc.gini_coefficient,worldbank,country,2000,,World Bank SI.POV.GINI; for longer historical series,,false
+soc.social_benefits_total,zus,country,2005,,ZUS combined pension + disability + sickness payments,,false
+soc.social_benefits_total,mrpips,country,2005,,MRPiPS family benefits; unemployment benefits,,false
+soc.pension_average,zus,country,2005,,ZUS statistical bulletin average old-age pension amount,,false
+soc.disability_benefit_recipients,pfron,country,2010,,PFRON disability support programme statistics,,false
+soc.childcare_coverage_0_3,mrpips,country|voivodeship,2012,,MRPiPS childcare register (żłobki); annual; CRZŻ register,,false
+soc.childcare_coverage_0_3,bdl,country|voivodeship,2012,,BDL childcare infrastructure,,false
+soc.childcare_coverage_0_3,eurostat,country,2004,,Eurostat formal childcare (ilc_caindother),,false
+soc.child_benefit_beneficiaries,mrpips,country,2016,,MRPiPS monthly 800+ (formerly 500+) programme statistics,,false
+soc.social_assistance_recipients,mrpips,country|voivodeship,2005,,MRPiPS annual social assistance beneficiaries report,,false
+soc.social_assistance_recipients,bdl,country|voivodeship,2004,,BDL social welfare module,,false
+soc.minimum_wage,mrpips,country,2000,,MRPiPS statutory regulation; semi-annual from 2023,,false
+soc.minimum_wage,eurostat,country,2004,,Eurostat statutory minimum wages (earn_mw_cur),,false
+crm.crime_total,policja,country,2000,,Policja annual crime statistics (przestępczość); yearbook,,false
+crm.crime_total,bdl,country,2004,,BDL safety and justice module,,false
+crm.crime_rate,policja,country,2000,,Policja calculated per 100k; yearbook,,false
+crm.crime_rate,eurostat,country,2004,,Eurostat crime statistics (crim_gen_reg),,false
+crm.crime_regional,policja,country|voivodeship,2000,,Policja regional command data; annual yearbook tables,,false
+crm.crime_regional,bdl,country|voivodeship,2004,,BDL crime by voivodeship,,false
+crm.violent_crime,policja,country,2000,,Policja crime category: przestępstwa z użyciem przemocy,,false
+crm.violent_crime,eurostat,country,2004,,Eurostat intentional homicide + assault (crim_gen),,false
+crm.theft_total,policja,country,2000,,Policja kradzieże + włamania combined category,,false
+crm.cybercrime,policja,country,2015,,Policja cybercrime (art. 267-269 KK) statistics,,false
+crm.cybercrime,nask,country,2015,,NASK CERT Polska cybercrime incident reports,,false
+crm.court_cases_filed,ms_stat,country,2005,,MS judicial statistics portal ISWS; all court levels,,false
+crm.court_cases_resolved,ms_stat,country,2005,,MS ISWS resolved cases,,false
+crm.court_pending_backlog,ms_stat,country,2005,,MS ISWS pending cases end of year,,false
+crm.prison_population,sw,country|voivodeship,2005,,SW monthly population report,,false
+crm.prison_population,eurostat,country,2004,,Eurostat prison population (crim_pris_pop); annual,,false
+crm.road_accidents,policja,country|voivodeship,2000,,Policja road accident database; monthly aggregates,,false
+crm.road_accidents,eurostat,country,2004,,Eurostat road safety (tran_sf_roadse),,false
+crm.domestic_violence_incidents,policja,country,2010,,Policja Niebieska Karta statistics; annual,,false
+crm.domestic_violence_incidents,mrpips,country,2010,,MRPiPS coordinates NK procedures; joint reporting,,false
+clt.tourist_arrivals_intl,pot,country,2005,,POT inbound tourism statistics; annual border survey,,false
+clt.tourist_arrivals_intl,bdl,country,2004,,BDL tourism module,,false
+clt.tourist_arrivals_intl,eurostat,country,2004,,Eurostat tourism (tour_occ_arm),,false
+clt.overnight_stays_domestic,bdl,country|voivodeship,2004,,BDL accommodation statistics; monthly,,false
+clt.overnight_stays_domestic,eurostat,country,2004,,Eurostat tourism overnight stays (tour_occ_nim),,false
+clt.hotel_occupancy_rate,bdl,country|voivodeship,2004,,BDL bed occupancy rate monthly,,false
+clt.hotel_occupancy_rate,eurostat,country,2004,,Eurostat net occupancy rate (tour_occ_nim),,false
+clt.museum_visits,mkidn,country|voivodeship,2005,,MKiDN annual culture statistics; museum attendance,,false
+clt.museum_visits,bdl,country|voivodeship,2004,,BDL culture module,,false
+clt.cinema_admissions,mkidn,country,2005,,MKiDN / PISF annual cinema attendance,,false
+clt.cinema_admissions,bdl,country,2004,,BDL culture module,,false
+clt.library_borrowings,bn,country|voivodeship,2005,,BN annual library statistics report,,false
+clt.library_borrowings,bdl,country|voivodeship,2004,,BDL culture + library module,,false
+clt.tourism_revenue_intl,nbp,country,2000,,NBP BoP travel services credit; annual,,false
+clt.tourism_revenue_intl,eurostat,country,2004,,Eurostat BoP travel (bop_its6_det) credit,,false
+clt.culture_expenditure_gdp,mf,country,2005,,MF budget execution COFOG 08 (recreation + culture),,false
+clt.culture_expenditure_gdp,eurostat,country,2004,,Eurostat general government expenditure COFOG 08,,false
+clt.sport_facilities_count,msit,country|voivodeship,2010,,MSiT sport facilities database (BDB); annual snapshot,,false
+clt.sport_facilities_count,bdl,country|voivodeship,2004,,BDL sport infrastructure module,,false
+env.pm25_annual_mean,gios,country|voivodeship,2010,,GIOŚ annual air quality assessment; PM2.5 mean by zone,,false
+env.pm25_annual_mean,eea,country,2004,,EEA air quality statistics; EU 27 comparable (AQD e-Reporting),,false
+env.pm25_annual_mean,eurostat,country,2004,,Eurostat air quality (sdg_11_50); EU harmonised,,false
+env.pm10_annual_mean,gios,country|voivodeship,2004,,GIOŚ monitoring network; PM10 annual mean,,false
+env.pm10_annual_mean,eea,country,2004,,EEA AQD e-Reporting,,false
+env.pm25_station,gios,country|voivodeship|local,2015,,GIOŚ station-level API; real-time and hourly historical,,false
+env.ghg_emissions_total,kobize,country,2000,,KOBIZE National GHG Inventory; 2-year lag; UNFCCC submission,,false
+env.ghg_emissions_total,eea,country,2000,,EEA EU GHGI; country data; UNFCCC CRF basis,,false
+env.ghg_emissions_total,eurostat,country,2004,,Eurostat GHG emissions (env_air_gge),,false
+env.ghg_emissions_sectoral,kobize,country,2000,,KOBIZE sectoral breakdown by IPCC source categories,,false
+env.ghg_emissions_sectoral,eea,country,2000,,EEA national inventory reports by sector,,false
+env.renewable_energy_share,ure,country,2010,,URE annual RES report; POZE share in gross final energy,,false
+env.renewable_energy_share,eurostat,country,2004,,Eurostat RES share (nrg_ind_ren); EU RED target metric,,false
+env.renewable_energy_share,iea,country,2000,,IEA Renewable Electricity Statistics,,false
+env.forest_area,lasy_panstwowe,country,2000,,LP annual reports; state forests area,,false
+env.forest_area,eea,country,2000,,EEA forest area (CORINE Land Cover); 6-year cycle,,false
+env.forest_area,bdl,country|voivodeship,2004,,BDL environment module including private forests,,false
+env.municipal_waste_generated,bdl,country,2004,,BDL waste management module; municipal waste per capita,,false
+env.municipal_waste_generated,eurostat,country,2004,,Eurostat municipal waste statistics (env_wasmun),,false
+env.municipal_waste_recycling_rate,bdl,country,2004,,BDL recycling rate; GUS annual,,false
+env.municipal_waste_recycling_rate,eurostat,country,2004,,Eurostat recycling rate (env_wasmun),,false
+env.water_abstractions,bdl,country|voivodeship,2004,,BDL water use statistics,,false
+env.water_abstractions,eurostat,country,2004,,Eurostat freshwater abstractions (env_wat_abs),,false
+env.water_abstractions,wody_polskie,country|voivodeship,2018,,Wody Polskie permit and use data,,false
+env.temperature_anomaly,imgw,country,1951,,IMGW-PIB national climate monitoring; baseline 1961-1990,,false
+env.temperature_anomaly,copernicus,country,1979,,Copernicus C3S ERA5 reanalysis; gridded; Poland area average,,false
+env.precipitation_anomaly,imgw,country,1951,,IMGW-PIB climate normals comparison,,false
+env.precipitation_anomaly,copernicus,country,1979,,Copernicus C3S ERA5 precipitation,,false
+env.bathing_water_quality,gios,country|voivodeship,2010,,GIOŚ bathing water quality assessment; annual season report,,false
+env.bathing_water_quality,eea,country,2004,,EEA Bathing Water Directive reporting portal,,false
+env.air_quality_index_cities,gios,country|voivodeship|local,2015,,GIOŚ API; daily AQI for major Polish cities,,false
+sci.rd_expenditure_gdp,opi_pib,country,2005,,OPI PIB R&D expenditure survey (GERD); annual,,false
+sci.rd_expenditure_gdp,eurostat,country,2004,,Eurostat R&D expenditure (rd_e_gerdtot); EU comparable,,false
+sci.rd_expenditure_gdp,oecd,country,2004,,OECD MSTI Main Science and Technology Indicators,,false
+sci.rd_expenditure_total,opi_pib,country,2005,,OPI PIB GERD in PLN,,false
+sci.rd_expenditure_total,eurostat,country,2004,,Eurostat GERD,,false
+sci.rd_expenditure_total,oecd,country,2004,,OECD MSTI,,false
+sci.researchers_count,opi_pib,country,2005,,OPI PIB R&D personnel (FTE researchers),,false
+sci.researchers_count,eurostat,country,2004,,Eurostat R&D personnel (rd_p_persocc),,false
+sci.researchers_count,oecd,country,2004,,OECD MSTI researchers FTE,,false
+sci.patent_applications,opi_pib,country,2005,,OPI PIB patent statistics (UPRP + EPO by applicant country),,false
+sci.patent_applications,eurostat,country,2004,,Eurostat EPO patent applications (pat_ep_ntot),,false
+sci.ncn_grants_awarded,ncn,country,2010,,NCN annual report; grants by competition and discipline,,false
+sci.broadband_coverage,uke,country|voivodeship,2012,,UKE annual broadband coverage report; household %,,false
+sci.broadband_coverage,eurostat,country,2012,,Eurostat DESI broadband coverage (isoc_bde15cov),,false
+sci.internet_usage_rate,sdp,country,2004,,GUS ICT survey (badanie wykorzystania technologii informacyjno-komunikacyjnych),,false
+sci.internet_usage_rate,eurostat,country,2004,,Eurostat DESI / ICT survey (isoc_ci_ifp_iu),,false
+sci.ecommerce_participation,sdp,country,2004,,GUS ICT survey e-commerce purchases,,false
+sci.ecommerce_participation,eurostat,country,2004,,Eurostat (isoc_ec_ibuy),,false
+sci.mobile_subscriptions,uke,country,2010,,UKE market data; active SIM subscriptions,,false
+sci.mobile_subscriptions,eurostat,country,2004,,Eurostat (isoc_tc_mob1),,false
+sci.mobile_subscriptions,worldbank,country,2000,,World Bank IT.CEL.SETS.P2,,false
+sci.digital_public_services,sdp,country,2004,,GUS ICT survey e-government usage (12-month recall),,false
+sci.digital_public_services,eurostat,country,2004,,Eurostat DESI digital public services (isoc_ci_ac_i),,false
+sci.cybersecurity_incidents,nask,country,2015,,NASK / CERT Polska annual threat landscape report,,false

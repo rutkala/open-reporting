@@ -3,57 +3,64 @@
 <!-- last-updated: 2026-03-25 -->
 
 ## Current Focus
-Ready to populate domain_details.csv + bus_matrix.md domain by domain.
-Schema, dimensions, and bus matrix blueprint all in place.
+Catalogue fully populated. Next: verify series_ids source by source, then write first ingestion pipeline.
 
 ## Last Session Summary (2026-03-25)
-Three areas covered: source catalogue, research product, warehouse architecture.
+Catalogue data layer completed: domain_details, bus matrix, domain_detail_sources, ingestion standard updated.
 
-### Warehouse architecture built (`e8ed1bd6`):
-- `catalogue.domain_details` extended: +`detail_type` (indicator/micro_indicator/sentiment/reference) +`entity_level` (national/regional/local/sectoral/company/individual)
-- `platform/warehouse/bus_matrix.md` — Kimball bus matrix blueprint (7 conformed dimensions)
-- `platform/warehouse/dimensions/` — DDL stubs for all 7 conformed dimensions:
-  - dim_date, dim_geography (TERYT hierarchy), dim_sector (NACE/PKD)
-  - dim_company (KRS/GPW/SCD2), dim_demographic, dim_commodity, dim_institution
+### domain_details populated:
+- 222 indicators across all 18 domains (FIN/PUB/MAC/PRC/LAB/BUS/TRD/AGR/TRP/ENE/POP/HLT/EDU/SOC/CRM/CLT/ENV/SCI)
+- Fields: detail_id, domain_id, name, unit, frequency, detail_type, entity_level, description, notes
+- `platform/database/data/domain_details.csv`
 
-### Data model design decisions:
-- domain_details has 4 types: indicator (aggregate TS) | micro_indicator (entity-level) | sentiment (text-derived) | reference (doc pointer only)
-- Text data (articles, laws, rulings) → never stored as full text; store derived scores/counts or reference links only
-- Bus matrix maps facts to 7 dimensions: Date, Geography, Sector, Company, Demographic, Commodity, Institution
-- domain_details + bus_matrix populated in parallel domain by domain
+### Bus matrix fully populated:
+- All 18 domain sections filled with dimension mappings (D1–D7)
+- `platform/warehouse/bus_matrix.md`
 
-### Research product created (`595b2cce`):
-- `products/research/` — academic research workspace
-- Library seeded with 7 entries: Solow, IS-LM, Phillips Curve, Taylor Rule, Consumer Theory, Production Theory, Market Equilibrium
-- Next library additions: AS-AD, Okun's Law, Mundell-Fleming, then econometrics (OLS, time series)
+### domain_detail_sources populated:
+- 483 source mappings (avg ~2-3 sources per indicator)
+- Top sources: eurostat (110), bdl (59), sdp (45), nbp (19), are (12)
+- All rows: `verified=false`, `series_id=null` — none confirmed against live sources yet
+- `platform/database/data/domain_detail_sources.csv`
 
-### Source catalogue finalised (`caaed777`):
-- 87 sources, 18 domains, 34 tier-1 APIs / 46 tier-2 files / 7 tier-3 reports
+### Schema: domain_detail_sources extended:
+- Added `series_id VARCHAR(300)` — exact locator within source system (endpoint, dataset code, variable ID)
+- Added `verified BOOLEAN DEFAULT FALSE` — ingestion pipelines must only trust verified=true rows
+- Idempotent ALTER TABLE migrations in `platform/database/catalogue/04_domain_detail_sources.sql`
+- series_id format convention: REST = `endpoint?param=val`, SDMX = `dataset?filter`, BDL = `variables/{id}`, XLSX = `file::sheet::column`
+
+### Ingestion standard updated:
+- Phase 0 added: catalogue verification gate (REQUIRED before any ingestion code)
+- series_id format table per source type (REST, SDMX/Eurostat, BDL, XLSX, HTML)
+- Script docstring template now includes Catalogue block (detail_id / source_id / series_id)
+- Phase 6 validation: catalogue check as first item
+- Architecture diagram: catalogue as entry point, output corrected to `curated.*`
+- `.claude/standards/ingestion.md`
 
 ## Key Technical Facts
-- DB (analytical): DuckDB at data/warehouse.duckdb (DUCKDB_PATH env var)
+- DB (analytical): DuckDB at data/warehouse.duckdb (DUCKDB_PATH env var) — currently empty
 - DB (operational): PostgreSQL localhost:5432 db=reporting user=reporting
 - Catalogue loader: `PYTHONPATH=/opt/open-reporting python3 platform/database/loader.py`
 - dbt: `cd platform/processing/dbt && dbt run --profiles-dir .`
 - PYTHONPATH=/opt/open-reporting required for all python3 commands
 
-## Domain → Primary Vertical Sources
-- FIN: nbp, gpw, knf, ecb, bis, tge, gpw_benchmark, mf_dlug
-- PUB: mf, mf_dlug, kas, bgk | MAC: nbp, bdm, ec_bcs, ameco
-- PRC: nbp, ure, tge, uokik | LAB: mrpips, zus, cbop, pracuj_pl
-- BUS: regon, gunb, pmi_pl | TRD: un_comtrade, puesc, wto
-- AGR: kowr, arimir, mrirw, lasy_panstwowe, iung | TRP: utk, gddkia, ulc, pkp_plk
-- ENE: pse, ure, are, tge, entso_e, iea, gaz_system | POP: demografia, un_wpp
-- HLT: nfz, gis, nizp_pzh, who, ecdc, csioz | EDU: sio, polon
-- SOC: zus, mrpips, pfron | CRM: policja, ms_stat, sw, prokuratura
-- CLT: pot, mkidn, msit, bn | ENV: gios, kobize, imgw, eea, copernicus
-- SCI: uke, opi_pib, ncn, nask
+## Catalogue State
+- `catalogue.sources`: 87 sources (34 tier-1 / 46 tier-2 / 7 tier-3)
+- `catalogue.domains`: 18 domains across Economy / Society / Environment groups
+- `catalogue.domain_details`: 222 indicators
+- `catalogue.domain_detail_sources`: 483 mappings — all unverified (series_id=null, verified=false)
+
+## Verification Work Remaining
+Before any ingestion pipeline can be written, series_ids must be confirmed per source.
+Natural order: tier-1 API sources first (nbp, eurostat/sdmx, bdl, sdp, pse, gios, gaz_system).
+Each verification: open source docs → find exact series → test → set series_id + verified=true in CSV → reload catalogue.
 
 ## Open Items
-- Populate domain_details.csv + bus_matrix.md domain by domain (next)
-- Populate domain_detail_sources.csv mapping indicators to sources
+- Verify series_ids: start with nbp (exchange rates, reference rate) — well-documented REST API
+- Verify series_ids: eurostat SDMX — dataset codes for MAC/LAB/PRC indicators
+- Verify series_ids: bdl API — variable IDs for regional indicators
+- Write first ingestion pipeline (candidate: fin.exchange_rate_* via NBP — simplest tier-1 REST API)
 - Install dbt-metricflow, migrate products/semantic/ → dbt metrics/
 - Create products/visuals/lib/metrics.py (MetricFlow query wrapper)
-- Write first dlt ingestion pipeline
 - Write first dbt model
 - Fix infra: gitignore certs, fix certbot volume paths in docker-compose
