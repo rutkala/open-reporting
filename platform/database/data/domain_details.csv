@@ -1,1 +1,1 @@
-detail_id,domain_id,name,unit,frequency,description,notes
+detail_id,domain_id,name,unit,frequency,detail_type,entity_level,description,notes
