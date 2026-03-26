@@ -79,8 +79,8 @@ app = Dash(
     __name__,
     title=f"Open Reporting — {domain.label}",
     suppress_callback_exceptions=True,
-    requests_pathname_prefix="/dash/",
-    routes_pathname_prefix="/dash/",
+    requests_pathname_prefix="/labour/",
+    routes_pathname_prefix="/labour/",
 )
 
 # ── Styles ────────────────────────────────────────────────────────────────────
