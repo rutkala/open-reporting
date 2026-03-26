@@ -3,19 +3,25 @@
 <!-- last-updated: 2026-03-26 -->
 
 ## Current Focus
-Full ELT pipeline live for FIN (NBP) + all Eurostat domains. Portal cleaned up with correct URLs.
-Next: BDL/SDP ingestion (needs API key confirm), fix BUS sts_inpr_a series_id.
+Explorer dashboard improved — pivot with domain/indicator filters, correct chart axes.
+Next: continue explorer UX improvements, then domain dashboards (LAB, MAC, ENV first).
 
 ## Last Session Summary (2026-03-26)
-Built full pipeline from catalogue → raw → curated, data explorer, and cleaned up portal.
+Improved data explorer and laid groundwork for domain dashboard phase.
 
 ### What was built:
-- **NBP ingestion**: `platform/ingestion/to_raw/nbp_exchange_rates.py` — 23,976 rows (USD/EUR/CHF/GBP from 2002)
-- **Eurostat ingestion**: `platform/ingestion/to_raw/eurostat_observations.py` — 71,098 rows across 53 datasets
-- **Raw tables**: `raw.nbp_exchange_rates`, `raw.eurostat_observations` (DDL in `platform/warehouse/raw/`)
-- **dbt seed**: `platform/processing/dbt/seeds/eurostat_series.csv` — 73-row mapping (detail_id → dataset_code + dimension_key)
-- **dbt curated**: 20 models — `fin_exchange_rates` + `all_indicators` (unified) + 17 domain `*_indicators` tables
-- **Data explorer**: `products/dashboards/explorer/app.py` — pivot UI at /explorer/
+- **Explorer v2** (`products/dashboards/explorer/app.py`):
+  - Filter panel: Domain (multi-select) → Indicator (multi-select, updates on domain change) → Period from/to
+  - Pivot controls: Rows / Columns / Values / Aggregation — explicit, user-controlled
+  - Smart defaults for indicator tables: rows=detail_id, columns=period, values=value, agg=SUM
+  - Chart axes corrected: X=column dim values, Y=measure, series=row dim breakdown
+  - Sidebar organised into sections: Data source / Filters / Pivot
+  - Metadata columns (geo, obs_status, dataset_code, fetched_at, updated_at) excluded from dim options
+
+### Pipeline (from previous session, still live):
+- **NBP ingestion**: `platform/ingestion/to_raw/nbp_exchange_rates.py` — 23,976 rows
+- **Eurostat ingestion**: `platform/ingestion/to_raw/eurostat_observations.py` — 71,098 rows
+- **dbt curated**: 20 models — `fin_exchange_rates` + `all_indicators` + 17 domain `*_indicators`
 - **Portal homepage**: two cards — Labour (/labour/) and Explorer (/explorer/)
 
 ### URL scheme (domain-based English):
@@ -24,23 +30,15 @@ Built full pipeline from catalogue → raw → curated, data explorer, and clean
 - Future: `/mac/`, `/env/`, `/pub/`, etc. as new dashboards are built
 
 ### Process management (systemd):
-- `or-labour.service` → port 8050, auto-starts on boot, restarts on crash
-- `or-explorer.service` → port 8051, auto-starts on boot, restarts on crash
+- `or-labour.service` → port 8050 | `or-explorer.service` → port 8051
 - Unit files: `infra/systemd/` (deployed to `/etc/systemd/system/`)
-- Commands: `systemctl status or-labour`, `journalctl -u or-labour -f`
+- Commands: `systemctl status or-explorer`, `journalctl -u or-explorer -f`
 
 ### Curated table row counts:
 - fin_exchange_rates: 23,976 | all_indicators: 1,906 (unified Eurostat)
 - clt: 551 | pop: 196 | trp: 174 | sci: 137 | trd: 120 | env: 122 | lab: 119
 - prc: 89 | soc: 82 | mac: 80 | edu: 76 | pub: 60 | crm: 32 | agr: 26 | ene: 25 | hlt: 17
 - bus: 0 (sts_inpr_a returns no PL data — needs series_id fix)
-
-### Known issues / TODO:
-- BUS `sts_inpr_a`: needs `indic_bt` dimension in series_id; currently 0 rows
-- AGR `ef_m_farmleg`: no clean TOTAL key; agricultural_area_used / crop_area_arable not loading
-- CLT `overnight_stays_domestic`: no R_DOM data for Poland in tour_occ_nim
-- 37 unverified Eurostat series remaining
-- Processes not managed by a supervisor — die on reboot; consider systemd units or docker
 
 ## Key Technical Facts
 - DB (analytical): DuckDB at data/warehouse.duckdb (DUCKDB_PATH env var)
@@ -55,8 +53,9 @@ Built full pipeline from catalogue → raw → curated, data explorer, and clean
 - `catalogue.domain_detail_sources`: 483 mappings — Eurostat: 73 verified, 37 unverified; NBP FX: 4 verified
 
 ## Open Items
+- Explorer UX: still needs work (user confirmed path is right, more iterations needed)
+- Domain dashboards: next phase — LAB, MAC, ENV first; standard template (KPI cards, time series, cross-indicator bar)
 - Fix BUS: `sts_inpr_a` series_id (try `indic_bt=PROD`)
 - BDL ingestion: pending user confirmation on API key
 - SDP ingestion: pending user confirmation on data format
-- ~~Process supervision~~ — done: systemd units in `infra/systemd/`, auto-start on boot
 - Install dbt-metricflow, migrate products/semantic/ → dbt metrics/
