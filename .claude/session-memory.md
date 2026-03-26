@@ -3,58 +3,58 @@
 <!-- last-updated: 2026-03-26 -->
 
 ## Current Focus
-Explorer dashboard improved — pivot with domain/indicator filters, correct chart axes.
-Next: continue explorer UX improvements, then domain dashboards (LAB, MAC, ENV first).
+Schema cleanup done, tooling settled. Next: domain dashboards (LAB, MAC, ENV first).
 
 ## Last Session Summary (2026-03-26)
-Improved data explorer and laid groundwork for domain dashboard phase.
+Explorer improvements, schema rename, VS Code SQLTools troubleshooting, Harlequin setup.
 
-### What was built:
-- **Explorer v2** (`products/dashboards/explorer/app.py`):
-  - Filter panel: Domain (multi-select) → Indicator (multi-select, updates on domain change) → Period from/to
-  - Pivot controls: Rows / Columns / Values / Aggregation — explicit, user-controlled
-  - Smart defaults for indicator tables: rows=detail_id, columns=period, values=value, agg=SUM
-  - Chart axes corrected: X=column dim values, Y=measure, series=row dim breakdown
-  - Sidebar organised into sections: Data source / Filters / Pivot
-  - Metadata columns (geo, obs_status, dataset_code, fetched_at, updated_at) excluded from dim options
+### What was built/changed:
+- **dbt schema rename**: `main_curated` → `curated` via `generate_schema_name` macro
+  (`platform/processing/dbt/macros/generate_schema_name.sql`)
+- **Explorer updated**: `CURATED_SCHEMA = "curated"` in `products/dashboards/explorer/app.py`
+- **Old schema dropped**: `main_curated` removed from warehouse.duckdb
+- **`.gitignore` updated**: added `/node_modules/`, `/package.json`, `/package-lock.json`
+- **VS Code SQLTools**: installed `evidence.sqltools-duckdb-driver`, removed `randomfractalsinc.duckdb-sql-tools`
+  — both fail due to DuckDB version mismatch (extensions bundle 0.x, warehouse is 1.5.1)
+- **Harlequin**: installed, used as primary SQL client (run in separate tmux window)
+  — shortcut to run query: `F5`; quit: `Ctrl+Q`
+- **duckdb-async**: installed at `/root/.local/share/vscode-sqltools/` (not used, SQLTools DuckDB broken)
 
-### Pipeline (from previous session, still live):
-- **NBP ingestion**: `platform/ingestion/to_raw/nbp_exchange_rates.py` — 23,976 rows
-- **Eurostat ingestion**: `platform/ingestion/to_raw/eurostat_observations.py` — 71,098 rows
-- **dbt curated**: 20 models — `fin_exchange_rates` + `all_indicators` + 17 domain `*_indicators`
-- **Portal homepage**: two cards — Labour (/labour/) and Explorer (/explorer/)
+### DuckDB schema layout (final):
+- `raw` — raw ingested tables (eurostat_observations, nbp_exchange_rates)
+- `curated` — 20 dbt models (all_indicators, fin_exchange_rates, 17 domain *_indicators, eurostat_series seed in `main`)
+- `main` — DuckDB default schema; contains `eurostat_series` seed (dbt seeds ignore custom schema macro)
 
-### URL scheme (domain-based English):
-- `/labour/` → Labour domain Dash dashboard (port 8050)
-- `/explorer/` → Data explorer Dash app (port 8051)
-- Future: `/mac/`, `/env/`, `/pub/`, etc. as new dashboards are built
+### Important: DuckDB concurrency
+- Only one process can hold a write lock at a time
+- Stop dashboards + Harlequin before running `dbt run`: `sudo systemctl stop or-explorer or-labour`
+- Dashboards connect read-only so they can coexist, but Harlequin takes an exclusive lock
 
-### Process management (systemd):
-- `or-labour.service` → port 8050 | `or-explorer.service` → port 8051
-- Unit files: `infra/systemd/` (deployed to `/etc/systemd/system/`)
-- Commands: `systemctl status or-explorer`, `journalctl -u or-explorer -f`
+### Pipeline (live):
+- NBP: 23,976 rows | Eurostat: 71,098 rows across 53 datasets
+- dbt: 20 curated models, all passing
+- Dashboards: `/labour/` (port 8050), `/explorer/` (port 8051) — both systemd-managed
 
 ### Curated table row counts:
-- fin_exchange_rates: 23,976 | all_indicators: 1,906 (unified Eurostat)
+- fin_exchange_rates: 23,976 | all_indicators: 1,906
 - clt: 551 | pop: 196 | trp: 174 | sci: 137 | trd: 120 | env: 122 | lab: 119
 - prc: 89 | soc: 82 | mac: 80 | edu: 76 | pub: 60 | crm: 32 | agr: 26 | ene: 25 | hlt: 17
-- bus: 0 (sts_inpr_a returns no PL data — needs series_id fix)
+- bus: 0 (needs series_id fix)
 
 ## Key Technical Facts
 - DB (analytical): DuckDB at data/warehouse.duckdb (DUCKDB_PATH env var)
 - DB (operational): PostgreSQL localhost:5432 db=reporting user=reporting
-- Catalogue loader: `PYTHONPATH=/opt/open-reporting python3 platform/database/loader.py`
 - dbt: `cd platform/processing/dbt && DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt run --profiles-dir .`
-- Eurostat ingestion: `PYTHONPATH=/opt/open-reporting python3 platform/ingestion/to_raw/eurostat_observations.py [--dataset X] [--backfill]`
-- dbt schemas in DuckDB: `main_curated` (dbt prepends `main_` to schema names)
+- Harlequin: `harlequin /opt/open-reporting/data/warehouse.duckdb` (run in tmux new-window)
+- dbt schemas: `curated` (custom macro overrides default `main_curated` naming)
 
 ## Catalogue State
 - `catalogue.domain_details`: 222 indicators across 18 domains
 - `catalogue.domain_detail_sources`: 483 mappings — Eurostat: 73 verified, 37 unverified; NBP FX: 4 verified
 
 ## Open Items
-- Explorer UX: still needs work (user confirmed path is right, more iterations needed)
 - Domain dashboards: next phase — LAB, MAC, ENV first; standard template (KPI cards, time series, cross-indicator bar)
+- Move `eurostat_series` seed to `curated` schema (minor — seeds ignore `generate_schema_name` macro)
 - Fix BUS: `sts_inpr_a` series_id (try `indic_bt=PROD`)
 - BDL ingestion: pending user confirmation on API key
 - SDP ingestion: pending user confirmation on data format

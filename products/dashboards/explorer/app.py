@@ -22,7 +22,7 @@ from products.visuals.lib.theme import (
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
 
-CURATED_SCHEMA = "main_curated"
+CURATED_SCHEMA = "curated"
 MAX_PIVOT_COLS  = 60
 PORT            = 8051
 

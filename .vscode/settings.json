@@ -1,0 +1,11 @@
+{
+    "sqltools.useNodeRuntime": "/usr/bin/node",
+    "sqltools.connections": [
+        {
+            "name": "warehouse",
+            "driver": "DuckDB",
+            "databaseFilePath": "/opt/open-reporting/data/warehouse.duckdb",
+            "accessMode": "Read Only"
+        }
+    ]
+}
