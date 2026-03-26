@@ -23,9 +23,11 @@ Built full pipeline from catalogue → raw → curated, data explorer, and clean
 - `/explorer/` → Data explorer Dash app (port 8051)
 - Future: `/mac/`, `/env/`, `/pub/`, etc. as new dashboards are built
 
-### Running processes (must be started manually after reboot):
-- `PYTHONPATH=/opt/open-reporting python3 products/dashboards/rynek_pracy/app.py` → port 8050
-- `PYTHONPATH=/opt/open-reporting DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb python3 products/dashboards/explorer/app.py` → port 8051
+### Process management (systemd):
+- `or-labour.service` → port 8050, auto-starts on boot, restarts on crash
+- `or-explorer.service` → port 8051, auto-starts on boot, restarts on crash
+- Unit files: `infra/systemd/` (deployed to `/etc/systemd/system/`)
+- Commands: `systemctl status or-labour`, `journalctl -u or-labour -f`
 
 ### Curated table row counts:
 - fin_exchange_rates: 23,976 | all_indicators: 1,906 (unified Eurostat)
@@ -56,5 +58,5 @@ Built full pipeline from catalogue → raw → curated, data explorer, and clean
 - Fix BUS: `sts_inpr_a` series_id (try `indic_bt=PROD`)
 - BDL ingestion: pending user confirmation on API key
 - SDP ingestion: pending user confirmation on data format
-- Process supervision: systemd units or docker so dashboards survive reboot
+- ~~Process supervision~~ — done: systemd units in `infra/systemd/`, auto-start on boot
 - Install dbt-metricflow, migrate products/semantic/ → dbt metrics/
