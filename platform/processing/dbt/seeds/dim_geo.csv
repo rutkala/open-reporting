@@ -1,2 +1,26 @@
 geo,geo_name,geo_type,country_code,country_name,nuts1_code,nuts1_name
 PL,Poland,country,PL,Poland,,
+PL2,Makroregion Południowy,nuts1,PL,Poland,PL2,Makroregion Południowy
+PL4,Makroregion Północno-Zachodni,nuts1,PL,Poland,PL4,Makroregion Północno-Zachodni
+PL5,Makroregion Południowo-Zachodni,nuts1,PL,Poland,PL5,Makroregion Południowo-Zachodni
+PL6,Makroregion Północny,nuts1,PL,Poland,PL6,Makroregion Północny
+PL7,Makroregion Centralny,nuts1,PL,Poland,PL7,Makroregion Centralny
+PL8,Makroregion Wschodni,nuts1,PL,Poland,PL8,Makroregion Wschodni
+PL9,Makroregion Mazowiecko-Świętokrzyski,nuts1,PL,Poland,PL9,Makroregion Mazowiecko-Świętokrzyski
+PL21,Małopolskie,nuts2,PL,Poland,PL2,Makroregion Południowy
+PL22,Śląskie,nuts2,PL,Poland,PL2,Makroregion Południowy
+PL41,Wielkopolskie,nuts2,PL,Poland,PL4,Makroregion Północno-Zachodni
+PL42,Zachodniopomorskie,nuts2,PL,Poland,PL4,Makroregion Północno-Zachodni
+PL43,Lubuskie,nuts2,PL,Poland,PL4,Makroregion Północno-Zachodni
+PL51,Dolnośląskie,nuts2,PL,Poland,PL5,Makroregion Południowo-Zachodni
+PL52,Opolskie,nuts2,PL,Poland,PL5,Makroregion Południowo-Zachodni
+PL61,Kujawsko-Pomorskie,nuts2,PL,Poland,PL6,Makroregion Północny
+PL62,Warmińsko-Mazurskie,nuts2,PL,Poland,PL6,Makroregion Północny
+PL63,Pomorskie,nuts2,PL,Poland,PL6,Makroregion Północny
+PL71,Łódzkie,nuts2,PL,Poland,PL7,Makroregion Centralny
+PL72,Świętokrzyskie,nuts2,PL,Poland,PL7,Makroregion Centralny
+PL81,Lubelskie,nuts2,PL,Poland,PL8,Makroregion Wschodni
+PL82,Podkarpackie,nuts2,PL,Poland,PL8,Makroregion Wschodni
+PL84,Podlaskie,nuts2,PL,Poland,PL8,Makroregion Wschodni
+PL91,Warszawski stołeczny,nuts2,PL,Poland,PL9,Makroregion Mazowiecko-Świętokrzyski
+PL92,Mazowiecki regionalny,nuts2,PL,Poland,PL9,Makroregion Mazowiecko-Świętokrzyski

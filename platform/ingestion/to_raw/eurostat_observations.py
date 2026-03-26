@@ -36,6 +36,10 @@ GEO             = "PL"
 DEFAULT_PERIODS = 5
 RETRY_WAIT      = 5
 
+# Special geo sentinel: fetch without geo restriction, keep rows starting with this prefix.
+# Used for regional/NUTS2 datasets where geo=PL would only return the national aggregate.
+_NUTS2_PREFIX = "PL_NUTS2"
+
 
 # ── Catalogue ─────────────────────────────────────────────────────────────────
 
@@ -68,15 +72,18 @@ def verified_series(dataset_filter: str | None = None) -> dict[str, list[dict]]:
     rows = cur.fetchall()
     conn.close()
 
-    by_dataset: dict[str, list[dict]] = {}
+    # {dataset_code: [(filters_dict, geo_value), ...]}
+    by_dataset: dict[str, list[tuple[dict, str]]] = {}
     seen: set[str] = set()
     for (sid,) in rows:
         if sid in seen:
             continue
         seen.add(sid)
         dataset, _, qs = sid.partition("?")
-        filters = {k: v[0] for k, v in parse_qs(qs).items() if k != "geo"}
-        by_dataset.setdefault(dataset, []).append(filters)
+        qs_parsed = parse_qs(qs)
+        geo = qs_parsed.get("geo", [GEO])[0]
+        filters = {k: v[0] for k, v in qs_parsed.items() if k != "geo"}
+        by_dataset.setdefault(dataset, []).append((filters, geo))
     return by_dataset
 
 
@@ -88,12 +95,23 @@ def _dimension_key(dimensions: dict[str, str]) -> str:
     return "&".join(f"{k}={v}" for k, v in sorted(dimensions.items()) if k not in skip)
 
 
-def fetch_dataset(dataset_code: str, filters: dict, backfill: bool = False) -> list[dict]:
+def fetch_dataset(
+    dataset_code: str,
+    filters: dict,
+    geo: str = GEO,
+    backfill: bool = False,
+) -> list[dict]:
     """
-    Fetch PL observations for a dataset with specific dimension filters.
+    Fetch observations for a dataset with specific dimension filters.
     Returns list of {dataset_code, geo, period, dimension_key, value, obs_status}.
+
+    geo: geo value to pass to the API, or PL_NUTS2 to fetch all geographies and
+         post-filter to rows starting with 'PL' (for NUTS2 regional datasets).
     """
-    params: dict = {"format": "JSON", "lang": "en", "geo": GEO}
+    regional = geo == _NUTS2_PREFIX
+    params: dict = {"format": "JSON", "lang": "en"}
+    if not regional:
+        params["geo"] = geo
     params.update(filters)
     if not backfill:
         params["lastTimePeriod"] = DEFAULT_PERIODS
@@ -142,19 +160,23 @@ def fetch_dataset(dataset_code: str, filters: dict, backfill: bool = False) -> l
             remainder %= strides[i]
             coords[dim] = dim_labels[dim].get(pos, str(pos))
 
-        geo    = coords.get("geo", GEO)
-        period = coords.get("time", "")
+        obs_geo = coords.get("geo", GEO)
+        period  = coords.get("time", "")
         dim_key = _dimension_key(coords)
         status  = statuses.get(flat_idx_str)
 
         rows.append({
-            "dataset_code": dataset_code,
-            "geo":          geo,
-            "period":       period,
+            "dataset_code":  dataset_code,
+            "geo":           obs_geo,
+            "period":        period,
             "dimension_key": dim_key,
-            "value":        float(value) if value is not None else None,
-            "obs_status":   status,
+            "value":         float(value) if value is not None else None,
+            "obs_status":    status,
         })
+
+    if regional:
+        rows = [r for r in rows if r["geo"].startswith("PL")]
+        log.info("  Regional filter: kept %d PL* rows", len(rows))
 
     return rows
 
@@ -211,9 +233,9 @@ def run(dataset_filter: str | None = None, backfill: bool = False) -> None:
     total = 0
 
     for dataset_code, filter_list in series_map.items():
-        for filters in filter_list:
-            log.info("Fetching %s %s ...", dataset_code, filters)
-            rows = fetch_dataset(dataset_code, filters, backfill=backfill)
+        for filters, geo in filter_list:
+            log.info("Fetching %s %s (geo=%s) ...", dataset_code, filters, geo)
+            rows = fetch_dataset(dataset_code, filters, geo=geo, backfill=backfill)
             n = upsert(conn, rows)
             total += n
             log.info("  %s: %d observations upserted", dataset_code, n)

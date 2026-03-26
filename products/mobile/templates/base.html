@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#4A7FB5" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Open Reporting" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <title>Open Reporting</title>
+  <link rel="manifest" href="/app/static/manifest.json" />
+  <link rel="apple-touch-icon" href="/app/static/icon-192.png" />
+  <link rel="stylesheet" href="/app/static/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    {% block header %}
+    <span>Open Reporting</span>
+    {% endblock %}
+  </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="/app/" class="nav-tab {% if active_tab == 'home' %}active{% endif %}">
+      <span class="nav-icon">🏠</span>
+      <span>Główna</span>
+    </a>
+    <a href="/app/domeny/" class="nav-tab {% if active_tab == 'domains' %}active{% endif %}">
+      <span class="nav-icon">📊</span>
+      <span>Domeny</span>
+    </a>
+  </nav>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/app/static/sw.js', { scope: '/app/' })
+          .then(reg => console.log('SW registered', reg.scope))
+          .catch(err => console.warn('SW registration failed', err));
+      });
+    }
+  </script>
+</body>
+</html>

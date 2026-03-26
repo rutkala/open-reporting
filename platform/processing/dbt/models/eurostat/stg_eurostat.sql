@@ -30,8 +30,7 @@ with obs as (
         obs_status,
         fetched_at
     from {{ source('raw', 'eurostat_observations') }}
-    where geo = 'PL'
-      and value is not null
+    where value is not null
 
 ),
 

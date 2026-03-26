@@ -1,223 +1,223 @@
-detail_id,domain_id,detail_name,detail_unit,detail_frequency,domain_name,domain_group
-agr.agricultural_area_used,AGR,Agricultural Land in Use,thousand ha,annual,Agriculture & Forestry,Economy
-agr.crop_area_arable,AGR,Arable Land Area,thousand ha,annual,Agriculture & Forestry,Economy
-agr.crop_production_cereals,AGR,Cereal Production,thousand t,annual,Agriculture & Forestry,Economy
-agr.crop_production_rapeseed,AGR,Rapeseed Production,thousand t,annual,Agriculture & Forestry,Economy
-agr.livestock_cattle,AGR,Cattle Headcount,thousand head,biannual,Agriculture & Forestry,Economy
-agr.livestock_pigs,AGR,Pig Headcount,thousand head,biannual,Agriculture & Forestry,Economy
-agr.milk_production,AGR,Raw Cow's Milk Production,thousand t,monthly,Agriculture & Forestry,Economy
-agr.milk_purchase_price,AGR,Raw Milk Purchase Price,PLN/100 l,monthly,Agriculture & Forestry,Economy
-agr.pig_purchase_price,AGR,Pig Purchase Price,PLN/100 kg,monthly,Agriculture & Forestry,Economy
-agr.soil_erosion_risk,AGR,Area at Risk of Water Erosion,thousand ha,annual,Agriculture & Forestry,Economy
-agr.timber_harvest,AGR,Timber Harvest Volume,thousand m³,annual,Agriculture & Forestry,Economy
-agr.wheat_purchase_price,AGR,Wheat Purchase Price,PLN/t,monthly,Agriculture & Forestry,Economy
-bus.active_companies,BUS,Active Entities in REGON Register,count,monthly,Business & Industry,Economy
-bus.company_deregistrations,BUS,Company Deregistrations,count,monthly,Business & Industry,Economy
-bus.company_financials,BUS,Company Annual Financials (KRS),PLN,annual,Business & Industry,Economy
-bus.company_registrations,BUS,New Company Registrations,count,monthly,Business & Industry,Economy
-bus.company_registrations_sectoral,BUS,New Company Registrations by Sector,count,monthly,Business & Industry,Economy
-bus.construction_completions,BUS,Dwellings Completed,count,monthly,Business & Industry,Economy
-bus.construction_output_value,BUS,Construction Output Value,PLN mn,monthly,Business & Industry,Economy
-bus.construction_permits,BUS,Building Permits Issued,count,monthly,Business & Industry,Economy
-bus.construction_permits_area,BUS,Building Permits Floor Area,m²,monthly,Business & Industry,Economy
-bus.enterprise_confidence,BUS,Enterprise Confidence Index (GUS),index,monthly,Business & Industry,Economy
-bus.industrial_output_sectoral,BUS,Industrial Output Index by Section,index,monthly,Business & Industry,Economy
-bus.pmi_manufacturing,BUS,Manufacturing PMI Poland,index,monthly,Business & Industry,Economy
-clt.cinema_admissions,CLT,Cinema Admissions,million,annual,Culture Tourism & Sport,Society
-clt.culture_expenditure_gdp,CLT,Public Culture Expenditure as % of GDP,%,annual,Culture Tourism & Sport,Society
-clt.hotel_occupancy_rate,CLT,Hotel Bed Occupancy Rate,%,monthly,Culture Tourism & Sport,Society
-clt.library_borrowings,CLT,Library Book Borrowings,million,annual,Culture Tourism & Sport,Society
-clt.museum_visits,CLT,Museum Visits,thousand,annual,Culture Tourism & Sport,Society
-clt.overnight_stays_domestic,CLT,Domestic Tourism Overnight Stays,thousand,monthly,Culture Tourism & Sport,Society
-clt.sport_facilities_count,CLT,Sport Facilities Count,count,annual,Culture Tourism & Sport,Society
-clt.tourism_revenue_intl,CLT,International Tourism Revenue,EUR mn,annual,Culture Tourism & Sport,Society
-clt.tourist_arrivals_intl,CLT,International Tourist Arrivals,thousand persons,annual,Culture Tourism & Sport,Society
-crm.court_cases_filed,CRM,Court Cases Filed,count,annual,Crime & Justice,Society
-crm.court_cases_resolved,CRM,Court Cases Resolved,count,annual,Crime & Justice,Society
-crm.court_pending_backlog,CRM,Court Pending Case Backlog,count,annual,Crime & Justice,Society
-crm.crime_rate,CRM,Crime Rate,per 100k,annual,Crime & Justice,Society
-crm.crime_regional,CRM,Detected Crimes by Voivodeship,count,annual,Crime & Justice,Society
-crm.crime_total,CRM,Total Detected Crimes,count,annual,Crime & Justice,Society
-crm.cybercrime,CRM,Cybercrime Offences,count,annual,Crime & Justice,Society
-crm.domestic_violence_incidents,CRM,Domestic Violence Incidents (Niebieska Karta),count,annual,Crime & Justice,Society
-crm.prison_population,CRM,Prison Population,count,monthly,Crime & Justice,Society
-crm.road_accidents,CRM,Road Accidents,count,monthly,Crime & Justice,Society
-crm.theft_total,CRM,Theft and Burglary Offences,count,annual,Crime & Justice,Society
-crm.violent_crime,CRM,Violent Crime Offences,count,annual,Crime & Justice,Society
-edu.academic_staff_count,EDU,Academic Staff in Higher Education,count,annual,Education,Society
-edu.early_school_leavers,EDU,Early School Leavers Rate,%,annual,Education,Society
-edu.education_expenditure_gdp,EDU,Public Education Expenditure as % of GDP,%,annual,Education,Society
-edu.matura_pass_rate,EDU,Matura Exam Pass Rate,%,annual,Education,Society
-edu.phd_candidates,EDU,PhD Candidates,count,annual,Education,Society
-edu.school_enrolment_primary,EDU,Primary School Enrolment,count,annual,Education,Society
-edu.school_enrolment_secondary,EDU,Secondary School Enrolment,count,annual,Education,Society
-edu.school_enrolment_tertiary,EDU,Tertiary Education Enrolment,count,annual,Education,Society
-edu.teachers_count,EDU,Employed Teachers (Primary + Secondary),count,annual,Education,Society
-edu.tertiary_attainment_rate,EDU,Tertiary Education Attainment Rate (30-34),%,annual,Education,Society
-edu.university_count,EDU,Active Higher Education Institutions,count,annual,Education,Society
-ene.electricity_consumption_total,ENE,Total Electricity Consumption,GWh,monthly,Energy,Economy
-ene.electricity_mix_coal,ENE,Hard Coal Share in Electricity Mix,%,monthly,Energy,Economy
-ene.electricity_mix_lignite,ENE,Lignite Share in Electricity Mix,%,monthly,Energy,Economy
-ene.electricity_mix_renewables,ENE,Total Renewables Share in Electricity Mix,%,monthly,Energy,Economy
-ene.electricity_mix_solar,ENE,Solar PV Share in Electricity Mix,%,monthly,Energy,Economy
-ene.electricity_mix_wind,ENE,Wind Power Share in Electricity Mix,%,monthly,Energy,Economy
-ene.electricity_price_day_ahead,ENE,Day-Ahead Electricity Price (TGE BASE),PLN/MWh,daily,Energy,Economy
-ene.electricity_production_total,ENE,Total Electricity Production,GWh,monthly,Energy,Economy
-ene.energy_intensity,ENE,Energy Intensity of GDP,toe/EUR mn,annual,Energy,Economy
-ene.natural_gas_consumption,ENE,Natural Gas Consumption,million m³,monthly,Energy,Economy
-ene.natural_gas_storage_level,ENE,Natural Gas Storage Level,%,daily,Energy,Economy
-ene.renewable_capacity_installed,ENE,Installed Renewable Capacity,MW,monthly,Energy,Economy
-ene.solar_capacity_installed,ENE,Installed Solar PV Capacity,MW,monthly,Energy,Economy
-ene.wind_capacity_installed,ENE,Installed Wind Capacity,MW,monthly,Energy,Economy
-env.air_quality_index_cities,ENV,Air Quality Index — Major Cities,index,daily,Environment & Climate,Environment
-env.bathing_water_quality,ENV,Excellent Bathing Water Quality Share,%,annual,Environment & Climate,Environment
-env.forest_area,ENV,Forest Area,thousand ha,annual,Environment & Climate,Environment
-env.ghg_emissions_sectoral,ENV,GHG Emissions by Sector,million t CO2eq,annual,Environment & Climate,Environment
-env.ghg_emissions_total,ENV,Total GHG Emissions,million t CO2eq,annual,Environment & Climate,Environment
-env.municipal_waste_generated,ENV,Municipal Waste Generated Per Capita,kg/capita,annual,Environment & Climate,Environment
-env.municipal_waste_recycling_rate,ENV,Municipal Waste Recycling Rate,%,annual,Environment & Climate,Environment
-env.pm10_annual_mean,ENV,PM10 Annual Mean Concentration,µg/m³,annual,Environment & Climate,Environment
-env.pm25_annual_mean,ENV,PM2.5 Annual Mean Concentration,µg/m³,annual,Environment & Climate,Environment
-env.pm25_station,ENV,PM2.5 Hourly Measurement (Station),µg/m³,real_time,Environment & Climate,Environment
-env.precipitation_anomaly,ENV,Annual Precipitation Anomaly,%,annual,Environment & Climate,Environment
-env.renewable_energy_share,ENV,Renewable Energy Share in Final Consumption,%,annual,Environment & Climate,Environment
-env.temperature_anomaly,ENV,Annual Mean Temperature Anomaly,°C,annual,Environment & Climate,Environment
-env.water_abstractions,ENV,Freshwater Abstractions,million m³,annual,Environment & Climate,Environment
-fin.banking_capital_ratio,FIN,Banking Sector Capital Adequacy Ratio,%,quarterly,Financial Markets,Economy
-fin.banking_npl_ratio,FIN,Banking Sector NPL Ratio,%,quarterly,Financial Markets,Economy
-fin.bond_yield_10y,FIN,10Y Government Bond Yield,%,daily,Financial Markets,Economy
-fin.bond_yield_2y,FIN,2Y Government Bond Yield,%,daily,Financial Markets,Economy
-fin.exchange_rate_chf_pln,FIN,CHF/PLN Exchange Rate,PLN,daily,Financial Markets,Economy
-fin.exchange_rate_eur_pln,FIN,EUR/PLN Exchange Rate,PLN,daily,Financial Markets,Economy
-fin.exchange_rate_gbp_pln,FIN,GBP/PLN Exchange Rate,PLN,daily,Financial Markets,Economy
-fin.exchange_rate_usd_pln,FIN,USD/PLN Exchange Rate,PLN,daily,Financial Markets,Economy
-fin.reference_rate,FIN,NBP Reference Rate,%,irregular,Financial Markets,Economy
-fin.stock_price,FIN,Stock Price (GPW),PLN,daily,Financial Markets,Economy
-fin.stock_volume,FIN,Stock Trading Volume (GPW),shares,daily,Financial Markets,Economy
-fin.tge_electricity_price,FIN,TGE Day-Ahead Electricity Price,PLN/MWh,daily,Financial Markets,Economy
-fin.wibor_1m,FIN,WIBOR 1M,%,daily,Financial Markets,Economy
-fin.wibor_3m,FIN,WIBOR 3M,%,daily,Financial Markets,Economy
-fin.wibor_6m,FIN,WIBOR 6M,%,daily,Financial Markets,Economy
-fin.wig20_index,FIN,WIG20 Index,index,daily,Financial Markets,Economy
-fin.wig_index,FIN,WIG Total Return Index,index,daily,Financial Markets,Economy
-hlt.cancer_incidence,HLT,Cancer Incidence Rate,per 100k,annual,Health,Society
-hlt.cardiovascular_mortality,HLT,Cardiovascular Disease Mortality Rate,per 100k,annual,Health,Society
-hlt.hospital_bed_density,HLT,Hospital Bed Density,per 1000 pop,annual,Health,Society
-hlt.infant_mortality_rate,HLT,Infant Mortality Rate,per 1000 births,annual,Health,Society
-hlt.life_expectancy_f,HLT,Female Life Expectancy at Birth (Health),years,annual,Health,Society
-hlt.life_expectancy_m,HLT,Male Life Expectancy at Birth (Health),years,annual,Health,Society
-hlt.mental_health_hospitalisations,HLT,Mental Health Hospital Admissions,count,annual,Health,Society
-hlt.nfz_expenditure,HLT,NFZ Total Expenditure,PLN mn,annual,Health,Society
-hlt.obesity_rate,HLT,Adult Obesity Prevalence,%,annual,Health,Society
-hlt.physician_density,HLT,Physicians per 1000 Population,per 1000 pop,annual,Health,Society
-hlt.smoking_rate,HLT,Adult Smoking Prevalence,%,annual,Health,Society
-hlt.vaccination_coverage_childhood,HLT,Childhood Vaccination Coverage (MMR),%,annual,Health,Society
-hlt.waiting_time_specialist,HLT,Average Waiting Time for Specialist Care,days,quarterly,Health,Society
-lab.activity_rate,LAB,Labour Force Participation Rate (LFS),%,quarterly,Labour Market,Economy
-lab.average_wage,LAB,Average Gross Monthly Wage,PLN,monthly,Labour Market,Economy
-lab.average_wage_sectoral,LAB,Average Gross Wage by Sector,PLN,monthly,Labour Market,Economy
-lab.employed_total,LAB,Total Employed (LFS),persons,quarterly,Labour Market,Economy
-lab.employment_rate,LAB,Employment Rate 15-64 (LFS),%,quarterly,Labour Market,Economy
-lab.job_vacancies,LAB,Job Vacancies,count,quarterly,Labour Market,Economy
-lab.long_term_unemployment_share,LAB,Long-Term Unemployment Share,%,quarterly,Labour Market,Economy
-lab.minimum_wage,LAB,Statutory Minimum Wage,PLN,annual,Labour Market,Economy
-lab.real_wage_growth,LAB,Real Wage Growth,%,monthly,Labour Market,Economy
-lab.unemployment_count,LAB,Registered Unemployed,persons,monthly,Labour Market,Economy
-lab.unemployment_rate,LAB,Registered Unemployment Rate,%,monthly,Labour Market,Economy
-lab.unemployment_rate_regional,LAB,Registered Unemployment Rate (Regional),%,monthly,Labour Market,Economy
-lab.vacancy_rate,LAB,Job Vacancy Rate,%,quarterly,Labour Market,Economy
-lab.wage_growth,LAB,Nominal Wage Growth,%,monthly,Labour Market,Economy
-lab.youth_unemployment_rate,LAB,Youth Unemployment Rate (15-24),%,quarterly,Labour Market,Economy
-mac.business_confidence_bcs,MAC,Business Confidence Index (EC BCS),index,monthly,National Accounts & Macroeconomics,Economy
-mac.consumer_confidence,MAC,Consumer Confidence Index,index,monthly,National Accounts & Macroeconomics,Economy
-mac.current_account_balance,MAC,Current Account Balance,EUR mn,monthly,National Accounts & Macroeconomics,Economy
-mac.current_account_gdp,MAC,Current Account Balance as % of GDP,%,quarterly,National Accounts & Macroeconomics,Economy
-mac.gdp_nominal,MAC,Nominal GDP,PLN mn,quarterly,National Accounts & Macroeconomics,Economy
-mac.gdp_per_capita,MAC,GDP Per Capita,PLN,annual,National Accounts & Macroeconomics,Economy
-mac.gdp_per_capita_regional,MAC,Regional GDP Per Capita,PLN,annual,National Accounts & Macroeconomics,Economy
-mac.gdp_real_growth,MAC,Real GDP Growth Rate,%,quarterly,National Accounts & Macroeconomics,Economy
-mac.gross_fixed_capital_formation_growth,MAC,Gross Fixed Capital Formation Growth,%,quarterly,National Accounts & Macroeconomics,Economy
-mac.household_consumption_growth,MAC,Household Consumption Growth,%,quarterly,National Accounts & Macroeconomics,Economy
-mac.industrial_output_growth,MAC,Industrial Output Growth,%,monthly,National Accounts & Macroeconomics,Economy
-mac.pmi_manufacturing,MAC,Manufacturing PMI,index,monthly,National Accounts & Macroeconomics,Economy
-mac.retail_sales_growth,MAC,Retail Sales Volume Growth,%,monthly,National Accounts & Macroeconomics,Economy
-pop.births,POP,Live Births,count,monthly,Population & Demographics,Society
-pop.deaths,POP,Deaths,count,monthly,Population & Demographics,Society
-pop.fertility_rate,POP,Total Fertility Rate,ratio,annual,Population & Demographics,Society
-pop.life_expectancy_f,POP,Female Life Expectancy at Birth,years,annual,Population & Demographics,Society
-pop.life_expectancy_m,POP,Male Life Expectancy at Birth,years,annual,Population & Demographics,Society
-pop.median_age,POP,Median Age of Population,years,annual,Population & Demographics,Society
-pop.natural_increase,POP,Natural Population Increase,count,monthly,Population & Demographics,Society
-pop.net_migration,POP,Net International Migration,persons,annual,Population & Demographics,Society
-pop.old_age_dependency_ratio,POP,Old-Age Dependency Ratio,%,annual,Population & Demographics,Society
-pop.population_regional,POP,Population by Voivodeship,persons,annual,Population & Demographics,Society
-pop.population_total,POP,Total Population,persons,annual,Population & Demographics,Society
-pop.urbanisation_rate,POP,Urban Population Share,%,annual,Population & Demographics,Society
-prc.cpi_core,PRC,Core Inflation (excl. food & energy),%,monthly,Prices & Inflation,Economy
-prc.cpi_energy,PRC,CPI Energy,%,monthly,Prices & Inflation,Economy
-prc.cpi_food,PRC,CPI Food & Non-Alcoholic Beverages,%,monthly,Prices & Inflation,Economy
-prc.cpi_total,PRC,CPI Headline Inflation,%,monthly,Prices & Inflation,Economy
-prc.electricity_retail_price,PRC,Retail Electricity Price (Households),PLN/kWh,quarterly,Prices & Inflation,Economy
-prc.fuel_price_diesel,PRC,Retail Diesel Price (ON),PLN/L,weekly,Prices & Inflation,Economy
-prc.fuel_price_petrol,PRC,Retail Petrol Price (Pb95),PLN/L,weekly,Prices & Inflation,Economy
-prc.gas_retail_price,PRC,Retail Gas Price (Households),PLN/m³,quarterly,Prices & Inflation,Economy
-prc.ppi,PRC,Producer Price Index Growth,%,monthly,Prices & Inflation,Economy
-prc.ppi_sectoral,PRC,Producer Price Index by Industry Section,%,monthly,Prices & Inflation,Economy
-prc.real_estate_price_national,PRC,Average Residential Property Price (National),PLN/m²,quarterly,Prices & Inflation,Economy
-prc.real_estate_price_regional,PRC,Average Residential Property Price (Regional),PLN/m²,quarterly,Prices & Inflation,Economy
-pub.bgk_guarantees,PUB,BGK Guarantee Portfolio,PLN mn,quarterly,Public Finance,Economy
-pub.eu_funds_absorption,PUB,EU Funds Absorption,PLN mn,quarterly,Public Finance,Economy
-pub.local_govt_debt,PUB,Local Government Debt,PLN mn,annual,Public Finance,Economy
-pub.public_debt_gdp,PUB,Public Debt as % of GDP,%,quarterly,Public Finance,Economy
-pub.public_debt_total,PUB,Total Public Debt (EDP),PLN mn,quarterly,Public Finance,Economy
-pub.social_insurance_fund_balance,PUB,Social Insurance Fund Balance (FUS),PLN mn,quarterly,Public Finance,Economy
-pub.state_budget_balance,PUB,State Budget Balance,PLN mn,monthly,Public Finance,Economy
-pub.state_budget_expenditure,PUB,State Budget Expenditure,PLN mn,monthly,Public Finance,Economy
-pub.state_budget_revenue,PUB,State Budget Revenue,PLN mn,monthly,Public Finance,Economy
-pub.tax_revenue_cit,PUB,CIT Revenue,PLN mn,monthly,Public Finance,Economy
-pub.tax_revenue_excise,PUB,Excise Duty Revenue,PLN mn,monthly,Public Finance,Economy
-pub.tax_revenue_pit,PUB,PIT Revenue,PLN mn,monthly,Public Finance,Economy
-pub.tax_revenue_vat,PUB,VAT Revenue,PLN mn,monthly,Public Finance,Economy
-sci.broadband_coverage,SCI,Broadband Coverage ≥30 Mbps,% households,annual,Science Technology & Digital Society,Environment
-sci.cybersecurity_incidents,SCI,CERT/NASK Reported Incidents,count,annual,Science Technology & Digital Society,Environment
-sci.digital_public_services,SCI,Digital Public Services Usage Rate,%,annual,Science Technology & Digital Society,Environment
-sci.ecommerce_participation,SCI,E-Commerce Participation (Individuals),%,annual,Science Technology & Digital Society,Environment
-sci.internet_usage_rate,SCI,Internet Usage Rate (16-74),%,annual,Science Technology & Digital Society,Environment
-sci.mobile_subscriptions,SCI,Mobile Subscriptions per 100 Persons,per 100,annual,Science Technology & Digital Society,Environment
-sci.ncn_grants_awarded,SCI,NCN Research Grants Awarded,count,annual,Science Technology & Digital Society,Environment
-sci.patent_applications,SCI,Patent Applications (UPRP + EPO),count,annual,Science Technology & Digital Society,Environment
-sci.rd_expenditure_gdp,SCI,R&D Expenditure as % of GDP,%,annual,Science Technology & Digital Society,Environment
-sci.rd_expenditure_total,SCI,Total R&D Expenditure (GERD),PLN mn,annual,Science Technology & Digital Society,Environment
-sci.researchers_count,SCI,Researchers (FTE),count,annual,Science Technology & Digital Society,Environment
-soc.child_benefit_beneficiaries,SOC,Child Benefit (800+) Beneficiaries,count,monthly,Income Living Conditions & Social Protection,Society
-soc.childcare_coverage_0_3,SOC,Formal Childcare Coverage (0-3 years),%,annual,Income Living Conditions & Social Protection,Society
-soc.disability_benefit_recipients,SOC,Disability Benefit Recipients (PFRON),count,monthly,Income Living Conditions & Social Protection,Society
-soc.gini_coefficient,SOC,Gini Coefficient of Income Inequality,index,annual,Income Living Conditions & Social Protection,Society
-soc.household_income_avg,SOC,Average Household Disposable Income per Capita,PLN,annual,Income Living Conditions & Social Protection,Society
-soc.minimum_wage,SOC,National Minimum Wage,PLN,annual,Income Living Conditions & Social Protection,Society
-soc.pension_average,SOC,Average Monthly Pension (ZUS),PLN,quarterly,Income Living Conditions & Social Protection,Society
-soc.poverty_rate,SOC,At-Risk-of-Poverty Rate,%,annual,Income Living Conditions & Social Protection,Society
-soc.severe_material_deprivation,SOC,Severe Material Deprivation Rate,%,annual,Income Living Conditions & Social Protection,Society
-soc.social_assistance_recipients,SOC,Social Assistance Recipients,count,annual,Income Living Conditions & Social Protection,Society
-soc.social_benefits_total,SOC,Total Social Benefits Paid,PLN mn,monthly,Income Living Conditions & Social Protection,Society
-trd.exports_by_commodity,TRD,Goods Exports by Commodity Section,EUR mn,monthly,International Trade,Economy
-trd.exports_by_country,TRD,Goods Exports by Destination Country,EUR mn,monthly,International Trade,Economy
-trd.exports_goods_total,TRD,Total Goods Exports,EUR mn,monthly,International Trade,Economy
-trd.exports_services,TRD,Services Exports,EUR mn,quarterly,International Trade,Economy
-trd.fdi_inflows,TRD,FDI Inflows,EUR mn,quarterly,International Trade,Economy
-trd.fdi_outflows,TRD,FDI Outflows,EUR mn,quarterly,International Trade,Economy
-trd.imports_by_commodity,TRD,Goods Imports by Commodity Section,EUR mn,monthly,International Trade,Economy
-trd.imports_by_country,TRD,Goods Imports by Origin Country,EUR mn,monthly,International Trade,Economy
-trd.imports_goods_total,TRD,Total Goods Imports,EUR mn,monthly,International Trade,Economy
-trd.imports_services,TRD,Services Imports,EUR mn,quarterly,International Trade,Economy
-trd.trade_balance_goods,TRD,Goods Trade Balance,EUR mn,monthly,International Trade,Economy
-trp.freight_air_volume,TRP,Air Freight Volume,tonnes,monthly,Transport,Economy
-trp.freight_rail_volume,TRP,Rail Freight Volume,million t-km,monthly,Transport,Economy
-trp.freight_road_volume,TRP,Road Freight Volume,million t-km,quarterly,Transport,Economy
-trp.motorway_expressway_length,TRP,Motorway and Expressway Network Length,km,annual,Transport,Economy
-trp.passenger_air_volume,TRP,Air Passenger Volume,thousand passengers,monthly,Transport,Economy
-trp.passenger_rail_volume,TRP,Rail Passenger Volume,million pass-km,monthly,Transport,Economy
-trp.port_cargo_volume,TRP,Sea Port Cargo Volume,thousand t,monthly,Transport,Economy
-trp.road_accidents,TRP,Road Accidents,count,monthly,Transport,Economy
-trp.road_fatalities,TRP,Road Fatalities,count,monthly,Transport,Economy
-trp.vehicle_registrations,TRP,New Vehicle Registrations,count,monthly,Transport,Economy
+detail_id,domain_id,detail_name,detail_unit,detail_frequency,domain_name,domain_group,default_agg
+agr.agricultural_area_used,AGR,Agricultural Land in Use,thousand ha,annual,Agriculture & Forestry,Economy,AVG
+agr.crop_area_arable,AGR,Arable Land Area,thousand ha,annual,Agriculture & Forestry,Economy,AVG
+agr.crop_production_cereals,AGR,Cereal Production,thousand t,annual,Agriculture & Forestry,Economy,SUM
+agr.crop_production_rapeseed,AGR,Rapeseed Production,thousand t,annual,Agriculture & Forestry,Economy,SUM
+agr.livestock_cattle,AGR,Cattle Headcount,thousand head,biannual,Agriculture & Forestry,Economy,AVG
+agr.livestock_pigs,AGR,Pig Headcount,thousand head,biannual,Agriculture & Forestry,Economy,AVG
+agr.milk_production,AGR,Raw Cow's Milk Production,thousand t,monthly,Agriculture & Forestry,Economy,SUM
+agr.milk_purchase_price,AGR,Raw Milk Purchase Price,PLN/100 l,monthly,Agriculture & Forestry,Economy,AVG
+agr.pig_purchase_price,AGR,Pig Purchase Price,PLN/100 kg,monthly,Agriculture & Forestry,Economy,AVG
+agr.soil_erosion_risk,AGR,Area at Risk of Water Erosion,thousand ha,annual,Agriculture & Forestry,Economy,AVG
+agr.timber_harvest,AGR,Timber Harvest Volume,thousand m³,annual,Agriculture & Forestry,Economy,SUM
+agr.wheat_purchase_price,AGR,Wheat Purchase Price,PLN/t,monthly,Agriculture & Forestry,Economy,AVG
+bus.active_companies,BUS,Active Entities in REGON Register,count,monthly,Business & Industry,Economy,AVG
+bus.company_deregistrations,BUS,Company Deregistrations,count,monthly,Business & Industry,Economy,SUM
+bus.company_financials,BUS,Company Annual Financials (KRS),PLN,annual,Business & Industry,Economy,SUM
+bus.company_registrations,BUS,New Company Registrations,count,monthly,Business & Industry,Economy,SUM
+bus.company_registrations_sectoral,BUS,New Company Registrations by Sector,count,monthly,Business & Industry,Economy,SUM
+bus.construction_completions,BUS,Dwellings Completed,count,monthly,Business & Industry,Economy,SUM
+bus.construction_output_value,BUS,Construction Output Value,PLN mn,monthly,Business & Industry,Economy,SUM
+bus.construction_permits,BUS,Building Permits Issued,count,monthly,Business & Industry,Economy,SUM
+bus.construction_permits_area,BUS,Building Permits Floor Area,m²,monthly,Business & Industry,Economy,SUM
+bus.enterprise_confidence,BUS,Enterprise Confidence Index (GUS),index,monthly,Business & Industry,Economy,AVG
+bus.industrial_output_sectoral,BUS,Industrial Output Index by Section,index,monthly,Business & Industry,Economy,AVG
+bus.pmi_manufacturing,BUS,Manufacturing PMI Poland,index,monthly,Business & Industry,Economy,AVG
+clt.cinema_admissions,CLT,Cinema Admissions,million,annual,Culture Tourism & Sport,Society,SUM
+clt.culture_expenditure_gdp,CLT,Public Culture Expenditure as % of GDP,%,annual,Culture Tourism & Sport,Society,AVG
+clt.hotel_occupancy_rate,CLT,Hotel Bed Occupancy Rate,%,monthly,Culture Tourism & Sport,Society,AVG
+clt.library_borrowings,CLT,Library Book Borrowings,million,annual,Culture Tourism & Sport,Society,SUM
+clt.museum_visits,CLT,Museum Visits,thousand,annual,Culture Tourism & Sport,Society,SUM
+clt.overnight_stays_domestic,CLT,Domestic Tourism Overnight Stays,thousand,monthly,Culture Tourism & Sport,Society,SUM
+clt.sport_facilities_count,CLT,Sport Facilities Count,count,annual,Culture Tourism & Sport,Society,AVG
+clt.tourism_revenue_intl,CLT,International Tourism Revenue,EUR mn,annual,Culture Tourism & Sport,Society,SUM
+clt.tourist_arrivals_intl,CLT,International Tourist Arrivals,thousand persons,annual,Culture Tourism & Sport,Society,SUM
+crm.court_cases_filed,CRM,Court Cases Filed,count,annual,Crime & Justice,Society,SUM
+crm.court_cases_resolved,CRM,Court Cases Resolved,count,annual,Crime & Justice,Society,SUM
+crm.court_pending_backlog,CRM,Court Pending Case Backlog,count,annual,Crime & Justice,Society,AVG
+crm.crime_rate,CRM,Crime Rate,per 100k,annual,Crime & Justice,Society,AVG
+crm.crime_regional,CRM,Detected Crimes by Voivodeship,count,annual,Crime & Justice,Society,SUM
+crm.crime_total,CRM,Total Detected Crimes,count,annual,Crime & Justice,Society,SUM
+crm.cybercrime,CRM,Cybercrime Offences,count,annual,Crime & Justice,Society,SUM
+crm.domestic_violence_incidents,CRM,Domestic Violence Incidents (Niebieska Karta),count,annual,Crime & Justice,Society,SUM
+crm.prison_population,CRM,Prison Population,count,monthly,Crime & Justice,Society,AVG
+crm.road_accidents,CRM,Road Accidents,count,monthly,Crime & Justice,Society,SUM
+crm.theft_total,CRM,Theft and Burglary Offences,count,annual,Crime & Justice,Society,SUM
+crm.violent_crime,CRM,Violent Crime Offences,count,annual,Crime & Justice,Society,SUM
+edu.academic_staff_count,EDU,Academic Staff in Higher Education,count,annual,Education,Society,AVG
+edu.early_school_leavers,EDU,Early School Leavers Rate,%,annual,Education,Society,AVG
+edu.education_expenditure_gdp,EDU,Public Education Expenditure as % of GDP,%,annual,Education,Society,AVG
+edu.matura_pass_rate,EDU,Matura Exam Pass Rate,%,annual,Education,Society,AVG
+edu.phd_candidates,EDU,PhD Candidates,count,annual,Education,Society,AVG
+edu.school_enrolment_primary,EDU,Primary School Enrolment,count,annual,Education,Society,AVG
+edu.school_enrolment_secondary,EDU,Secondary School Enrolment,count,annual,Education,Society,AVG
+edu.school_enrolment_tertiary,EDU,Tertiary Education Enrolment,count,annual,Education,Society,AVG
+edu.teachers_count,EDU,Employed Teachers (Primary + Secondary),count,annual,Education,Society,AVG
+edu.tertiary_attainment_rate,EDU,Tertiary Education Attainment Rate (30-34),%,annual,Education,Society,AVG
+edu.university_count,EDU,Active Higher Education Institutions,count,annual,Education,Society,AVG
+ene.electricity_consumption_total,ENE,Total Electricity Consumption,GWh,monthly,Energy,Economy,SUM
+ene.electricity_mix_coal,ENE,Hard Coal Share in Electricity Mix,%,monthly,Energy,Economy,AVG
+ene.electricity_mix_lignite,ENE,Lignite Share in Electricity Mix,%,monthly,Energy,Economy,AVG
+ene.electricity_mix_renewables,ENE,Total Renewables Share in Electricity Mix,%,monthly,Energy,Economy,AVG
+ene.electricity_mix_solar,ENE,Solar PV Share in Electricity Mix,%,monthly,Energy,Economy,AVG
+ene.electricity_mix_wind,ENE,Wind Power Share in Electricity Mix,%,monthly,Energy,Economy,AVG
+ene.electricity_price_day_ahead,ENE,Day-Ahead Electricity Price (TGE BASE),PLN/MWh,daily,Energy,Economy,AVG
+ene.electricity_production_total,ENE,Total Electricity Production,GWh,monthly,Energy,Economy,SUM
+ene.energy_intensity,ENE,Energy Intensity of GDP,toe/EUR mn,annual,Energy,Economy,AVG
+ene.natural_gas_consumption,ENE,Natural Gas Consumption,million m³,monthly,Energy,Economy,SUM
+ene.natural_gas_storage_level,ENE,Natural Gas Storage Level,%,daily,Energy,Economy,AVG
+ene.renewable_capacity_installed,ENE,Installed Renewable Capacity,MW,monthly,Energy,Economy,AVG
+ene.solar_capacity_installed,ENE,Installed Solar PV Capacity,MW,monthly,Energy,Economy,AVG
+ene.wind_capacity_installed,ENE,Installed Wind Capacity,MW,monthly,Energy,Economy,AVG
+env.air_quality_index_cities,ENV,Air Quality Index — Major Cities,index,daily,Environment & Climate,Environment,AVG
+env.bathing_water_quality,ENV,Excellent Bathing Water Quality Share,%,annual,Environment & Climate,Environment,AVG
+env.forest_area,ENV,Forest Area,thousand ha,annual,Environment & Climate,Environment,AVG
+env.ghg_emissions_sectoral,ENV,GHG Emissions by Sector,million t CO2eq,annual,Environment & Climate,Environment,SUM
+env.ghg_emissions_total,ENV,Total GHG Emissions,million t CO2eq,annual,Environment & Climate,Environment,SUM
+env.municipal_waste_generated,ENV,Municipal Waste Generated Per Capita,kg/capita,annual,Environment & Climate,Environment,AVG
+env.municipal_waste_recycling_rate,ENV,Municipal Waste Recycling Rate,%,annual,Environment & Climate,Environment,AVG
+env.pm10_annual_mean,ENV,PM10 Annual Mean Concentration,µg/m³,annual,Environment & Climate,Environment,AVG
+env.pm25_annual_mean,ENV,PM2.5 Annual Mean Concentration,µg/m³,annual,Environment & Climate,Environment,AVG
+env.pm25_station,ENV,PM2.5 Hourly Measurement (Station),µg/m³,real_time,Environment & Climate,Environment,AVG
+env.precipitation_anomaly,ENV,Annual Precipitation Anomaly,%,annual,Environment & Climate,Environment,AVG
+env.renewable_energy_share,ENV,Renewable Energy Share in Final Consumption,%,annual,Environment & Climate,Environment,AVG
+env.temperature_anomaly,ENV,Annual Mean Temperature Anomaly,°C,annual,Environment & Climate,Environment,AVG
+env.water_abstractions,ENV,Freshwater Abstractions,million m³,annual,Environment & Climate,Environment,SUM
+fin.banking_capital_ratio,FIN,Banking Sector Capital Adequacy Ratio,%,quarterly,Financial Markets,Economy,AVG
+fin.banking_npl_ratio,FIN,Banking Sector NPL Ratio,%,quarterly,Financial Markets,Economy,AVG
+fin.bond_yield_10y,FIN,10Y Government Bond Yield,%,daily,Financial Markets,Economy,AVG
+fin.bond_yield_2y,FIN,2Y Government Bond Yield,%,daily,Financial Markets,Economy,AVG
+fin.exchange_rate_chf_pln,FIN,CHF/PLN Exchange Rate,PLN,daily,Financial Markets,Economy,AVG
+fin.exchange_rate_eur_pln,FIN,EUR/PLN Exchange Rate,PLN,daily,Financial Markets,Economy,AVG
+fin.exchange_rate_gbp_pln,FIN,GBP/PLN Exchange Rate,PLN,daily,Financial Markets,Economy,AVG
+fin.exchange_rate_usd_pln,FIN,USD/PLN Exchange Rate,PLN,daily,Financial Markets,Economy,AVG
+fin.reference_rate,FIN,NBP Reference Rate,%,irregular,Financial Markets,Economy,AVG
+fin.stock_price,FIN,Stock Price (GPW),PLN,daily,Financial Markets,Economy,AVG
+fin.stock_volume,FIN,Stock Trading Volume (GPW),shares,daily,Financial Markets,Economy,SUM
+fin.tge_electricity_price,FIN,TGE Day-Ahead Electricity Price,PLN/MWh,daily,Financial Markets,Economy,AVG
+fin.wibor_1m,FIN,WIBOR 1M,%,daily,Financial Markets,Economy,AVG
+fin.wibor_3m,FIN,WIBOR 3M,%,daily,Financial Markets,Economy,AVG
+fin.wibor_6m,FIN,WIBOR 6M,%,daily,Financial Markets,Economy,AVG
+fin.wig20_index,FIN,WIG20 Index,index,daily,Financial Markets,Economy,AVG
+fin.wig_index,FIN,WIG Total Return Index,index,daily,Financial Markets,Economy,AVG
+hlt.cancer_incidence,HLT,Cancer Incidence Rate,per 100k,annual,Health,Society,AVG
+hlt.cardiovascular_mortality,HLT,Cardiovascular Disease Mortality Rate,per 100k,annual,Health,Society,AVG
+hlt.hospital_bed_density,HLT,Hospital Bed Density,per 1000 pop,annual,Health,Society,AVG
+hlt.infant_mortality_rate,HLT,Infant Mortality Rate,per 1000 births,annual,Health,Society,AVG
+hlt.life_expectancy_f,HLT,Female Life Expectancy at Birth (Health),years,annual,Health,Society,AVG
+hlt.life_expectancy_m,HLT,Male Life Expectancy at Birth (Health),years,annual,Health,Society,AVG
+hlt.mental_health_hospitalisations,HLT,Mental Health Hospital Admissions,count,annual,Health,Society,SUM
+hlt.nfz_expenditure,HLT,NFZ Total Expenditure,PLN mn,annual,Health,Society,SUM
+hlt.obesity_rate,HLT,Adult Obesity Prevalence,%,annual,Health,Society,AVG
+hlt.physician_density,HLT,Physicians per 1000 Population,per 1000 pop,annual,Health,Society,AVG
+hlt.smoking_rate,HLT,Adult Smoking Prevalence,%,annual,Health,Society,AVG
+hlt.vaccination_coverage_childhood,HLT,Childhood Vaccination Coverage (MMR),%,annual,Health,Society,AVG
+hlt.waiting_time_specialist,HLT,Average Waiting Time for Specialist Care,days,quarterly,Health,Society,AVG
+lab.activity_rate,LAB,Labour Force Participation Rate (LFS),%,quarterly,Labour Market,Economy,AVG
+lab.average_wage,LAB,Average Gross Monthly Wage,PLN,monthly,Labour Market,Economy,AVG
+lab.average_wage_sectoral,LAB,Average Gross Wage by Sector,PLN,monthly,Labour Market,Economy,AVG
+lab.employed_total,LAB,Total Employed (LFS),persons,quarterly,Labour Market,Economy,AVG
+lab.employment_rate,LAB,Employment Rate 15-64 (LFS),%,quarterly,Labour Market,Economy,AVG
+lab.job_vacancies,LAB,Job Vacancies,count,quarterly,Labour Market,Economy,AVG
+lab.long_term_unemployment_share,LAB,Long-Term Unemployment Share,%,quarterly,Labour Market,Economy,AVG
+lab.minimum_wage,LAB,Statutory Minimum Wage,PLN,annual,Labour Market,Economy,AVG
+lab.real_wage_growth,LAB,Real Wage Growth,%,monthly,Labour Market,Economy,AVG
+lab.unemployment_count,LAB,Registered Unemployed,persons,monthly,Labour Market,Economy,AVG
+lab.unemployment_rate,LAB,Registered Unemployment Rate,%,monthly,Labour Market,Economy,AVG
+lab.unemployment_rate_regional,LAB,Registered Unemployment Rate (Regional),%,monthly,Labour Market,Economy,AVG
+lab.vacancy_rate,LAB,Job Vacancy Rate,%,quarterly,Labour Market,Economy,AVG
+lab.wage_growth,LAB,Nominal Wage Growth,%,monthly,Labour Market,Economy,AVG
+lab.youth_unemployment_rate,LAB,Youth Unemployment Rate (15-24),%,quarterly,Labour Market,Economy,AVG
+mac.business_confidence_bcs,MAC,Business Confidence Index (EC BCS),index,monthly,National Accounts & Macroeconomics,Economy,AVG
+mac.consumer_confidence,MAC,Consumer Confidence Index,index,monthly,National Accounts & Macroeconomics,Economy,AVG
+mac.current_account_balance,MAC,Current Account Balance,EUR mn,monthly,National Accounts & Macroeconomics,Economy,SUM
+mac.current_account_gdp,MAC,Current Account Balance as % of GDP,%,quarterly,National Accounts & Macroeconomics,Economy,AVG
+mac.gdp_nominal,MAC,Nominal GDP,PLN mn,quarterly,National Accounts & Macroeconomics,Economy,SUM
+mac.gdp_per_capita,MAC,GDP Per Capita,PLN,annual,National Accounts & Macroeconomics,Economy,AVG
+mac.gdp_per_capita_regional,MAC,Regional GDP Per Capita,PLN,annual,National Accounts & Macroeconomics,Economy,AVG
+mac.gdp_real_growth,MAC,Real GDP Growth Rate,%,quarterly,National Accounts & Macroeconomics,Economy,AVG
+mac.gross_fixed_capital_formation_growth,MAC,Gross Fixed Capital Formation Growth,%,quarterly,National Accounts & Macroeconomics,Economy,AVG
+mac.household_consumption_growth,MAC,Household Consumption Growth,%,quarterly,National Accounts & Macroeconomics,Economy,AVG
+mac.industrial_output_growth,MAC,Industrial Output Growth,%,monthly,National Accounts & Macroeconomics,Economy,AVG
+mac.pmi_manufacturing,MAC,Manufacturing PMI,index,monthly,National Accounts & Macroeconomics,Economy,AVG
+mac.retail_sales_growth,MAC,Retail Sales Volume Growth,%,monthly,National Accounts & Macroeconomics,Economy,AVG
+pop.births,POP,Live Births,count,monthly,Population & Demographics,Society,SUM
+pop.deaths,POP,Deaths,count,monthly,Population & Demographics,Society,SUM
+pop.fertility_rate,POP,Total Fertility Rate,ratio,annual,Population & Demographics,Society,AVG
+pop.life_expectancy_f,POP,Female Life Expectancy at Birth,years,annual,Population & Demographics,Society,AVG
+pop.life_expectancy_m,POP,Male Life Expectancy at Birth,years,annual,Population & Demographics,Society,AVG
+pop.median_age,POP,Median Age of Population,years,annual,Population & Demographics,Society,AVG
+pop.natural_increase,POP,Natural Population Increase,count,monthly,Population & Demographics,Society,SUM
+pop.net_migration,POP,Net International Migration,persons,annual,Population & Demographics,Society,SUM
+pop.old_age_dependency_ratio,POP,Old-Age Dependency Ratio,%,annual,Population & Demographics,Society,AVG
+pop.population_regional,POP,Population by Voivodeship,persons,annual,Population & Demographics,Society,AVG
+pop.population_total,POP,Total Population,persons,annual,Population & Demographics,Society,AVG
+pop.urbanisation_rate,POP,Urban Population Share,%,annual,Population & Demographics,Society,AVG
+prc.cpi_core,PRC,Core Inflation (excl. food & energy),%,monthly,Prices & Inflation,Economy,AVG
+prc.cpi_energy,PRC,CPI Energy,%,monthly,Prices & Inflation,Economy,AVG
+prc.cpi_food,PRC,CPI Food & Non-Alcoholic Beverages,%,monthly,Prices & Inflation,Economy,AVG
+prc.cpi_total,PRC,CPI Headline Inflation,%,monthly,Prices & Inflation,Economy,AVG
+prc.electricity_retail_price,PRC,Retail Electricity Price (Households),PLN/kWh,quarterly,Prices & Inflation,Economy,AVG
+prc.fuel_price_diesel,PRC,Retail Diesel Price (ON),PLN/L,weekly,Prices & Inflation,Economy,AVG
+prc.fuel_price_petrol,PRC,Retail Petrol Price (Pb95),PLN/L,weekly,Prices & Inflation,Economy,AVG
+prc.gas_retail_price,PRC,Retail Gas Price (Households),PLN/m³,quarterly,Prices & Inflation,Economy,AVG
+prc.ppi,PRC,Producer Price Index Growth,%,monthly,Prices & Inflation,Economy,AVG
+prc.ppi_sectoral,PRC,Producer Price Index by Industry Section,%,monthly,Prices & Inflation,Economy,AVG
+prc.real_estate_price_national,PRC,Average Residential Property Price (National),PLN/m²,quarterly,Prices & Inflation,Economy,AVG
+prc.real_estate_price_regional,PRC,Average Residential Property Price (Regional),PLN/m²,quarterly,Prices & Inflation,Economy,AVG
+pub.bgk_guarantees,PUB,BGK Guarantee Portfolio,PLN mn,quarterly,Public Finance,Economy,AVG
+pub.eu_funds_absorption,PUB,EU Funds Absorption,PLN mn,quarterly,Public Finance,Economy,SUM
+pub.local_govt_debt,PUB,Local Government Debt,PLN mn,annual,Public Finance,Economy,AVG
+pub.public_debt_gdp,PUB,Public Debt as % of GDP,%,quarterly,Public Finance,Economy,AVG
+pub.public_debt_total,PUB,Total Public Debt (EDP),PLN mn,quarterly,Public Finance,Economy,AVG
+pub.social_insurance_fund_balance,PUB,Social Insurance Fund Balance (FUS),PLN mn,quarterly,Public Finance,Economy,AVG
+pub.state_budget_balance,PUB,State Budget Balance,PLN mn,monthly,Public Finance,Economy,SUM
+pub.state_budget_expenditure,PUB,State Budget Expenditure,PLN mn,monthly,Public Finance,Economy,SUM
+pub.state_budget_revenue,PUB,State Budget Revenue,PLN mn,monthly,Public Finance,Economy,SUM
+pub.tax_revenue_cit,PUB,CIT Revenue,PLN mn,monthly,Public Finance,Economy,SUM
+pub.tax_revenue_excise,PUB,Excise Duty Revenue,PLN mn,monthly,Public Finance,Economy,SUM
+pub.tax_revenue_pit,PUB,PIT Revenue,PLN mn,monthly,Public Finance,Economy,SUM
+pub.tax_revenue_vat,PUB,VAT Revenue,PLN mn,monthly,Public Finance,Economy,SUM
+sci.broadband_coverage,SCI,Broadband Coverage ≥30 Mbps,% households,annual,Science Technology & Digital Society,Environment,AVG
+sci.cybersecurity_incidents,SCI,CERT/NASK Reported Incidents,count,annual,Science Technology & Digital Society,Environment,SUM
+sci.digital_public_services,SCI,Digital Public Services Usage Rate,%,annual,Science Technology & Digital Society,Environment,AVG
+sci.ecommerce_participation,SCI,E-Commerce Participation (Individuals),%,annual,Science Technology & Digital Society,Environment,AVG
+sci.internet_usage_rate,SCI,Internet Usage Rate (16-74),%,annual,Science Technology & Digital Society,Environment,AVG
+sci.mobile_subscriptions,SCI,Mobile Subscriptions per 100 Persons,per 100,annual,Science Technology & Digital Society,Environment,AVG
+sci.ncn_grants_awarded,SCI,NCN Research Grants Awarded,count,annual,Science Technology & Digital Society,Environment,SUM
+sci.patent_applications,SCI,Patent Applications (UPRP + EPO),count,annual,Science Technology & Digital Society,Environment,SUM
+sci.rd_expenditure_gdp,SCI,R&D Expenditure as % of GDP,%,annual,Science Technology & Digital Society,Environment,AVG
+sci.rd_expenditure_total,SCI,Total R&D Expenditure (GERD),PLN mn,annual,Science Technology & Digital Society,Environment,SUM
+sci.researchers_count,SCI,Researchers (FTE),count,annual,Science Technology & Digital Society,Environment,AVG
+soc.child_benefit_beneficiaries,SOC,Child Benefit (800+) Beneficiaries,count,monthly,Income Living Conditions & Social Protection,Society,AVG
+soc.childcare_coverage_0_3,SOC,Formal Childcare Coverage (0-3 years),%,annual,Income Living Conditions & Social Protection,Society,AVG
+soc.disability_benefit_recipients,SOC,Disability Benefit Recipients (PFRON),count,monthly,Income Living Conditions & Social Protection,Society,AVG
+soc.gini_coefficient,SOC,Gini Coefficient of Income Inequality,index,annual,Income Living Conditions & Social Protection,Society,AVG
+soc.household_income_avg,SOC,Average Household Disposable Income per Capita,PLN,annual,Income Living Conditions & Social Protection,Society,AVG
+soc.minimum_wage,SOC,National Minimum Wage,PLN,annual,Income Living Conditions & Social Protection,Society,AVG
+soc.pension_average,SOC,Average Monthly Pension (ZUS),PLN,quarterly,Income Living Conditions & Social Protection,Society,AVG
+soc.poverty_rate,SOC,At-Risk-of-Poverty Rate,%,annual,Income Living Conditions & Social Protection,Society,AVG
+soc.severe_material_deprivation,SOC,Severe Material Deprivation Rate,%,annual,Income Living Conditions & Social Protection,Society,AVG
+soc.social_assistance_recipients,SOC,Social Assistance Recipients,count,annual,Income Living Conditions & Social Protection,Society,AVG
+soc.social_benefits_total,SOC,Total Social Benefits Paid,PLN mn,monthly,Income Living Conditions & Social Protection,Society,SUM
+trd.exports_by_commodity,TRD,Goods Exports by Commodity Section,EUR mn,monthly,International Trade,Economy,SUM
+trd.exports_by_country,TRD,Goods Exports by Destination Country,EUR mn,monthly,International Trade,Economy,SUM
+trd.exports_goods_total,TRD,Total Goods Exports,EUR mn,monthly,International Trade,Economy,SUM
+trd.exports_services,TRD,Services Exports,EUR mn,quarterly,International Trade,Economy,SUM
+trd.fdi_inflows,TRD,FDI Inflows,EUR mn,quarterly,International Trade,Economy,SUM
+trd.fdi_outflows,TRD,FDI Outflows,EUR mn,quarterly,International Trade,Economy,SUM
+trd.imports_by_commodity,TRD,Goods Imports by Commodity Section,EUR mn,monthly,International Trade,Economy,SUM
+trd.imports_by_country,TRD,Goods Imports by Origin Country,EUR mn,monthly,International Trade,Economy,SUM
+trd.imports_goods_total,TRD,Total Goods Imports,EUR mn,monthly,International Trade,Economy,SUM
+trd.imports_services,TRD,Services Imports,EUR mn,quarterly,International Trade,Economy,SUM
+trd.trade_balance_goods,TRD,Goods Trade Balance,EUR mn,monthly,International Trade,Economy,SUM
+trp.freight_air_volume,TRP,Air Freight Volume,tonnes,monthly,Transport,Economy,SUM
+trp.freight_rail_volume,TRP,Rail Freight Volume,million t-km,monthly,Transport,Economy,SUM
+trp.freight_road_volume,TRP,Road Freight Volume,million t-km,quarterly,Transport,Economy,SUM
+trp.motorway_expressway_length,TRP,Motorway and Expressway Network Length,km,annual,Transport,Economy,AVG
+trp.passenger_air_volume,TRP,Air Passenger Volume,thousand passengers,monthly,Transport,Economy,SUM
+trp.passenger_rail_volume,TRP,Rail Passenger Volume,million pass-km,monthly,Transport,Economy,SUM
+trp.port_cargo_volume,TRP,Sea Port Cargo Volume,thousand t,monthly,Transport,Economy,SUM
+trp.road_accidents,TRP,Road Accidents,count,monthly,Transport,Economy,SUM
+trp.road_fatalities,TRP,Road Fatalities,count,monthly,Transport,Economy,SUM
+trp.vehicle_registrations,TRP,New Vehicle Registrations,count,monthly,Transport,Economy,SUM

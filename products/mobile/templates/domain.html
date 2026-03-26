@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block header %}
+<a href="/app/domeny/" class="back">‹</a>
+<span>{{ domain_name }}</span>
+{% endblock %}
+
+{% block content %}
+{% if indicators %}
+<div class="indicator-list">
+  {% for ind in indicators %}
+  <a href="/app/wskaznik/{{ ind.detail_id }}/" class="indicator-row">
+    <div class="ind-name">{{ ind.detail_name }}</div>
+    <div class="ind-right">
+      <div class="ind-value">{{ ind.latest_value }}{% if ind.detail_unit %} <span style="font-weight:400;font-size:10px;color:#6B7A8D">{{ ind.detail_unit }}</span>{% endif %}</div>
+      <div class="ind-period">{{ ind.latest_period }}</div>
+    </div>
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+<div style="padding: 32px 16px; text-align: center; color: #6B7A8D;">
+  Brak danych dla tej domeny.
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,14 @@
+{
+  "name": "Open Reporting",
+  "short_name": "OR Data",
+  "description": "Polskie dane publiczne — wskaźniki gospodarcze i społeczne",
+  "start_url": "/app/",
+  "display": "standalone",
+  "background_color": "#F7F8FA",
+  "theme_color": "#4A7FB5",
+  "orientation": "portrait",
+  "icons": [
+    {"src": "/app/static/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "/app/static/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}
