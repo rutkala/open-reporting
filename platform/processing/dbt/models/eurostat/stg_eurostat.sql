@@ -18,7 +18,14 @@
 
 with obs as (
 
-    select *
+    select
+        dataset_code,
+        geo,
+        period,
+        dimension_key,
+        value,
+        obs_status,
+        fetched_at
     from {{ source('raw', 'eurostat_observations') }}
     where geo = 'PL'
       and value is not null
@@ -27,44 +34,27 @@ with obs as (
 
 seed as (
 
-    select *
-    from {{ ref('eurostat_series') }}
-
-),
-
-joined as (
-
     select
-        s.detail_id,
-        s.domain_id,
-        o.geo,
-        o.period,
-        o.value,
-        o.obs_status,
-        o.dataset_code,
-        o.fetched_at,
-        row_number() over (
-            partition by s.detail_id, o.geo, o.period
-            order by o.fetched_at desc
-        ) as rn
-
-    from obs o
-    inner join seed s
-        on  o.dataset_code   = s.dataset_code
-        and o.dimension_key  = s.dimension_key
+        detail_id,
+        domain_id,
+        dataset_code  as s_dataset_code,
+        dimension_key as s_dimension_key
+    from {{ ref('eurostat_series') }}
 
 )
 
 select
-    detail_id,
-    domain_id,
-    geo,
-    period,
-    value,
-    obs_status,
-    dataset_code,
-    fetched_at,
+    s.detail_id       as detail_id,
+    s.domain_id       as domain_id,
+    o.geo             as geo,
+    o.period          as period,
+    o.value           as value,
+    o.obs_status      as obs_status,
+    o.dataset_code    as dataset_code,
+    o.fetched_at      as fetched_at,
     current_timestamp as updated_at
 
-from joined
-where rn = 1
+from obs o
+inner join seed s
+    on  o.dataset_code  = s.s_dataset_code
+    and o.dimension_key = s.s_dimension_key
