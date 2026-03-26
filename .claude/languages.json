@@ -2,13 +2,16 @@
   "_comment": "Language configuration for Claude Code agents. Edit this to match your project.",
 
   "agent_language": "English",
-  "_agent_language_help": "Language for agent output: responses, commit messages, code reviews, documentation. Set to the language you want Claude to communicate in.",
+  "_agent_language_help": "Language for agent output: responses, commit messages, code reviews, documentation.",
+
+  "backend_language": "English",
+  "_backend_language_help": "ALWAYS English — folder names, file names, variable names, function names, DB schemas, column names, API routes, config keys, log messages. No Polish anywhere in backend code or infrastructure.",
 
   "content_languages": ["Polish"],
-  "_content_languages_help": "Languages supported in user-facing content. Polish-only for V1. English can be added later as a toggle.",
+  "_content_languages_help": "Languages supported in user-facing content (dashboard labels, chart titles, tooltips, portal copy). Polish-only for V1. English added later when expanding to European/worldwide data.",
 
   "primary_content_language": "Polish",
-  "_primary_help": "The source language — strings are written in this language first, then translated to others.",
+  "_primary_help": "The source language — user-facing strings written in Polish first.",
 
   "documentation_language": "English",
   "_documentation_help": "Language for generated documentation (from /document skill).",
@@ -16,5 +19,10 @@
   "style_notes": {
     "English": "Professional register. Use British English spelling (colour, organisation, etc.).",
     "Polish": "Formal register (Pan/Pani). Proper diacritics (ą, ć, ę, ł, ń, ó, ś, ź, ż). No machine-translation artifacts."
+  },
+
+  "scope_examples": {
+    "backend_english": ["products/dashboards/labour/", "platform/ingestion/", "platform/warehouse/", "infra/", "detail_id values", "schema names", "column names", "URL routes", "systemd unit names", "git branches"],
+    "content_polish": ["chart titles", "axis labels", "KPI card labels", "portal page copy", "dashboard section headings", "tooltip text"]
   }
 }

@@ -4,7 +4,7 @@ Open Reporting — Dash portal
 Layout, chart titles, units, formatting and section grouping all derived
 from the semantic model. Adding a measure to labour.yml automatically
 reflects here — no code changes needed.
-Run: python3 products/visuals/dashboards/rynek_pracy/app.py
+Run: python3 products/dashboards/labour/app.py
 """
 import logging
 

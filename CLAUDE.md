@@ -188,7 +188,9 @@ print(query('SELECT 42 AS answer'))
 
 `.claude/languages.json`:
 - **Agent language**: English (all responses, commits, reviews)
-- **Content language**: Polish (user-facing content on dashboards and blog)
+- **Backend language**: English — **always and without exception**: folder names, file names, variable names, function names, DB schemas, column names, URL routes, config keys, log messages, systemd unit names
+- **Content language**: Polish — user-facing strings only (chart titles, axis labels, KPI labels, portal copy, tooltips)
+- **Future**: English content will be added when data expands to European/worldwide scope
 - **Style**: Professional English, formal Polish (proper diacritics, no machine-translation)
 
 ## Code Standards

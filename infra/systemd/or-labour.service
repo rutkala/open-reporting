@@ -6,7 +6,7 @@ After=network.target
 WorkingDirectory=/opt/open-reporting
 Environment=PYTHONPATH=/opt/open-reporting
 EnvironmentFile=/opt/open-reporting/.env
-ExecStart=/usr/bin/python3 products/dashboards/rynek_pracy/app.py
+ExecStart=/usr/bin/python3 products/dashboards/labour/app.py
 Restart=on-failure
 RestartSec=5
 

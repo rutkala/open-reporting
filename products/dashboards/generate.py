@@ -9,10 +9,10 @@ import sys
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
 
-from products.dashboards.rynek_pracy.static import generate as gen_rynek_pracy
+from products.dashboards.labour.static import generate as gen_labour
 
 DASHBOARDS = [
-    ("labour/rynek-pracy", gen_rynek_pracy),
+    ("labour", gen_labour),
 ]
 
 
