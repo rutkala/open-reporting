@@ -1,0 +1,22 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw
+    description: Bronze layer — untouched data as received from source systems
+    tables:
+      - name: nbp_exchange_rates
+        description: >
+          NBP Table A daily mid-rates for USD, EUR, CHF, GBP against PLN.
+          Ingested via api.nbp.pl. One row per currency per business day.
+        columns:
+          - name: currency_code
+            description: ISO 4217 currency code
+          - name: rate_date
+            description: Effective date of the fixing (business days only)
+          - name: mid_rate
+            description: PLN mid-rate as published by NBP
+          - name: table_no
+            description: NBP table identifier e.g. 058/A/NBP/2026
+          - name: fetched_at
+            description: Timestamp when this row was ingested

@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw
+    tables:
+      - name: eurostat_observations
+        description: >
+          Raw Eurostat SDMX observations for Poland. One row per
+          dataset × period × dimension combination. Ingested via
+          platform/ingestion/to_raw/eurostat_observations.py.

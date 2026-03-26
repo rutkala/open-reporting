@@ -1,0 +1,42 @@
+version: 2
+
+models:
+  - name: fin_exchange_rates
+    description: >
+      Daily PLN mid-rates for USD, EUR, CHF, and GBP as published by NBP (Table A).
+      Covers USD/CHF/GBP from 2002-01-02, EUR from 2004-01-02. Business days only.
+    columns:
+      - name: currency_code
+        description: ISO 4217 currency code
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['USD', 'EUR', 'CHF', 'GBP']
+
+      - name: currency_name
+        description: Human-readable currency name in English
+        tests:
+          - not_null
+
+      - name: rate_date
+        description: Effective date of the NBP fixing
+        tests:
+          - not_null
+
+      - name: mid_rate_pln
+        description: PLN mid-rate (e.g. 3.6803 means 1 USD = 3.6803 PLN)
+        tests:
+          - not_null
+
+      - name: table_no
+        description: NBP table identifier (e.g. 058/A/NBP/2026)
+
+      - name: updated_at
+        description: Timestamp when this row was last transformed
+        tests:
+          - not_null
+
+    tests:
+      - unique:
+          column_name: "currency_code || '|' || rate_date"

@@ -140,13 +140,16 @@ def load_domain_detail_sources(conn) -> int:
     cur = conn.cursor()
     execute_values(cur, """
         INSERT INTO catalogue.domain_detail_sources
-            (detail_id, source_id, geo_levels, year_from, year_to, coverage_notes)
+            (detail_id, source_id, geo_levels, year_from, year_to, coverage_notes,
+             series_id, verified)
         VALUES %s
         ON CONFLICT (detail_id, source_id) DO UPDATE SET
             geo_levels     = EXCLUDED.geo_levels,
             year_from      = EXCLUDED.year_from,
             year_to        = EXCLUDED.year_to,
             coverage_notes = EXCLUDED.coverage_notes,
+            series_id      = EXCLUDED.series_id,
+            verified       = EXCLUDED.verified,
             updated_at     = NOW()
     """, [(
         r["detail_id"], r["source_id"],
@@ -154,6 +157,8 @@ def load_domain_detail_sources(conn) -> int:
         int(r["year_from"]) if r["year_from"] else None,
         int(r["year_to"]) if r["year_to"] else None,
         r["coverage_notes"] or None,
+        r["series_id"] or None,
+        r["verified"].lower() == "true" if r.get("verified") else False,
     ) for r in rows])
     conn.commit()
     log.info("Upserted %d domain_detail_source mappings", len(rows))
