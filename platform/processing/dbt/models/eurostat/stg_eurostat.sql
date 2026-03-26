@@ -14,6 +14,9 @@
   Multiple raw rows can map to one detail_id when a dataset contains
   more than one series matching the same seed filters — these are
   deduplicated by keeping the latest fetched_at.
+
+  Conforms to the shared staging schema: source_id, domain_id, detail_id,
+  geo, period, period_date, value, obs_status, fetched_at, updated_at.
 */
 
 with obs as (
@@ -44,13 +47,30 @@ seed as (
 )
 
 select
-    s.detail_id       as detail_id,
+    'eurostat'        as source_id,
     s.domain_id       as domain_id,
+    s.detail_id       as detail_id,
     o.geo             as geo,
-    o.period          as period,
+    case
+        when length(o.period) = 4
+            then cast(o.period || '-01-01' as date)
+        when o.period like '____-Q_'
+            then case right(o.period, 1)
+                when '1' then cast(left(o.period, 4) || '-01-01' as date)
+                when '2' then cast(left(o.period, 4) || '-04-01' as date)
+                when '3' then cast(left(o.period, 4) || '-07-01' as date)
+                when '4' then cast(left(o.period, 4) || '-10-01' as date)
+            end
+        when o.period like '____-S_'
+            then case right(o.period, 1)
+                when '1' then cast(left(o.period, 4) || '-01-01' as date)
+                when '2' then cast(left(o.period, 4) || '-07-01' as date)
+            end
+        when o.period like '____-__'
+            then cast(o.period || '-01' as date)
+    end               as period_date,
     o.value           as value,
     o.obs_status      as obs_status,
-    o.dataset_code    as dataset_code,
     o.fetched_at      as fetched_at,
     current_timestamp as updated_at
 

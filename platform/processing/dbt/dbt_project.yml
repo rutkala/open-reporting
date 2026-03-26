@@ -17,3 +17,14 @@ models:
   open_reporting:
     +materialized: table
     +schema: curated
+
+seeds:
+  open_reporting:
+    dim_domain_detail:
+      +schema: curated
+    dim_geo:
+      +schema: curated
+    dim_source:
+      +schema: curated
+    dim_primary_source:
+      +schema: curated

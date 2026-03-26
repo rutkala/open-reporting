@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Open Reporting — Data Explorer
-Pivot-style explorer over the curated DuckDB layer.
+Star-schema explorer over curated.all_indicators + common dimensions.
 Run: PYTHONPATH=/opt/open-reporting DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb \
      python3 products/dashboards/explorer/app.py
 """
@@ -22,38 +22,18 @@ from products.visuals.lib.theme import (
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
 
-CURATED_SCHEMA = "curated"
-MAX_PIVOT_COLS  = 60
-PORT            = 8051
+FACT_TABLE     = "curated.all_indicators"
+MAX_PIVOT_COLS = 60
+PORT           = 8051
 
-# Staging / internal tables to exclude from the table picker
-_HIDDEN_TABLES = {"stg_eurostat"}
-
-# Human-friendly display names for the table dropdown
-_TABLE_LABELS: dict[str, str] = {
-    "all_indicators":      "All indicators (Eurostat)",
-    "fin_exchange_rates":  "Finance — Exchange Rates (NBP)",
-    "agr_indicators":      "Agriculture",
-    "bus_indicators":      "Business",
-    "clt_indicators":      "Culture & Tourism",
-    "crm_indicators":      "Crime & Justice",
-    "edu_indicators":      "Education",
-    "ene_indicators":      "Energy",
-    "env_indicators":      "Environment",
-    "hlt_indicators":      "Health",
-    "lab_indicators":      "Labour",
-    "mac_indicators":      "Macroeconomics",
-    "pop_indicators":      "Population",
-    "prc_indicators":      "Prices",
-    "pub_indicators":      "Public Finance",
-    "sci_indicators":      "Science & Technology",
-    "soc_indicators":      "Society",
-    "trd_indicators":      "Trade",
-    "trp_indicators":      "Transport",
-}
-
-# Friendly display names for individual indicators (detail_id → label)
-_INDICATOR_LABELS: dict[str, str] = {}  # populated lazily from catalogue if available
+# Columns available as pivot row/column dimensions
+_PIVOT_DIMS = [
+    {"label": "Domain Detail",   "value": "detail_id"},
+    {"label": "Period Date",     "value": "period_date"},
+    {"label": "Geographic Unit", "value": "geo"},
+    {"label": "Source",          "value": "source_id"},
+    {"label": "Domain",          "value": "domain_id"},
+]
 
 
 # ── DuckDB helpers ────────────────────────────────────────────────────────────
@@ -63,111 +43,135 @@ def _db():
     return duckdb.connect(path, read_only=True)
 
 
-def list_tables() -> list[str]:
+_PRIMARY = "__primary__"   # sentinel value for the "primary source only" virtual option
+
+
+def load_sources() -> list[dict]:
     conn = _db()
     rows = conn.execute(
-        "SELECT table_name FROM information_schema.tables "
-        "WHERE table_schema = ? ORDER BY table_name",
-        [CURATED_SCHEMA],
+        "SELECT s.source_id, s.source_name "
+        "FROM curated.dim_source s "
+        "WHERE EXISTS (SELECT 1 FROM curated.all_indicators ai WHERE ai.source_id = s.source_id) "
+        "ORDER BY s.source_name"
     ).fetchall()
     conn.close()
-    tables = [r[0] for r in rows if r[0] not in _HIDDEN_TABLES]
-    priority = ["all_indicators", "fin_exchange_rates"]
-    ordered  = [t for t in priority if t in tables]
-    ordered += sorted(t for t in tables if t not in priority)
-    return ordered
+    source_opts = [{"label": r[1], "value": r[0]} for r in rows]
+    # Prepend the virtual "Primary" option
+    return [{"label": "Primary source", "value": _PRIMARY}] + source_opts
 
 
-def _table_option(name: str) -> dict:
-    return {"label": _TABLE_LABELS.get(name, name), "value": name}
-
-
-def table_columns(table: str) -> pd.DataFrame:
-    """Return (column_name, data_type, is_numeric, is_date) for a curated table."""
+def load_domains() -> list[dict]:
     conn = _db()
-    df = conn.execute(
-        "SELECT column_name, data_type FROM information_schema.columns "
-        "WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position",
-        [CURATED_SCHEMA, table],
-    ).df()
+    rows = conn.execute(
+        "SELECT DISTINCT domain_id, domain_name "
+        "FROM curated.dim_domain_detail "
+        "ORDER BY domain_name"
+    ).fetchall()
     conn.close()
-    df["is_numeric"] = df["data_type"].str.upper().str.contains(
-        r"INT|FLOAT|DOUBLE|DECIMAL|NUMERIC|HUGEINT|UBIGINT|REAL", regex=True
-    )
-    df["is_date"] = df["data_type"].str.upper().str.contains(
-        r"DATE|TIMESTAMP", regex=True
-    )
-    return df
+    return [{"label": r[1], "value": r[0]} for r in rows]
 
 
-def get_distinct(table: str, column: str,
-                 filter_col: str | None = None,
-                 filter_vals: list | None = None) -> list[str]:
-    """Return sorted distinct values for a column, with optional WHERE filter."""
-    params = [CURATED_SCHEMA, table]
-    sql = f'SELECT DISTINCT "{column}" FROM information_schema.tables WHERE 1=0'  # placeholder
-    # Build directly against the table
-    sql = f'SELECT DISTINCT "{column}" FROM {CURATED_SCHEMA}."{table}"'
-    if filter_col and filter_vals:
-        placeholders = ", ".join(["?"] * len(filter_vals))
-        sql += f' WHERE "{filter_col}" IN ({placeholders})'
-        params = filter_vals
+def load_details(domain_ids: list[str] | None) -> list[dict]:
+    conn = _db()
+    if domain_ids:
+        ph = ", ".join(["?"] * len(domain_ids))
+        rows = conn.execute(
+            f"SELECT detail_id, detail_name FROM curated.dim_domain_detail "
+            f"WHERE domain_id IN ({ph}) ORDER BY detail_name",
+            domain_ids,
+        ).fetchall()
     else:
-        params = []
-    sql += f' ORDER BY "{column}"'
-    conn = _db()
-    rows = conn.execute(sql, params).fetchall()
+        rows = conn.execute(
+            "SELECT detail_id, detail_name FROM curated.dim_domain_detail ORDER BY detail_name"
+        ).fetchall()
     conn.close()
-    return [r[0] for r in rows if r[0] is not None]
+    return [{"label": f"{r[1]}  ({r[0]})", "value": r[0]} for r in rows]
+
+
+def load_geos() -> list[dict]:
+    conn = _db()
+    rows = conn.execute(
+        "SELECT g.geo, g.geo_name "
+        "FROM curated.dim_geo g "
+        "WHERE EXISTS (SELECT 1 FROM curated.all_indicators ai WHERE ai.geo = g.geo) "
+        "ORDER BY g.geo_name"
+    ).fetchall()
+    conn.close()
+    return [{"label": r[1], "value": r[0]} for r in rows]
 
 
 def run_query(
-    table: str,
     row_dims: list[str],
     col_dim: str | None,
-    measure: str,
     agg: str,
+    source_filter: list[str] | None,
     domain_filter: list[str] | None,
-    indicator_filter: list[str] | None,
-    period_from: str | None,
-    period_to: str | None,
-    period_col: str | None,
+    detail_filter: list[str] | None,
+    geo_filter: list[str] | None,
+    year_from: str | None,
+    year_to: str | None,
 ) -> pd.DataFrame:
     group_cols = list(row_dims)
     if col_dim and col_dim not in group_cols:
         group_cols.append(col_dim)
 
     select_parts = [f'"{c}"' for c in group_cols]
-    select_parts.append(f'{agg}("{measure}") AS value')
+    select_parts.append(f'{agg}("value") AS value')
 
-    sql = f'SELECT {", ".join(select_parts)} FROM {CURATED_SCHEMA}."{table}"'
+    use_primary = source_filter and _PRIMARY in source_filter
+    # When "Primary source" is selected, join dim_primary_source to get one row per indicator
+    from_clause = FACT_TABLE
+    if use_primary:
+        from_clause = (
+            f"{FACT_TABLE} ai "
+            f"JOIN curated.dim_primary_source ps "
+            f"ON ai.detail_id = ps.detail_id AND ai.source_id = ps.primary_source_id"
+        )
+        # Prefix all column refs with ai. to avoid ambiguity after the join
+        select_parts = [f'ai."{c}"' for c in group_cols]
+        select_parts.append(f'{agg}(ai."value") AS value')
+
+    sql = f'SELECT {", ".join(select_parts)} FROM {from_clause}'
     params: list = []
-
     conditions: list[str] = []
 
+    if source_filter and not use_primary:
+        ph = ", ".join(["?"] * len(source_filter))
+        conditions.append(f'"source_id" IN ({ph})')
+        params.extend(source_filter)
+
+    # When joining dim_primary_source, prefix columns with ai. to avoid ambiguity
+    col = (lambda c: f'ai."{c}"') if use_primary else (lambda c: f'"{c}"')
+
     if domain_filter:
-        placeholders = ", ".join(["?"] * len(domain_filter))
-        conditions.append(f'"domain_id" IN ({placeholders})')
+        ph = ", ".join(["?"] * len(domain_filter))
+        conditions.append(f'{col("domain_id")} IN ({ph})')
         params.extend(domain_filter)
 
-    if indicator_filter:
-        placeholders = ", ".join(["?"] * len(indicator_filter))
-        conditions.append(f'"detail_id" IN ({placeholders})')
-        params.extend(indicator_filter)
+    if detail_filter:
+        ph = ", ".join(["?"] * len(detail_filter))
+        conditions.append(f'{col("detail_id")} IN ({ph})')
+        params.extend(detail_filter)
 
-    if period_col and period_from:
-        conditions.append(f'CAST("{period_col}" AS VARCHAR) >= ?')
-        params.append(str(period_from))
-    if period_col and period_to:
-        conditions.append(f'CAST("{period_col}" AS VARCHAR) <= ?')
-        params.append(str(period_to))
+    if geo_filter:
+        ph = ", ".join(["?"] * len(geo_filter))
+        conditions.append(f'{col("geo")} IN ({ph})')
+        params.extend(geo_filter)
+
+    if year_from:
+        conditions.append(f'{col("period_date")} >= ?')
+        params.append(f"{year_from}-01-01")
+
+    if year_to:
+        conditions.append(f'{col("period_date")} <= ?')
+        params.append(f"{year_to}-12-31")
 
     if conditions:
         sql += " WHERE " + " AND ".join(conditions)
 
     if group_cols:
-        sql += f' GROUP BY {", ".join(f"{chr(34)}{c}{chr(34)}" for c in group_cols)}'
-        sql += f' ORDER BY {", ".join(f"{chr(34)}{c}{chr(34)}" for c in group_cols)}'
+        gb = ", ".join(col(c) for c in group_cols)
+        sql += f' GROUP BY {gb} ORDER BY {gb}'
 
     log.info("Explorer query: %s | params: %s", sql, params)
     conn = _db()
@@ -177,7 +181,6 @@ def run_query(
 
 
 def pivot_df(df: pd.DataFrame, row_dims: list[str], col_dim: str) -> pd.DataFrame:
-    """Pivot df so col_dim values become columns."""
     distinct = df[col_dim].nunique()
     if distinct > MAX_PIVOT_COLS:
         log.warning("Column dimension has %d distinct values — capping at %d", distinct, MAX_PIVOT_COLS)
@@ -185,7 +188,13 @@ def pivot_df(df: pd.DataFrame, row_dims: list[str], col_dim: str) -> pd.DataFram
         df = df[df[col_dim].isin(top)]
 
     index = row_dims[0] if len(row_dims) == 1 else row_dims
-    return df.pivot_table(index=index, columns=col_dim, values="value", aggfunc="sum").reset_index()
+    result = df.pivot_table(index=index, columns=col_dim, values="value", aggfunc="sum").reset_index()
+    # Convert Timestamp column names to ISO strings for JSON serialisation
+    result.columns = [
+        c.strftime("%Y-%m-%d") if hasattr(c, "strftime") else c
+        for c in result.columns
+    ]
+    return result
 
 
 # ── App ───────────────────────────────────────────────────────────────────────
@@ -213,7 +222,7 @@ S = {
     },
     "layout": {"display": "flex", "flex": 1},
     "sidebar": {
-        "width": "260px", "flexShrink": 0,
+        "width": "280px", "flexShrink": 0,
         "background": BG_SURFACE, "borderRight": f"1px solid {BORDER}",
         "padding": "20px 16px", "position": "sticky",
         "top": 0, "height": "100vh", "overflowY": "auto",
@@ -250,11 +259,20 @@ S = {
         "padding": "48px 24px", "textAlign": "center",
         "color": SUBTEXT, "fontSize": "14px",
     },
+    "period_row": {"display": "flex", "gap": "8px"},
+    "period_input": {
+        "flex": 1, "fontSize": "12px", "padding": "6px",
+        "border": f"1px solid {BORDER}", "borderRadius": "4px",
+        "color": TEXT, "background": BG_PAGE,
+    },
 }
 
 _dd_style = {"fontSize": "13px"}
-_tables    = list_tables()
-_table_opts = [_table_option(t) for t in _tables]
+
+# Pre-load static filter options at startup
+_source_opts = load_sources()
+_domain_opts  = load_domains()
+_geo_opts     = load_geos()
 
 # ── Layout ────────────────────────────────────────────────────────────────────
 
@@ -272,64 +290,44 @@ app.layout = html.Div(style=S["body"], children=[
         # ── Sidebar ───────────────────────────────────────────────────────────
         html.Aside(style=S["sidebar"], children=[
 
-            # — Data source —
-            html.Div("Data source", style=S["section_header"]),
+            # — Filters —
+            html.Div("Filters", style={**S["section_header"], "marginTop": 0}),
 
-            html.Span("Table", style={**S["label"], "marginTop": 0}),
-            dcc.Dropdown(
-                id="dd-table",
-                options=_table_opts,
-                value=_tables[0] if _tables else None,
-                clearable=False,
-                style=_dd_style,
-            ),
+            html.Span("Source", style={**S["label"], "marginTop": 0}),
+            dcc.Dropdown(id="dd-source", options=_source_opts, multi=True,
+                         value=[_PRIMARY], style=_dd_style),
 
-            # — Filters — (shown when domain_id / detail_id columns exist)
-            html.Div(id="filters-section", children=[
-                html.Div("Filters", style=S["section_header"]),
+            html.Span("Domain", style=S["label"]),
+            dcc.Dropdown(id="dd-domain", options=_domain_opts, multi=True,
+                         style=_dd_style, placeholder="All domains"),
 
-                html.Div(id="domain-filter-container", style={"display": "none"}, children=[
-                    html.Span("Domain", style={**S["label"], "marginTop": 0}),
-                    dcc.Dropdown(id="dd-domain", multi=True, style=_dd_style,
-                                 placeholder="All domains"),
-                ]),
+            html.Span("Domain Detail", style=S["label"]),
+            dcc.Dropdown(id="dd-detail", multi=True,
+                         style=_dd_style, placeholder="All indicators"),
 
-                html.Div(id="indicator-filter-container", style={"display": "none"}, children=[
-                    html.Span("Indicators", style=S["label"]),
-                    dcc.Dropdown(id="dd-indicator", multi=True, style=_dd_style,
-                                 placeholder="All indicators"),
-                ]),
+            html.Span("Geographic Unit", style=S["label"]),
+            dcc.Dropdown(id="dd-geo", options=_geo_opts, multi=True,
+                         style=_dd_style, placeholder="All geographies"),
 
-                html.Div(id="period-filter-container", style={"display": "none"}, children=[
-                    html.Span("Period from", style=S["label"]),
-                    dcc.Input(id="period-from", type="text", placeholder="e.g. 2010",
-                              debounce=True,
-                              style={"width": "100%", "fontSize": "12px", "padding": "6px",
-                                     "border": f"1px solid {BORDER}", "borderRadius": "4px",
-                                     "color": TEXT, "background": BG_PAGE}),
-                    html.Span("Period to", style=S["label"]),
-                    dcc.Input(id="period-to", type="text", placeholder="e.g. 2024",
-                              debounce=True,
-                              style={"width": "100%", "fontSize": "12px", "padding": "6px",
-                                     "border": f"1px solid {BORDER}", "borderRadius": "4px",
-                                     "color": TEXT, "background": BG_PAGE}),
-                ]),
+            html.Span("Period", style=S["label"]),
+            html.Div(style=S["period_row"], children=[
+                dcc.Input(id="year-from", type="text", placeholder="From year",
+                          debounce=True, style=S["period_input"]),
+                dcc.Input(id="year-to", type="text", placeholder="To year",
+                          debounce=True, style=S["period_input"]),
             ]),
 
             # — Pivot —
             html.Div("Pivot", style=S["section_header"]),
 
             html.Span("Rows", style={**S["label"], "marginTop": 0}),
-            dcc.Dropdown(id="dd-rows", multi=True, style=_dd_style,
-                         placeholder="Select columns…"),
+            dcc.Dropdown(id="dd-rows", options=_PIVOT_DIMS, multi=True,
+                         value=["detail_id"], style=_dd_style),
 
             html.Span("Columns  (optional pivot)", style=S["label"]),
-            dcc.Dropdown(id="dd-col", multi=False, style=_dd_style,
+            dcc.Dropdown(id="dd-col", options=_PIVOT_DIMS, multi=False,
+                         value="period_date", style=_dd_style,
                          placeholder="None — flat table"),
-
-            html.Span("Values", style=S["label"]),
-            dcc.Dropdown(id="dd-measure", clearable=False, style=_dd_style,
-                         placeholder="Select measure…"),
 
             html.Span("Aggregation", style=S["label"]),
             dcc.Dropdown(
@@ -341,7 +339,7 @@ app.layout = html.Div(style=S["body"], children=[
                     {"label": "Max",     "value": "MAX"},
                     {"label": "Count",   "value": "COUNT"},
                 ],
-                value="SUM",
+                value="AVG",
                 clearable=False,
                 style=_dd_style,
             ),
@@ -356,9 +354,6 @@ app.layout = html.Div(style=S["body"], children=[
                                 "cursor": "pointer",
                             }),
             ]),
-
-            # Hidden stores
-            dcc.Store(id="store-columns"),
         ]),
 
         # ── Main content ──────────────────────────────────────────────────────
@@ -366,13 +361,9 @@ app.layout = html.Div(style=S["body"], children=[
             html.Div(id="output-warning"),
             html.Div(id="output-area", children=[
                 html.Div(style=S["empty_state"], children=[
-                    html.Div("Configure your selection in the sidebar and click Run.",
+                    html.Div("Set filters and click Run.",
                              style={"marginBottom": "8px"}),
-                    html.Div("Rows → what goes on the Y-axis / table index",
-                             style={"fontSize": "12px", "color": SUBTEXT}),
-                    html.Div("Columns → optional pivot dimension (creates one column per value)",
-                             style={"fontSize": "12px", "color": SUBTEXT}),
-                    html.Div("Values → the numeric measure to aggregate",
+                    html.Div("Rows → Y-axis / table index  ·  Columns → pivot dimension  ·  Values → aggregated measure",
                              style={"fontSize": "12px", "color": SUBTEXT}),
                 ]),
             ]),
@@ -388,164 +379,53 @@ app.layout = html.Div(style=S["body"], children=[
 # ── Callbacks ─────────────────────────────────────────────────────────────────
 
 @callback(
-    Output("store-columns", "data"),
-    Input("dd-table", "value"),
-)
-def load_columns(table):
-    if not table:
-        return {}
-    cols = table_columns(table)
-    return cols.to_dict("records")
-
-
-@callback(
-    Output("dd-rows",    "options"),
-    Output("dd-col",     "options"),
-    Output("dd-measure", "options"),
-    Output("dd-rows",    "value"),
-    Output("dd-col",     "value"),
-    Output("dd-measure", "value"),
-    Input("store-columns", "data"),
-    State("dd-table", "value"),
-)
-def populate_pivot_dropdowns(col_records, table):
-    if not col_records:
-        empty: list = []
-        return empty, empty, empty, None, None, None
-
-    cols     = pd.DataFrame(col_records)
-    all_cols = cols["column_name"].tolist()
-    nums     = cols[cols["is_numeric"]]["column_name"].tolist()
-    # Exclude metadata/system columns from dim options
-    exclude  = {"geo", "obs_status", "dataset_code", "fetched_at", "updated_at"}
-    dims     = [c for c in all_cols if c not in nums and c not in exclude]
-
-    dim_opts     = [{"label": c, "value": c} for c in dims]
-    measure_opts = [{"label": c, "value": c} for c in nums]
-
-    # Smart defaults per table type
-    if table in ("all_indicators",) or (table and table.endswith("_indicators")):
-        default_rows    = ["detail_id"] if "detail_id" in dims else dims[:1]
-        default_col     = "period" if "period" in dims else None
-        default_measure = "value" if "value" in nums else (nums[0] if nums else None)
-    elif table == "fin_exchange_rates":
-        default_rows    = ["period"] if "period" in dims else dims[:1]
-        default_col     = "currency" if "currency" in dims else None
-        default_measure = nums[0] if nums else None
-    else:
-        default_rows    = dims[:1]
-        default_col     = None
-        default_measure = nums[0] if nums else None
-
-    return dim_opts, dim_opts, measure_opts, default_rows, default_col, default_measure
-
-
-@callback(
-    Output("domain-filter-container",    "style"),
-    Output("indicator-filter-container", "style"),
-    Output("period-filter-container",    "style"),
-    Output("dd-domain",    "options"),
-    Input("store-columns", "data"),
-    State("dd-table", "value"),
-)
-def show_filter_sections(col_records, table):
-    hidden = {"display": "none"}
-    shown  = {}
-
-    if not col_records or not table:
-        return hidden, hidden, hidden, []
-
-    cols      = pd.DataFrame(col_records)
-    col_names = cols["column_name"].tolist()
-
-    has_domain    = "domain_id" in col_names
-    has_indicator = "detail_id" in col_names
-    has_period    = "period"    in col_names
-
-    domain_opts: list = []
-    if has_domain:
-        vals = get_distinct(table, "domain_id")
-        domain_opts = [{"label": v, "value": v} for v in vals]
-
-    return (
-        shown if has_domain    else hidden,
-        shown if has_indicator else hidden,
-        shown if has_period    else hidden,
-        domain_opts,
-    )
-
-
-@callback(
-    Output("dd-indicator", "options"),
+    Output("dd-detail", "options"),
     Input("dd-domain", "value"),
-    State("dd-table", "value"),
-    State("store-columns", "data"),
 )
-def update_indicator_options(domain_vals, table, col_records):
-    if not table or not col_records:
-        return []
-    cols      = pd.DataFrame(col_records)
-    col_names = cols["column_name"].tolist()
-    if "detail_id" not in col_names:
-        return []
-
-    vals = get_distinct(table, "detail_id",
-                        filter_col="domain_id" if domain_vals else None,
-                        filter_vals=domain_vals or None)
-    return [{"label": v, "value": v} for v in vals]
+def update_detail_options(domain_vals):
+    return load_details(domain_vals or None)
 
 
 @callback(
     Output("output-warning", "children"),
     Output("output-area",    "children"),
     Input("btn-run", "n_clicks"),
-    State("dd-table",     "value"),
-    State("dd-rows",      "value"),
-    State("dd-col",       "value"),
-    State("dd-measure",   "value"),
-    State("dd-agg",       "value"),
-    State("store-columns","data"),
-    State("dd-domain",    "value"),
-    State("dd-indicator", "value"),
-    State("period-from",  "value"),
-    State("period-to",    "value"),
+    State("dd-rows",   "value"),
+    State("dd-col",    "value"),
+    State("dd-agg",    "value"),
+    State("dd-source", "value"),
+    State("dd-domain", "value"),
+    State("dd-detail", "value"),
+    State("dd-geo",    "value"),
+    State("year-from", "value"),
+    State("year-to",   "value"),
     prevent_initial_call=True,
 )
-def run_explorer(_, table, row_dims, col_dim, measure, agg, col_records,
-                 domain_filter, indicator_filter, period_from, period_to):
-    if not table or not row_dims or not measure:
-        msg = html.Div("Select a table, at least one row dimension, and a measure.", style=S["hint"])
-        return msg, no_update
-
-    cols     = pd.DataFrame(col_records) if col_records else pd.DataFrame()
-    col_names = cols["column_name"].tolist() if not cols.empty else []
-
-    # Find period column (text, not date) for filtering
-    period_col = "period" if "period" in col_names else None
+def run_explorer(_, row_dims, col_dim, agg,
+                 source_filter, domain_filter, detail_filter, geo_filter,
+                 year_from, year_to):
+    if not row_dims:
+        return html.Div("Select at least one Row dimension.", style=S["hint"]), no_update
 
     try:
         df = run_query(
-            table, row_dims, col_dim, measure, agg,
-            domain_filter   or None,
-            indicator_filter or None,
-            period_from or None,
-            period_to   or None,
-            period_col,
+            row_dims, col_dim, agg,
+            source_filter  or None,
+            domain_filter  or None,
+            detail_filter  or None,
+            geo_filter     or None,
+            year_from      or None,
+            year_to        or None,
         )
     except Exception as e:
-        err = html.Div(f"Query error: {e}", style=S["warn"])
-        return err, no_update
+        return html.Div(f"Query error: {e}", style=S["warn"]), no_update
 
     if df.empty:
-        return (
-            html.Div("No data returned. Try adjusting your filters or selections.", style=S["hint"]),
-            no_update,
-        )
+        return html.Div("No data returned. Try adjusting your filters.", style=S["hint"]), no_update
 
     warning_text = None
-    df_flat = df.copy()  # keep pre-pivot data for the chart
+    df_flat = df.copy()
 
-    # Pivot if column dimension selected
     if col_dim:
         distinct = df[col_dim].nunique()
         if distinct > MAX_PIVOT_COLS:
@@ -555,28 +435,23 @@ def run_explorer(_, table, row_dims, col_dim, measure, agg, col_records,
             )
         df = pivot_df(df, row_dims, col_dim)
 
-    # ── Table ─────────────────────────────────────────────────────────────────
+    # ── Table ──────────────────────────────────────────────────────────────────
     table_component = dash_table.DataTable(
         data=df.head(500).to_dict("records"),
-        columns=[{"name": c, "id": c} for c in df.columns],
+        columns=[{"name": str(c), "id": str(c)} for c in df.columns],
         page_size=20,
         sort_action="native",
         filter_action="native",
         style_table={"overflowX": "auto"},
         style_header={
-            "backgroundColor": BG_PAGE,
-            "fontWeight": 600,
-            "fontSize": "12px",
-            "color": SUBTEXT,
+            "backgroundColor": BG_PAGE, "fontWeight": 600,
+            "fontSize": "12px", "color": SUBTEXT,
             "border": f"1px solid {BORDER}",
-            "textTransform": "uppercase",
-            "letterSpacing": "0.06em",
+            "textTransform": "uppercase", "letterSpacing": "0.06em",
         },
         style_cell={
-            "backgroundColor": BG_SURFACE,
-            "color": TEXT,
-            "fontSize": "13px",
-            "border": f"1px solid {BORDER}",
+            "backgroundColor": BG_SURFACE, "color": TEXT,
+            "fontSize": "13px", "border": f"1px solid {BORDER}",
             "padding": "8px 12px",
             "fontFamily": "Inter, 'Segoe UI', system-ui, sans-serif",
         },
@@ -585,8 +460,7 @@ def run_explorer(_, table, row_dims, col_dim, measure, agg, col_records,
         ],
     )
 
-    # ── Chart — uses flat data so axes match the pivot layout ─────────────────
-    fig = _build_chart(df_flat, row_dims, col_dim, measure, agg)
+    fig = _build_chart(df_flat, row_dims, col_dim, agg)
 
     output = [
         html.Div(style=S["card"], children=[table_component]),
@@ -599,45 +473,35 @@ def run_explorer(_, table, row_dims, col_dim, measure, agg, col_records,
     return warning, output
 
 
-def _build_chart(df_flat: pd.DataFrame, row_dims: list[str], col_dim: str | None,
-                 measure: str, agg: str) -> go.Figure:
-    """
-    Chart mirrors the pivot table layout:
-      - X axis  = column dimension (col_dim) values
-                  or, when no pivot, the first row dimension
-      - Series  = row dimension values (one line per row)
-      - Y axis  = aggregated measure
-    """
+def _build_chart(df_flat: pd.DataFrame, row_dims: list[str],
+                 col_dim: str | None, agg: str) -> go.Figure:
     fig = go.Figure()
 
     if col_dim and col_dim in df_flat.columns:
-        # Pivoted mode: x=col_dim, one series per unique value of row_dims[0]
-        series_dim = row_dims[0] if row_dims else None
+        series_dim  = row_dims[0] if row_dims else None
         series_vals = sorted(df_flat[series_dim].unique()) if series_dim else [None]
 
         for i, sv in enumerate(series_vals):
             sub = df_flat[df_flat[series_dim] == sv].sort_values(col_dim) if series_dim else df_flat
             fig.add_trace(go.Scatter(
-                x=sub[col_dim],
-                y=sub["value"],
-                name=str(sv) if sv is not None else measure,
+                x=sub[col_dim], y=sub["value"],
+                name=str(sv) if sv is not None else "value",
                 mode="lines+markers",
                 line=dict(color=COLORWAY[i % len(COLORWAY)], width=1.5),
                 marker=dict(size=4),
             ))
         x_label = col_dim
     else:
-        # Flat mode: x=first row dim, series=second row dim (if any)
-        x_col = row_dims[0] if row_dims else df_flat.columns[0]
-        y_col = "value" if "value" in df_flat.columns else df_flat.select_dtypes("number").columns[0]
-        other_dims = [d for d in row_dims if d != x_col]
+        x_col  = row_dims[0] if row_dims else df_flat.columns[0]
+        y_col  = "value" if "value" in df_flat.columns else df_flat.select_dtypes("number").columns[0]
+        others = [d for d in row_dims if d != x_col]
 
-        if other_dims:
-            for i, grp_val in enumerate(sorted(df_flat[other_dims[0]].unique())):
-                sub = df_flat[df_flat[other_dims[0]] == grp_val].sort_values(x_col)
+        if others:
+            for i, grp_val in enumerate(sorted(df_flat[others[0]].unique())):
+                sub = df_flat[df_flat[others[0]] == grp_val].sort_values(x_col)
                 fig.add_trace(go.Scatter(
-                    x=sub[x_col], y=sub[y_col],
-                    name=str(grp_val), mode="lines+markers",
+                    x=sub[x_col], y=sub[y_col], name=str(grp_val),
+                    mode="lines+markers",
                     line=dict(color=COLORWAY[i % len(COLORWAY)], width=1.5),
                     marker=dict(size=4),
                 ))
@@ -645,28 +509,20 @@ def _build_chart(df_flat: pd.DataFrame, row_dims: list[str], col_dim: str | None
             plot_df = df_flat.sort_values(x_col)
             fig.add_trace(go.Scatter(
                 x=plot_df[x_col], y=plot_df[y_col],
-                mode="lines+markers", name=measure,
-                line=dict(color=AZURE_1, width=2),
-                marker=dict(size=5),
+                mode="lines+markers", name="value",
+                line=dict(color=AZURE_1, width=2), marker=dict(size=5),
             ))
         x_label = x_col
 
     fig.update_layout(
-        title=f"{agg}({measure})",
-        xaxis_title=x_label,
-        yaxis_title=measure,
+        title=f"{agg}(value)",
+        xaxis_title=x_label, yaxis_title="value",
         height=400,
         margin=dict(l=60, r=24, t=48, b=40),
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        legend=dict(
-            orientation="h",
-            yanchor="bottom",
-            y=1.02,
-            xanchor="left",
-            x=0,
-            font=dict(size=11),
-        ),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02,
+                    xanchor="left", x=0, font=dict(size=11)),
     )
     return fig
 
@@ -674,5 +530,5 @@ def _build_chart(df_flat: pd.DataFrame, row_dims: list[str], col_dim: str | None
 # ── Entry point ───────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
-    log.info("Explorer starting on port %d — tables: %s", PORT, list_tables())
+    log.info("Explorer starting on port %d", PORT)
     app.run(host="0.0.0.0", port=PORT, debug=False)

@@ -1,0 +1,5 @@
+detail_id,domain_id,currency_code
+fin.exchange_rate_eur_pln,FIN,EUR
+fin.exchange_rate_usd_pln,FIN,USD
+fin.exchange_rate_gbp_pln,FIN,GBP
+fin.exchange_rate_chf_pln,FIN,CHF

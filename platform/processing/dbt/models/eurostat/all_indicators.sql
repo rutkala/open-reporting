@@ -3,9 +3,15 @@
 }}
 
 /*
-  Combined view of all Eurostat indicators across all domains.
-  Grain: one row per (detail_id, period).
-  Prefer this over individual domain tables when exploring cross-domain data.
+  Conformed fact table — all indicators from all sources.
+  Grain: one row per (source_id, detail_id, geo, period_date).
+
+  New sources are added by creating a stg_*.sql staging model that
+  conforms to the shared schema and unioning it here.
 */
 
 select * from {{ ref('stg_eurostat') }}
+
+union all
+
+select * from {{ ref('stg_nbp') }}
