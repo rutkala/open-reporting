@@ -34,6 +34,7 @@ services:
     restart: unless-stopped
     environment:
       url: https://www.open-reporting.dev
+      title: Otwarte Raporty
       database__client: sqlite3
       database__connection__filename: /var/lib/ghost/content/data/ghost.db
       mail__transport: sendmail

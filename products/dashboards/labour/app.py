@@ -77,7 +77,7 @@ for section in domain.sections:
 
 app = Dash(
     __name__,
-    title=f"Open Reporting — {domain.label}",
+    title=f"Otwarte Raporty — {domain.label}",
     suppress_callback_exceptions=True,
     requests_pathname_prefix="/labour/",
     routes_pathname_prefix="/labour/",
@@ -160,7 +160,7 @@ def _build_sections() -> list[html.Section]:
 app.layout = html.Div(style=S["body"], children=[
 
     html.Header(style=S["header"], children=[
-        html.A("Open Reporting", href="/",
+        html.A("Otwarte Raporty", href="/",
                style={"fontSize": "15px", "fontWeight": 600, "color": TEXT, "textDecoration": "none"}),
         html.Nav(children=[
             html.A(domain.label, href="#",

@@ -289,7 +289,7 @@ def pivot_df(df: pd.DataFrame, row_col: str, col_col: str) -> pd.DataFrame:
 
 app = Dash(
     __name__,
-    title="Open Reporting — Explorer",
+    title="Otwarte Raporty — Explorer",
     suppress_callback_exceptions=True,
     requests_pathname_prefix="/explorer/",
     routes_pathname_prefix="/explorer/",
@@ -402,7 +402,7 @@ app.layout = html.Div(style=S["body"], children=[
     dcc.Store(id="store-drill", data={"row": 2, "col": 0, "auto_run": False}),
 
     html.Header(style=S["header"], children=[
-        html.A("Open Reporting", href="/",
+        html.A("Otwarte Raporty", href="/",
                style={"fontSize": "15px", "fontWeight": 600, "color": TEXT,
                       "textDecoration": "none"}),
         html.Span("Explorer", style={"fontSize": "13px", "color": SUBTEXT}),

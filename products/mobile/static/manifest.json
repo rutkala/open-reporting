@@ -1,6 +1,6 @@
 {
-  "name": "Open Reporting",
-  "short_name": "OR Data",
+  "name": "Otwarte Raporty",
+  "short_name": "Otwarte Raporty",
   "description": "Polskie dane publiczne — wskaźniki gospodarcze i społeczne",
   "start_url": "/app/",
   "display": "standalone",

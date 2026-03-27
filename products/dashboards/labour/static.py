@@ -454,7 +454,7 @@ def build_html(df) -> str:
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rynek pracy w Polsce — Open Reporting</title>
+  <title>Rynek pracy w Polsce — Otwarte Raporty</title>
   <script src="https://cdn.plot.ly/plotly-3.0.0.min.js"></script>
   <style>
     *, *::before, *::after {{ box-sizing: border-box; margin: 0; padding: 0; }}
@@ -646,7 +646,7 @@ def build_html(df) -> str:
 <body>
 
 <header>
-  <a class="site-name" href="/">Open Reporting</a>
+  <a class="site-name" href="/">Otwarte Raporty</a>
   <nav><a href="/labour/rynek-pracy.html">Rynek pracy</a></nav>
 </header>
 
