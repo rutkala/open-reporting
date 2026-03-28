@@ -3,14 +3,20 @@
 <!-- last-updated: 2026-03-28 -->
 
 ## Current Focus
-MVP v0.1.0 declared complete. Switching to post-MVP agile workflow with Linear issues + feature branches + PRs.
+Post-MVP cleanup complete. Ready to start first post-MVP Linear issues (Ghost admin, daily cron).
 
 ## MVP Status: COMPLETE (v0.1.0 — 2026-03-28)
 See `docs/MVP.md` for full declaration and `docs/RELEASE_NOTES.md` for release notes.
 
-**Two remaining gaps (first Linear issues to create):**
+**First Linear issues to create (post-MVP):**
 1. Ghost admin account setup — blog cannot be managed without it
 2. Daily ingestion cron — NBP + Eurostat currently refreshed manually
+
+## Documentation State (clean as of 2026-03-28)
+- All docs in `docs/` on GitHub — single source of truth
+- Linear documents archived (Domain Taxonomy, Tech Stack, Data Catalog) — all point to GitHub
+- Linear project description updated (mobile live, Instagram only, Polish-only language)
+- `docs/DOMAINS.md` — fully expanded to 18 domains with Eurostat themes + GUS equivalents
 
 ## Post-MVP Process (CRITICAL — new rules from v0.1.0)
 See `docs/CONTRIBUTING.md` for full process. Summary:
@@ -40,15 +46,12 @@ See `docs/CONTRIBUTING.md` for full process. Summary:
 - `catalogue.domain_detail_sources`: 483 mappings — Eurostat: 73 verified (2 NUTS2); NBP FX: 4 verified
 - NUTS2 domains: `mac.gdp_per_capita_regional`, `pop.population_regional`
 
-## Roadmap (see docs/ROADMAP.md)
-Phase 1 — Content & Data depth:
-- Ghost admin + first articles
-- MAC, LAB, ENV domain dashboards
-- BDL ingestion, automated daily cron
-- Instagram token refresh (May 2026)
+## Linear Issues (Phase 1 — all Todo)
+Epics: OPE-74 (Blog), OPE-75 (Dashboards), OPE-76 (Data), OPE-77 (Social)
+Sub-issues: OPE-78 to OPE-90 — see Linear for full list
+Urgent: OPE-78 (Ghost admin), OPE-85 (daily cron), OPE-90 (Instagram token by 2026-05-20)
 
-Phase 2 — Quality & Reliability:
-- dbt tests, error handling, monitoring
-
-Phase 3 — Growth & Distribution:
-- Facebook/Threads posting, more NUTS2, EU27 scope
+## Workflow (post-MVP)
+- Ideas → `/capture-idea` or direct Linear entry (Backlog + Idea label)
+- Ideas review → `/review-ideas` (convert to issues)
+- Implementation → `/kickoff` (no args = detect branch or show Todo list)
