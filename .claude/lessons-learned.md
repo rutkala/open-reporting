@@ -14,6 +14,21 @@ A running log of process improvements, recurring mistakes, and things that worke
 
 ---
 
+## 2026-03-28 — MVP line drawn at commit 736ab606
+
+**What happened:** MVP v0.1.0 declared complete. All work up to and including commit `736ab606` on `main` is MVP bootstrap — process setup, documentation, Linear issues, skills. This work went directly to `main` without PRs, which is a one-time justified exception.
+
+**Root cause:** The PR process was being established during this work. It would be circular to require PRs for the commits that created the PR requirement.
+
+**Process change:** From commit `736ab606` onwards, the full process is mandatory for all work — no exceptions except explicit agreement with the user:
+1. Idea → Linear (Backlog + Idea label)
+2. `/review-ideas` → convert to issue
+3. `/kickoff` → feature branch → implement → PR → merge
+
+**Applies to:** All future work without exception.
+
+---
+
 ## 2026-03-28 — Documentation not tracked during post-MVP cleanup session
 
 **What happened:** A full session of work (Linear docs archived, DOMAINS.md expanded, project description updated, README/ARCHITECTURE rewritten, MVP docs created) was completed without any entries in `RELEASE_NOTES.md` under "Unreleased". The work was invisible in the release history.
