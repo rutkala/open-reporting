@@ -97,36 +97,69 @@ Shared session memory at `.claude/session-memory.md` provides continuity across 
 - ETL/processing work → `data-engineer`
 - Architecture decisions, schema changes, git ops → orchestrator handles directly
 
-## Linear Workflow
+## Three-Stage Workflow
 
-Claude Code has MCP access to Linear for the `OR` project.
+All work follows three stages. Never skip stages or implement directly from chat.
 
-**Standard flow:**
-1. Brainstorm in Claude.ai → draft concept
-2. Create Linear issues (manually or via MCP)
-3. In Claude Code: `"implement Linear issue OR-123"` → read issue → build
+```
+Stage 1 — Ideas       Stage 2 — Planning        Stage 3 — Implementation
+─────────────────     ──────────────────────     ────────────────────────
+Chat discussion   →   /review-ideas          →   /kickoff OR-XXX
+  → /capture-idea       Review, decide              Full pipeline:
+                        Convert to issues           branch → code → PR → merge
+Direct Linear entry
+  (Backlog + Idea label)
+```
 
-**Linear MCP tools available:** `get_issue`, `save_issue`, `list_issues`, `save_comment`, `get_project`
+**Chat contract (CRITICAL):**
+- Normal chat = explore, advise, explain — no code, no commits, ever
+- Any idea discussed in chat → I capture it with `/capture-idea`, never implement
+- `/kickoff` is the only gate into implementation — and only from a proper OR- issue
+- If user says "implement X" without a Linear issue → redirect to `/capture-idea` first
 
-**When implementing a Linear issue:**
-0. Validate issue meets requirements standard (`.claude/standards/requirements.md`)
-1. Read the issue with `get_issue`
-2. Confirm scope with user before starting
-3. Update status to "In Progress" when starting
-4. Add implementation notes as comments
-5. Update status to "Done" when complete
+## Linear Setup
+
+**Project:** Open Reporting | **Team identifier:** `OR` | **MCP access:** yes
+
+**Issue structure:**
+- Epics (parent issues) group related work areas
+- Sub-issues attached to epics for individual tasks
+- Ideas link to the Feature/Bug/etc. issue created from them (`relatedTo`)
+
+**Labels:**
+| Label | Use for |
+|-------|---------|
+| Idea | Unreviewed idea — Backlog only, no template required |
+| Feature | New product capability |
+| Bug | Something broken |
+| Improvement | Enhancement to existing feature |
+| Data | Ingestion, pipeline, data transformation |
+| Content | Articles, social posts, editorial |
+| Infra | Infrastructure, configuration, deployment |
+
+**Statuses:**
+- `Backlog` — planned but not yet in a sprint
+- `Todo` — in current sprint, ready to start
+- `In Progress` — being worked on
+- `Done` — complete
+
+Ideas always start in Backlog with the Idea label. When accepted via `/review-ideas`, they become proper issues (label changes, status stays Backlog until pulled into a sprint).
+
+**Linear MCP tools available:** `get_issue`, `save_issue`, `list_issues`, `save_comment`, `get_project`, `save_milestone`, `list_issue_statuses`, `list_issue_labels`, `create_issue_label`
 
 ## Skills (Slash Commands)
 
-| Skill | Description |
-|-------|-------------|
-| `/kickoff <OR-XXX>` | Read Linear issue, assess feasibility, confirm scope before starting |
-| `/research` | Research data sources, APIs, and existing patterns before planning |
-| `/plan <task>` | Design implementation plan, get user approval before coding |
-| `/review [scope]` | Code review for quality, security, correctness |
-| `/commit [hint]` | Smart conventional commit with auto-generated message |
-| `/document` | Update docs after implementation |
-| `/status-check` | Quick diagnostic of git state + running processes |
+| Skill | Stage | Description |
+|-------|-------|-------------|
+| `/capture-idea` | 1 | Save idea from chat to Linear (Backlog + Idea label) |
+| `/review-ideas` | 2 | Review ideas board, convert accepted to proper issues |
+| `/kickoff [OR-XXX]` | 3 | Full implementation pipeline — detects branch if no arg given |
+| `/research` | 3 (sub-step) | Research before planning — called from within kickoff |
+| `/plan` | 3 (sub-step) | Design solution, get approval before coding |
+| `/review` | 3 (sub-step) | Standards compliance check before PR |
+| `/commit` | 3 (sub-step) | Smart conventional commit |
+| `/document` | 3 (post-merge) | Update docs, RELEASE_NOTES, lessons-learned |
+| `/status-check` | Any | Diagnostic — git state, services, open items |
 
 ## Standards
 
