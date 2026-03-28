@@ -1,5 +1,9 @@
 # Open Reporting — Workflow
 
+> For the full post-MVP project management process including Git workflow, PR reviews, and release process, see `docs/CONTRIBUTING.md`.
+
+---
+
 ## The Three-Layer System
 
 ```
@@ -21,46 +25,34 @@ Use Claude.ai project context: paste `docs/PROJECT.md`, `docs/DOMAINS.md`, and r
 - All implementation tasks live in Linear (`ORE` project)
 - Issues created from Claude.ai brainstorm output
 - Priority and status managed in Linear
-- NOT using GitHub Issues
+- 2-week sprint cycles
 
-**Issue format for implementation tasks:**
-```
-Title: [Domain] Short description
-Description:
-  - Data source: ...
-  - Expected output: ...
-  - Acceptance criteria: ...
-```
+**Issue must meet Definition of Ready** (see `.claude/standards/requirements.md`) before work starts.
 
 ### Claude Code (Implementation)
-- Reads Linear issues via MCP (`get_issue ORE-xxx`)
-- Implements dashboards, ingestion pipelines, infra changes
+- Reads Linear issues via MCP (`/kickoff ORE-XXX`)
+- Creates feature branch, implements, runs `/review`
 - Updates Linear status and adds comments during implementation
-- Commits and pushes on completion
+- Opens PR on GitHub — never pushes directly to `main`
+
+---
 
 ## Standard Implementation Flow
 
-1. **Brainstorm** in Claude.ai → decide on a domain/dashboard
-2. **Create Linear issue** with data source, expected output, acceptance criteria
-3. In Claude Code: `"implement Linear issue ORE-xxx"` → Claude reads it, proposes plan
-4. **Approve plan** → Claude implements using DDF (Dashboard Development Framework)
-5. **Review output** → approve dashboard HTML
-6. **Commit + push** → `/commit` skill
+1. **Brainstorm** in Claude.ai → decide on a feature/domain
+2. **Create Linear issue** meeting Definition of Ready
+3. In Claude Code: `/kickoff ORE-XXX` → Claude reads it, proposes plan
+4. **Approve plan** → Claude creates feature branch and implements
+5. **Review**: `/review` → Claude checks standards compliance
+6. **PR** → open on GitHub, paste review output, get approval
+7. **Merge to main** → Linear issue → Done → update `RELEASE_NOTES.md`
 
-## Dashboard Development Framework (DDF)
-
-All dashboard work follows four stages with approval gates:
-
-1. **Source Research** — confirm data exists, document structure → Gate
-2. **Metric Definition** — define KPIs and calculations → Gate
-3. **Ingestion** (if needed) — build ETL, validate data → Gate
-4. **UI/Presentation** — build chart, apply theme, test → Gate
-
-Do not skip gates. Each gate is a natural checkpoint to course-correct.
+---
 
 ## Git Conventions
 
-- Branch: `main` (single-person workflow, no feature branches needed)
-- Commit format: `feat:`, `fix:`, `refactor:`, `docs:`, `chore:`
+- **Branching**: feature branches required for all work (see `CONTRIBUTING.md`)
+- Branch format: `feat/ORE-XXX-description`, `fix/ORE-XXX-description`, etc.
+- Commit format: `feat: ORE-123 description` / `fix:` / `refactor:` / `docs:` / `chore:`
 - One logical change per commit
-- Push after each completed Linear issue
+- `main` is always deployable — no direct pushes

@@ -1,62 +1,54 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-03-27 -->
+<!-- last-updated: 2026-03-28 -->
 
 ## Current Focus
-Brand rename to "Otwarte Raporty", Instagram publishing automation, social media playbook.
+MVP v0.1.0 declared complete. Switching to post-MVP agile workflow with Linear issues + feature branches + PRs.
 
-## Last Session Summary (2026-03-27)
+## MVP Status: COMPLETE (v0.1.0 — 2026-03-28)
+See `docs/MVP.md` for full declaration and `docs/RELEASE_NOTES.md` for release notes.
 
-### What was built/changed:
+**Two remaining gaps (first Linear issues to create):**
+1. Ghost admin account setup — blog cannot be managed without it
+2. Daily ingestion cron — NBP + Eurostat currently refreshed manually
 
-**Brand rename — "Otwarte Raporty"**
-- Explorer, Labour dashboard, Mobile PWA (templates + manifest.json) — display name updated
-- Ghost CMS title set via `docker-compose.yml` env var (`title: Otwarte Raporty`) + DB updated directly
-- Ghost DB update needed because env var only applies to fresh installs; existing DB value takes precedence
+## Post-MVP Process (CRITICAL — new rules from v0.1.0)
+See `docs/CONTRIBUTING.md` for full process. Summary:
+- **All work starts as a Linear issue** — no idea goes to code directly
+- **Feature branch per issue**: `feat/ORE-XXX-description` from `main`
+- **PR required** with `/review` output and standards compliance checklist
+- **Never push directly to `main`**
+- **Update `docs/RELEASE_NOTES.md`** under "Unreleased" as part of each PR
 
-**Instagram publishing**
-- Meta Developer account created, app "Otwarte Raporty" (ID: 1334119365407244)
-- Instagram Business account @otwarteraporty connected as tester
-- Token generated for @otwarteraporty (user ID: 26290813287238381)
-- Credentials in `.env`: `INSTAGRAM_APP_ID`, `INSTAGRAM_APP_SECRET`, `INSTAGRAM_ACCESS_TOKEN`
-- Token valid ~60 days — refresh via Meta Developer portal → Use cases → Generate token
-- Published first test posts: 2×2 KPI card (Wzrost PKB, CPI, Wzrost płac, EUR/PLN)
-- Image generation: Plotly → PNG → `infra/nginx/html/` → served at `portal.open-reporting.dev/<file>.png`
-- **Important**: use unique filename per post — Instagram caches by URL
-
-**Social playbook**
-- `.claude/playbooks/social.md` — full publishing flow, card design rules, caption format, quality gates
-
-**kaleido installed** — for Plotly static PNG export (`pip install kaleido --break-system-packages`)
-
-### Products live:
+## Products Live
 - `open-reporting.dev` — Ghost blog "Otwarte Raporty"
-- `portal.open-reporting.dev` — Dashboards (labour port 8050, explorer port 8051)
+- `portal.open-reporting.dev` — Labour dashboard (port 8050) + Explorer (port 8051)
 - `portal.open-reporting.dev/app/` — Mobile PWA (port 8052)
-- Instagram: @otwarteraporty
+- Instagram: @otwarteraporty (token expires ~end of May 2026)
 
 ## Key Technical Facts
 - DB (analytical): DuckDB at data/warehouse.duckdb (DUCKDB_PATH env var)
 - DB (operational): PostgreSQL localhost:5432 db=reporting user=reporting
 - dbt: `cd platform/processing/dbt && DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt run --profiles-dir .`
-- dbt seed: add `--select <seed_name>` to seed only one file; schema change requires `--full-refresh`
-- Harlequin: `harlequin /opt/open-reporting/data/warehouse.duckdb` (run in tmux new-window)
+- dbt seed schema change: requires `--full-refresh`
 - DuckDB concurrency: stop dashboards before dbt run — `sudo systemctl stop or-explorer or-labour`
-- Instagram API: two-step publish (create container → wait 10s → publish)
+- Instagram API: two-step publish (create container → wait 10s → publish); unique filename per post
+- kaleido installed for Plotly PNG export
 
 ## Catalogue State
 - `catalogue.domain_details`: 222 indicators across 18 domains
 - `catalogue.domain_detail_sources`: 483 mappings — Eurostat: 73 verified (2 NUTS2); NBP FX: 4 verified
-- `dim_primary_source`: 77 verified mappings — used as Explorer default
 - NUTS2 domains: `mac.gdp_per_capita_regional`, `pop.population_regional`
 
-## Open Items
-- Domain dashboards: next phase — LAB, MAC, ENV first; standard template (KPI cards, time series, cross-indicator bar)
-- Fix BUS: `sts_inpr_a` series_id (try `indic_bt=PROD`)
-- BDL ingestion: pending user confirmation on API key
-- SDP ingestion: pending user confirmation on data format
-- Install dbt-metricflow, migrate products/semantic/ → dbt metrics/
-- Ghost admin account setup (not yet created — setup screen not found)
-- Ghost nav: add "Portal" link to `portal.open-reporting.dev` (requires Ghost admin)
-- Instagram token refresh due ~end of May 2026
-- Social: automate weekly Economy Snapshot post
+## Roadmap (see docs/ROADMAP.md)
+Phase 1 — Content & Data depth:
+- Ghost admin + first articles
+- MAC, LAB, ENV domain dashboards
+- BDL ingestion, automated daily cron
+- Instagram token refresh (May 2026)
+
+Phase 2 — Quality & Reliability:
+- dbt tests, error handling, monitoring
+
+Phase 3 — Growth & Distribution:
+- Facebook/Threads posting, more NUTS2, EU27 scope

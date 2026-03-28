@@ -170,6 +170,41 @@ Examples:
 
 ---
 
+## PR Review Checklist
+
+Before approving any PR, the reviewer verifies:
+
+```markdown
+### All PRs
+- [ ] No secrets committed (.env, API keys, passwords)
+- [ ] English-only backend (names, variables, logs, SQL columns)
+- [ ] Polish user-facing strings (labels, titles, tooltips)
+- [ ] 100 char line length, 4-space indent
+- [ ] logging.getLogger(__name__) — no print() in scripts
+
+### Ingestion PRs (platform/ingestion/)
+- [ ] Parameterised queries — no string concatenation in SQL
+- [ ] load_dotenv(override=True) + lazy _dsn() pattern
+- [ ] Idempotent — safe to re-run without duplicating data
+- [ ] Source documented in catalogue (catalogue.domain_detail_sources)
+
+### Processing PRs (platform/processing/)
+- [ ] dbt model follows curated schema naming
+- [ ] Data quality checks included
+- [ ] Seeds use --full-refresh when schema changes
+
+### Visualisation PRs (products/)
+- [ ] Nordic theme imported from products/visuals/lib/theme.py — no hardcoded colours
+- [ ] All chart labels in Polish
+- [ ] Source attribution visible
+
+### Acceptance criteria
+- [ ] All acceptance criteria from the Linear issue are met
+- [ ] RELEASE_NOTES.md updated under "Unreleased"
+```
+
+---
+
 ## User Story Format (optional)
 
 For user-facing features, the standard format:
