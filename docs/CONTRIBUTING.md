@@ -123,6 +123,26 @@ Merge to `main` (squash or merge commit — keep history readable).
 After merge:
 - Linear issue → **Done**
 - Delete the feature branch
+- Update any affected documentation (see step 9)
+
+### 9. Documentation update
+After every merge, review and update any docs affected by the change:
+
+| Change type | Docs to update |
+|-------------|---------------|
+| Any change | `docs/RELEASE_NOTES.md` — move from "Unreleased" or add entry |
+| New data source | `docs/DATA_SOURCES.md` |
+| New domain / indicator | `docs/DOMAINS.md` |
+| Infrastructure change | `docs/ARCHITECTURE.md` |
+| New product / URL | `README.md` + `docs/ARCHITECTURE.md` |
+| New playbook or standard | `README.md` doc index |
+
+If the change invalidates something in `.claude/session-memory.md`, update that too.
+
+### 10. Lessons learned
+After any non-trivial issue — especially where something went wrong, took longer than expected, or revealed a process gap — add an entry to `.claude/lessons-learned.md`.
+
+See that file for format. This is how the process improves over time.
 
 ---
 

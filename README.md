@@ -41,7 +41,7 @@ PYTHONPATH=/opt/open-reporting python3 products/mobile/app.py              # por
 | [docs/DOMAINS.md](docs/DOMAINS.md) | Data domain taxonomy |
 | [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md) | Data sources, APIs, naming conventions |
 
-Agent and standards docs are in [.claude/](.claude/).
+Agent instructions, standards, playbooks, and lessons learned are in [.claude/](.claude/).
 
 ---
 
