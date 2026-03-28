@@ -3,7 +3,7 @@
 <!-- last-updated: 2026-03-28 -->
 
 ## Current Focus
-Post-MVP setup complete. Process, skills, and Linear backlog all in place. Ready for first sprint.
+OR-93 complete. GUS DBW HVD ingestion pipeline built and loaded. Ready for next sprint.
 
 ## MVP Status: COMPLETE (v0.1.0 — 2026-03-28)
 See `docs/MVP.md` and `docs/RELEASE_NOTES.md`.
@@ -30,6 +30,16 @@ See `CLAUDE.md` for full process, labels, and chat contract.
 - DuckDB concurrency: stop dashboards before dbt run — `sudo systemctl stop or-explorer or-labour`
 - Instagram API: two-step publish (create container → wait 10s → publish); unique filename per post
 - kaleido installed for Plotly PNG export
+- bypassPermissions: requires `--dangerously-skip-permissions` CLI flag + non-root user
+
+## DBW HVD Data (OR-93 — Done)
+- Source: dbw.stat.gov.pl/pl/katalog/bulk — 213 CSV ZIPs, 21 HVD categories (EU regulation 2023/138)
+- Ingestion: `platform/ingestion/to_landing/dbw_hvd.py` → `platform/ingestion/to_raw/dbw_observations.py`
+- Landing zone: `data/landing/dbw_hvd/` (426 files — *_data.csv + *_dict.csv per dataset)
+- Raw tables: `raw.dbw_observations` (756,626 rows), `raw.dbw_positions` (14,390 labels)
+- Coverage: 85 variables, 82 sections, years 1995–2026
+- Reload: stop dashboards → run to_raw script → restart dashboards (~11s DuckDB bulk load)
+- Categories include: GDP, gov expenditure/debt, employment, unemployment, population, poverty, HICP, tourism, industrial production
 
 ## Catalogue State
 - `catalogue.domain_details`: 222 indicators across 18 domains
@@ -38,5 +48,5 @@ See `CLAUDE.md` for full process, labels, and chat contract.
 
 ## Linear — Phase 1 Backlog
 Epics: OR-74 (Blog), OR-75 (Dashboards), OR-76 (Data), OR-77 (Social)
-Sub-issues: OR-78 to OR-90 — all in Backlog, awaiting first `/sprint`
+Sub-issues: OR-78 to OR-93 — OR-93 Done; OR-78 to OR-92 in Backlog
 Urgent: OR-78 (Ghost admin), OR-85 (daily cron), OR-90 (Instagram token due 2026-05-20)
