@@ -41,11 +41,12 @@ For each **accepted** idea:
 2. Fill in the full issue template for that type
 3. If the idea is large, split into a parent issue (epic) + sub-issues
 4. Create the issue(s) in Linear:
-   - Remove "Idea" label
+   - Label: Feature / Bug / Data / Content / Infra (whichever applies — not Idea)
    - Set status to **Todo**
    - Assign to a milestone if it clearly belongs to Phase 1 / 2 / 3
    - Link sub-issues to parent
-5. Archive the original idea issue (set to Canceled with comment: *"Converted to {new issue ID(s)}"*)
+   - Set `relatedTo` the original idea issue ID (creates traceable chain)
+5. Close the original idea: set to **Canceled**, add comment: *"Converted to {new issue ID(s)}"*
 
 For each **deferred** idea:
 - Leave in Backlog with Idea label, add comment: *"Deferred — revisit in Phase {N}"*

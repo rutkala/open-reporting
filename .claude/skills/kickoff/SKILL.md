@@ -2,7 +2,7 @@
 name: kickoff
 description: "Start the full implementation pipeline for a Linear issue. Reads the issue, assesses feasibility, and drives the work end-to-end: research → plan → implement → review → PR."
 user-invocable: true
-argument-hint: "<optional: issue ID e.g. ORE-123>"
+argument-hint: "<optional: issue ID e.g. OR-123>"
 ---
 
 # Task Kickoff
@@ -14,7 +14,7 @@ Entry point for Stage 3 — implementation. Drives the full pipeline from issue 
 **If `$ARGUMENTS` is provided:** use that issue ID directly.
 
 **If `$ARGUMENTS` is empty:**
-1. Check the current git branch name for a pattern like `ORE-123` or `feat/ORE-123-description` — if found, use that issue ID
+1. Check the current git branch name for a pattern like `OR-123` or `feat/OR-123-description` — if found, use that issue ID
 2. If no branch match, fetch all Linear issues with status **Todo** and present them as a numbered list for the user to pick from
 
 Do not proceed until an issue is identified.

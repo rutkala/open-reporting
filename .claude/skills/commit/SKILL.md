@@ -41,7 +41,7 @@ Recent commit messages (for style reference):
 8. **Update Linear** — if this commit completes a Linear issue, update it:
    - Set status to **Done**
    - Add a comment with a plain-language summary of what was delivered
-   - Ask the user: "Should I mark Linear issue ORE-XXX as done?"
+   - Ask the user: "Should I mark Linear issue OR-XXX as done?"
 
 If user provided a hint: `$ARGUMENTS` — use it to inform the commit message.
 

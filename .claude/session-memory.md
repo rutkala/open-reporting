@@ -21,7 +21,7 @@ See `docs/MVP.md` for full declaration and `docs/RELEASE_NOTES.md` for release n
 ## Post-MVP Process (CRITICAL — new rules from v0.1.0)
 See `docs/CONTRIBUTING.md` for full process. Summary:
 - **All work starts as a Linear issue** — no idea goes to code directly
-- **Feature branch per issue**: `feat/ORE-XXX-description` from `main`
+- **Feature branch per issue**: `feat/OR-XXX-description` from `main`
 - **PR required** with `/review` output and standards compliance checklist
 - **Never push directly to `main`**
 - **Update `docs/RELEASE_NOTES.md`** under "Unreleased" as part of each PR
@@ -47,9 +47,9 @@ See `docs/CONTRIBUTING.md` for full process. Summary:
 - NUTS2 domains: `mac.gdp_per_capita_regional`, `pop.population_regional`
 
 ## Linear Issues (Phase 1 — all Todo)
-Epics: OPE-74 (Blog), OPE-75 (Dashboards), OPE-76 (Data), OPE-77 (Social)
-Sub-issues: OPE-78 to OPE-90 — see Linear for full list
-Urgent: OPE-78 (Ghost admin), OPE-85 (daily cron), OPE-90 (Instagram token by 2026-05-20)
+Epics: OR-74 (Blog), OR-75 (Dashboards), OR-76 (Data), OR-77 (Social)
+Sub-issues: OR-78 to OR-90 — see Linear for full list
+Urgent: OR-78 (Ghost admin), OR-85 (daily cron), OR-90 (Instagram token by 2026-05-20)
 
 ## Workflow (post-MVP)
 - Ideas → `/capture-idea` or direct Linear entry (Backlog + Idea label)

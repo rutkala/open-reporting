@@ -47,7 +47,7 @@ Agent instructions, standards, playbooks, and lessons learned are in [.claude/](
 
 ## Project Management
 
-All work is tracked in **Linear** (`ORE` project). No idea goes directly to code — every task starts as a Linear issue. See [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) for the full workflow.
+All work is tracked in **Linear** (`OR` project). No idea goes directly to code — every task starts as a Linear issue. See [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) for the full workflow.
 
 ---
 

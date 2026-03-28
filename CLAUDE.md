@@ -99,12 +99,12 @@ Shared session memory at `.claude/session-memory.md` provides continuity across 
 
 ## Linear Workflow
 
-Claude Code has MCP access to Linear for the `ORE` project.
+Claude Code has MCP access to Linear for the `OR` project.
 
 **Standard flow:**
 1. Brainstorm in Claude.ai → draft concept
 2. Create Linear issues (manually or via MCP)
-3. In Claude Code: `"implement Linear issue ORE-123"` → read issue → build
+3. In Claude Code: `"implement Linear issue OR-123"` → read issue → build
 
 **Linear MCP tools available:** `get_issue`, `save_issue`, `list_issues`, `save_comment`, `get_project`
 
@@ -120,7 +120,7 @@ Claude Code has MCP access to Linear for the `ORE` project.
 
 | Skill | Description |
 |-------|-------------|
-| `/kickoff <ORE-XXX>` | Read Linear issue, assess feasibility, confirm scope before starting |
+| `/kickoff <OR-XXX>` | Read Linear issue, assess feasibility, confirm scope before starting |
 | `/research` | Research data sources, APIs, and existing patterns before planning |
 | `/plan <task>` | Design implementation plan, get user approval before coding |
 | `/review [scope]` | Code review for quality, security, correctness |

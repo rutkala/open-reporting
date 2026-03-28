@@ -17,9 +17,9 @@ Every piece of work — feature, bug fix, data pipeline, article, infrastructure
 ```
 Idea (Claude.ai / conversation)
     ↓
-Linear issue created (ORE-XXX)
+Linear issue created (OR-XXX)
     ↓
-/kickoff ORE-XXX  →  feasibility check + scope confirmation
+/kickoff OR-XXX  →  feasibility check + scope confirmation
     ↓
 Feature branch created from main
     ↓
@@ -43,7 +43,7 @@ RELEASE_NOTES.md updated
 ## Issue Lifecycle
 
 ### 1. Create the issue
-Create in Linear (`ORE` project). Issue must meet the **Definition of Ready** defined in `.claude/standards/requirements.md` before work starts.
+Create in Linear (`OR` project). Issue must meet the **Definition of Ready** defined in `.claude/standards/requirements.md` before work starts.
 
 Issue types and required fields are defined in `.claude/standards/requirements.md`:
 - **Feature** — new product capability
@@ -53,7 +53,7 @@ Issue types and required fields are defined in `.claude/standards/requirements.m
 - **Infra** — infrastructure, configuration, deployment
 
 ### 2. Kickoff
-In Claude Code: `/kickoff ORE-XXX`
+In Claude Code: `/kickoff OR-XXX`
 
 Claude reads the issue, checks requirements completeness, assesses feasibility, identifies blockers, and presents a plan for user confirmation. No work starts until the user approves.
 
@@ -65,18 +65,18 @@ Create a branch from `main` before writing any code:
 ```bash
 git checkout main
 git pull origin main
-git checkout -b feat/ORE-123-short-description
+git checkout -b feat/OR-123-short-description
 ```
 
 Branch naming convention:
-- `feat/ORE-XXX-description` — new feature
-- `fix/ORE-XXX-description` — bug fix
-- `data/ORE-XXX-description` — data pipeline
-- `infra/ORE-XXX-description` — infrastructure
-- `docs/ORE-XXX-description` — documentation only
+- `feat/OR-XXX-description` — new feature
+- `fix/OR-XXX-description` — bug fix
+- `data/OR-XXX-description` — data pipeline
+- `infra/OR-XXX-description` — infrastructure
+- `docs/OR-XXX-description` — documentation only
 
 ### 4. Implementation
-- Commits on the feature branch reference the issue: `feat: ORE-123 short description`
+- Commits on the feature branch reference the issue: `feat: OR-123 short description`
 - Follow all standards in `.claude/standards/`
 - Never commit `.env` or secrets
 - Keep commits logical — one change per commit
@@ -96,12 +96,12 @@ Fix any issues raised before opening the PR.
 Push the branch and open a PR on GitHub:
 
 ```bash
-git push -u origin feat/ORE-123-short-description
-gh pr create --title "ORE-123: Short description" --body "..."
+git push -u origin feat/OR-123-short-description
+gh pr create --title "OR-123: Short description" --body "..."
 ```
 
 PR description must include:
-- Link to Linear issue (`ORE-XXX`)
+- Link to Linear issue (`OR-XXX`)
 - Summary of changes
 - How to test / verify
 - `/review` output (paste the Claude review)
@@ -215,7 +215,7 @@ Version format: `MAJOR.MINOR.PATCH`
 
 Claude Code (this tool) acts as the implementation partner:
 
-- Reads Linear issues via MCP (`/kickoff ORE-XXX`)
+- Reads Linear issues via MCP (`/kickoff OR-XXX`)
 - Creates feature branches, implements, commits
 - Runs `/review` before opening PRs
 - Updates Linear status and adds implementation notes as comments

@@ -12,7 +12,7 @@ This playbook defines the complete process for building a dashboard — from a L
 
 ## Phase 0: Kickoff
 
-**Skill:** `/kickoff <ORE-XXX>`
+**Skill:** `/kickoff <OR-XXX>`
 
 1. Read the Linear issue
 2. Assess feasibility:
