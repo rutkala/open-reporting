@@ -149,17 +149,30 @@ Ideas always start in Backlog with the Idea label. When accepted via `/review-id
 
 ## Skills (Slash Commands)
 
+Four primary skills drive the entire workflow:
+
 | Skill | Stage | Description |
 |-------|-------|-------------|
-| `/capture-idea` | 1 | Save idea from chat to Linear (Backlog + Idea label) |
-| `/review-ideas` | 2 | Review ideas board, convert accepted to proper issues |
-| `/kickoff [OR-XXX]` | 3 | Full implementation pipeline — detects branch if no arg given |
-| `/research` | 3 (sub-step) | Research before planning — called from within kickoff |
-| `/plan` | 3 (sub-step) | Design solution, get approval before coding |
-| `/review` | 3 (sub-step) | Standards compliance check before PR |
-| `/commit` | 3 (sub-step) | Smart conventional commit |
-| `/document` | 3 (post-merge) | Update docs, RELEASE_NOTES, lessons-learned |
-| `/status-check` | Any | Diagnostic — git state, services, open items |
+| `/capture-idea` | 1 — Collect | Save idea from chat to Linear (Backlog + Idea label) |
+| `/review-ideas` | 2 — Convert | Review ideas board, convert accepted to proper issues in Backlog |
+| `/sprint` | 3 — Prioritise | Sprint planning — pick issues from Backlog, move to Todo |
+| `/kickoff [OR-XXX]` | 4 — Implement | Full pipeline: plan → branch → code → review → PR → Done |
+
+Internal sub-steps (called from within `/kickoff`, not invoked directly):
+
+| Skill | Called from | Description |
+|-------|-------------|-------------|
+| `/research` | kickoff | Research approach before planning |
+| `/plan` | kickoff | Design solution, get approval before coding |
+| `/review` | kickoff | Standards compliance check before PR |
+| `/commit` | kickoff | Smart conventional commit |
+| `/document` | kickoff (post-merge) | Update docs, RELEASE_NOTES, lessons-learned |
+
+Utility:
+
+| Skill | Description |
+|-------|-------------|
+| `/status-check` | Diagnostic — git state, services, open items |
 
 ## Standards
 

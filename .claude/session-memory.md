@@ -51,7 +51,8 @@ Epics: OR-74 (Blog), OR-75 (Dashboards), OR-76 (Data), OR-77 (Social)
 Sub-issues: OR-78 to OR-90 — see Linear for full list
 Urgent: OR-78 (Ghost admin), OR-85 (daily cron), OR-90 (Instagram token by 2026-05-20)
 
-## Workflow (post-MVP)
-- Ideas → `/capture-idea` or direct Linear entry (Backlog + Idea label)
-- Ideas review → `/review-ideas` (convert to issues)
-- Implementation → `/kickoff` (no args = detect branch or show Todo list)
+## Workflow (post-MVP) — 4 stages
+1. `/capture-idea` — idea from chat → Backlog (Idea label)
+2. `/review-ideas` — convert ideas to proper issues → Backlog
+3. `/sprint` — pick issues from Backlog → Todo
+4. `/kickoff` — plan → implement → PR → Done

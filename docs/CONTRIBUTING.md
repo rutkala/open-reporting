@@ -14,28 +14,16 @@ Every piece of work — feature, bug fix, data pipeline, article, infrastructure
 
 ## Workflow Overview
 
+Four stages, four skills:
+
 ```
-Idea (Claude.ai / conversation)
-    ↓
-Linear issue created (OR-XXX)
-    ↓
-/kickoff OR-XXX  →  feasibility check + scope confirmation
-    ↓
-Feature branch created from main
-    ↓
-Implementation (commits on branch)
-    ↓
-/review  →  standards compliance check
-    ↓
-Pull Request opened on GitHub
-    ↓
-Code review + approval
-    ↓
-Merge to main
-    ↓
-Linear issue → Done
-    ↓
-RELEASE_NOTES.md updated
+Stage 1 — Collect          Stage 2 — Convert          Stage 3 — Prioritise       Stage 4 — Implement
+───────────────────        ───────────────────        ────────────────────        ───────────────────
+Chat idea                  /review-ideas              /sprint                     /kickoff
+  → /capture-idea            Review ideas board         Review backlog              Plan → approve
+                             Accept → issue             Pick sprint issues          Branch → code
+Direct Linear entry          Reject → archive           Move to Todo                /review → PR
+  (Backlog + Idea label)     Defer → leave                                          Merge → Done
 ```
 
 ---
