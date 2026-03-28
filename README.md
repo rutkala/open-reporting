@@ -1,32 +1,54 @@
-# Open Reporting
+# Otwarte Raporty
 
-A one-person data media company turning Polish public data into accessible, beautiful, and useful products.
+Polskie dane publiczne w jednym miejscu — wskaźniki gospodarcze, społeczne i demograficzne.
 
-**Live:** [portal.open-reporting.dev](https://portal.open-reporting.dev) · [www.open-reporting.dev](https://www.open-reporting.dev)
+**Live products:**
+- [open-reporting.dev](https://open-reporting.dev) — Blog
+- [portal.open-reporting.dev](https://portal.open-reporting.dev) — Data portal (Labour dashboard, Explorer)
+- [portal.open-reporting.dev/app](https://portal.open-reporting.dev/app/) — Mobile PWA
+- [@otwarteraporty](https://instagram.com/otwarteraporty) — Instagram
+
+---
 
 ## Quick Start
 
 ```bash
-# Clone and setup
 git clone https://github.com/rutkala/open-reporting.git
 cd open-reporting
-cp .env.example .env
-
-# Start services
-docker compose up -d
-
-# Generate dashboards
-POSTGRES_PASSWORD=xxx python3 charts/generate.py
+cp .env.example .env  # fill in secrets
+docker compose up -d  # start nginx, postgres, ghost
 ```
+
+Run portal apps (each in its own terminal or systemd service):
+```bash
+PYTHONPATH=/opt/open-reporting python3 products/dashboards/labour/app.py   # port 8050
+PYTHONPATH=/opt/open-reporting python3 products/dashboards/explorer/app.py # port 8051
+PYTHONPATH=/opt/open-reporting python3 products/mobile/app.py              # port 8052
+```
+
+---
 
 ## Documentation
 
-All agent guidelines and project documentation: **[AGENTS.md](AGENTS.md)**
+| Doc | Purpose |
+|-----|---------|
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Infrastructure, databases, data pipeline |
+| [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) | How to contribute — issue lifecycle, Git workflow, PR process |
+| [docs/ROADMAP.md](docs/ROADMAP.md) | What's planned post-MVP |
+| [docs/RELEASE_NOTES.md](docs/RELEASE_NOTES.md) | What's shipped |
+| [docs/MVP.md](docs/MVP.md) | MVP v0.1 declaration and scope |
+| [docs/PROJECT.md](docs/PROJECT.md) | Vision, product lines, principles |
+| [docs/DOMAINS.md](docs/DOMAINS.md) | Data domain taxonomy |
+| [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md) | Data sources, APIs, naming conventions |
 
-## Current Status
+Agent and standards docs are in [.claude/](.claude/).
 
-- ✅ 4 dashboards deployed (State Budget, Regional Budgets, GPW Market, Labour Market)
-- ✅ Data ingestion for GPW stocks and GUS BDL budget data
-- ⬜ 18 dashboard domains planned (see AGENTS.md for full list)
+---
+
+## Project Management
+
+All work is tracked in **Linear** (`ORE` project). No idea goes directly to code — every task starts as a Linear issue. See [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) for the full workflow.
+
+---
 
 *Owner: Radek Utkala · Poland · 2026*
