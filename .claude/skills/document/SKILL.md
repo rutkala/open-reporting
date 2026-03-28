@@ -59,8 +59,29 @@ Tell the user:
 - Whether anything in the docs is now outdated and was corrected
 - Whether any documentation gaps remain
 
+## Step 5 — Lessons Learned (mandatory after every issue)
+
+Reflect on the issue that was just completed. Ask:
+- What went wrong or took longer than expected?
+- What was discovered about the data, tools, or architecture that wasn't known at the start?
+- What would have made this issue go faster or smoother?
+- Did any process steps get skipped, and why?
+
+For each lesson, decide where it belongs and update it immediately:
+
+| Type of lesson | Where to write it |
+|---|---|
+| Technical pattern or pitfall (data types, tool quirk, API behaviour) | `.claude/standards/` — relevant standard |
+| Process failure (step skipped, wrong order, wrong gate) | `.claude/skills/` — relevant skill |
+| Architecture decision or constraint | `docs/ARCHITECTURE.md` or inline in relevant script |
+| Tooling or environment fact | `.claude/session-memory.md` Key Technical Facts |
+| Behaviour rule for future sessions | `memory/feedback_*.md` |
+
+Present the lessons and where they were written. If no lessons — explicitly state "No lessons identified." Do not silently skip this step.
+
 ## Rules
 - **Plain language** — docs are read by both Claude.ai and Claude Code
 - **Don't over-document** — update only what actually changed
 - **No new files** unless genuinely needed — update existing docs first
 - **Keep docs concise** — a good doc is one that gets read
+- **Lessons learned is not optional** — always run Step 5, even for small issues

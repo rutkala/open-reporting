@@ -70,6 +70,9 @@ Source authority is defined in the catalogue (`catalogue.sources`, tier column):
 
 No scraping. No undocumented commercial data providers. API or official file download only. If a source is not in `catalogue.sources`, add it there first.
 
+**Check for bulk download before designing an API pipeline.**
+Many official sources (GUS DBW, Eurostat) publish complete dataset exports as CSV/ZIP alongside their APIs. A bulk download loads the full dataset in seconds; a paginated API loop for the same data can take hours. Always check the source's download/export page before writing an API ingestion script.
+
 ---
 
 ## Phase 2: Extraction Tool
@@ -82,6 +85,21 @@ No scraping. No undocumented commercial data providers. API or official file dow
 **Alternative: dlt (data load tool)**
 - Consider when: source has a native dlt connector, or source is complex (pagination, auth, retries)
 - Document why dlt was chosen over plain Python
+
+**DuckDB bulk CSV load (for landing zone → raw)**
+When loading multiple CSV files into DuckDB, use the native `read_csv` glob — never Python row iteration:
+```python
+conn.execute(f"""
+    INSERT OR REPLACE INTO raw.{table} (col1, col2, value, fetched_at)
+    SELECT col1, col2, value, NOW()
+    FROM read_csv(
+        '{landing_dir}/*.csv',
+        delim=';', header=true, ignore_errors=true,
+        columns={{'col1': 'INTEGER', 'col2': 'VARCHAR', 'value': 'VARCHAR'}}
+    )
+""")
+```
+DuckDB reads all matching files in a single SQL operation. Python `csv.DictReader` + `executemany` for the same data is orders of magnitude slower and should not be used for bulk loads.
 
 ---
 

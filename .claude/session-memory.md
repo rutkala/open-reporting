@@ -3,7 +3,8 @@
 <!-- last-updated: 2026-03-28 -->
 
 ## Current Focus
-OR-93 complete. GUS DBW HVD ingestion pipeline built and loaded. Ready for next sprint.
+OR-93 In Progress — PR open (rutkala/open-reporting#23), awaiting merge. Mark Done after merge.
+Post-OR-93 process improvements complete: lessons learned written into standards + skills.
 
 ## MVP Status: COMPLETE (v0.1.0 — 2026-03-28)
 See `docs/MVP.md` and `docs/RELEASE_NOTES.md`.
@@ -48,5 +49,5 @@ See `CLAUDE.md` for full process, labels, and chat contract.
 
 ## Linear — Phase 1 Backlog
 Epics: OR-74 (Blog), OR-75 (Dashboards), OR-76 (Data), OR-77 (Social)
-Sub-issues: OR-78 to OR-93 — OR-93 Done; OR-78 to OR-92 in Backlog
+Sub-issues: OR-78 to OR-93 — OR-93 In Progress (PR #23); OR-78 to OR-92 in Backlog
 Urgent: OR-78 (Ghost admin), OR-85 (daily cron), OR-90 (Instagram token due 2026-05-20)
