@@ -1,63 +1,82 @@
 ---
 name: kickoff
-description: "Start work on a task or issue. Reads the task from Linear, assesses feasibility, identifies blockers and ambiguities, and presents a plain-language summary for user confirmation before any work begins."
+description: "Start the full implementation pipeline for a Linear issue. Reads the issue, assesses feasibility, and drives the work end-to-end: research → plan → implement → review → PR."
 user-invocable: true
-argument-hint: "<issue ID e.g. ORE-123>"
+argument-hint: "<optional: issue ID e.g. ORE-123>"
 ---
 
 # Task Kickoff
 
-Read a task, assess feasibility, and confirm understanding before starting any work.
+Entry point for Stage 3 — implementation. Drives the full pipeline from issue to merged PR.
 
-## Step 1 — Read the Task
+## Step 1 — Identify the issue
 
-Read the Linear issue: `$ARGUMENTS`
+**If `$ARGUMENTS` is provided:** use that issue ID directly.
 
-Use the Linear MCP tool to fetch the full issue including description, comments, and any attachments.
+**If `$ARGUMENTS` is empty:**
+1. Check the current git branch name for a pattern like `ORE-123` or `feat/ORE-123-description` — if found, use that issue ID
+2. If no branch match, fetch all Linear issues with status **Todo** and present them as a numbered list for the user to pick from
 
-## Step 2 — Feasibility Assessment
+Do not proceed until an issue is identified.
 
-Before presenting to the user, assess internally:
+## Step 2 — Read the issue
 
-- **Data**: Does the required data exist in the DB? If not, does a known source exist?
-- **Dependencies**: Does this task depend on something not yet built?
-- **Scope**: Is this one task or multiple tasks in disguise?
-- **Ambiguity**: Is anything unclear, underspecified, or open to interpretation?
-- **Complexity**: How large is this — small (hours), medium (a day), large (multiple sessions)?
+Fetch the full Linear issue: title, description, acceptance criteria, comments, linked sub-issues.
 
-## Step 3 — Present to User
+Also read `.claude/standards/requirements.md` to check the issue meets Definition of Ready for its type.
 
-Present in plain business language. No code. No technical jargon unless necessary.
+## Step 3 — Feasibility assessment
+
+Assess internally before presenting:
+- **Data**: Does required data exist in the warehouse? If not, is there a known source?
+- **Dependencies**: Does this depend on something not yet built?
+- **Scope**: Is this one task or multiple in disguise?
+- **Ambiguity**: Anything unclear or open to interpretation?
+- **Complexity**: Small (hours) / Medium (a day) / Large (multiple sessions)?
+
+## Step 4 — Present to user
+
+Plain business language. No code, no jargon.
 
 ```
-## Task: {ID} — {Title}
+## {ID} — {Title}
 
-### What I understand this task to be
-{1-2 paragraph plain-language description of what needs to be built and why}
+### What this task is
+{1–2 paragraphs: what needs to be built and why}
 
 ### Feasibility
 {FEASIBLE / PARTIALLY FEASIBLE / BLOCKED}
-{Plain explanation — what can be done now, what is blocked and why}
+{Plain explanation}
 
 ### Dependencies
-{List anything that must exist before this can be built. If none, say "None."}
+{List, or "None."}
 
-### Questions before I start
-{List any ambiguities that need your decision. If none, say "None — I have everything I need."}
+### Open questions
+{List, or "None — I have everything I need."}
 
-### Proposed next step
-{"/research [specific question]" or "/plan [task]" if straightforward enough to skip research}
+### Proposed approach
+{"/research [topic]" if approach is unclear, or "/plan [task]" if ready to design}
 ```
 
-## Step 4 — Wait for Confirmation
+## Step 5 — Wait for confirmation
 
-Do NOT proceed to research or planning until the user:
-- Confirms the understanding is correct
-- Answers any open questions
-- Explicitly says "proceed" or similar
+Do NOT proceed until the user confirms understanding and answers any open questions.
 
-## Step 5 — Update Linear
+## Step 6 — Update Linear
 
-Once confirmed, update the Linear issue:
-- Set status to **In Progress**
-- Add comment: *"Starting work. Feasibility confirmed. Proceeding to research/planning."*
+Once confirmed:
+- Set issue status → **In Progress**
+- Add comment: *"Kickoff confirmed. Starting [research / planning]."*
+
+## Step 7 — Drive the pipeline
+
+Execute the appropriate next steps in sequence, pausing for user approval at each gate:
+
+1. `/research` — if data source or approach is unclear
+2. `/plan` — design the solution, present for approval before any code
+3. **Implement** — create feature branch, write code, commit
+4. `/review` — standards compliance check before PR
+5. **Open PR** — push branch, create PR with review output and acceptance criteria checklist
+6. **Merge** — after approval, merge to main
+7. `/document` — update affected docs, RELEASE_NOTES.md, lessons-learned if applicable
+8. **Close** — Linear issue → Done, delete feature branch
