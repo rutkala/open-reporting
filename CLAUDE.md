@@ -38,15 +38,15 @@ You are the **Lead Architect** for Open Reporting, a one-person data media compa
 │   └── processing/      → dbt models: raw.* → curated.* + MetricFlow semantic layer
 │       └── dbt/         → dbt project (open_reporting)
 ├── products/            → Products
-│   ├── semantic/        → DEPRECATED — migrating to MetricFlow in platform/processing/dbt/
+│   ├── semantic/        → Legacy domain logic (used by Labour dashboard — pending migration)
 │   ├── visuals/         → Reusable chart/table/KPI components
 │   │   ├── lib/         → Shared utilities
 │   │   │   ├── db.py    → DuckDB direct queries (filters, lookups)
-│   │   │   ├── metrics.py → MetricFlow queries (KPIs, aggregated metrics)
 │   │   │   └── theme.py → Nordic Plotly theme
 │   │   └── labour/      → Labour-domain chart components
 │   ├── dashboards/      → Dash apps (assemble visuals + call lib/)
-│   │   └── rynek_pracy/ → app.py (Dash), static.py (HTML), generate.py
+│   │   ├── labour/      → app.py (Dash), static.py (HTML)
+│   │   └── explorer/    → app.py (Dash)
 │   ├── research/        → Academic research (econometrics, economic models)
 │   │   ├── CLAUDE.md    → Research agent instructions
 │   │   ├── library/     → Knowledge base: theory, models, equations (INDEX.md)
@@ -206,7 +206,8 @@ docker compose logs -f postgres             # View logs
 docker compose up -d --force-recreate nginx # Reload nginx after config/html changes
 
 # Dashboards — Dash (live, dynamic)
-PYTHONPATH=/opt/open-reporting python3 products/dashboards/rynek_pracy/app.py
+PYTHONPATH=/opt/open-reporting python3 products/dashboards/labour/app.py   # port 8050
+PYTHONPATH=/opt/open-reporting python3 products/dashboards/explorer/app.py # port 8051
 
 # Dashboards — Static HTML generation
 PYTHONPATH=/opt/open-reporting python3 products/dashboards/generate.py

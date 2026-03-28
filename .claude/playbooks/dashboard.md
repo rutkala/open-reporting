@@ -110,8 +110,8 @@ Steps:
    - Filters available to the user
    - Present as a written description — no code, no wireframe needed
 2. **Gate: user approves dashboard design**
-3. Implement dashboard in `charts/dashboards/{domain}/{name}.py`:
-   - Use `nordic` Plotly template (registered in `charts/lib/theme.py`)
+3. Implement dashboard in `products/dashboards/{domain}/app.py`:
+   - Use `nordic` Plotly template (registered in `products/visuals/lib/theme.py`)
    - Plotly figures use transparent backgrounds (`paper_bgcolor="rgba(0,0,0,0)"`)
    - Each chart in a white card with shadow (defined in HTML template)
    - Charts grouped by topic with section headings

@@ -1,6 +1,6 @@
 """
 Database access for dashboard generation.
-Connects to DuckDB using DUCKDB_PATH env var (default: data/reporting.duckdb).
+Connects to DuckDB using DUCKDB_PATH env var (default: data/warehouse.duckdb).
 Always queries the curated schema — never raw.
 """
 import logging
@@ -15,7 +15,7 @@ log = logging.getLogger(__name__)
 
 
 def _db_path() -> str:
-    return os.environ.get("DUCKDB_PATH", "/opt/open-reporting/data/reporting.duckdb")
+    return os.environ.get("DUCKDB_PATH", "/opt/open-reporting/data/warehouse.duckdb")
 
 
 def query(sql: str, params: tuple = ()) -> pd.DataFrame:
