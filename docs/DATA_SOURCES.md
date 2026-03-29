@@ -60,7 +60,9 @@ Requires explicit user approval before use. Must document source credibility and
 - **Ingestion scripts**:
   - `platform/ingestion/to_landing/dbw_hvd.py` — downloads all ZIPs to `data/landing/dbw_hvd/`
   - `platform/ingestion/to_raw/dbw_observations.py` — bulk-loads landing CSVs into DuckDB
-- **Raw tables**: `raw.dbw_observations`, `raw.dbw_positions`
+- **Raw tables**: `raw.dbw_observations`, `raw.dbw_positions`, `raw.dbw_variables`
+  - `raw.dbw_variables`: 85-row lookup — variable_id → variable_name, section_id, category
+    (populated from dict CSVs + catalogue API during `to_raw` ingestion)
 
 #### GUS BDL (Local Data Bank) — legacy / alternative
 - **URL**: `https://bdl.stat.gov.pl/api/v1/`

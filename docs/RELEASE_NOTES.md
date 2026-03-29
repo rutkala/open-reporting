@@ -34,6 +34,18 @@
 
 ## Unreleased
 
+### DBW HVD explorer tab (2026-03-29) — OR-95
+- Added **DBW HVD** tab to the Explorer dashboard (`/explorer/`) — no new service or port
+- Variable selector grouped by 18 HVD categories, dimension filter (sex/sector/region), time series chart, 4 KPI cards (latest value, YoY %, max, min)
+- All UI labels in Polish; GUS DBW source attribution in footer
+- New `raw.dbw_variables` lookup table (85 rows) — variable name + HVD category
+- Ingestion script extended: populates `raw.dbw_variables` via dict CSVs + GUS catalogue API
+
+### GUS DBW HVD ingestion pipeline (2026-03-29) — OR-93
+- New ingestion pipeline: `to_landing/dbw_hvd.py` + `to_raw/dbw_observations.py`
+- Loaded 756,626 observations across 85 variables, 82 cross-sections, years 1995–2026
+- Raw tables: `raw.dbw_observations`, `raw.dbw_positions`
+
 ### Documentation & project hygiene (2026-03-28)
 - Expanded `docs/DOMAINS.md` to full 18-domain catalogue with Eurostat themes, GUS equivalents, and subcategories
 - Archived all three Linear documents (Domain Taxonomy, Tech Stack & Environment, Data Catalog) — GitHub is now single source of truth for all documentation
