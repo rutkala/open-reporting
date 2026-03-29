@@ -83,6 +83,30 @@ docker exec ghost node -e "
 
 ---
 
+## 2026-03-29 — Research step skipped: data inventory ≠ principles research
+
+**What happened:** OR-97 required researching DW modelling approaches (Kimball, Inmon, Data Vault) before designing the schema. The research subagent catalogued data structure (column names, row counts, source shapes) but never researched DW principles. Implementation proceeded on a generic EAV-like dim1/dim2/dim3 pattern — a known anti-pattern in dimensional modelling — without the user being informed this was a shortcut, not a decision.
+
+**Root cause:** The research prompt was written as "inventory what exists" rather than "evaluate which architectural approach is correct." The distinction between data research and principles research was not made explicit. The plan was approved by the user who lacked the context to know the proposed pattern was an anti-pattern.
+
+**Process change:** When a research task is about architectural approach (not data availability), the prompt must explicitly ask the agent to research and compare industry-standard approaches, not just describe what currently exists. During plan review, if a proposed pattern is a known shortcut or anti-pattern, flag it explicitly to the user before proceeding — do not let it pass silently.
+
+**Applies to:** Any kickoff where the issue involves "choose an approach" or "design the architecture" — `/research` must address principles, not just data inventory.
+
+---
+
+## 2026-03-29 — Issue scope creep: documentation task became full implementation
+
+**What happened:** OR-97 was scoped as a documentation task (write layer contracts, update standards). During kickoff the user corrected: "the idea was not to document it but to find and implement the right approach." The full implementation (wide fact table, stg_dbw.sql, domain mapping for 85 variables) was what was needed.
+
+**Root cause:** The issue was created with "Define DW layer contracts" as the title, which reads as documentation. The user's actual intent was always implementation — the document is an output, not the goal.
+
+**Process change:** During kickoff feasibility assessment, explicitly ask "is the deliverable a working system or a document?" if the issue title could be read either way. Do not default to documentation when the parent epic is about architectural change.
+
+**Applies to:** Kickoff — feasibility assessment step, especially for "Define", "Document", "Establish" issue titles.
+
+---
+
 ## 2026-03-29 — DBW mixed periods in same cross-section cause misleading KPIs
 
 **What happened:** The "Gross domestic product" variable (section 16) stores annual totals (period_id=282), quarterly totals (period_id=270-273), and quarterly growth indices (103.x) all in the same cross-section. Summing by year across all period types produces nonsensical KPI values (latest year shows index values only, prior year includes annual total → apparent -100% YoY change).
@@ -92,6 +116,18 @@ docker exec ghost node -e "
 **Process change:** When building dashboards over DBW data for variables with multiple period types, either: (a) add a `period_id` filter, or (b) record the recommended `period_id` for annual series in `raw.dbw_variables`. For OR-95 this is an accepted limitation; address in a future enhancement.
 
 **Applies to:** Any DBW dashboard or analysis using variables with mixed periodicity (GDP, national accounts aggregates).
+
+---
+
+## 2026-03-29 — EAV anti-pattern approved without being flagged
+
+**What happened:** OR-97 plan proposed generic `dim1_name/dim1_value...dim4_name/dim4_value` EAV slots as the dimension model for `curated.all_indicators`. The user approved the plan without knowing this was an anti-pattern. When OR-99 kicked off, the user noticed that `dim_sex` could land in `dim1` for one indicator and `dim2` for another — consistent filtering was impossible. Required a full OR-100 to research DW principles and reimplement with 24 named semantic columns.
+
+**Root cause:** The plan was presented as if the EAV design was a thoughtful tradeoff ("flexibility vs. complexity"). In reality it was the path of least resistance. The known downsides (query-breaking inconsistency, no semantic meaning per column) were not flagged.
+
+**Process change:** When a design choice is a known shortcut or anti-pattern, explicitly label it as such in the plan — do not present it as an equivalent tradeoff. The user must be told "this is an anti-pattern; the correct approach is X" not left to discover it later.
+
+**Applies to:** Any plan that proposes a generic/flexible schema over a semantically correct one — flag as anti-pattern explicitly.
 
 ---
 

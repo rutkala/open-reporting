@@ -34,6 +34,14 @@
 
 ## Unreleased
 
+### Kimball dimensional model — named semantic columns (2026-03-29) — OR-100
+- Replaced EAV generic `dim1_name/dim1_value` slots with 24 named semantic columns (`dim_sex`, `dim_age_group`, `dim_nace_sector`, etc.)
+- `curated.all_indicators` fact table now has 33 columns: 5 core, 24 named dimensions, 4 metadata
+- `stg_dbw.sql` rewritten: dim_id-based CASE routing ensures consistent dimension filtering across all indicators regardless of source slot position
+- `stg_eurostat.sql` and `stg_nbp.sql` updated with 24 named null columns (column-order aligned)
+- Added `docs/DATA_MODEL.md` — decision record: Kimball vs Inmon vs Data Vault evaluation, full schema, DBW mapping logic, new-source checklist
+- Updated `standards/storage.md` with Kimball standard and 33-column schema reference
+
 ### DW architecture — unified conformed fact table (2026-03-29) — OR-97
 - `curated.all_indicators` extended to wide fact table with 8 sparse dimension columns (dim1–dim4 name+value)
 - GUS DBW HVD integrated as third source via new `stg_dbw.sql` dbt model: 69 indicators, 568k rows, annual data 1995–2025

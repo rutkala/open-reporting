@@ -3,20 +3,20 @@
 }}
 
 /*
-  Staging: raw.dbw_observations → conformed indicators with sparse dimension columns.
+  Staging: raw.dbw_observations → conformed indicators with named semantic dimension columns.
 
   Logic:
   1. Filters to period_id = 282 (annual data).
   2. Joins each observation dim slot (dim1_id ... dim3_id) to raw.dbw_positions
      using (section_id, position_id) to resolve label and dim_id (dimension type).
-  3. Geographic dim_ids: 2, 78, 79, 10, 4, 679, 995 — whichever slot carries one of
+  3. Geographic dim_ids: 2, 4, 10, 78, 79, 679, 995, 1101 — whichever slot carries one of
      these becomes the geo column. The position_name is mapped to a NUTS code via CASE.
-  4. Remaining non-geo slots populate dim1/dim2/dim3 name+value pairs.
+  4. Remaining slots are routed to 24 named semantic columns by dim_id — regardless of
+     which raw slot they land in. This replaces the old EAV dim1/dim2/dim3/dim4 approach.
   5. variable_id is mapped to detail_id via an inline CASE expression.
 
   Output grain: one row per (variable_id, section_id, year, dim1_id, dim2_id, dim3_id).
-  Conforms to the shared staging schema used by stg_eurostat and stg_nbp, plus
-  dim1_name/dim1_value ... dim4_name/dim4_value for dimensional breakdown.
+  Conforms to the shared staging schema used by stg_eurostat and stg_nbp.
 */
 
 with obs as (
@@ -62,14 +62,14 @@ with obs as (
 
 /*
   Geographic dim_ids in the positions table:
-    2   = Poland (national only)
-    78  = Poland, macroregions, regions, subregions (NUTS 0-3)
-    79  = Poland, macroregions, regions (NUTS 0-2)
-    10  = Poland, voivodships, poviats
-    4   = Poland, voivodeships (NUTS 2)
-    679 = Poland, Regions (NUTS 2)
-    995 = Poland, macroregions, voivodships, regions (NUTS 0-2)
-    190 = Origin of tourists (non-geographic — excluded)
+    2    = Poland (national only)
+    4    = Poland, voivodeships (NUTS 2)
+    10   = Poland, voivodships, poviats
+    78   = Poland, macroregions, regions, subregions (NUTS 0-3)
+    79   = Poland, macroregions, regions (NUTS 0-2)
+    679  = Poland, Regions (NUTS 2)
+    995  = Poland, macroregions, voivodships, regions (NUTS 0-2)
+    1101 = Poland, NUTS regions
 */
 
 classified as (
@@ -79,17 +79,17 @@ classified as (
 
         -- Identify which dim slot carries the geographic position
         case
-            when o.dim1_type_id in (2, 78, 79, 10, 4, 679, 995) then 1
-            when o.dim2_type_id in (2, 78, 79, 10, 4, 679, 995) then 2
-            when o.dim3_type_id in (2, 78, 79, 10, 4, 679, 995) then 3
+            when o.dim1_type_id in (2, 4, 10, 78, 79, 679, 995, 1101) then 1
+            when o.dim2_type_id in (2, 4, 10, 78, 79, 679, 995, 1101) then 2
+            when o.dim3_type_id in (2, 4, 10, 78, 79, 679, 995, 1101) then 3
             else null
         end as geo_slot,
 
         -- Extract the raw position_name for the geo slot
         case
-            when o.dim1_type_id in (2, 78, 79, 10, 4, 679, 995) then o.dim1_pos_name
-            when o.dim2_type_id in (2, 78, 79, 10, 4, 679, 995) then o.dim2_pos_name
-            when o.dim3_type_id in (2, 78, 79, 10, 4, 679, 995) then o.dim3_pos_name
+            when o.dim1_type_id in (2, 4, 10, 78, 79, 679, 995, 1101) then o.dim1_pos_name
+            when o.dim2_type_id in (2, 4, 10, 78, 79, 679, 995, 1101) then o.dim2_pos_name
+            when o.dim3_type_id in (2, 4, 10, 78, 79, 679, 995, 1101) then o.dim3_pos_name
             else null
         end as geo_raw_name
 
@@ -351,91 +351,180 @@ mapped as (
 
 ),
 
-/*
-  Assign non-geo dims to dim1/dim2/dim3 in order of raw slot number,
-  skipping whichever slot carried the geographic dimension.
-
-  Strategy: build ordered lists of non-geo (name, value) pairs, then
-  pick list[0] → dim1, list[1] → dim2, list[2] → dim3.
-
-  We materialise the list as three explicit slots:
-    ng1 = first  non-geo raw slot (lowest slot# that is not geo)
-    ng2 = second non-geo raw slot
-    ng3 = third  non-geo raw slot
-*/
-non_geo_ordered as (
-
-    select
-        m.*,
-
-        -- First non-geo slot name/value
-        case
-            when m.geo_slot = 1 then m.dim2_type_name
-            else m.dim1_type_name
-        end as ng1_name,
-        case
-            when m.geo_slot = 1 then m.dim2_pos_name
-            else m.dim1_pos_name
-        end as ng1_value,
-
-        -- Second non-geo slot name/value
-        case
-            when m.geo_slot = 1 then m.dim3_type_name
-            when m.geo_slot = 2 then m.dim3_type_name
-            when m.geo_slot = 3 then m.dim2_type_name
-            else m.dim2_type_name
-        end as ng2_name,
-        case
-            when m.geo_slot = 1 then m.dim3_pos_name
-            when m.geo_slot = 2 then m.dim3_pos_name
-            when m.geo_slot = 3 then m.dim2_pos_name
-            else m.dim2_pos_name
-        end as ng2_value,
-
-        -- Third non-geo slot only exists when geo_slot is null and all 3 dim slots populated
-        case
-            when m.geo_slot is null then m.dim3_type_name
-            else null
-        end as ng3_name,
-        case
-            when m.geo_slot is null then m.dim3_pos_name
-            else null
-        end as ng3_value
-
-    from mapped m
-
-),
-
 final as (
 
     select
         'dbw'::varchar                  as source_id,
-        n.domain_id_mapped              as domain_id,
-        n.detail_id_mapped              as detail_id,
+        m.domain_id_mapped              as domain_id,
+        m.detail_id_mapped              as detail_id,
         -- Use NUTS code when available, otherwise keep raw position name for national-only vars
-        coalesce(n.geo_nuts, case when n.geo_slot is not null then n.geo_raw_name else 'PL' end)
+        coalesce(m.geo_nuts, case when m.geo_slot is not null then m.geo_raw_name else 'PL' end)
                                         as geo,
-        cast(n.year::varchar || '-01-01' as date)
+        cast(m.year::varchar || '-01-01' as date)
                                         as period_date,
 
-        n.ng1_name                      as dim1_name,
-        n.ng1_value                     as dim1_value,
-        n.ng2_name                      as dim2_name,
-        n.ng2_value                     as dim2_value,
-        n.ng3_name                      as dim3_name,
-        n.ng3_value                     as dim3_value,
+        -- 24 named semantic dimension columns, routed by dim_id regardless of raw slot position
+        case
+            when m.dim1_type_id in (1, 67, 339) then m.dim1_pos_name
+            when m.dim2_type_id in (1, 67, 339) then m.dim2_pos_name
+            when m.dim3_type_id in (1, 67, 339) then m.dim3_pos_name
+        end as dim_sex,
 
-        null::varchar                   as dim4_name,
-        null::varchar                   as dim4_value,
+        case
+            when m.dim1_type_id in (107, 239, 526, 960, 1050, 1052, 1064, 1065, 1087, 1092)
+                then m.dim1_pos_name
+            when m.dim2_type_id in (107, 239, 526, 960, 1050, 1052, 1064, 1065, 1087, 1092)
+                then m.dim2_pos_name
+            when m.dim3_type_id in (107, 239, 526, 960, 1050, 1052, 1064, 1065, 1087, 1092)
+                then m.dim3_pos_name
+        end as dim_age_group,
 
-        cast(n.value as double)         as value,
+        case
+            when m.dim1_type_id in (3, 1099, 1100) then m.dim1_pos_name
+            when m.dim2_type_id in (3, 1099, 1100) then m.dim2_pos_name
+            when m.dim3_type_id in (3, 1099, 1100) then m.dim3_pos_name
+        end as dim_type_of_locality,
+
+        case
+            when m.dim1_type_id in (25, 855, 948, 949, 1041, 1044, 1051, 1053, 1063, 1069,
+                                    1080, 1097, 1114, 1116, 1117, 1119, 1120, 1130)
+                then m.dim1_pos_name
+            when m.dim2_type_id in (25, 855, 948, 949, 1041, 1044, 1051, 1053, 1063, 1069,
+                                    1080, 1097, 1114, 1116, 1117, 1119, 1120, 1130)
+                then m.dim2_pos_name
+            when m.dim3_type_id in (25, 855, 948, 949, 1041, 1044, 1051, 1053, 1063, 1069,
+                                    1080, 1097, 1114, 1116, 1117, 1119, 1120, 1130)
+                then m.dim3_pos_name
+        end as dim_nace_sector,
+
+        case
+            when m.dim1_type_id in (1068, 1115, 1118, 1088) then m.dim1_pos_name
+            when m.dim2_type_id in (1068, 1115, 1118, 1088) then m.dim2_pos_name
+            when m.dim3_type_id in (1068, 1115, 1118, 1088) then m.dim3_pos_name
+        end as dim_employment_status,
+
+        case
+            when m.dim1_type_id in (1066) then m.dim1_pos_name
+            when m.dim2_type_id in (1066) then m.dim2_pos_name
+            when m.dim3_type_id in (1066) then m.dim3_pos_name
+        end as dim_education_level,
+
+        case
+            when m.dim1_type_id in (272, 435, 500, 501) then m.dim1_pos_name
+            when m.dim2_type_id in (272, 435, 500, 501) then m.dim2_pos_name
+            when m.dim3_type_id in (272, 435, 500, 501) then m.dim3_pos_name
+        end as dim_prodcom_product,
+
+        case
+            when m.dim1_type_id in (1127, 1129) then m.dim1_pos_name
+            when m.dim2_type_id in (1127, 1129) then m.dim2_pos_name
+            when m.dim3_type_id in (1127, 1129) then m.dim3_pos_name
+        end as dim_hicp_category,
+
+        case
+            when m.dim1_type_id in (1056, 1057, 1058) then m.dim1_pos_name
+            when m.dim2_type_id in (1056, 1057, 1058) then m.dim2_pos_name
+            when m.dim3_type_id in (1056, 1057, 1058) then m.dim3_pos_name
+        end as dim_pollutant_type,
+
+        case
+            when m.dim1_type_id in (1077, 1078, 1079, 1081, 1082, 1083) then m.dim1_pos_name
+            when m.dim2_type_id in (1077, 1078, 1079, 1081, 1082, 1083) then m.dim2_pos_name
+            when m.dim3_type_id in (1077, 1078, 1079, 1081, 1082, 1083) then m.dim3_pos_name
+        end as dim_waste_category,
+
+        case
+            when m.dim1_type_id in (1126) then m.dim1_pos_name
+            when m.dim2_type_id in (1126) then m.dim2_pos_name
+            when m.dim3_type_id in (1126) then m.dim3_pos_name
+        end as dim_healthcare_function,
+
+        case
+            when m.dim1_type_id in (1125) then m.dim1_pos_name
+            when m.dim2_type_id in (1125) then m.dim2_pos_name
+            when m.dim3_type_id in (1125) then m.dim3_pos_name
+        end as dim_health_provider,
+
+        case
+            when m.dim1_type_id in (1124) then m.dim1_pos_name
+            when m.dim2_type_id in (1124) then m.dim2_pos_name
+            when m.dim3_type_id in (1124) then m.dim3_pos_name
+        end as dim_health_financing,
+
+        case
+            when m.dim1_type_id in (790, 880) then m.dim1_pos_name
+            when m.dim2_type_id in (790, 880) then m.dim2_pos_name
+            when m.dim3_type_id in (790, 880) then m.dim3_pos_name
+        end as dim_govt_sector,
+
+        case
+            when m.dim1_type_id in (787, 809, 889) then m.dim1_pos_name
+            when m.dim2_type_id in (787, 809, 889) then m.dim2_pos_name
+            when m.dim3_type_id in (787, 809, 889) then m.dim3_pos_name
+        end as dim_institutional_sector,
+
+        case
+            when m.dim1_type_id in (1086) then m.dim1_pos_name
+            when m.dim2_type_id in (1086) then m.dim2_pos_name
+            when m.dim3_type_id in (1086) then m.dim3_pos_name
+        end as dim_asset_classification,
+
+        case
+            when m.dim1_type_id in (190) then m.dim1_pos_name
+            when m.dim2_type_id in (190) then m.dim2_pos_name
+            when m.dim3_type_id in (190) then m.dim3_pos_name
+        end as dim_tourist_origin,
+
+        case
+            when m.dim1_type_id in (1045) then m.dim1_pos_name
+            when m.dim2_type_id in (1045) then m.dim2_pos_name
+            when m.dim3_type_id in (1045) then m.dim3_pos_name
+        end as dim_trip_direction,
+
+        case
+            when m.dim1_type_id in (1046) then m.dim1_pos_name
+            when m.dim2_type_id in (1046) then m.dim2_pos_name
+            when m.dim3_type_id in (1046) then m.dim3_pos_name
+        end as dim_trip_duration,
+
+        case
+            when m.dim1_type_id in (273) then m.dim1_pos_name
+            when m.dim2_type_id in (273) then m.dim2_pos_name
+            when m.dim3_type_id in (273) then m.dim3_pos_name
+        end as dim_quintile_group,
+
+        case
+            when m.dim1_type_id in (1054, 1055, 1089, 1090) then m.dim1_pos_name
+            when m.dim2_type_id in (1054, 1055, 1089, 1090) then m.dim2_pos_name
+            when m.dim3_type_id in (1054, 1055, 1089, 1090) then m.dim3_pos_name
+        end as dim_citizenship,
+
+        case
+            when m.dim1_type_id in (1018) then m.dim1_pos_name
+            when m.dim2_type_id in (1018) then m.dim2_pos_name
+            when m.dim3_type_id in (1018) then m.dim3_pos_name
+        end as dim_resources_uses,
+
+        case
+            when m.dim1_type_id in (1049) then m.dim1_pos_name
+            when m.dim2_type_id in (1049) then m.dim2_pos_name
+            when m.dim3_type_id in (1049) then m.dim3_pos_name
+        end as dim_transport_mode,
+
+        case
+            when m.dim1_type_id in (1047, 1048) then m.dim1_pos_name
+            when m.dim2_type_id in (1047, 1048) then m.dim2_pos_name
+            when m.dim3_type_id in (1047, 1048) then m.dim3_pos_name
+        end as dim_accommodation_type,
+
+        cast(m.value as double)         as value,
         null::varchar                   as obs_status,
-        n.fetched_at                    as fetched_at,
+        m.fetched_at                    as fetched_at,
         current_timestamp               as updated_at
 
-    from non_geo_ordered n
-    where n.detail_id_mapped is not null
-      and n.domain_id_mapped  is not null
+    from mapped m
+    where m.detail_id_mapped is not null
+      and m.domain_id_mapped  is not null
 
 )
 

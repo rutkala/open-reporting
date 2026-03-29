@@ -19,35 +19,57 @@ curated.{domain}_{metric}    ← Gold: cleaned, typed, dashboard-ready
 
 **`curated` schema** — clean, structured, analysis-ready. This is what all dashboards and the Explorer query. Never bypass curated — dashboards must never query `raw.*` directly.
 
-**Shared staging schema** (all `stg_*.sql` models must output these columns):
+**Dimensional modelling approach: Kimball star schema** — named semantic columns in the fact table, conformed dimension lookup tables. No EAV (generic dim_name/dim_value) slots — every dimension must have a named column with a clear business meaning. See `docs/DATA_MODEL.md` for the full decision record.
+
+**Shared staging schema** (all `stg_*.sql` models must output these 33 columns in this order):
 ```
-source_id    VARCHAR    -- 'eurostat', 'nbp', 'dbw'
-domain_id    VARCHAR    -- 18 domain codes: MAC, LAB, PUB, POP, PRC, etc.
-detail_id    VARCHAR    -- indicator key from curated.dim_domain_detail seed
-geo          VARCHAR    -- NUTS code or 'PL' for national
-period_date  DATE       -- all granularities truncated to first day of period
-dim1_name    VARCHAR    -- dimension name (e.g. 'Płeć') — NULL for Eurostat/NBP
-dim1_value   VARCHAR    -- dimension value (e.g. 'Mężczyźni') — NULL for Eurostat/NBP
-dim2_name    VARCHAR    -- second breakdown dimension name
-dim2_value   VARCHAR
-dim3_name    VARCHAR
-dim3_value   VARCHAR
-dim4_name    VARCHAR
-dim4_value   VARCHAR
-value        DOUBLE
-obs_status   VARCHAR    -- data quality flag from source
-fetched_at   TIMESTAMPTZ
-updated_at   TIMESTAMPTZ
+source_id                VARCHAR    -- 'eurostat', 'nbp', 'dbw'
+domain_id                VARCHAR    -- 18 domain codes: MAC, LAB, PUB, POP, PRC, etc.
+detail_id                VARCHAR    -- indicator key from curated.dim_domain_detail seed
+geo                      VARCHAR    -- NUTS code or 'PL' for national
+period_date              DATE       -- all granularities truncated to first day of period
+dim_sex                  VARCHAR    -- NULL if not applicable
+dim_age_group            VARCHAR
+dim_type_of_locality     VARCHAR
+dim_nace_sector          VARCHAR
+dim_employment_status    VARCHAR
+dim_education_level      VARCHAR
+dim_prodcom_product      VARCHAR
+dim_hicp_category        VARCHAR
+dim_pollutant_type       VARCHAR
+dim_waste_category       VARCHAR
+dim_healthcare_function  VARCHAR
+dim_health_provider      VARCHAR
+dim_health_financing     VARCHAR
+dim_govt_sector          VARCHAR
+dim_institutional_sector VARCHAR
+dim_asset_classification VARCHAR
+dim_tourist_origin       VARCHAR
+dim_trip_direction       VARCHAR
+dim_trip_duration        VARCHAR
+dim_quintile_group       VARCHAR
+dim_citizenship          VARCHAR
+dim_resources_uses       VARCHAR
+dim_transport_mode       VARCHAR
+dim_accommodation_type   VARCHAR
+value                    DOUBLE
+obs_status               VARCHAR    -- data quality flag from source
+fetched_at               TIMESTAMPTZ
+updated_at               TIMESTAMPTZ
 ```
+
+**Rule:** Use `null::varchar as dim_{name}` for every named dimension column that a source does not populate. Never use empty string or placeholder values.
 
 **Adding a new source** (checklist):
 1. Ingest to `raw.{source}_{entity}` following ingestion standard
 2. Create `platform/processing/dbt/models/{source}/stg_{source}.sql` — conform to shared schema above
-3. Add `null::varchar` for dim1-dim4 columns if source has no dimension breakdowns
-4. Union `select * from {{ ref('stg_{source}') }}` into `all_indicators.sql`
-5. Add source row to `dim_source.csv` seed
-6. Add new indicator rows to `dim_domain_detail.csv` seed for any new detail_ids
-7. Run `dbt seed --full-refresh && dbt run`
+3. Map source dimension slots to named semantic columns; add `null::varchar as dim_{name}` for all 24 dim columns not populated
+4. If source introduces a new dimension type: add a new `dim_{name} VARCHAR` column to ALL staging models and update `docs/DATA_MODEL.md`
+5. Union `select * from {{ ref('stg_{source}') }}` into `all_indicators.sql`
+6. Add source row to `dim_source.csv` seed
+7. Add new indicator rows to `dim_domain_detail.csv` seed for any new detail_ids
+8. Run `dbt seed --full-refresh && dbt run`
+9. Validate: row counts per source, NULL rates per dim column, sample values
 
 **PostgreSQL** — used only by Ghost CMS (operational DB). No analytics, no dashboards.
 
