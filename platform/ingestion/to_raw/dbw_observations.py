@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Raw load: data/landing/dbw_hvd/ → raw.dbw_observations + raw.dbw_positions
+Raw load: data/landing/dbw_hvd/ → raw.dbw_observations + raw.dbw_positions + raw.dbw_variables
 Reads all *_data.csv files from the landing zone in one bulk DuckDB operation.
 Run AFTER platform/ingestion/to_landing/dbw_hvd.py.
 Usage:
@@ -8,6 +8,7 @@ Usage:
 Notes:
   - Drops and recreates raw.dbw_observations on every run (full overwrite).
   - Positions (raw.dbw_positions) are loaded from *_dict.csv files — also full overwrite.
+  - Variables (raw.dbw_variables) are loaded from dict CSVs + GUS catalogue API — full overwrite.
   - DuckDB reads all CSVs natively via read_csv glob — no Python row iteration.
   - Data CSV: semicolon delimited, comma decimal separator, no_value_id!=0 → NULL value.
 """
@@ -17,6 +18,7 @@ import logging
 import os
 
 import duckdb
+import requests
 from dotenv import load_dotenv
 
 load_dotenv(override=True)
@@ -173,6 +175,81 @@ def load_positions(conn: duckdb.DuckDBPyConnection) -> int:
     return total
 
 
+def load_variables(conn: duckdb.DuckDBPyConnection) -> int:
+    """Load raw.dbw_variables from dict CSVs + GUS HVD catalogue API.
+
+    Combines two sources:
+      - dict CSVs: variable_id, variable_name, section_id, section_name
+      - GUS catalogue API: category name (HVD grouping) keyed on variable_id
+    Falls back gracefully if the API is unreachable.
+    """
+    CATALOGUE_URL = "https://dbw.stat.gov.pl/api_app/getCatalogValues"
+
+    # ── Fetch HVD category map from catalogue API ─────────────────────────────
+    category_map: dict[int, str] = {}
+    try:
+        resp = requests.get(CATALOGUE_URL, params={"czy_pl": "false"}, timeout=15)
+        resp.raise_for_status()
+        for dataset in resp.json().get("data", []):
+            category = dataset["title"]
+            for row in dataset["table"]["rows"]:
+                indicator = next((c for c in row if "indicator_id" in c), {})
+                vid = indicator.get("indicator_id")
+                if vid is not None:
+                    category_map[int(vid)] = category
+        log.info("Catalogue API: %d category mappings loaded", len(category_map))
+    except Exception as exc:
+        log.warning("Catalogue API unreachable (%s) — category will be NULL", exc)
+
+    # ── Extract variable + section names from dict CSVs ───────────────────────
+    dict_files = glob.glob(os.path.join(LANDING_DIR, "*_dict.csv"))
+    seen: set[int] = set()
+    rows: list[tuple] = []
+
+    for dict_path in dict_files:
+        variable_id   = None
+        variable_name = None
+        section_id    = None
+        section_name  = None
+
+        with open(dict_path, encoding="utf-8", errors="replace") as f:
+            reader = csv.DictReader(f, delimiter=";", quotechar='"')
+            for r in reader:
+                col  = (r.get("column_name") or "").strip()
+                eid  = (r.get("element_id")  or "").strip()
+                desc = (r.get("description") or "").strip().strip('"')
+                if col == "indicator_id" and eid:
+                    variable_id   = int(eid)
+                    variable_name = desc
+                elif col == "cross_section_id" and eid:
+                    section_id   = int(eid)
+                    section_name = desc
+
+        if variable_id is not None and variable_id not in seen:
+            seen.add(variable_id)
+            rows.append((
+                variable_id,
+                variable_name,
+                section_id,
+                section_name,
+                category_map.get(variable_id),
+            ))
+
+    if not rows:
+        log.warning("No variable metadata found — skipping raw.dbw_variables load")
+        return 0
+
+    conn.execute("DELETE FROM raw.dbw_variables")
+    conn.executemany(
+        "INSERT OR REPLACE INTO raw.dbw_variables "
+        "(variable_id, variable_name, section_id, section_name, category, fetched_at) "
+        "VALUES (?, ?, ?, ?, ?, NOW())",
+        rows,
+    )
+    log.info("Loaded %d variable metadata rows into raw.dbw_variables", len(rows))
+    return len(rows)
+
+
 def validate(conn: duckdb.DuckDBPyConnection) -> None:
     r = conn.execute(
         "SELECT COUNT(*), COUNT(DISTINCT variable_id), COUNT(DISTINCT section_id), "
@@ -186,12 +263,17 @@ def validate(conn: duckdb.DuckDBPyConnection) -> None:
         "SELECT COUNT(*), COUNT(DISTINCT section_id) FROM raw.dbw_positions"
     ).fetchone()
     log.info("Positions: %d labels across %d cross-sections", p[0], p[1])
+    v = conn.execute(
+        "SELECT COUNT(*), COUNT(DISTINCT category) FROM raw.dbw_variables"
+    ).fetchone()
+    log.info("Variables: %d metadata rows, %d HVD categories", v[0], v[1])
 
 
 def run() -> None:
     conn = _db()
     load_observations(conn)
     load_positions(conn)
+    load_variables(conn)
     validate(conn)
     conn.close()
 

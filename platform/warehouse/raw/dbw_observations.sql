@@ -36,6 +36,18 @@ CREATE INDEX IF NOT EXISTS dbw_observations_variable_idx
 CREATE INDEX IF NOT EXISTS dbw_observations_year_idx
     ON raw.dbw_observations (year);
 
+-- Variable metadata: human-readable names + HVD category for the 85 DBW variables.
+-- Populated from the GUS HVD catalogue API + dict CSVs during ingestion.
+CREATE TABLE IF NOT EXISTS raw.dbw_variables (
+    variable_id     INTEGER         NOT NULL,   -- id-zmienna
+    variable_name   VARCHAR(500),               -- English name e.g. "Unemployment rate"
+    section_id      INTEGER,                    -- id-przekroj (primary cross-section for this variable)
+    section_name    VARCHAR(500),               -- cross-section description e.g. "Poland; Sex - yearly data"
+    category        VARCHAR(200),               -- HVD category e.g. "National accounts", "Labour market"
+    fetched_at      TIMESTAMPTZ     DEFAULT NOW(),
+    CONSTRAINT dbw_variables_pk PRIMARY KEY (variable_id)
+);
+
 -- Lookup table: resolves integer position IDs to human-readable labels.
 -- Populated once per cross-section (section_id) during ingestion.
 CREATE TABLE IF NOT EXISTS raw.dbw_positions (

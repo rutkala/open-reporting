@@ -3,8 +3,7 @@
 <!-- last-updated: 2026-03-28 -->
 
 ## Current Focus
-OR-93 In Progress — PR open (rutkala/open-reporting#23), awaiting merge. Mark Done after merge.
-Post-OR-93 process improvements complete: lessons learned written into standards + skills.
+OR-93 Done (merged 2026-03-29). GUS DBW HVD pipeline live on main. Ready for next sprint.
 
 ## MVP Status: COMPLETE (v0.1.0 — 2026-03-28)
 See `docs/MVP.md` and `docs/RELEASE_NOTES.md`.
@@ -31,7 +30,7 @@ See `CLAUDE.md` for full process, labels, and chat contract.
 - DuckDB concurrency: stop dashboards before dbt run — `sudo systemctl stop or-explorer or-labour`
 - Instagram API: two-step publish (create container → wait 10s → publish); unique filename per post
 - kaleido installed for Plotly PNG export
-- bypassPermissions: requires `--dangerously-skip-permissions` CLI flag + non-root user
+- bypassPermissions: set via `permissions.defaultMode` (not `defaultPermissionMode`) in settings.json — no CLI flag needed, works as root
 
 ## DBW HVD Data (OR-93 — Done)
 - Source: dbw.stat.gov.pl/pl/katalog/bulk — 213 CSV ZIPs, 21 HVD categories (EU regulation 2023/138)
@@ -49,5 +48,5 @@ See `CLAUDE.md` for full process, labels, and chat contract.
 
 ## Linear — Phase 1 Backlog
 Epics: OR-74 (Blog), OR-75 (Dashboards), OR-76 (Data), OR-77 (Social)
-Sub-issues: OR-78 to OR-93 — OR-93 In Progress (PR #23); OR-78 to OR-92 in Backlog
+Sub-issues: OR-78 to OR-93 — OR-93 Done; OR-78 to OR-92 in Backlog
 Urgent: OR-78 (Ghost admin), OR-85 (daily cron), OR-90 (Instagram token due 2026-05-20)
