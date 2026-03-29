@@ -61,10 +61,16 @@ products/mobile/        → Mobile PWA (port 8052)
 
 ### Key dbt Models
 
-- `curated.all_indicators` — conformed fact table (222 indicators, all sources)
-- `curated.dim_domain_detail` — indicator catalogue with default aggregation
+- `curated.all_indicators` — conformed wide fact table (all sources, sparse dim1–dim4 columns)
+  - `curated.stg_eurostat` — Eurostat staging (73 series, 37 indicators, national + NUTS2)
+  - `curated.stg_nbp` — NBP staging (4 FX rate indicators, daily)
+  - `curated.stg_dbw` — GUS DBW HVD staging (69 indicators, 568k rows, annual, with dimension labels)
+- `curated.dim_domain_detail` — indicator catalogue (305 rows, 18 domains)
+- `curated.dim_source` — source registry (eurostat, nbp, dbw)
 - `curated.dim_geo` — geographic hierarchy (PL + 7 NUTS1 + 17 NUTS2)
 - `curated.dim_calendar` — monthly spine 1995–2029
+
+**Rule**: dashboards and the Explorer query `curated.*` only — never `raw.*` directly.
 
 ---
 

@@ -15,3 +15,7 @@ select * from {{ ref('stg_eurostat') }}
 union all
 
 select * from {{ ref('stg_nbp') }}
+
+union all
+
+select * from {{ ref('stg_dbw') }}

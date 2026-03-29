@@ -17,6 +17,8 @@ models:
   open_reporting:
     +materialized: table
     +schema: curated
+    dbw:
+      +schema: curated
 
 seeds:
   open_reporting:

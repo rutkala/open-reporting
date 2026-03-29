@@ -2,21 +2,54 @@
 
 ## Architecture
 
-Two-layer data architecture in PostgreSQL:
+Three-layer data pipeline in DuckDB (analytical warehouse):
 
 ```
 raw.{source}_{entity}        ← Bronze: native format, untouched
         ↓
-    Python transform
+    dbt staging models        ← Internal to dbt — not a separate DuckDB schema
+    (stg_{source}.sql)        conform each source to the shared fact schema
         ↓
 curated.{domain}_{metric}    ← Gold: cleaned, typed, dashboard-ready
 ```
 
 **`raw` schema** — data as received from source. Never modified after landing. Always reproducible from source.
 
-**`curated` schema** — clean, structured, analysis-ready. This is what dashboards query.
+**Staging (dbt-internal)** — `stg_{source}.sql` models in `platform/processing/dbt/models/`. Each staging model conforms one source to the shared `all_indicators` schema. These produce DuckDB tables in the `curated` schema prefixed with `stg_` (dbt materialises them there). They are not queried directly by dashboards.
 
-If transformations become complex enough to warrant an intermediate validation step, a `staging` schema can be added between raw and curated. Add it as a deliberate decision, not by default.
+**`curated` schema** — clean, structured, analysis-ready. This is what all dashboards and the Explorer query. Never bypass curated — dashboards must never query `raw.*` directly.
+
+**Shared staging schema** (all `stg_*.sql` models must output these columns):
+```
+source_id    VARCHAR    -- 'eurostat', 'nbp', 'dbw'
+domain_id    VARCHAR    -- 18 domain codes: MAC, LAB, PUB, POP, PRC, etc.
+detail_id    VARCHAR    -- indicator key from curated.dim_domain_detail seed
+geo          VARCHAR    -- NUTS code or 'PL' for national
+period_date  DATE       -- all granularities truncated to first day of period
+dim1_name    VARCHAR    -- dimension name (e.g. 'Płeć') — NULL for Eurostat/NBP
+dim1_value   VARCHAR    -- dimension value (e.g. 'Mężczyźni') — NULL for Eurostat/NBP
+dim2_name    VARCHAR    -- second breakdown dimension name
+dim2_value   VARCHAR
+dim3_name    VARCHAR
+dim3_value   VARCHAR
+dim4_name    VARCHAR
+dim4_value   VARCHAR
+value        DOUBLE
+obs_status   VARCHAR    -- data quality flag from source
+fetched_at   TIMESTAMPTZ
+updated_at   TIMESTAMPTZ
+```
+
+**Adding a new source** (checklist):
+1. Ingest to `raw.{source}_{entity}` following ingestion standard
+2. Create `platform/processing/dbt/models/{source}/stg_{source}.sql` — conform to shared schema above
+3. Add `null::varchar` for dim1-dim4 columns if source has no dimension breakdowns
+4. Union `select * from {{ ref('stg_{source}') }}` into `all_indicators.sql`
+5. Add source row to `dim_source.csv` seed
+6. Add new indicator rows to `dim_domain_detail.csv` seed for any new detail_ids
+7. Run `dbt seed --full-refresh && dbt run`
+
+**PostgreSQL** — used only by Ghost CMS (operational DB). No analytics, no dashboards.
 
 ---
 
