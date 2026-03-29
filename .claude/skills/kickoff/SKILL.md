@@ -78,5 +78,6 @@ Execute the appropriate next steps in sequence, pausing for user approval at eac
 4. `/review` — standards compliance check before PR
 5. **Open PR** — push branch, create PR with review output and acceptance criteria checklist
 6. **Merge** — after approval, merge to main
-7. `/document` — update affected docs, RELEASE_NOTES.md, lessons-learned if applicable
-8. **Close** — Linear issue → Done, delete feature branch
+7. `/document` — update affected docs, RELEASE_NOTES.md
+8. **Lessons learned (mandatory)** — after every issue, reflect on what went wrong or could go better. Update standards, skills, or playbooks based on findings. See `/document` Step 5.
+9. **Close** — Linear issue → **Done** (only after PR is merged), delete feature branch

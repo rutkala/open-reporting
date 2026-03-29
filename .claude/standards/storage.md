@@ -91,6 +91,7 @@ updated_at   TIMESTAMPTZ DEFAULT NOW()   -- when the row was last transformed
 | Financial values | `NUMERIC(18,2)` | Never `FLOAT` — avoids rounding errors |
 | Rates, percentages | `NUMERIC(8,4)` | 4 decimal places |
 | Counts, integers | `BIGINT` | Not `INT` — avoids overflow on large datasets |
+| External source IDs | `BIGINT` | Always BIGINT for IDs from external sources — do not assume INT32 range; position/dimension IDs from GUS DBW can exceed 12 billion |
 | Short strings | `VARCHAR(255)` | Codes, names, identifiers |
 | Long text | `TEXT` | Descriptions, notes |
 | Semi-structured | `JSONB` | Raw JSON from APIs, parse in transform |
@@ -169,6 +170,19 @@ CREATE TABLE IF NOT EXISTS curated.demographics_population (
 
 - Single user (`postgres`) for all operations — ingestion, transformation, dashboards
 - Add a read-only `dashboard` user when the portal goes public (TBD)
+
+---
+
+## DuckDB Quirks
+
+- **Cannot DELETE all rows from a table with a compound primary key index.** DuckDB throws a FatalException. For full-overwrite loads, use `DROP TABLE IF EXISTS` + recreate from DDL instead of `DELETE FROM`.
+- **Full-overwrite pattern:**
+  ```python
+  conn.execute("DROP TABLE IF EXISTS raw.my_table")
+  with open("platform/warehouse/raw/my_table.sql") as f:
+      conn.execute(f.read())
+  # then INSERT from read_csv(...)
+  ```
 
 ---
 

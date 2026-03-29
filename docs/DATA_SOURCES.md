@@ -43,11 +43,30 @@ Requires explicit user approval before use. Must document source credibility and
 
 ### Level 1: Official Government & EU
 
-#### GUS BDL (Local Data Bank)
+#### GUS DBW (Domain Knowledge Databases) — **primary GUS source**
+- **Bulk catalogue**: `https://dbw.stat.gov.pl/pl/katalog/bulk` — 213 CSV ZIPs, 21 HVD categories (EU regulation 2023/138)
+- **Catalogue API**: `https://dbw.stat.gov.pl/api_app/getCatalogValues` — returns all download links (no auth required)
+- **REST API**: `https://api-dbw.stat.gov.pl/api/` — for targeted variable queries; `DBW_API_KEY` env var (`X-ClientId` header); 10 req/s, 5,000 req/12h
+- **Docs**: `https://api.stat.gov.pl/Home/DBWApi?lang=en`
+- **Coverage**: 85 HVD variables (756k observations), 82 cross-sections, years 1995–2026
+  - Categories: GDP, government expenditure/debt, employment, unemployment, population, poverty, HICP, tourism, industrial production
+- **File format**: ZIP containing `<id>.csv` (data, semicolon-delimited, comma decimal) + `<id>_Dict.csv` (dimension labels)
+- **Data model**: observations stored as integer position IDs; resolve labels by joining `raw.dbw_positions` on `(section_id, dim_id, position_id)`
+- **Notes**:
+  - Bulk download is the preferred approach for full HVD coverage — avoids API rate limits entirely
+  - Dimension position IDs can exceed INT32 (e.g. 12193299000018) — schema uses BIGINT for all dim columns
+  - `no_value_id != 0` indicates suppressed/missing value — stored as NULL
+  - Landing zone has 426 files (~_data.csv + _dict.csv per dataset); full reload takes ~11s via DuckDB native CSV reader
+- **Ingestion scripts**:
+  - `platform/ingestion/to_landing/dbw_hvd.py` — downloads all ZIPs to `data/landing/dbw_hvd/`
+  - `platform/ingestion/to_raw/dbw_observations.py` — bulk-loads landing CSVs into DuckDB
+- **Raw tables**: `raw.dbw_observations`, `raw.dbw_positions`
+
+#### GUS BDL (Local Data Bank) — legacy / alternative
 - **URL**: `https://bdl.stat.gov.pl/api/v1/`
 - **Auth**: `BDL_API_KEY` env var (register at `https://bdl.stat.gov.pl/`)
 - **Format**: JSON
-- **Coverage**: 40,000+ variables across all domains, NUTS-2/NUTS-3 regional data
+- **Coverage**: 172,000+ variables across all domains, NUTS-2/NUTS-3 regional data
 - **Rate limit**: 1000 requests/day on free tier
 - **Notes**: Variable IDs required; use `/variables` endpoint to discover
 
