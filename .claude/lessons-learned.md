@@ -80,3 +80,27 @@ docker exec ghost node -e "
 ```
 
 **Applies to:** Ghost CMS configuration changes on existing installations.
+
+---
+
+## 2026-03-29 — DBW mixed periods in same cross-section cause misleading KPIs
+
+**What happened:** The "Gross domestic product" variable (section 16) stores annual totals (period_id=282), quarterly totals (period_id=270-273), and quarterly growth indices (103.x) all in the same cross-section. Summing by year across all period types produces nonsensical KPI values (latest year shows index values only, prior year includes annual total → apparent -100% YoY change).
+
+**Root cause:** DBW cross-sections are not always "one metric per section" — some contain multiple presentation modes (level + index) or multiple periodicities (annual + quarterly) stacked together. The `period_id` field distinguishes these but is not exposed in the dashboard yet.
+
+**Process change:** When building dashboards over DBW data for variables with multiple period types, either: (a) add a `period_id` filter, or (b) record the recommended `period_id` for annual series in `raw.dbw_variables`. For OR-95 this is an accepted limitation; address in a future enhancement.
+
+**Applies to:** Any DBW dashboard or analysis using variables with mixed periodicity (GDP, national accounts aggregates).
+
+---
+
+## 2026-03-29 — OS file permissions block Edit/Write tools when repo owned by root
+
+**What happened:** Entire `/opt/open-reporting` directory tree was owned by `root`. Edit and Write tools ran as `radek` and received EACCES. Required three separate `sudo chown` commands before files could be written.
+
+**Root cause:** The repo was initially set up as root, leaving all files root-owned. Claude Code runs as the logged-in user (`radek`), not root.
+
+**Process change:** At project setup, run `sudo chown -R radek:radek /opt/open-reporting` once. If Edit/Write tools return EACCES, the fix is always the same command.
+
+**Applies to:** All file editing — environment setup step.

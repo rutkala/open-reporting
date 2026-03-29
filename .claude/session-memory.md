@@ -1,9 +1,9 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-03-28 -->
+<!-- last-updated: 2026-03-29 -->
 
 ## Current Focus
-OR-93 Done (merged 2026-03-29). GUS DBW HVD pipeline live on main. Ready for next sprint.
+OR-95 PR open (rutkala/open-reporting#24) — DBW HVD explorer tab. Awaiting merge.
 
 ## MVP Status: COMPLETE (v0.1.0 — 2026-03-28)
 See `docs/MVP.md` and `docs/RELEASE_NOTES.md`.
@@ -32,14 +32,14 @@ See `CLAUDE.md` for full process, labels, and chat contract.
 - kaleido installed for Plotly PNG export
 - bypassPermissions: set via `permissions.defaultMode` (not `defaultPermissionMode`) in settings.json — no CLI flag needed, works as root
 
-## DBW HVD Data (OR-93 — Done)
-- Source: dbw.stat.gov.pl/pl/katalog/bulk — 213 CSV ZIPs, 21 HVD categories (EU regulation 2023/138)
+## DBW HVD Data (OR-93 Done, OR-95 PR #24 open)
+- Source: dbw.stat.gov.pl/pl/katalog/bulk — 213 CSV ZIPs, 18 HVD categories (EU regulation 2023/138)
 - Ingestion: `platform/ingestion/to_landing/dbw_hvd.py` → `platform/ingestion/to_raw/dbw_observations.py`
 - Landing zone: `data/landing/dbw_hvd/` (426 files — *_data.csv + *_dict.csv per dataset)
-- Raw tables: `raw.dbw_observations` (756,626 rows), `raw.dbw_positions` (14,390 labels)
+- Raw tables: `raw.dbw_observations` (756,626 rows), `raw.dbw_positions` (14,390 labels), `raw.dbw_variables` (85 rows)
 - Coverage: 85 variables, 82 sections, years 1995–2026
 - Reload: stop dashboards → run to_raw script → restart dashboards (~11s DuckDB bulk load)
-- Categories include: GDP, gov expenditure/debt, employment, unemployment, population, poverty, HICP, tourism, industrial production
+- Known issue: some variables (e.g. GDP section 16) mix annual + quarterly + index values — KPIs may be misleading without period_id filter
 
 ## Catalogue State
 - `catalogue.domain_details`: 222 indicators across 18 domains
