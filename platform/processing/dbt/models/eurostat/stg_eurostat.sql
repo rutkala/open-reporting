@@ -68,6 +68,14 @@ select
         when o.period like '____-__'
             then cast(o.period || '-01' as date)
     end               as period_date,
+    null::varchar     as dim1_name,
+    null::varchar     as dim1_value,
+    null::varchar     as dim2_name,
+    null::varchar     as dim2_value,
+    null::varchar     as dim3_name,
+    null::varchar     as dim3_value,
+    null::varchar     as dim4_name,
+    null::varchar     as dim4_value,
     o.value           as value,
     o.obs_status      as obs_status,
     o.fetched_at      as fetched_at,

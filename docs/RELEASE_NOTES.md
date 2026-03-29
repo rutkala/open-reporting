@@ -34,6 +34,14 @@
 
 ## Unreleased
 
+### DW architecture — unified conformed fact table (2026-03-29) — OR-97
+- `curated.all_indicators` extended to wide fact table with 8 sparse dimension columns (dim1–dim4 name+value)
+- GUS DBW HVD integrated as third source via new `stg_dbw.sql` dbt model: 69 indicators, 568k rows, annual data 1995–2025
+- Dimension labels resolved from `raw.dbw_positions`; geographic dimensions mapped to NUTS codes
+- 81 new indicator rows added to `dim_domain_detail` seed; `dbw` added to `dim_source` seed
+- `storage.md` and `processing.md` standards updated with layer contracts and dbt-first rule
+- `ARCHITECTURE.md` updated to reflect three-source fact table
+
 ### DBW HVD explorer tab (2026-03-29) — OR-95
 - Added **DBW HVD** tab to the Explorer dashboard (`/explorer/`) — no new service or port
 - Variable selector grouped by 18 HVD categories, dimension filter (sex/sector/region), time series chart, 4 KPI cards (latest value, YoY %, max, min)

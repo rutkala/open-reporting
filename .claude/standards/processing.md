@@ -4,15 +4,39 @@
 
 This standard covers the **Transform phase**: moving data from `raw.{source}_{entity}` to `curated.{domain}_{metric}`.
 
+### DuckDB Warehouse (primary path)
+
+Transformations are implemented as **dbt models** in `platform/processing/dbt/models/`. Do not write Python transform scripts for DuckDB — use dbt.
+
 ```
-raw.{source}_{entity}       ← Bronze: untouched, native format
+raw.{source}_{entity}                ← Bronze: untouched, native format
         ↓
-   processing/{source}_process.py
+platform/processing/dbt/models/
+  {source}/stg_{source}.sql          ← Staging: conform to shared fact schema
         ↓
-curated.{domain}_{metric}   ← Gold: clean, typed, analysis-ready
+platform/processing/dbt/models/
+  eurostat/all_indicators.sql        ← Gold: union of all staging models
+        ↓
+curated.all_indicators               ← Explorer and dashboards query here
 ```
 
-Processing scripts live in `processing/`. One script per source-to-curated mapping. Input is always `raw`, output is always `curated`. Raw data is never modified.
+**stg_{source}.sql pattern** — every staging model must:
+- Output the shared staging schema (see `storage.md`)
+- Handle nulls and type casting in SQL (DuckDB `TRY_CAST`, `COALESCE`)
+- Filter out rows with no usable detail_id mapping (`WHERE detail_id_mapped IS NOT NULL`)
+- Be idempotent — safe to re-run via `dbt run`
+
+Run after ingestion:
+```bash
+sudo systemctl stop or-explorer or-labour
+cd platform/processing/dbt
+DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt run --profiles-dir .
+sudo systemctl start or-explorer or-labour
+```
+
+### PostgreSQL (operational path — future use only)
+
+The Python psycopg2 patterns documented below apply to any future PostgreSQL-targeted processing scripts. PostgreSQL is currently used only by Ghost CMS — no analytics processing runs against it.
 
 ---
 

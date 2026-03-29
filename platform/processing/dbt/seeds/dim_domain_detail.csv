@@ -221,3 +221,86 @@ trp.port_cargo_volume,TRP,Sea Port Cargo Volume,thousand t,monthly,Transport,Eco
 trp.road_accidents,TRP,Road Accidents,count,monthly,Transport,Economy,SUM
 trp.road_fatalities,TRP,Road Fatalities,count,monthly,Transport,Economy,SUM
 trp.vehicle_registrations,TRP,New Vehicle Registrations,count,monthly,Transport,Economy,SUM
+mac.gdp_regional,MAC,Regional GDP (DBW),PLN mn,annual,National Accounts & Macroeconomics,Economy,SUM
+mac.gva_sectoral,MAC,Gross Value Added by Sector,PLN mn,annual,National Accounts & Macroeconomics,Economy,SUM
+mac.gva_regional,MAC,Regional Gross Value Added,PLN mn,annual,National Accounts & Macroeconomics,Economy,SUM
+mac.compensation_of_employees,MAC,Compensation of Employees,PLN mn,annual,National Accounts & Macroeconomics,Economy,SUM
+mac.compensation_of_employees_regional,MAC,Regional Compensation of Employees,PLN mn,annual,National Accounts & Macroeconomics,Economy,SUM
+mac.gni,MAC,Gross National Income,PLN mn,annual,National Accounts & Macroeconomics,Economy,SUM
+mac.gross_fixed_capital_formation,MAC,Gross Fixed Capital Formation,PLN mn,annual,National Accounts & Macroeconomics,Economy,SUM
+mac.gross_fixed_capital_formation_regional,MAC,Regional Gross Fixed Capital Formation,PLN mn,annual,National Accounts & Macroeconomics,Economy,SUM
+mac.gross_operating_surplus,MAC,Gross Operating Surplus / Gross Mixed Income,PLN mn,annual,National Accounts & Macroeconomics,Economy,SUM
+mac.gross_disposable_income,MAC,Gross Disposable Income,PLN mn,annual,National Accounts & Macroeconomics,Economy,SUM
+mac.gross_saving,MAC,Gross Saving,PLN mn,annual,National Accounts & Macroeconomics,Economy,SUM
+mac.gross_capital_formation,MAC,Gross Capital Formation (Govt),PLN mn,annual,National Accounts & Macroeconomics,Economy,SUM
+mac.household_final_consumption,MAC,Final Consumption Expenditure of Households,PLN mn,annual,National Accounts & Macroeconomics,Economy,SUM
+mac.employment_esa,MAC,Employment by NACE (ESA 2010),persons,annual,National Accounts & Macroeconomics,Economy,AVG
+mac.employment_esa_regional,MAC,Regional Employment (ESA 2010),persons,annual,National Accounts & Macroeconomics,Economy,AVG
+mac.net_disposable_income_regional,MAC,Regional Net Disposable Income of Households,PLN mn,annual,National Accounts & Macroeconomics,Economy,SUM
+mac.prodcom_sold,MAC,PRODCOM Sold Production,PLN mn,annual,National Accounts & Macroeconomics,Economy,SUM
+mac.prodcom_subcontracted,MAC,PRODCOM Sub-contracted Production,PLN mn,annual,National Accounts & Macroeconomics,Economy,SUM
+mac.prodcom_actual,MAC,PRODCOM Actual Production,units,annual,National Accounts & Macroeconomics,Economy,SUM
+pub.gross_capital_formation_govt,PUB,Gross Capital Formation (General Government),PLN mn,annual,Public Finance,Economy,SUM
+pub.compensation_of_employees_govt,PUB,Compensation of Employees (General Government),PLN mn,annual,Public Finance,Economy,SUM
+pub.taxes_on_income,PUB,Current Taxes on Income Wealth Etc,PLN mn,annual,Public Finance,Economy,SUM
+pub.taxes_on_production_imports,PUB,Taxes on Production and Imports,PLN mn,annual,Public Finance,Economy,SUM
+pub.intermediate_consumption_govt,PUB,Intermediate Consumption (General Government),PLN mn,annual,Public Finance,Economy,SUM
+pub.govt_revenue,PUB,Revenue of General Government Sector,PLN mn,annual,Public Finance,Economy,SUM
+pub.govt_expenditure,PUB,Expenditure of General Government Sector,PLN mn,annual,Public Finance,Economy,SUM
+pub.subsidies_esa,PUB,Subsidies (ESA 2010),PLN mn,annual,Public Finance,Economy,SUM
+pub.property_income_govt,PUB,Property Income (General Government),PLN mn,annual,Public Finance,Economy,SUM
+pub.other_taxes_on_production,PUB,Other Taxes on Production,PLN mn,annual,Public Finance,Economy,SUM
+pub.payments_for_nonmarket_output,PUB,Payments for Non-market Output,PLN mn,annual,Public Finance,Economy,SUM
+pub.social_benefits_in_kind,PUB,Social Benefits Other Than Social Transfers in Kind,PLN mn,annual,Public Finance,Economy,SUM
+pub.social_transfers_in_kind,PUB,Social Transfers in Kind,PLN mn,annual,Public Finance,Economy,SUM
+pub.nonproduced_assets,PUB,Acquisitions Less Disposals of Non-produced Assets,PLN mn,annual,Public Finance,Economy,SUM
+pub.other_current_transfers,PUB,Other Current Transfers (General Government),PLN mn,annual,Public Finance,Economy,SUM
+pub.capital_transfers_govt,PUB,Capital Transfers (General Government),PLN mn,annual,Public Finance,Economy,SUM
+pub.net_social_contributions,PUB,Net Social Contributions,PLN mn,annual,Public Finance,Economy,SUM
+pub.net_lending_borrowing,PUB,Net Lending / Net Borrowing,PLN mn,annual,Public Finance,Economy,SUM
+pub.market_output_govt,PUB,Market Output (General Government),PLN mn,annual,Public Finance,Economy,SUM
+pub.output_own_final_use,PUB,Output for Own Final Use (General Government),PLN mn,annual,Public Finance,Economy,SUM
+pub.public_debt_components,PUB,Maastricht Debt Components,PLN mn,annual,Public Finance,Economy,AVG
+hlt.healthcare_expenditure_by_function,HLT,Healthcare Expenditure by Function and Provider,PLN mn,annual,Health,Society,SUM
+prc.hicp_goods_services,PRC,HICP — Goods and Services,index,annual,Prices & Inflation,Economy,AVG
+prc.hicp_constant_tax,PRC,HICP at Constant Tax Rates,index,annual,Prices & Inflation,Economy,AVG
+prc.ooh_price_index,PRC,Owner-Occupied Housing Price Index,index,annual,Prices & Inflation,Economy,AVG
+prc.producer_prices_industry,PRC,Producer Prices in Industry by KAU,index,annual,Prices & Inflation,Economy,AVG
+prc.service_producer_prices,PRC,Services Producer Prices by KAU,index,annual,Prices & Inflation,Economy,AVG
+prc.construction_producer_prices,PRC,Construction Producer Prices (New Residential),index,annual,Prices & Inflation,Economy,AVG
+env.air_pollutants_aea,ENV,Air Pollutants Emissions (AEA),tonnes,annual,Environment & Climate,Environment,SUM
+env.waste_generated_by_category,ENV,Waste Generated by Category,tonnes,annual,Environment & Climate,Environment,SUM
+env.waste_treated_by_category,ENV,Waste Treated by Category,tonnes,annual,Environment & Climate,Environment,SUM
+env.landfill_facilities,ENV,Landfill Facilities Count,count,annual,Environment & Climate,Environment,AVG
+env.landfill_capacity,ENV,Rest Capacity of Landfill Facilities,m³,annual,Environment & Climate,Environment,AVG
+env.landfill_closed,ENV,Closed Landfill Facilities,count,annual,Environment & Climate,Environment,SUM
+env.recovery_incineration_facilities,ENV,Recovery and Incineration Facilities,count,annual,Environment & Climate,Environment,AVG
+env.recovery_incineration_capacity,ENV,Capacity of Recovery and Incineration Facilities,tonnes/year,annual,Environment & Climate,Environment,AVG
+clt.overnight_stays_regional,CLT,Regional Overnight Stays in Tourist Accommodation,thousand,annual,Culture Tourism & Sport,Society,SUM
+clt.tourism_trips,CLT,Tourism Trips,thousand,annual,Culture Tourism & Sport,Society,SUM
+clt.tourism_nights_spent,CLT,Tourism Nights Spent,thousand,annual,Culture Tourism & Sport,Society,SUM
+clt.tourism_expenditure,CLT,Tourism Expenditure,PLN mn,annual,Culture Tourism & Sport,Society,SUM
+clt.tourism_participation_rate,CLT,Participation in Tourism Rate,%,annual,Culture Tourism & Sport,Society,AVG
+lab.employment_rate_regional,LAB,Employment Rate by Region (LFS),%,annual,Labour Market,Economy,AVG
+lab.part_time_employment_share,LAB,Part-Time Employment Share,%,annual,Labour Market,Economy,AVG
+lab.unemployment_rate_by_age_edu,LAB,Unemployment Rate by Age and Education (LFS),%,annual,Labour Market,Economy,AVG
+lab.long_term_unemployment_rate_lfs,LAB,Long-Term Unemployment Rate (LFS),%,annual,Labour Market,Economy,AVG
+lab.economically_inactive_available,LAB,Economically Inactive Persons Available Not Seeking,persons,annual,Labour Market,Economy,AVG
+lab.economically_inactive_seeking,LAB,Economically Inactive Persons Seeking Not Available,persons,annual,Labour Market,Economy,AVG
+pop.infant_mortality_rate,POP,Infant Mortality Rate,per 1000 births,annual,Population & Demographics,Society,AVG
+pop.life_expectancy_by_age,POP,Life Expectancy at Age X,years,annual,Population & Demographics,Society,AVG
+pop.median_age_regional,POP,Regional Median Age,years,annual,Population & Demographics,Society,AVG
+pop.birth_rate,POP,Live Births per 1000 Population,per 1000,annual,Population & Demographics,Society,AVG
+pop.fertility_rate_by_age,POP,Age-Specific Fertility Rate,ratio,annual,Population & Demographics,Society,AVG
+pop.death_rate,POP,Death Rate per 1000 Population,per 1000,annual,Population & Demographics,Society,AVG
+pop.usual_residence_population,POP,Usual Residence Population by Sex Age,persons,annual,Population & Demographics,Society,AVG
+pop.old_age_dependency_ratio_regional,POP,Regional Old-Age Dependency Ratio,%,annual,Population & Demographics,Society,AVG
+soc.poverty_rate_regional,SOC,Regional At-Risk-of-Poverty Rate,%,annual,Income Living Conditions & Social Protection,Society,AVG
+soc.at_risk_poverty_rate,SOC,At-Risk-of-Poverty Rate (DBW),%,annual,Income Living Conditions & Social Protection,Society,AVG
+soc.arope_rate,SOC,People at Risk of Poverty or Social Exclusion Rate,%,annual,Income Living Conditions & Social Protection,Society,AVG
+soc.severe_material_deprivation_rate,SOC,Severe Material and Social Deprivation Rate,%,annual,Income Living Conditions & Social Protection,Society,AVG
+soc.material_deprivation_rate,SOC,Material and Social Deprivation Rate,%,annual,Income Living Conditions & Social Protection,Society,AVG
+soc.low_work_intensity_rate,SOC,People in Households with Very Low Work Intensity Rate,%,annual,Income Living Conditions & Social Protection,Society,AVG
+soc.income_quintile_ratio,SOC,Income Quintile Share Ratio S80/S20,ratio,annual,Income Living Conditions & Social Protection,Society,AVG
+soc.gini_coefficient_dbw,SOC,Gini Coefficient (DBW),index,annual,Income Living Conditions & Social Protection,Society,AVG
+mac.volume_of_sales_by_activity,MAC,Volume of Sales by Activity (KAU),index,annual,National Accounts & Macroeconomics,Economy,AVG
