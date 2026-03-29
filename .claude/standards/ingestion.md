@@ -73,6 +73,9 @@ No scraping. No undocumented commercial data providers. API or official file dow
 **Check for bulk download before designing an API pipeline.**
 Many official sources (GUS DBW, Eurostat) publish complete dataset exports as CSV/ZIP alongside their APIs. A bulk download loads the full dataset in seconds; a paginated API loop for the same data can take hours. Always check the source's download/export page before writing an API ingestion script.
 
+**GUS DBW bulk CSV: `no_value_id` semantics differ from the REST API.**
+The REST API uses `no_value_id=0` to mean "data exists" (non-zero = suppressed/missing). The bulk CSV export only includes rows where data exists — `no_value_id` is never 0. Do not apply a `!= 0 → NULL` filter on bulk CSV loads; just cast the value directly with `TRY_CAST`.
+
 ---
 
 ## Phase 2: Extraction Tool
