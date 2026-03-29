@@ -69,9 +69,7 @@ def load_observations(conn: duckdb.DuckDBPyConnection) -> int:
             COALESCE(TRY_CAST(dimension_4_position_id AS BIGINT), 0),
             COALESCE(TRY_CAST(dimension_5_position_id AS BIGINT), 0),
             COALESCE(TRY_CAST(dimension_6_position_id AS BIGINT), 0),
-            CASE WHEN TRY_CAST(no_value_id AS INTEGER) != 0 THEN NULL
-                 ELSE TRY_CAST(REPLACE(value, ',', '.') AS DOUBLE)
-            END,
+            TRY_CAST(REPLACE(value, ',', '.') AS DOUBLE),
             TRY_CAST(precision AS INTEGER),
             NOW()
         FROM read_csv(
