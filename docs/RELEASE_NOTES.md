@@ -34,6 +34,15 @@
 
 ## Unreleased
 
+### Unified Explorer dashboard on curated layer (2026-03-29) — OR-99
+- Removed DBW HVD tab (was querying `raw.dbw_observations` directly — architecture violation)
+- All three sources (Eurostat, NBP, GUS DBW) now accessible through one unified Explorer view
+- Source is a filter attribute in the sidebar, not a navigation tab — `dcc.Tabs` removed
+- Dynamic dimension filter panel: selecting indicators reveals only dims with data for those indicators
+- 24 named semantic columns (dim_sex, dim_age_group, dim_nace_sector, etc.) exposed as Polish-labelled filters
+- `load_available_dims()` uses DuckDB `UNPIVOT` to discover populated dims in one query
+- `WARNING` colour imported from Nordic theme (was hardcoded)
+
 ### Kimball dimensional model — named semantic columns (2026-03-29) — OR-100
 - Replaced EAV generic `dim1_name/dim1_value` slots with 24 named semantic columns (`dim_sex`, `dim_age_group`, `dim_nace_sector`, etc.)
 - `curated.all_indicators` fact table now has 33 columns: 5 core, 24 named dimensions, 4 metadata

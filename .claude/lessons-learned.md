@@ -119,6 +119,18 @@ docker exec ghost node -e "
 
 ---
 
+## 2026-03-29 — Dynamic Dash callbacks require pattern-matching IDs for variable-count inputs
+
+**What happened:** OR-99 added a dynamic dimension filter panel where the number of dropdowns changes based on selected indicators. Needed to read all active dim filter values in the run callback. Used Dash pattern-matching IDs (`{"type": "dim-filter", "col": ALL}`) + a `dcc.Store` intermediary to avoid the `prevent_initial_call` complication of having ALL-pattern inputs directly in the run callback.
+
+**Root cause:** Dash `ALL` pattern-matching inputs in a callback fire on every render including initial. Isolating the sync to a dedicated `sync_dim_filter_store` callback and reading from `State("store-dim-filters", "data")` in the run callback avoids spurious runs.
+
+**Process change:** For dynamic Dash components where the count of inputs varies at runtime: use pattern-matching IDs + a Store intermediary. Do not try to put `Input({"type": ..., "col": ALL}, "value")` directly into the main run callback.
+
+**Applies to:** Any Dash dashboard with dynamically rendered filter components.
+
+---
+
 ## 2026-03-29 — EAV anti-pattern approved without being flagged
 
 **What happened:** OR-97 plan proposed generic `dim1_name/dim1_value...dim4_name/dim4_value` EAV slots as the dimension model for `curated.all_indicators`. The user approved the plan without knowing this was an anti-pattern. When OR-99 kicked off, the user noticed that `dim_sex` could land in `dim1` for one indicator and `dim2` for another — consistent filtering was impossible. Required a full OR-100 to research DW principles and reimplement with 24 named semantic columns.
