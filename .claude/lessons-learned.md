@@ -83,6 +83,18 @@ docker exec ghost node -e "
 
 ---
 
+## 2026-03-30 — Architecture mislabelled: Kimball vs medallion
+
+**What happened:** OR-100 concluded "Kimball wins" and labelled `curated.all_indicators` as a Kimball fact table. The PO correctly challenged this: Kimball requires one fact table per business process, but `all_indicators` spans 18 domains. The correct label is medallion silver layer (integration store) with Kimball-style conformed dimensions. The gold layer (domain data marts) was missing entirely from the architecture.
+
+**Root cause:** The research in OR-100 did not consult authoritative sources (Kimball Group website, dbt Labs documentation, Inmon's original definitions). It compared the approaches abstractly without checking whether the proposed design actually met Kimball's structural requirements. A proper Kimball fact table would never union 18 business processes into one table.
+
+**Process change:** Architecture research must cite authoritative sources and verify that the proposed design meets the structural requirements of the chosen pattern — not just the spirit. Use web search to find primary sources (kimballgroup.com, docs.getdbt.com, original books). Do not rely on abstract comparisons.
+
+**Applies to:** Any architectural decision — DW design, API design, data modelling. Verify the proposed design satisfies the pattern's actual requirements before committing.
+
+---
+
 ## 2026-03-29 — Research step skipped: data inventory ≠ principles research
 
 **What happened:** OR-97 required researching DW modelling approaches (Kimball, Inmon, Data Vault) before designing the schema. The research subagent catalogued data structure (column names, row counts, source shapes) but never researched DW principles. Implementation proceeded on a generic EAV-like dim1/dim2/dim3 pattern — a known anti-pattern in dimensional modelling — without the user being informed this was a shortcut, not a decision.

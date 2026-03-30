@@ -2,24 +2,31 @@
 
 ## Architecture
 
-Three-layer data pipeline in DuckDB (analytical warehouse):
+Three-layer **medallion** pipeline in DuckDB (analytical warehouse):
 
 ```
-raw.{source}_{entity}        ← Bronze: native format, untouched
-        ↓
-    dbt staging models        ← Internal to dbt — not a separate DuckDB schema
-    (stg_{source}.sql)        conform each source to the shared fact schema
-        ↓
-curated.{domain}_{metric}    ← Gold: cleaned, typed, dashboard-ready
+raw.{source}_{entity}        ← Bronze: source-aligned, untouched, reproducible
+        ↓  dbt stg_*.sql
+curated.all_indicators       ← Silver: integration layer — all sources unified
+curated.dim_*                   Conformed dimensions (Kimball-style)
+        ↓  dbt mart_*.sql (future)
+curated.mart_{domain}        ← Gold: domain marts — pre-joined, Polish labels, derived metrics
 ```
 
-**`raw` schema** — data as received from source. Never modified after landing. Always reproducible from source.
+**`raw` schema** — data as received from source. Never modified after landing.
 
-**Staging (dbt-internal)** — `stg_{source}.sql` models in `platform/processing/dbt/models/`. Each staging model conforms one source to the shared `all_indicators` schema. These produce DuckDB tables in the `curated` schema prefixed with `stg_` (dbt materialises them there). They are not queried directly by dashboards.
+**Silver (`curated.all_indicators`)** — cross-domain integration layer: all sources conformed
+into one atomic observation table with a consistent 33-column schema. This is the single source
+of truth. The Explorer queries this layer directly — correct and intentional.
 
-**`curated` schema** — clean, structured, analysis-ready. This is what all dashboards and the Explorer query. Never bypass curated — dashboards must never query `raw.*` directly.
+**Gold (`curated.mart_*`)** — domain-specific marts built on top of silver. One mart per domain
+(Labour, Finance, etc.). Pre-joined with Polish labels, domain-relevant columns only, derived
+metrics pre-computed. Domain dashboards query gold, not silver.
 
-**Dimensional modelling approach: Kimball star schema** — named semantic columns in the fact table, conformed dimension lookup tables. No EAV (generic dim_name/dim_value) slots — every dimension must have a named column with a clear business meaning. See `docs/DATA_MODEL.md` for the full decision record.
+**Dimensional modelling:** Named semantic columns in the silver fact table (no EAV).
+Conformed dimension tables (`dim_geo`, `dim_domain_detail`, `dim_calendar`, `dim_source`) are
+Kimball-style: managed once, reused across all queries. See `docs/DATA_MODEL.md` for the full
+architecture record.
 
 **Shared staging schema** (all `stg_*.sql` models must output these 33 columns in this order):
 ```
