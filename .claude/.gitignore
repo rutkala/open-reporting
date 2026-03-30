@@ -5,3 +5,6 @@ agent-activity.jsonl
 .session-pushed
 .lead-last-log
 .hook-errors.log
+
+# Local settings — may contain machine-specific config or secrets
+settings.local.json
