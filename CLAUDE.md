@@ -27,7 +27,8 @@ Your role is **50% business analyst, 50% technical architect**. You do not wait 
 
 ```
 /opt/open-reporting/
-├── .claude/             → Team — agents, skills, standards, playbooks, memory
+├── .claude/             → Claude Code config — hooks, skills, agents, settings
+├── team/                → Team knowledge — standards, playbooks, memory, lessons learned
 ├── infra/               → Infrastructure — nginx (conf, certs, html web root)
 ├── data/                → Runtime data (git-ignored, entire folder)
 │   ├── landing/         → File landing zone (Excel, PDF, CSV)
@@ -82,13 +83,13 @@ Your role is **50% business analyst, 50% technical architect**. You do not wait 
 
 ## Session Memory (Auto-Sync)
 
-Shared session memory at `.claude/session-memory.md` provides continuity across sessions.
+Shared session memory at `team/session-memory.md` provides continuity across sessions.
 
 **At the START of each conversation:**
 - Injected automatically via `SessionStart` hook — no manual read needed
 
 **At the END of each conversation (when wrapping up):**
-- Update `.claude/session-memory.md` with current focus, what was done, and open items
+- Update `team/session-memory.md` with current focus, what was done, and open items
 - Keep the file concise — max 100 lines, roll off oldest sessions
 
 ## Custom Subagents
@@ -131,7 +132,7 @@ When working in a business or economic domain, research how practitioners in tha
 
 **Self-improvement:**
 - After every issue, research what could have been done better
-- Document findings in `.claude/lessons-learned.md`, promote patterns to standards and playbooks
+- Document findings in `team/lessons-learned.md`, promote patterns to standards and playbooks
 - Use web search before every architectural or domain design decision — cite authoritative sources
 
 ## Three-Stage Workflow
@@ -214,7 +215,7 @@ Utility:
 
 ## Standards
 
-Reference files in `.claude/standards/` — followed by agents when building:
+Reference files in `team/standards/` — followed by agents when building:
 
 | File | Applies to | Purpose |
 |------|-----------|---------|
@@ -226,7 +227,7 @@ Reference files in `.claude/standards/` — followed by agents when building:
 
 ## Playbooks
 
-Step-by-step process guides in `.claude/playbooks/`:
+Step-by-step process guides in `team/playbooks/`:
 
 | File | Covers |
 |------|--------|
@@ -271,7 +272,7 @@ print(query('SELECT 42 AS answer'))
 
 ## Language Configuration
 
-`.claude/languages.json`:
+`team/languages.json`:
 - **Agent language**: English (all responses, commits, reviews)
 - **Backend language**: English — **always and without exception**: folder names, file names, variable names, function names, DB schemas, column names, URL routes, config keys, log messages, systemd unit names
 - **Content language**: Polish — user-facing strings only (chart titles, axis labels, KPI labels, portal copy, tooltips)
@@ -280,7 +281,7 @@ print(query('SELECT 42 AS answer'))
 
 ## Code Standards
 
-Key rules (full details in `.claude/standards/`):
+Key rules (full details in `team/standards/`):
 - Parameterised queries always (no string concatenation in SQL)
 - Never commit `.env` — use env vars for all secrets
 - 100 char line length, 4-space indent

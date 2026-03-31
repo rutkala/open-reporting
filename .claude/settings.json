@@ -40,16 +40,6 @@
     ],
     "PreToolUse": [
       {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node .claude/hooks/approve-claude-dir.js",
-            "timeout": 2000
-          }
-        ]
-      },
-      {
         "matcher": "Agent",
         "hooks": [
           {
