@@ -1,81 +1,87 @@
 ---
 name: research
-description: "Research how to implement a task before planning. Searches the web, reads documentation, explores the codebase for existing patterns, and presents findings with a clear recommendation for user approval."
+description: "Research the technical approach for a task before implementing. Searches web, official docs, and codebase. Forms ONE recommendation and proceeds — does not present options for the PO to choose from."
 user-invocable: true
 argument-hint: "<what to research>"
 ---
 
-# Research & Analysis
+# Technical Research
 
-Investigate the best approach before writing any code. Present findings in plain language for user approval.
+Investigate the best technical approach. Form a recommendation. Proceed.
 
 ## Task
 `$ARGUMENTS`
 
-## Step 1 — Understand the Question
+---
 
-Before researching, define clearly:
-- What specific question needs answering?
-- What would a good answer look like?
-- Are there existing patterns in this codebase to check first?
+## Step 1 — Understand What Needs Deciding
 
-## Step 2 — Check the Codebase First
+Before searching, define clearly:
+- What technical question needs answering?
+- What are the constraints? (existing stack, performance requirements, maintainability)
+- Are there existing patterns in this codebase already?
 
-Before going to the web:
-- Search for existing patterns, utilities, or conventions already in the project
-- Check `.claude/session-memory.md` for relevant context from recent sessions
-- Check `docs/` for relevant architecture or data source documentation
+Check first:
+- `.claude/standards/` for relevant standards
+- Existing code for patterns already in use
+- `.claude/session-memory.md` for recent relevant context
 
-## Step 3 — External Research
+---
+
+## Step 2 — External Research
 
 Search for:
-- Official API documentation for relevant data sources
-- Library documentation (Plotly, psycopg2, pandas, Ghost API, etc.)
-- Real examples of similar implementations
-- Known issues, limitations, or gotchas
+- Official documentation for relevant libraries, APIs, frameworks
+- Known issues, limitations, and gotchas
+- Production-grade examples from authoritative sources
 
-Use web search and web fetch tools. Prefer official docs over blog posts. Check publication dates — prefer recent sources.
+Prefer official docs over blog posts. Check dates — prefer recent sources (2023+).
 
-## Step 4 — Present Findings
+Note: If the task involves a **business domain** (Public Finance, Labour, Health, etc.), run `/domain-brief` first to ground the technical research in domain context.
 
-Present in plain business language. Lead with the recommendation, follow with evidence.
+---
+
+## Step 3 — Form ONE Recommendation
+
+Do not present a list of options for the PO to choose from. Evaluate options internally and arrive at one recommendation.
+
+The recommendation should be grounded in:
+- Technical fit with the existing stack (DuckDB, dbt, Dash, Python)
+- Alignment with standards in `.claude/standards/`
+- What authoritative sources recommend for this problem type
+- Maintainability and simplicity
+
+---
+
+## Step 4 — Present Findings (internal reference, not user-facing)
+
+Structure findings as a working note for planning:
 
 ```
 ## Research: {topic}
 
-### What we're trying to solve
-{1 paragraph — the problem in plain language}
+### Problem
+{What technical question was being answered}
 
 ### What I found
-{Summary of key findings — what's possible, what's not, what the options are}
+{Key findings — what's possible, what the constraints are, relevant library behavior}
 
-### Options
-
-**Option A: {name}**
-- What it is: {plain description}
-- Pros: {list}
-- Cons: {list}
-
-**Option B: {name}**
-- What it is: {plain description}
-- Pros: {list}
-- Cons: {list}
-
-### My recommendation
-**Option {X}** — {plain-language reason why, focused on your goals not technical elegance}
+### Recommendation
+{One approach, with plain-language reasoning}
 
 ### Risks or unknowns
-{Anything that could go wrong or needs validating during implementation}
+{Anything that needs validating during implementation}
 
 ### Sources
-{Links to key documentation or examples used}
+{Links to documentation or examples used}
 ```
 
-## Step 5 — Wait for Approval
+This note informs `/plan` — it is not a presentation for PO approval. The PO sees the plan, not the research notes.
 
-Do NOT proceed to planning until the user:
-- Approves the recommendation, OR
-- Chooses a different option, OR
-- Asks for more research on a specific point
+---
 
-Once approved, proceed with `/plan` using the chosen approach.
+## Step 5 — Proceed
+
+After forming the recommendation, move to `/plan`. If the approach is clear and low-risk, proceed directly.
+
+If research reveals something worth discussing first — a significant scope change, a trade-off the PO should be aware of, or an unexpected constraint — share it in plain language along with the proposed path forward. The goal is informed conversation, not approval-seeking.

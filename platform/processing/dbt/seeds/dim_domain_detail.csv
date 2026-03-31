@@ -261,6 +261,35 @@ pub.net_lending_borrowing,PUB,Net Lending / Net Borrowing,PLN mn,annual,Public F
 pub.market_output_govt,PUB,Market Output (General Government),PLN mn,annual,Public Finance,Economy,SUM
 pub.output_own_final_use,PUB,Output for Own Final Use (General Government),PLN mn,annual,Public Finance,Economy,SUM
 pub.public_debt_components,PUB,Maastricht Debt Components,PLN mn,annual,Public Finance,Economy,AVG
+pub.fiscal_balance_gdp,PUB,Government Fiscal Balance (% of GDP),%,annual,Public Finance,Economy,AVG
+pub.revenue_gdp,PUB,Government Revenue (% of GDP),%,annual,Public Finance,Economy,AVG
+pub.expenditure_gdp,PUB,Government Expenditure (% of GDP),%,annual,Public Finance,Economy,AVG
+pub.interest_expenditure_gdp,PUB,Interest Payments (% of GDP),%,annual,Public Finance,Economy,AVG
+pub.govt_investment_gdp,PUB,Government Investment / GFCF (% of GDP),%,annual,Public Finance,Economy,AVG
+pub.social_transfers_gdp,PUB,Social Transfers (% of GDP),%,annual,Public Finance,Economy,AVG
+pub.taxes_prod_imports_gdp,PUB,Taxes on Production and Imports (% of GDP),%,annual,Public Finance,Economy,AVG
+pub.taxes_income_gdp,PUB,Taxes on Income and Wealth (% of GDP),%,annual,Public Finance,Economy,AVG
+pub.social_contributions_gdp,PUB,Social Contributions (% of GDP),%,annual,Public Finance,Economy,AVG
+pub.compensation_employees_gdp,PUB,Compensation of Employees (% of GDP),%,annual,Public Finance,Economy,AVG
+pub.edp_deficit_gdp,PUB,EDP Deficit — Net Lending/Borrowing (% of GDP),%,annual,Public Finance,Economy,AVG
+pub.edp_debt_gdp,PUB,EDP Consolidated Gross Debt (% of GDP),%,annual,Public Finance,Economy,AVG
+pub.cofog_01_gdp,PUB,Expenditure: General Public Services (% of GDP),%,annual,Public Finance,Economy,AVG
+pub.cofog_02_gdp,PUB,Expenditure: Defence (% of GDP),%,annual,Public Finance,Economy,AVG
+pub.cofog_03_gdp,PUB,Expenditure: Public Order and Safety (% of GDP),%,annual,Public Finance,Economy,AVG
+pub.cofog_04_gdp,PUB,Expenditure: Economic Affairs (% of GDP),%,annual,Public Finance,Economy,AVG
+pub.cofog_05_gdp,PUB,Expenditure: Environmental Protection (% of GDP),%,annual,Public Finance,Economy,AVG
+pub.cofog_06_gdp,PUB,Expenditure: Housing and Community Amenities (% of GDP),%,annual,Public Finance,Economy,AVG
+pub.cofog_07_gdp,PUB,Expenditure: Health (% of GDP),%,annual,Public Finance,Economy,AVG
+pub.cofog_08_gdp,PUB,Expenditure: Recreation Culture and Religion (% of GDP),%,annual,Public Finance,Economy,AVG
+pub.cofog_09_gdp,PUB,Expenditure: Education (% of GDP),%,annual,Public Finance,Economy,AVG
+pub.cofog_10_gdp,PUB,Expenditure: Social Protection (% of GDP),%,annual,Public Finance,Economy,AVG
+pub.fiscal_balance_imf,PUB,Fiscal Balance % GDP (IMF WEO),%,annual,Public Finance,Economy,AVG
+pub.primary_balance_imf,PUB,Primary Balance % GDP (IMF WEO),%,annual,Public Finance,Economy,AVG
+pub.structural_balance_imf,PUB,Cyclically-Adjusted Balance % Potential GDP (IMF),%,annual,Public Finance,Economy,AVG
+pub.gross_debt_imf,PUB,Gross Government Debt % GDP (IMF WEO),%,annual,Public Finance,Economy,AVG
+pub.net_debt_imf,PUB,Net Government Debt % GDP (IMF WEO),%,annual,Public Finance,Economy,AVG
+pub.revenue_imf,PUB,Government Revenue % GDP (IMF WEO),%,annual,Public Finance,Economy,AVG
+pub.expenditure_imf,PUB,Government Expenditure % GDP (IMF WEO),%,annual,Public Finance,Economy,AVG
 hlt.healthcare_expenditure_by_function,HLT,Healthcare Expenditure by Function and Provider,PLN mn,annual,Health,Society,SUM
 prc.hicp_goods_services,PRC,HICP — Goods and Services,index,annual,Prices & Inflation,Economy,AVG
 prc.hicp_constant_tax,PRC,HICP at Constant Tax Rates,index,annual,Prices & Inflation,Economy,AVG

@@ -155,6 +155,53 @@ docker exec ghost node -e "
 
 ---
 
+## 2026-03-30 — Role is 50% business analyst, not just technical architect
+
+**What happened:** OR-107 approach was presented by asking the PO "how should the dashboard look?" and proposing a generic IT-style tab structure (Explorer, Budget Overview, Source Comparison) without researching how Public Finance is actually analyzed by economists, statisticians, or policy analysts. The PO correctly challenged: they are not a domain specialist and cannot evaluate whether a dashboard design is correct — that is the architect's job.
+
+**Root cause:** The role was implicitly defined as "developer who collects requirements." A developer waits for specs; a business analyst researches the domain and proposes the design. The PO does not know what KPIs, tabs, or charts a Public Finance dashboard should contain — domain experts do, and those experts publish their analyses in authoritative reports.
+
+**Process change:**
+1. CLAUDE.md role updated to "Lead Analyst & Architect — 50% business analyst, 50% technical architect"
+2. New skill `/domain-brief` added — mandatory before any dashboard design, data modelling, or indicator selection for a domain
+3. Dashboard playbook Phase 5 rewritten: Phase 5a is domain research (via `/domain-brief`), Phase 5b is design derived from research, Phase 5c is implementation, Phase 5d is present to PO for feedback
+4. `/research` skill rewritten: no more options A/B/C, no "wait for PO approval of approach", proceed autonomously after forming recommendation
+5. The PO reacts to what was built — they do not specify what to build
+
+**Applies to:** Every dashboard, every data model, every domain indicator set. If a task involves a business domain, domain research comes first.
+
+---
+
+## 2026-03-30 — Domain dashboard pattern: full pipeline per domain, multi-source by default
+
+**What happened:** OR-102 (Public Finance) established the definitive pattern for all future domain dashboards. Key decisions made:
+1. One epic per domain — not one giant issue for all domains, not one issue per layer
+2. Scope is the full pipeline: research → ingest → silver staging → gold mart → dashboard
+3. Research must identify ALL parallel data sources, not just the one already ingested
+4. Parallel sources are kept simultaneously in the warehouse for comparison — no premature pruning
+5. Every domain dashboard includes a domain-scoped Explorer tab + editorial tabs + source comparison tab
+6. Public Finance is the template domain; this playbook applies to every subsequent domain
+
+**Root cause:** Prior approach (OR-101) scoped gold marts as a separate initiative from dashboards, and treated ingestion as already complete. This led to architecture delivered in disconnected pieces without a clear end-to-end delivery cadence.
+
+**Process change:** Playbook at `.claude/playbooks/dashboard.md` now defines the full domain dashboard pipeline. Linear structure for all future domains: one epic + 5 sub-issues (research, ingest, silver, gold, dashboard).
+
+**Applies to:** All future domain dashboard epics — Labour, Health, Education, etc.
+
+---
+
+## 2026-03-30 — Multi-source strategy: keep parallel sources, decide later
+
+**What happened:** PO explicitly stated the expectation that for each domain, we identify ALL parallel data sources, ingest them in parallel, and keep them in the warehouse simultaneously for cross-source comparison. The decision about which source to keep and which to drop comes later, explicitly — not during ingestion.
+
+**Root cause:** Previous approach selected a single source during research ("recommended source") and treated research as a winner-selection exercise. This prematurely discards data that could reveal measurement divergence or provide backup coverage.
+
+**Process change:** Research phase now produces a source inventory (all sources, no winner selected). Ingestion phase ingests all sources. All parallel sources coexist in `raw.*` and in `curated.all_indicators` distinguished by `source_id`. Gold mart keeps `source_id` so dashboards can compare sources directly.
+
+**Applies to:** Every domain research phase — the question is "what exists for this domain?" not "which source do we use?".
+
+---
+
 ## 2026-03-29 — OS file permissions block Edit/Write tools when repo owned by root
 
 **What happened:** Entire `/opt/open-reporting` directory tree was owned by `root`. Edit and Write tools ran as `radek` and received EACCES. Required three separate `sudo chown` commands before files could be written.
