@@ -77,6 +77,7 @@ _mart: pd.DataFrame = query(_SQL_ALL)
 # Pre-slice commonly used subsets
 _pl_eurostat = _mart[(_mart["geo"] == "PL") & (_mart["source_id"] == "eurostat")]
 _pl_imf      = _mart[(_mart["geo"] == "PL") & (_mart["source_id"] == "imf")]
+_pl_dbw      = _mart[(_mart["geo"] == "PL") & (_mart["source_id"] == "dbw")]
 _eu27_mask   = _mart["geo"].isin(EU27)
 
 log.info("mart_finance loaded: %d rows", len(_mart))
@@ -165,116 +166,128 @@ def _chart_wrapper(fig: go.Figure, h: int = 420) -> dcc.Graph:
                      style={"height": f"{h}px"})
 
 
-# ── Tab 1: Overview ───────────────────────────────────────────────────────────
+# ── Tab 1: Overview (GUS DBW-style) ──────────────────────────────────────────
 
 def _build_overview_kpis() -> html.Div:
-    fiscal_val, fiscal_yr   = _latest(_pl_eurostat, "pub.fiscal_balance_gdp")
-    debt_val,   debt_yr     = _latest(_pl_imf,      "pub.gross_debt_imf")
-    revenue_val, revenue_yr = _latest(_pl_eurostat, "pub.revenue_gdp")
-    expend_val, expend_yr   = _latest(_pl_eurostat, "pub.expenditure_gdp")
-
-    def _rank_label(detail_id: str, source_id: str, year: int, val: float,
-                    ascending: bool = True) -> str:
-        sub = _mart[
-            (_mart["detail_id"] == detail_id) &
-            (_mart["source_id"] == source_id) &
-            (_mart["period_year"] == year) &
-            (_mart["geo"].isin(EU27))
-        ].dropna(subset=["value"])
-        if sub.empty or val is None:
-            return ""
-        sorted_vals = sub["value"].sort_values(ascending=ascending).values.tolist()
-        try:
-            rank = sorted_vals.index(val) + 1
-            return f"{rank}. miejsce w UE ({year})"
-        except ValueError:
-            return f"({year})"
+    fiscal_val, fiscal_yr = _latest(_pl_eurostat, "pub.fiscal_balance_gdp")
+    debt_val,   debt_yr   = _latest(_pl_eurostat, "pub.public_debt_gdp")
+    revenue_val, revenue_yr = _latest(_pl_dbw,    "pub.govt_revenue")
 
     fiscal_color = NEGATIVE if (fiscal_val or 0) < 0 else POSITIVE
     debt_color   = NEGATIVE if (debt_val or 0) > 60 else TEXT
+
+    # Format PLN mn → mld zł with Polish decimal separator style
+    def _fmt_mld(val: float | None) -> str:
+        if val is None:
+            return "—"
+        return f"{val / 1000:,.1f} mld zł".replace(",", "\u00a0").replace(".", ",")
 
     return html.Div(
         style={"display": "flex", "gap": "16px", "flexWrap": "wrap", "marginBottom": "24px"},
         children=[
             _card(
-                "Saldo fiskalne",
+                "Saldo finansów publicznych",
                 f"{fiscal_val:.1f}% PKB" if fiscal_val is not None else "—",
-                _rank_label("pub.fiscal_balance_gdp", "eurostat", fiscal_yr, fiscal_val, ascending=False),
+                f"Eurostat ESA 2010, sektor rządowy ({fiscal_yr})",
                 color=fiscal_color,
             ),
             _card(
-                "Dług publiczny (MFW)",
+                "Dług publiczny",
                 f"{debt_val:.1f}% PKB" if debt_val is not None else "—",
-                _rank_label("pub.gross_debt_imf", "imf", debt_yr, debt_val, ascending=True),
+                f"Kryterium z Maastricht: 60% PKB ({debt_yr})",
                 color=debt_color,
             ),
             _card(
-                "Dochody publiczne",
-                f"{revenue_val:.1f}% PKB" if revenue_val is not None else "—",
-                _rank_label("pub.revenue_gdp", "eurostat", revenue_yr, revenue_val, ascending=False),
-            ),
-            _card(
-                "Wydatki publiczne",
-                f"{expend_val:.1f}% PKB" if expend_val is not None else "—",
-                _rank_label("pub.expenditure_gdp", "eurostat", expend_yr, expend_val, ascending=True),
+                "Dochody sektora finansów publ.",
+                _fmt_mld(revenue_val),
+                f"Dochody ogółem, sektor S13 ({revenue_yr})",
             ),
         ],
     )
 
 
-def _build_fiscal_ts_chart() -> go.Figure:
-    pl  = _ts("pub.fiscal_balance_gdp", "PL",         "eurostat", min_year=1995)
-    eu  = _ts("pub.fiscal_balance_gdp", "EU27_2020",  "eurostat", min_year=1995)
+def _build_budget_combo_chart() -> go.Figure:
+    """Revenue + Expenditure grouped bars with Balance line — DBW HVD, PLN mn."""
+    rev  = _ts("pub.govt_revenue",       "PL", "dbw", min_year=1995)
+    exp  = _ts("pub.govt_expenditure",   "PL", "dbw", min_year=1995)
+    bal  = _ts("pub.net_lending_borrowing", "PL", "dbw", min_year=1995)
 
     fig = go.Figure()
-    fig.add_trace(go.Scatter(
-        x=pl["period_year"], y=pl["value"],
-        name="Polska", line=dict(color=AZURE_1, width=2),
-        mode="lines",
+    fig.add_trace(go.Bar(
+        x=rev["period_year"], y=rev["value"],
+        name="Dochody",
+        marker_color=AZURE_1,
+        offsetgroup=0,
     ))
-    fig.add_trace(go.Scatter(
-        x=eu["period_year"], y=eu["value"],
-        name="UE-27", line=dict(color=SUBTEXT, width=2, dash="dot"),
-        mode="lines",
+    fig.add_trace(go.Bar(
+        x=exp["period_year"], y=exp["value"],
+        name="Wydatki",
+        marker_color=AZURE_3,
+        offsetgroup=1,
     ))
-    _ref_line(fig, -3, "-3% PKB (kryterium z Maastricht)")
+    fig.add_trace(go.Bar(
+        x=bal["period_year"], y=bal["value"],
+        name="Saldo",
+        marker_color=[NEGATIVE if v < 0 else POSITIVE for v in bal["value"]],
+        yaxis="y2",
+    ))
     fig.update_layout(
-        title="Saldo fiskalne sektora rządowego (% PKB)",
-        yaxis_title="% PKB",
+        title="Budżet sektora finansów publicznych (mln zł)",
+        barmode="group",
+        yaxis=dict(title="mln zł"),
+        yaxis2=dict(
+            title="Saldo (mln zł)",
+            overlaying="y",
+            side="right",
+            showgrid=False,
+        ),
+        legend=dict(orientation="h", y=-0.15),
         template="nordic",
-        height=420,
+        height=440,
     )
     return fig
 
 
-def _build_debt_ts_chart() -> go.Figure:
-    df = _ts("pub.gross_debt_imf", "PL", "imf", min_year=1995)
-    actual = df[df["is_projection"].ne(True)]
-    proj   = df[df["is_projection"] == True]  # noqa: E712
-
-    # Connect actual to projection (share last actual point)
-    if not actual.empty and not proj.empty:
-        last_actual = actual.iloc[[-1]]
-        proj = pd.concat([last_actual, proj])
+def _build_debt_combo_chart() -> go.Figure:
+    """Public debt: PLN mn bars (DBW) + % GDP line (Eurostat) — dual axis."""
+    debt_pln = _ts("pub.public_debt_total", "PL", "dbw",      min_year=2000)
+    debt_pct = _ts("pub.public_debt_gdp",   "PL", "eurostat", min_year=2000)
 
     fig = go.Figure()
-    fig.add_trace(go.Scatter(
-        x=actual["period_year"], y=actual["value"],
-        name="Dług publiczny (historia)", line=dict(color=AZURE_1, width=2),
-        mode="lines",
+    fig.add_trace(go.Bar(
+        x=debt_pln["period_year"], y=debt_pln["value"],
+        name="Dług (mln zł)",
+        marker_color=AZURE_1,
+        yaxis="y",
     ))
-    if not proj.empty:
-        fig.add_trace(go.Scatter(
-            x=proj["period_year"], y=proj["value"],
-            name="Prognoza MFW", line=dict(color=AZURE_1, width=2, dash="dash"),
-            mode="lines",
-        ))
-    _ref_line(fig, 60, "60% PKB (kryterium z Maastricht)")
+    fig.add_trace(go.Scatter(
+        x=debt_pct["period_year"], y=debt_pct["value"],
+        name="Dług (% PKB)",
+        line=dict(color=WARNING, width=2),
+        mode="lines+markers",
+        marker=dict(size=4),
+        yaxis="y2",
+    ))
+    # Maastricht 60% reference on right axis
+    fig.add_hline(
+        y=60, line_dash="dash", line_color=NEGATIVE, line_width=1.5,
+        annotation_text="60% PKB (Maastricht)",
+        annotation_position="top right",
+        annotation_font=dict(color=NEGATIVE, size=11),
+        yref="y2",
+    )
     fig.update_layout(
-        title="Dług publiczny brutto (% PKB, z prognozami MFW do 2029)",
-        yaxis_title="% PKB",
+        title="Państwowy dług publiczny (mln zł; % PKB)",
+        yaxis=dict(title="mln zł"),
+        yaxis2=dict(
+            title="% PKB",
+            overlaying="y",
+            side="right",
+            showgrid=False,
+        ),
+        legend=dict(orientation="h", y=-0.15),
         template="nordic",
-        height=420,
+        height=440,
     )
     return fig
 
@@ -285,8 +298,8 @@ def _layout_tab1() -> html.Div:
         html.Div(
             style={"display": "grid", "gridTemplateColumns": "1fr 1fr", "gap": "16px"},
             children=[
-                html.Div([_chart_wrapper(_build_fiscal_ts_chart())]),
-                html.Div([_chart_wrapper(_build_debt_ts_chart())]),
+                html.Div([_chart_wrapper(_build_budget_combo_chart(), h=440)]),
+                html.Div([_chart_wrapper(_build_debt_combo_chart(), h=440)]),
             ],
         ),
     ])
@@ -854,6 +867,8 @@ app = Dash(
     __name__,
     title="Finanse publiczne — Open Reporting",
     suppress_callback_exceptions=True,
+    requests_pathname_prefix="/finance/",
+    routes_pathname_prefix="/finance/",
 )
 app.layout = _build_layout()
 server = app.server  # expose for production WSGI
