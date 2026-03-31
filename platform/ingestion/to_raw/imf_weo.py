@@ -106,8 +106,10 @@ def fetch_weo_data() -> list[dict]:
 
     current_year = datetime.date.today().year
 
+    landing_dir = os.path.join(os.path.dirname(__file__), "..", "..", "..", "data", "landing")
+    os.makedirs(landing_dir, exist_ok=True)
     log.info("Loading IMF WEO %d release %d (may download on first run)...", WEO_YEAR, WEO_RELEASE)
-    w = weo_pkg.get(WEO_YEAR, WEO_RELEASE)
+    w = weo_pkg.get(WEO_YEAR, WEO_RELEASE, path=landing_dir)
     log.info("WEO data loaded. Available countries: %d", len(w.codes))
 
     rows = []
