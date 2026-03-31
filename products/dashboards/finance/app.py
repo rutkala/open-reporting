@@ -142,8 +142,41 @@ def _ref_line(fig: go.Figure, y: float, label: str, color: str = NEGATIVE,
     return fig
 
 
-def _card(label: str, value_str: str, rank_str: str, color: str = TEXT) -> html.Div:
-    """KPI card component."""
+def _card(label: str, value_str: str, rank_str: str, color: str = TEXT,
+          badge: tuple[str, str] | None = None,
+          trend: tuple[str, str] | None = None) -> html.Div:
+    """KPI card component.
+
+    badge: (text, color) — e.g. ("✓ SGP", POSITIVE) or ("✗ SGP", NEGATIVE)
+    trend: (arrow+delta, color) — e.g. ("▲ +1,2 pp", NEGATIVE)
+    """
+    children = [
+        html.Div(label, style={"color": SUBTEXT, "fontSize": "13px", "marginBottom": "6px"}),
+    ]
+    # Value row with optional badge
+    value_row = [
+        html.Span(value_str, style={"color": color, "fontSize": "26px", "fontWeight": "700"}),
+    ]
+    if badge:
+        badge_text, badge_color = badge
+        value_row.append(html.Span(
+            badge_text,
+            style={
+                "fontSize": "11px", "fontWeight": "600",
+                "color": badge_color, "background": f"{badge_color}18",
+                "border": f"1px solid {badge_color}40",
+                "borderRadius": "4px", "padding": "2px 6px",
+                "marginLeft": "8px", "verticalAlign": "middle",
+            },
+        ))
+    children.append(html.Div(value_row, style={"display": "flex", "alignItems": "center"}))
+    if trend:
+        trend_text, trend_color = trend
+        children.append(html.Div(
+            trend_text,
+            style={"color": trend_color, "fontSize": "12px", "marginTop": "3px", "fontWeight": "500"},
+        ))
+    children.append(html.Div(rank_str, style={"color": SUBTEXT, "fontSize": "12px", "marginTop": "4px"}))
     return html.Div(
         style={
             "background": BG_SURFACE,
@@ -153,11 +186,7 @@ def _card(label: str, value_str: str, rank_str: str, color: str = TEXT) -> html.
             "flex": "1",
             "minWidth": "200px",
         },
-        children=[
-            html.Div(label, style={"color": SUBTEXT, "fontSize": "13px", "marginBottom": "6px"}),
-            html.Div(value_str, style={"color": color, "fontSize": "26px", "fontWeight": "700"}),
-            html.Div(rank_str, style={"color": SUBTEXT, "fontSize": "12px", "marginTop": "4px"}),
-        ],
+        children=children,
     )
 
 
@@ -168,15 +197,42 @@ def _chart_wrapper(fig: go.Figure, h: int = 420) -> dcc.Graph:
 
 # ── Tab 1: Overview (GUS DBW-style) ──────────────────────────────────────────
 
-def _build_overview_kpis() -> html.Div:
-    fiscal_val, fiscal_yr = _latest(_pl_eurostat, "pub.fiscal_balance_gdp")
-    debt_val,   debt_yr   = _latest(_pl_eurostat, "pub.public_debt_gdp")
-    revenue_val, revenue_yr = _latest(_pl_dbw,    "pub.govt_revenue")
+def _yoy_trend(df: pd.DataFrame, detail_id: str, ascending_is_good: bool = True
+               ) -> tuple[str, str] | None:
+    """Compute YoY change arrow + delta string and colour for a KPI card."""
+    sub = df[df["detail_id"] == detail_id].dropna(subset=["value"]).sort_values("period_year")
+    if len(sub) < 2:
+        return None
+    cur = float(sub.iloc[-1]["value"])
+    prev = float(sub.iloc[-2]["value"])
+    delta = cur - prev
+    if abs(delta) < 0.05:
+        return f"→ bez zmian", SUBTEXT
+    arrow = "▲" if delta > 0 else "▼"
+    sign = "+" if delta > 0 else ""
+    text = f"{arrow} {sign}{delta:.1f} pp r/r"
+    improving = (delta > 0) == ascending_is_good
+    color = POSITIVE if improving else NEGATIVE
+    return text, color
 
-    fiscal_color = NEGATIVE if (fiscal_val or 0) < 0 else POSITIVE
+
+def _build_overview_kpis() -> html.Div:
+    fiscal_val, fiscal_yr   = _latest(_pl_eurostat, "pub.fiscal_balance_gdp")
+    debt_val,   debt_yr     = _latest(_pl_eurostat, "pub.public_debt_gdp")
+    revenue_val, revenue_yr = _latest(_pl_dbw,      "pub.govt_revenue")
+
+    fiscal_color = NEGATIVE if (fiscal_val or 0) < -3 else (WARNING if (fiscal_val or 0) < 0 else POSITIVE)
     debt_color   = NEGATIVE if (debt_val or 0) > 60 else TEXT
 
-    # Format PLN mn → mld zł with Polish decimal separator style
+    # SGP compliance badges
+    fiscal_sgp = ("✓ SGP", POSITIVE) if (fiscal_val or 0) >= -3 else ("✗ SGP", NEGATIVE)
+    debt_sgp   = ("✓ SGP", POSITIVE) if (debt_val or 0) <= 60 else ("✗ SGP", NEGATIVE)
+
+    # YoY trends (higher fiscal balance = better; lower debt = better)
+    fiscal_trend  = _yoy_trend(_pl_eurostat, "pub.fiscal_balance_gdp", ascending_is_good=True)
+    debt_trend    = _yoy_trend(_pl_eurostat, "pub.public_debt_gdp",    ascending_is_good=False)
+    revenue_trend = _yoy_trend(_pl_dbw,      "pub.govt_revenue",       ascending_is_good=True)
+
     def _fmt_mld(val: float | None) -> str:
         if val is None:
             return "—"
@@ -190,17 +246,22 @@ def _build_overview_kpis() -> html.Div:
                 f"{fiscal_val:.1f}% PKB" if fiscal_val is not None else "—",
                 f"Eurostat ESA 2010, sektor rządowy ({fiscal_yr})",
                 color=fiscal_color,
+                badge=fiscal_sgp,
+                trend=fiscal_trend,
             ),
             _card(
                 "Dług publiczny",
                 f"{debt_val:.1f}% PKB" if debt_val is not None else "—",
                 f"Kryterium z Maastricht: 60% PKB ({debt_yr})",
                 color=debt_color,
+                badge=debt_sgp,
+                trend=debt_trend,
             ),
             _card(
                 "Dochody sektora finansów publ.",
                 _fmt_mld(revenue_val),
                 f"Dochody ogółem, sektor S13 ({revenue_yr})",
+                trend=revenue_trend,
             ),
         ],
     )
@@ -292,14 +353,178 @@ def _build_debt_combo_chart() -> go.Figure:
     return fig
 
 
+def _rag(value: float | None, green_fn, amber_fn) -> str:
+    """Return 'green', 'amber', or 'red' based on threshold functions."""
+    if value is None:
+        return "red"
+    if green_fn(value):
+        return "green"
+    if amber_fn(value):
+        return "amber"
+    return "red"
+
+
+_RAG_COLORS = {"green": POSITIVE, "amber": WARNING, "red": NEGATIVE}
+_RAG_LABELS = {"green": "✓", "amber": "△", "red": "✗"}
+
+
+def _scorecard_tile(label: str, value_str: str, rag: str, trend: tuple | None = None) -> html.Div:
+    color = _RAG_COLORS[rag]
+    signal = _RAG_LABELS[rag]
+    children = [
+        html.Div(label, style={"color": SUBTEXT, "fontSize": "12px", "marginBottom": "6px"}),
+        html.Div(
+            [
+                html.Span(signal, style={
+                    "fontSize": "16px", "fontWeight": "700", "color": color,
+                    "marginRight": "6px",
+                }),
+                html.Span(value_str, style={
+                    "fontSize": "20px", "fontWeight": "700", "color": color,
+                }),
+            ],
+            style={"display": "flex", "alignItems": "baseline"},
+        ),
+    ]
+    if trend:
+        trend_text, trend_color = trend
+        children.append(html.Div(
+            trend_text,
+            style={"color": trend_color, "fontSize": "11px", "marginTop": "4px"},
+        ))
+    return html.Div(
+        style={
+            "background": BG_SURFACE,
+            "border": f"2px solid {color}40",
+            "borderLeft": f"4px solid {color}",
+            "borderRadius": "8px",
+            "padding": "16px 20px",
+            "flex": "1",
+            "minWidth": "160px",
+        },
+        children=children,
+    )
+
+
+def _build_scorecard() -> html.Div:
+    """4-tile RAG fiscal sustainability scorecard."""
+    fiscal_val, fiscal_yr   = _latest(_pl_eurostat, "pub.fiscal_balance_gdp")
+    debt_val,   _           = _latest(_pl_eurostat, "pub.public_debt_gdp")
+    interest_val, _         = _latest(_pl_eurostat, "pub.interest_expenditure_gdp")
+    structural_val, _       = _latest(_pl_imf,      "pub.structural_balance_imf")
+    primary_val, _          = _latest(_pl_imf,      "pub.primary_balance_imf")
+
+    fiscal_rag    = _rag(fiscal_val,    lambda v: v >= -3,   lambda v: v >= -5)
+    debt_rag      = _rag(debt_val,      lambda v: v < 60,    lambda v: v < 80)
+    interest_rag  = _rag(interest_val,  lambda v: v < 2.0,   lambda v: v < 3.0)
+    structural_rag = _rag(structural_val, lambda v: v >= -3,  lambda v: v >= -5)
+
+    return html.Div(
+        style={"marginBottom": "24px"},
+        children=[
+            html.Div("Ocena stabilności fiskalnej", style={
+                "color": SUBTEXT, "fontSize": "12px",
+                "textTransform": "uppercase", "letterSpacing": "0.05em",
+                "marginBottom": "10px",
+            }),
+            html.Div(
+                style={"display": "flex", "gap": "12px", "flexWrap": "wrap"},
+                children=[
+                    _scorecard_tile(
+                        "Saldo fiskalne",
+                        f"{fiscal_val:.1f}% PKB" if fiscal_val else "—",
+                        fiscal_rag,
+                        _yoy_trend(_pl_eurostat, "pub.fiscal_balance_gdp", ascending_is_good=True),
+                    ),
+                    _scorecard_tile(
+                        "Dług publiczny",
+                        f"{debt_val:.1f}% PKB" if debt_val else "—",
+                        debt_rag,
+                        _yoy_trend(_pl_eurostat, "pub.public_debt_gdp", ascending_is_good=False),
+                    ),
+                    _scorecard_tile(
+                        "Ciężar odsetkowy",
+                        f"{interest_val:.1f}% PKB" if interest_val else "—",
+                        interest_rag,
+                        _yoy_trend(_pl_eurostat, "pub.interest_expenditure_gdp", ascending_is_good=False),
+                    ),
+                    _scorecard_tile(
+                        "Saldo strukturalne",
+                        f"{structural_val:.1f}% PKB" if structural_val else "—",
+                        structural_rag,
+                        _yoy_trend(_pl_imf, "pub.structural_balance_imf", ascending_is_good=True),
+                    ),
+                ],
+            ),
+        ],
+    )
+
+
+def _insight_budget() -> html.Div:
+    """Auto-generated Polish insight for the budget combo chart."""
+    rev_val, rev_yr  = _latest(_pl_dbw, "pub.govt_revenue")
+    exp_val, _       = _latest(_pl_dbw, "pub.govt_expenditure")
+    bal_val, _       = _latest(_pl_dbw, "pub.net_lending_borrowing")
+    if rev_val is None or exp_val is None or bal_val is None:
+        return html.Div()
+
+    bal_pct = (bal_val / rev_val) * 100
+    direction = "Deficyt" if bal_val < 0 else "Nadwyżka"
+    sign = "+" if bal_val >= 0 else ""
+    text = (
+        f"{direction} sektora finansów publicznych wyniósł {sign}{bal_val:,.0f} mln zł "
+        f"({sign}{bal_pct:.1f}% dochodów) w {rev_yr}."
+    )
+    return html.Div(text, style={
+        "color": SUBTEXT, "fontSize": "12px", "fontStyle": "italic",
+        "marginTop": "6px", "paddingLeft": "4px",
+        "borderLeft": f"3px solid {BORDER}",
+    })
+
+
+def _insight_debt() -> html.Div:
+    """Auto-generated Polish insight for the debt combo chart."""
+    debt_pct, yr   = _latest(_pl_eurostat, "pub.public_debt_gdp")
+    debt_pln, _    = _latest(_pl_dbw,      "pub.public_debt_total")
+    trend          = _yoy_trend(_pl_eurostat, "pub.public_debt_gdp", ascending_is_good=False)
+    if debt_pct is None:
+        return html.Div()
+
+    gap = 60 - debt_pct
+    if debt_pct > 60:
+        threshold_note = f"przekracza unijny próg 60% PKB o {abs(gap):.1f} pp"
+    elif gap < 5:
+        threshold_note = f"jest {gap:.1f} pp poniżej unijnego progu 60% PKB"
+    else:
+        threshold_note = f"pozostaje poniżej unijnego progu 60% PKB"
+
+    trend_note = ""
+    if trend:
+        trend_note = f" ({trend[0]})"
+
+    text = f"Dług publiczny wynosi {debt_pct:.1f}% PKB w {yr} i {threshold_note}{trend_note}."
+    return html.Div(text, style={
+        "color": SUBTEXT, "fontSize": "12px", "fontStyle": "italic",
+        "marginTop": "6px", "paddingLeft": "4px",
+        "borderLeft": f"3px solid {BORDER}",
+    })
+
+
 def _layout_tab1() -> html.Div:
     return html.Div([
         _build_overview_kpis(),
+        _build_scorecard(),
         html.Div(
             style={"display": "grid", "gridTemplateColumns": "1fr 1fr", "gap": "16px"},
             children=[
-                html.Div([_chart_wrapper(_build_budget_combo_chart(), h=440)]),
-                html.Div([_chart_wrapper(_build_debt_combo_chart(), h=440)]),
+                html.Div([
+                    _chart_wrapper(_build_budget_combo_chart(), h=440),
+                    _insight_budget(),
+                ]),
+                html.Div([
+                    _chart_wrapper(_build_debt_combo_chart(), h=440),
+                    _insight_debt(),
+                ]),
             ],
         ),
     ])
