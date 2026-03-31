@@ -40,6 +40,10 @@ RETRY_WAIT      = 5
 # Used for regional/NUTS2 datasets where geo=PL would only return the national aggregate.
 _NUTS2_PREFIX = "PL_NUTS2"
 
+# Special geo sentinel: fetch without geo restriction and keep ALL returned rows.
+# Used for multi-country datasets (e.g. GFS) where we want the full EU coverage.
+_ALL_GEOS = "ALL_GEOS"
+
 
 # ── Catalogue ─────────────────────────────────────────────────────────────────
 
@@ -109,8 +113,9 @@ def fetch_dataset(
          post-filter to rows starting with 'PL' (for NUTS2 regional datasets).
     """
     regional = geo == _NUTS2_PREFIX
+    all_geos = geo == _ALL_GEOS
     params: dict = {"format": "JSON", "lang": "en"}
-    if not regional:
+    if not regional and not all_geos:
         params["geo"] = geo
     params.update(filters)
     if not backfill:
@@ -177,6 +182,8 @@ def fetch_dataset(
     if regional:
         rows = [r for r in rows if r["geo"].startswith("PL")]
         log.info("  Regional filter: kept %d PL* rows", len(rows))
+    elif all_geos:
+        log.info("  ALL_GEOS mode: keeping all %d rows", len(rows))
 
     return rows
 

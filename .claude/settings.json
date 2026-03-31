@@ -1,6 +1,19 @@
 {
   "permissions": {
-    "defaultMode": "bypassPermissions"
+    "defaultMode": "bypassPermissions",
+    "allow": [
+      "Edit(*)",
+      "Write(*)",
+      "Bash(*)",
+      "Read(*)",
+      "Glob(*)",
+      "Grep(*)",
+      "mcp__linear-server__*",
+      "mcp__claude_ai_Gmail__*",
+      "mcp__claude_ai_Excalidraw__*",
+      "WebFetch(*)",
+      "WebSearch(*)"
+    ]
   },
   "hooks": {
     "SessionStart": [
