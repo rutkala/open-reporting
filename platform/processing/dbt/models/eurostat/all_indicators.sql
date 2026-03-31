@@ -19,3 +19,11 @@ select * from {{ ref('stg_nbp') }}
 union all
 
 select * from {{ ref('stg_dbw') }}
+
+union all
+
+select * from {{ ref('stg_eurostat_finance') }}
+
+union all
+
+select * from {{ ref('stg_imf_finance') }}
