@@ -225,6 +225,16 @@ Reference files in `team/standards/` — followed by agents when building:
 | `storage.md` | All DB work | Schema naming, data types, upsert pattern, indexes |
 | `visualisation.md` | Dashboards | Nordic design, colour palette, Plotly template, chart types, layout |
 
+## Analytics Knowledge Base
+
+Agent reference library in `team/analytics/` — read on demand during `/domain-brief` and `/plan` phases, not auto-loaded every session. See `team/analytics/INDEX.md` for the full module list and loading instructions.
+
+| File | Covers | Read when |
+|------|--------|-----------|
+| `visualization-guide.md` | Chart type selection, dual-axis, color semantics | Before designing any chart |
+| `analytical-thinking.md` | Data → insight → narrative framework | Before structuring any analysis |
+| `domains/public-finance.md` | Fiscal KPIs, SGP rules, canonical chart patterns | Before any public finance work |
+
 ## Playbooks
 
 Step-by-step process guides in `team/playbooks/`:
