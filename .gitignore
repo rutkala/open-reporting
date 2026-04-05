@@ -17,3 +17,4 @@ team/analytics/visualization/docs/viz-kb-full/
 team/analytics/dashboards/templates/
 tools/dalle-gen.ts
 bun.lock
+products/dashboards/finance_test/Test/
