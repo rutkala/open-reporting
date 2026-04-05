@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Open Reporting — Template Dashboard
-Reusable scaffold for new domain dashboards.
+Developer reference: every chart component variant displayed with sample data.
+
 Copy this directory, rename, and customise for your domain.
 
 Run:
@@ -11,7 +12,7 @@ Run:
 """
 import logging
 
-from dash import Dash, Input, Output, State, callback, dcc, html
+from dash import Dash, Input, Output, State, callback, html
 
 import products.visuals.lib.theme as _theme  # noqa: F401 — registers 'teal' template
 from products.visuals.lib.theme import (
@@ -24,35 +25,38 @@ from products.visuals.lib.theme import (
     SLATE_1, SLATE_2, SLATE_3, SLATE_4,
 )
 
-from products.visuals.components.line_chart import line_chart
-from products.visuals.components.bar_chart import bar_chart
-from products.visuals.components.area_chart import area_chart
+# ── Chart components ──────────────────────────────────────────────────────────
+from products.visuals.components.kpi_card import kpi_standard, kpi_compact
+from products.visuals.components.bar_chart import bar_grouped, bar_stacked, bar_horizontal, bar_diverging
+from products.visuals.components.line_chart import line_single, line_multi, line_area, line_area_stacked
+from products.visuals.components.combo_chart import combo_bar_line, combo_subplots
+from products.visuals.components.waterfall_chart import waterfall_contribution, waterfall_variance
+from products.visuals.components.scatter_chart import scatter_basic, scatter_bubble
+from products.visuals.components.table_chart import table_basic, table_heatmap
 from products.visuals.components.pie_chart import pie_chart
-from products.visuals.components.kpi_card import kpi_card
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
 
 PORT = 8055
 
-# ── Helpers ────────────────────────────────────────────────────────────────────
+# ── Sample data ───────────────────────────────────────────────────────────────
+YEARS = [2018, 2019, 2020, 2021, 2022, 2023, 2024]
+CATS  = ["Polska", "Niemcy", "Francja", "Włochy", "Czechy"]
+
+# ── Helpers ───────────────────────────────────────────────────────────────────
 
 def _color_swatch(name: str, color: str) -> html.Div:
-    """Render a color swatch with label."""
     return html.Div(style={
         "display": "flex", "flexDirection": "column", "alignItems": "center",
         "gap": "6px", "minWidth": "80px",
     }, children=[
         html.Div(style={
-            "width": "48px", "height": "48px",
-            "borderRadius": "8px",
-            "backgroundColor": color,
-            "border": f"1px solid {BORDER}",
+            "width": "48px", "height": "48px", "borderRadius": "8px",
+            "backgroundColor": color, "border": f"1px solid {BORDER}",
             "boxShadow": "0 1px 3px rgba(0,0,0,0.06)",
         }),
-        html.Span(name, style={
-            "fontSize": "10px", "color": SUBTEXT, "fontFamily": "monospace",
-        }),
+        html.Span(name, style={"fontSize": "10px", "color": SUBTEXT, "fontFamily": "monospace"}),
     ])
 
 # ── App ───────────────────────────────────────────────────────────────────────
@@ -90,14 +94,14 @@ app = Dash(
 
 # ── Styles ────────────────────────────────────────────────────────────────────
 
-SIDEBAR_W = "240px"
+SIDEBAR_W         = "240px"
 SIDEBAR_COLLAPSED = "44px"
-GAP = "4px"
+GAP    = "4px"
 RADIUS = "10px"
 
 S = {
     "body": {
-        "fontFamily": "Inter, 'Segoe UI', system-ui, sans-serif",
+        "fontFamily": FONT_FAMILY,
         "background": BG_PAGE, "color": TEXT,
         "height": "100vh", "display": "flex", "margin": 0,
         "padding": f"{GAP} 0 {GAP} {GAP}",
@@ -118,146 +122,77 @@ S = {
     "sidebar-logo": {
         "padding": "20px 20px 16px",
         "whiteSpace": "nowrap", "overflow": "hidden",
-        "height": "68px",
-        "boxSizing": "border-box",
-        "display": "flex",
-        "alignItems": "center",
+        "height": "68px", "boxSizing": "border-box",
+        "display": "flex", "alignItems": "center",
     },
-    "sidebar-divider": {
-        "margin": "0 16px",
-        "border": "none",
-        "borderTop": f"1px solid {BORDER}",
-    },
-    "logo": {
-        "height": "32px",
-        "width": "auto",
-    },
-    "sidebar-nav": {
-        "flex": 1, "padding": "16px 0", "overflowY": "auto",
-        "whiteSpace": "nowrap", "overflow": "hidden",
-    },
+    "sidebar-divider": {"margin": "0 16px", "border": "none", "borderTop": f"1px solid {BORDER}"},
+    "logo": {"height": "32px", "width": "auto"},
+    "sidebar-nav": {"flex": 1, "padding": "16px 0", "overflowY": "auto", "whiteSpace": "nowrap", "overflow": "hidden"},
     "nav-item": {
         "display": "block", "padding": "8px 20px",
-        "fontSize": "13px", "color": SUBTEXT, "textDecoration": "none",
-        "cursor": "pointer",
+        "fontSize": "13px", "color": SUBTEXT, "textDecoration": "none", "cursor": "pointer",
     },
     "nav-item-active": {
         "display": "block", "padding": "8px 20px",
         "fontSize": "13px", "color": TEXT, "textDecoration": "none",
-        "borderLeft": f"3px solid {TEXT}",
-        "backgroundColor": f"{BORDER}40",
-        "cursor": "pointer",
+        "borderLeft": f"3px solid {TEXT}", "backgroundColor": f"{BORDER}40", "cursor": "pointer",
     },
     "toggle-btn": {
-        "position": "absolute",
-        "top": "28px",
-        "right": "10px",
-        "width": "24px",
-        "height": "24px",
-        "background": "none",
-        "border": "none",
-        "cursor": "pointer",
-        "padding": 0,
-        "display": "flex", "alignItems": "center", "justifyContent": "center",
-        "zIndex": 100,
+        "position": "absolute", "top": "28px", "right": "10px",
+        "width": "24px", "height": "24px",
+        "background": "none", "border": "none", "cursor": "pointer", "padding": 0,
+        "display": "flex", "alignItems": "center", "justifyContent": "center", "zIndex": 100,
     },
-    "toggle-icon": {
-        "width": "20px",
-        "height": "20px",
-        "opacity": 0.5,
-    },
+    "toggle-icon": {"width": "20px", "height": "20px", "opacity": 0.5},
     "main": {
         "flex": 1, "minWidth": 0,
-        "overflowY": "auto", "overflowX": "hidden", "height": f"calc(100vh - {GAP} * 2)",
+        "overflowY": "auto", "overflowX": "hidden",
+        "height": f"calc(100vh - {GAP} * 2)",
         "boxSizing": "border-box",
         "display": "flex", "flexDirection": "column",
     },
     "main-header": {
-        "padding": "0 32px",
-        "flexShrink": 0,
-        "display": "flex",
-        "alignItems": "center",
-        "justifyContent": "space-between",
+        "padding": "0 32px", "flexShrink": 0,
+        "display": "flex", "alignItems": "center", "justifyContent": "space-between",
         "height": "68px",
     },
-    "header-actions": {
-        "display": "flex",
-        "alignItems": "center",
-        "gap": "8px",
-    },
+    "header-actions": {"display": "flex", "alignItems": "center", "gap": "8px"},
     "header-btn": {
-        "width": "32px",
-        "height": "32px",
-        "background": "none",
-        "border": f"1px solid {BORDER}",
-        "borderRadius": "6px",
-        "cursor": "pointer",
-        "display": "flex",
-        "alignItems": "center",
-        "justifyContent": "center",
-        "color": SUBTEXT,
-        "padding": 0,
+        "width": "32px", "height": "32px",
+        "background": "none", "border": f"1px solid {BORDER}", "borderRadius": "6px",
+        "cursor": "pointer", "display": "flex", "alignItems": "center", "justifyContent": "center",
+        "color": SUBTEXT, "padding": 0,
     },
-    "header-icon": {
-        "width": "16px",
-        "height": "16px",
-    },
-    "main-divider": {
-        "margin": "0 32px",
-        "border": "none",
-        "borderTop": f"1px solid {BORDER}",
-    },
+    "header-icon": {"width": "16px", "height": "16px"},
+    "main-divider": {"margin": "0 32px", "border": "none", "borderTop": f"1px solid {BORDER}"},
+    "footer-divider": {"margin": "0 32px", "border": "none", "borderTop": f"1px solid {BORDER}"},
     "main-footer": {
-        "padding": "0 32px",
-        "flexShrink": 0,
-        "display": "flex",
-        "alignItems": "center",
-        "justifyContent": "space-between",
+        "padding": "0 32px", "flexShrink": 0,
+        "display": "flex", "alignItems": "center", "justifyContent": "space-between",
         "height": "48px",
     },
-    "footer-divider": {
-        "margin": "0 32px",
-        "border": "none",
-        "borderTop": f"1px solid {BORDER}",
-    },
-    "footer-text": {
-        "fontSize": "12px",
-        "color": SUBTEXT,
-    },
+    "footer-text": {"fontSize": "12px", "color": SUBTEXT},
     "main-content-area": {
-        "flex": 1, "padding": "28px 32px 0",
-        "overflowY": "auto",
-        "width": "100%",
-        "boxSizing": "border-box",
+        "flex": 1, "padding": "28px 32px 32px",
+        "overflowY": "auto", "width": "100%", "boxSizing": "border-box",
     },
-    "chart-group": {
-        "marginBottom": "32px", "width": "100%",
+    "section-heading": {
+        "fontSize": "18px", "fontWeight": "700", "color": TEXT,
+        "marginBottom": "6px", "marginTop": "48px",
     },
-    "chart-group-title": {
-        "fontSize": "14px", "fontWeight": 600, "color": TEXT,
-        "marginBottom": "16px",
+    "section-desc": {"fontSize": "13px", "color": SUBTEXT, "marginBottom": "24px"},
+    "group": {"marginBottom": "28px", "width": "100%"},
+    "group-title": {"fontSize": "13px", "fontWeight": 600, "color": SUBTEXT, "marginBottom": "12px"},
+    "grid-2": {"display": "grid", "gridTemplateColumns": "1fr 1fr", "gap": "20px", "alignItems": "start"},
+    "grid-3": {"display": "grid", "gridTemplateColumns": "1fr 1fr 1fr", "gap": "20px", "alignItems": "start"},
+    "grid-4": {"display": "grid", "gridTemplateColumns": "repeat(4, 1fr)", "gap": "16px", "alignItems": "start"},
+    "grid-auto": {
+        "display": "grid", "gridTemplateColumns": "repeat(auto-fit, minmax(180px, 1fr))",
+        "gap": "16px", "maxWidth": "100%",
     },
-    "chart-grid-2": {
-        "display": "grid", "gridTemplateColumns": "1fr 1fr", "gap": "20px",
-        "alignItems": "start",
-    },
-    "chart-grid-3": {
-        "display": "grid", "gridTemplateColumns": "1fr 1fr 1fr", "gap": "20px",
-        "alignItems": "start",
-    },
-    "chart-grid-auto": {
-        "display": "grid",
-        "gridTemplateColumns": "repeat(auto-fit, minmax(200px, 1fr))",
-        "gap": "16px",
-        "maxWidth": "100%",
-    },
-    "chart-card": {
-        "background": BG_SURFACE,
-        "border": f"1px solid {BORDER}",
-        "borderRadius": "8px",
-        "padding": "16px",
-        "overflow": "hidden",
-        "minWidth": 0,
+    "card": {
+        "background": BG_SURFACE, "border": f"1px solid {BORDER}",
+        "borderRadius": "8px", "padding": "16px", "overflow": "hidden", "minWidth": 0,
     },
 }
 
@@ -265,54 +200,48 @@ S = {
 
 app.layout = html.Div(style=S["body"], children=[
 
+    # ── Sidebar ───────────────────────────────────────────────────────────────
     html.Aside(id="sidebar", style=S["sidebar"], children=[
-
         html.Div(id="sidebar-logo", style=S["sidebar-logo"], children=[
-            html.A(
-                html.Img(id="sidebar-logo-img", src="/template/assets/images/logo.svg",
-                         style=S["logo"]),
-                href="/",
-            ),
+            html.A(html.Img(id="sidebar-logo-img",
+                            src="/template/assets/images/logo.svg", style=S["logo"]),
+                   href="/"),
         ]),
-
         html.Hr(id="sidebar-divider", style=S["sidebar-divider"]),
-
         html.Nav(id="sidebar-nav", style=S["sidebar-nav"], children=[
-            html.A("Placeholder nav 1", href="#", style=S["nav-item-active"]),
-            html.A("Placeholder nav 2", href="#", style=S["nav-item"]),
-            html.A("Placeholder nav 3", href="#", style=S["nav-item"]),
+            html.A("KPI", href="#kpi", style=S["nav-item-active"]),
+            html.A("Wykresy słupkowe", href="#bar", style=S["nav-item"]),
+            html.A("Wykresy liniowe", href="#line", style=S["nav-item"]),
+            html.A("Kombinowane", href="#combo", style=S["nav-item"]),
+            html.A("Kaskadowe", href="#waterfall", style=S["nav-item"]),
+            html.A("Punktowe", href="#scatter", style=S["nav-item"]),
+            html.A("Tabele", href="#table", style=S["nav-item"]),
+            html.A("Kołowe", href="#pie", style=S["nav-item"]),
+            html.A("Paleta", href="#palette", style=S["nav-item"]),
         ]),
-
         html.Button(id="btn-toggle", style=S["toggle-btn"], children=[
             html.Img(id="toggle-icon", src="/template/assets/images/sidebar.svg",
                      style=S["toggle-icon"]),
         ]),
     ]),
 
+    # ── Main ─────────────────────────────────────────────────────────────────
     html.Main(id="main-content", style=S["main"], children=[
 
         html.Div(id="main-header", style=S["main-header"], children=[
             html.Div(children=[
-                html.H1("Dashboard title",
+                html.H1("Komponenty wizualne — referencja",
                         style={"fontSize": "20px", "fontWeight": 700, "color": TEXT, "margin": 0}),
-                html.P("Dashboard subtitle — description or data source info",
+                html.P("Wszystkie warianty wykresów z przykładowymi danymi",
                        style={"fontSize": "13px", "color": SUBTEXT, "margin": "4px 0 0"}),
             ]),
             html.Div(style=S["header-actions"], children=[
-                html.Button(
-                    html.Img(src="/template/assets/images/settings.svg",
-                             style=S["header-icon"]),
-                    id="btn-settings",
-                    style=S["header-btn"],
-                    title="Ustawienia",
-                ),
-                html.Button(
-                    html.Img(src="/template/assets/images/user.svg",
-                             style=S["header-icon"]),
-                    id="btn-user",
-                    style=S["header-btn"],
-                    title="Użytkownik",
-                ),
+                html.Button(html.Img(src="/template/assets/images/settings.svg",
+                                     style=S["header-icon"]),
+                            id="btn-settings", style=S["header-btn"]),
+                html.Button(html.Img(src="/template/assets/images/user.svg",
+                                     style=S["header-icon"]),
+                            id="btn-user", style=S["header-btn"]),
             ]),
         ]),
 
@@ -320,283 +249,429 @@ app.layout = html.Div(style=S["body"], children=[
 
         html.Div(id="main-content-area", style=S["main-content-area"], children=[
 
-            # KPI row
-            html.Div(style=S["chart-group"], children=[
-                html.Div("KPI — kluczowe wskaźniki", style=S["chart-group-title"]),
-                html.Div(style=S["chart-grid-auto"], children=[
-                    kpi_card("Miara 1", "1 234,5", unit="mln", trend="▲ +5,2%"),
-                    kpi_card("Miara 2", "56,7%", trend="▼ −1,3 pp"),
-                    kpi_card("Miara 3", "890", unit="tys.", trend="▲ +12,1%"),
-                    kpi_card("Miara 4", "2024"),
+            # ── KPI cards ────────────────────────────────────────────────────
+            html.H2("KPI — karty wskaźników", id="kpi", style={**S["section-heading"], "marginTop": 0}),
+            html.P("Dwa warianty: standardowy (duża liczba) i kompaktowy (dense rows).",
+                   style=S["section-desc"]),
+
+            html.Div(style=S["group"], children=[
+                html.Div("kpi_standard", style=S["group-title"]),
+                html.Div(style=S["grid-auto"], children=[
+                    kpi_standard("Dochody budżetu", "47,2", unit="% PKB",
+                                 trend="▲ +0,8 pp", trend_color=POSITIVE),
+                    kpi_standard("Wydatki budżetu", "50,4", unit="% PKB",
+                                 trend="▼ −0,3 pp", trend_color=NEGATIVE),
+                    kpi_standard("Saldo fiskalne", "−3,2", unit="% PKB",
+                                 trend="▲ +0,5 pp", trend_color=POSITIVE),
+                    kpi_standard("Dług publiczny", "54,1", unit="% PKB"),
                 ]),
             ]),
 
-            # Line charts row
-            html.Div(style=S["chart-group"], children=[
-                html.Div("Wykresy liniowe", style=S["chart-group-title"]),
-                html.Div(style=S["chart-grid-2"], children=[
-                    html.Div(style=S["chart-card"], children=[
-                        line_chart("Trend 1",
-                                   subtitle="Dane przykładowe — szereg czasowy",
-                                   x=[2019, 2020, 2021, 2022, 2023, 2024],
-                                   series=[
-                                       {"name": "Seria A", "y": [450, 420, 480, 510, 540, 580]},
-                                       {"name": "Seria B", "y": [320, 300, 340, 360, 390, 410]},
-                                   ]),
-                    ]),
-                    html.Div(style=S["chart-card"], children=[
-                        line_chart("Trend 2",
-                                   subtitle="Dane przykładowe — pojedyncza seria",
-                                   x=[2019, 2020, 2021, 2022, 2023, 2024],
-                                   series=[
-                                       {"name": "Seria C", "y": [85, 92, 98, 102, 108, 115]},
-                                   ]),
-                    ]),
+            html.Div(style=S["group"], children=[
+                html.Div("kpi_compact", style=S["group-title"]),
+                html.Div(style=S["grid-auto"], children=[
+                    kpi_compact("Inflacja CPI", "4,7%", trend="▼ −0,3 pp"),
+                    kpi_compact("Stopa bezrobocia", "2,9%"),
+                    kpi_compact("Wzrost PKB", "3,1%", trend="▲ +0,6 pp", trend_color=POSITIVE),
+                    kpi_compact("Eksport", "1 234 mld", trend="▲ +8,4%", trend_color=POSITIVE),
+                    kpi_compact("Import", "1 189 mld"),
+                    kpi_compact("Saldo handlowe", "+45 mld", trend_color=POSITIVE),
                 ]),
             ]),
 
-            # Bar charts row
-            html.Div(style=S["chart-group"], children=[
-                html.Div("Wykresy słupkowe", style=S["chart-group-title"]),
-                html.Div(style=S["chart-grid-2"], children=[
-                    html.Div(style=S["chart-card"], children=[
-                        bar_chart("Porównanie 1",
-                                  subtitle="Dane przykładowe — grupy kategorii",
-                                  x=["Kat. A", "Kat. B", "Kat. C", "Kat. D"],
-                                  series=[
-                                      {"name": "2023", "y": [68, 55, 42, 38]},
-                                      {"name": "2024", "y": [72, 62, 45, 40]},
-                                  ]),
-                    ]),
-                    html.Div(style=S["chart-card"], children=[
-                        bar_chart("Porównanie 2",
-                                  subtitle="Dane przykładowe — jedna seria",
-                                  x=["Kat. A", "Kat. B", "Kat. C", "Kat. D"],
-                                  series=[
-                                      {"name": "Wartość", "y": [180, 320, 250, 450]},
-                                  ]),
-                    ]),
-                ]),
-            ]),
+            # ── Bar charts ───────────────────────────────────────────────────
+            html.H2("Wykresy słupkowe", id="bar", style=S["section-heading"]),
+            html.P("Cztery warianty: grupowany, skumulowany, poziomy (ranking), dywergentny.",
+                   style=S["section-desc"]),
 
-            # Area charts row
-            html.Div(style=S["chart-group"], children=[
-                html.Div("Wykresy powierzchniowe", style=S["chart-group-title"]),
-                html.Div(style=S["chart-grid-2"], children=[
-                    html.Div(style=S["chart-card"], children=[
-                        area_chart("Struktura 1",
-                                   subtitle="Dane przykładowe — nakładanie powierzchni",
-                                   x=[2019, 2020, 2021, 2022, 2023, 2024],
-                                   series=[
-                                       {"name": "Składnik A", "y": [65, 62, 68, 70, 72, 75]},
-                                       {"name": "Składnik B", "y": [40, 45, 50, 55, 60, 65]},
-                                       {"name": "Składnik C", "y": [35, 38, 40, 42, 44, 47]},
-                                   ]),
+            html.Div(style=S["group"], children=[
+                html.Div("bar_grouped — porównanie wielu serii", style=S["group-title"]),
+                html.Div(style=S["grid-2"], children=[
+                    html.Div(style=S["card"], children=[
+                        bar_grouped(
+                            "Dochody i wydatki wg krajów",
+                            subtitle="% PKB, 2024",
+                            x=CATS,
+                            series=[
+                                {"name": "Dochody", "y": [47.2, 45.8, 52.3, 48.1, 43.6]},
+                                {"name": "Wydatki", "y": [50.4, 47.5, 55.8, 51.2, 45.1]},
+                            ],
+                        ),
                     ]),
-                    html.Div(style=S["chart-card"], children=[
-                        area_chart("Struktura 2",
-                                   subtitle="Dane przykładowe — pojedyncza seria",
-                                   x=[2019, 2020, 2021, 2022, 2023, 2024],
-                                   series=[
-                                       {"name": "Wartość", "y": [950, 1080, 1120, 1150, 1180, 1200]},
-                                   ]),
+                    html.Div(style=S["card"], children=[
+                        bar_grouped(
+                            "Wykonanie budżetu",
+                            subtitle="mld zł, plan vs wykonanie",
+                            x=["Q1", "Q2", "Q3", "Q4"],
+                            series=[
+                                {"name": "Plan", "y": [280, 310, 295, 340]},
+                                {"name": "Wykonanie", "y": [265, 325, 288, 352]},
+                            ],
+                            show_labels=True,
+                            reference={"value": 300, "label": "Cel roczny /4"},
+                        ),
                     ]),
                 ]),
             ]),
 
-            # Pie charts row
-            html.Div(style=S["chart-group"], children=[
-                html.Div("Wykresy kołowe", style=S["chart-group-title"]),
-                html.Div(style=S["chart-grid-3"], children=[
-                    html.Div(style=S["chart-card"], children=[
-                        pie_chart("Udział 1",
-                                  subtitle="Dane przykładowe — wykres pierścieniowy",
-                                  labels=["A", "B", "C", "D", "E"],
-                                  values=[28, 18, 32, 14, 8]),
+            html.Div(style=S["group"], children=[
+                html.Div("bar_stacked — skumulowany (absolutny i procentowy)", style=S["group-title"]),
+                html.Div(style=S["grid-2"], children=[
+                    html.Div(style=S["card"], children=[
+                        bar_stacked(
+                            "Struktura wydatków",
+                            subtitle="mld zł, 2020–2024",
+                            x=[2020, 2021, 2022, 2023, 2024],
+                            series=[
+                                {"name": "Świadczenia społeczne", "y": [320, 335, 355, 370, 390]},
+                                {"name": "Inwestycje publiczne",  "y": [140, 155, 162, 170, 180]},
+                                {"name": "Obsługa długu",        "y": [45, 48, 52, 60, 68]},
+                                {"name": "Pozostałe",            "y": [95, 102, 108, 115, 122]},
+                            ],
+                        ),
                     ]),
-                    html.Div(style=S["chart-card"], children=[
-                        pie_chart("Udział 2",
-                                  subtitle="Dane przykładowe — trzy kategorie",
-                                  labels=["X", "Y", "Z"],
-                                  values=[55, 25, 20]),
+                    html.Div(style=S["card"], children=[
+                        bar_stacked(
+                            "Udział składników — 100%",
+                            subtitle="struktura procentowa, 2024",
+                            x=CATS,
+                            series=[
+                                {"name": "Transfery",    "y": [52, 48, 55, 50, 45]},
+                                {"name": "Inwestycje",  "y": [20, 22, 19, 21, 23]},
+                                {"name": "Pozostałe",   "y": [28, 30, 26, 29, 32]},
+                            ],
+                            pct=True,
+                        ),
                     ]),
-                    html.Div(style=S["chart-card"], children=[
-                        pie_chart("Udział 3",
-                                  subtitle="Dane przykładowe — wykres kołowy",
-                                  labels=["P", "Q", "R", "S", "T"],
-                                  values=[30, 25, 20, 15, 10],
+                ]),
+            ]),
+
+            html.Div(style=S["group"], children=[
+                html.Div("bar_horizontal — ranking i długie etykiety", style=S["group-title"]),
+                html.Div(style=S["grid-2"], children=[
+                    html.Div(style=S["card"], children=[
+                        bar_horizontal(
+                            "Kraje wg długu publicznego",
+                            subtitle="% PKB, 2024 — posortowane malejąco",
+                            categories=["Grecja", "Włochy", "Portugalia", "Francja", "Belgia",
+                                        "Hiszpania", "Austria", "Polska", "Czechy", "Szwecja"],
+                            values=[163, 137, 112, 109, 105, 103, 82, 54, 44, 32],
+                        ),
+                    ]),
+                    html.Div(style=S["card"], children=[
+                        bar_horizontal(
+                            "Wzrost PKB per capita",
+                            subtitle="%, 2023 — ranking krajów UE",
+                            categories=CATS + ["Węgry", "Rumunia"],
+                            values=[3.1, 1.8, 2.4, 1.2, 4.2, 2.8, 5.1],
+                        ),
+                    ]),
+                ]),
+            ]),
+
+            html.Div(style=S["group"], children=[
+                html.Div("bar_diverging — wartości dodatnie i ujemne od zera", style=S["group-title"]),
+                html.Div(style=S["grid-2"], children=[
+                    html.Div(style=S["card"], children=[
+                        bar_diverging(
+                            "Saldo fiskalne wg krajów",
+                            subtitle="% PKB, 2024 — zielony = nadwyżka",
+                            x=["Dania", "Szwecja", "Holandia", "Austria", "Polska",
+                               "Francja", "Włochy", "Grecja"],
+                            values=[3.2, 0.6, -0.3, -2.1, -5.1, -5.5, -7.2, -1.6],
+                        ),
+                    ]),
+                    html.Div(style=S["card"], children=[
+                        bar_diverging(
+                            "Odchylenie od planu budżetowego",
+                            subtitle="mld zł, Q1–Q4 2024",
+                            x=["Q1", "Q2", "Q3", "Q4"],
+                            values=[12.5, -8.3, 3.1, -5.2],
+                            show_labels=True,
+                        ),
+                    ]),
+                ]),
+            ]),
+
+            # ── Line charts ──────────────────────────────────────────────────
+            html.H2("Wykresy liniowe", id="line", style=S["section-heading"]),
+            html.P("Cztery warianty: pojedyncza seria, wiele serii, powierzchnia, skumulowana powierzchnia.",
+                   style=S["section-desc"]),
+
+            html.Div(style=S["group"], children=[
+                html.Div("line_single / line_multi", style=S["group-title"]),
+                html.Div(style=S["grid-2"], children=[
+                    html.Div(style=S["card"], children=[
+                        line_single(
+                            "Dług publiczny Polski",
+                            subtitle="% PKB, 2018–2024",
+                            x=YEARS, name="% PKB",
+                            y=[48.9, 45.7, 57.1, 53.8, 51.4, 49.7, 54.1],
+                            reference={"value": 60, "label": "Limit SGP 60%"},
+                        ),
+                    ]),
+                    html.Div(style=S["card"], children=[
+                        line_multi(
+                            "Dochody i wydatki",
+                            subtitle="% PKB, porównanie 2018–2024",
+                            x=YEARS,
+                            series=[
+                                {"name": "Dochody",  "y": [41.5, 42.3, 41.8, 43.2, 44.6, 46.1, 47.2]},
+                                {"name": "Wydatki",  "y": [43.2, 44.0, 48.7, 46.5, 47.8, 49.3, 50.4]},
+                                {"name": "Saldo",    "y": [-1.7, -1.7, -6.9, -3.3, -3.2, -3.2, -3.2]},
+                            ],
+                        ),
+                    ]),
+                ]),
+            ]),
+
+            html.Div(style=S["group"], children=[
+                html.Div("line_area / line_area_stacked", style=S["group-title"]),
+                html.Div(style=S["grid-2"], children=[
+                    html.Div(style=S["card"], children=[
+                        line_area(
+                            "Dochody podatkowe",
+                            subtitle="mld zł, 2018–2024 — podkreślenie wolumenu",
+                            x=YEARS, name="mld zł",
+                            y=[380, 410, 395, 445, 520, 580, 615],
+                        ),
+                    ]),
+                    html.Div(style=S["card"], children=[
+                        line_area_stacked(
+                            "Struktura dochodów",
+                            subtitle="mld zł — składniki skumulowane",
+                            x=YEARS,
+                            series=[
+                                {"name": "VAT",    "y": [180, 195, 185, 215, 250, 278, 295]},
+                                {"name": "PIT",    "y": [85, 90, 88, 100, 115, 128, 135]},
+                                {"name": "CIT",    "y": [45, 52, 48, 58, 72, 85, 92]},
+                                {"name": "Akcyza", "y": [70, 73, 74, 72, 83, 89, 93]},
+                            ],
+                        ),
+                    ]),
+                ]),
+            ]),
+
+            # ── Combo charts ─────────────────────────────────────────────────
+            html.H2("Wykresy kombinowane", id="combo", style=S["section-heading"]),
+            html.P("combo_bar_line: dla danych na tej samej skali. combo_subplots: dla różnych skal (wzorzec IBCS).",
+                   style=S["section-desc"]),
+
+            html.Div(style=S["group"], children=[
+                html.Div("combo_bar_line — słupki i linia na wspólnej osi", style=S["group-title"]),
+                html.Div(style=S["grid-2"], children=[
+                    html.Div(style=S["card"], children=[
+                        combo_bar_line(
+                            "Wykonanie vs plan",
+                            subtitle="mld zł — ta sama skala, wspólna oś",
+                            x=[2020, 2021, 2022, 2023, 2024],
+                            bar_series=[{"name": "Wykonanie", "y": [395, 445, 520, 580, 615]}],
+                            line_series=[{"name": "Plan",     "y": [400, 430, 510, 560, 600]}],
+                        ),
+                    ]),
+                    html.Div(style=S["card"], children=[
+                        combo_bar_line(
+                            "Dochody: bieżący vs poprzedni rok",
+                            subtitle="mld zł — porównanie roczne",
+                            x=["Q1", "Q2", "Q3", "Q4"],
+                            bar_series=[{"name": "2024", "y": [148, 158, 155, 154]}],
+                            line_series=[{"name": "2023", "y": [138, 148, 145, 149]}],
+                        ),
+                    ]),
+                ]),
+            ]),
+
+            html.Div(style=S["group"], children=[
+                html.Div("combo_subplots — panele ze wspólną osią X (wzorzec fiskalny IBCS)", style=S["group-title"]),
+                html.Div(style=S["grid-2"], children=[
+                    html.Div(style=S["card"], children=[
+                        combo_subplots(
+                            "Dochody / Wydatki / Saldo",
+                            subtitle="mld zł, 2018–2024 — różne skale wymagają paneli",
+                            x=YEARS,
+                            panels=[
+                                {"title": "Dochody (mld zł)", "type": "bar",
+                                 "series": [{"name": "Dochody", "y": [380, 410, 395, 445, 520, 580, 615]}]},
+                                {"title": "Wydatki (mld zł)", "type": "bar",
+                                 "series": [{"name": "Wydatki", "y": [410, 440, 470, 488, 565, 630, 665]}]},
+                                {"title": "Saldo (mld zł)", "type": "line", "diverging": True,
+                                 "series": [{"name": "Saldo", "y": [-30, -30, -75, -43, -45, -50, -50]}]},
+                            ],
+                        ),
+                    ]),
+                    html.Div(style=S["card"], children=[
+                        combo_subplots(
+                            "Inflacja i stopy procentowe",
+                            subtitle="% — dwie miary, różne skale",
+                            x=YEARS,
+                            panels=[
+                                {"title": "Inflacja CPI (%)", "type": "line",
+                                 "series": [{"name": "CPI", "y": [1.2, 2.3, 3.4, 5.1, 14.4, 11.5, 4.7]}]},
+                                {"title": "Stopa NBP (%)", "type": "line",
+                                 "series": [{"name": "NBP", "y": [1.5, 1.5, 0.1, 0.1, 6.75, 5.75, 5.75]}]},
+                            ],
+                        ),
+                    ]),
+                ]),
+            ]),
+
+            # ── Waterfall charts ─────────────────────────────────────────────
+            html.H2("Wykresy kaskadowe", id="waterfall", style=S["section-heading"]),
+            html.P("Jak wartość początkowa staje się końcową przez kolejne składniki.",
+                   style=S["section-desc"]),
+
+            html.Div(style=S["group"], children=[
+                html.Div("waterfall_contribution / waterfall_variance", style=S["group-title"]),
+                html.Div(style=S["grid-2"], children=[
+                    html.Div(style=S["card"], children=[
+                        waterfall_contribution(
+                            "Struktura salda fiskalnego",
+                            subtitle="mld zł, 2024 — jak składniki tworzą wynik",
+                            categories=["VAT", "PIT", "CIT", "Akcyza", "Świadczenia", "Inwestycje", "Pozostałe", "Razem"],
+                            values=[295, 135, 92, 93, -390, -180, -95, -50],
+                            total_label="Razem",
+                        ),
+                    ]),
+                    html.Div(style=S["card"], children=[
+                        waterfall_variance(
+                            "Zmiana długu 2023→2024",
+                            subtitle="mld zł — co zmieniło poziom długu",
+                            categories=["Dług 2023", "Nowe emisje", "Spłaty", "Kurs walut", "Inne", "Dług 2024"],
+                            values=[1240, 180, -140, 35, 15, 1330],
+                            base_label="Dług 2023",
+                            final_label="Dług 2024",
+                        ),
+                    ]),
+                ]),
+            ]),
+
+            # ── Scatter charts ───────────────────────────────────────────────
+            html.H2("Wykresy punktowe", id="scatter", style=S["section-heading"]),
+            html.P("Korelacje i rozkłady. Bubble: trzecia zmienna przez rozmiar punktu.",
+                   style=S["section-desc"]),
+
+            html.Div(style=S["group"], children=[
+                html.Div("scatter_basic / scatter_bubble", style=S["group-title"]),
+                html.Div(style=S["grid-2"], children=[
+                    html.Div(style=S["card"], children=[
+                        scatter_basic(
+                            "Dług a deficyt",
+                            subtitle="% PKB, kraje UE — korelacja",
+                            x=[32, 44, 54, 82, 103, 105, 109, 112, 137, 163],
+                            y=[-0.3, -3.2, -5.1, -2.1, -3.4, -4.8, -5.5, -3.1, -7.2, -1.6],
+                            labels=["Szwecja", "Czechy", "Polska", "Austria", "Belgia",
+                                    "Hiszpania", "Francja", "Portugalia", "Włochy", "Grecja"],
+                            trendline=True,
+                        ),
+                    ]),
+                    html.Div(style=S["card"], children=[
+                        scatter_bubble(
+                            "PKB, dług i populacja",
+                            subtitle="kraje UE — rozmiar = populacja",
+                            x=[32, 44, 54, 82, 103, 109, 137],
+                            y=[3.1, 4.2, 3.1, 1.2, 1.8, 2.4, 0.8],
+                            size=[38, 10, 38, 9, 11, 68, 60],
+                            labels=["Szwecja", "Czechy", "Polska", "Austria",
+                                    "Belgia", "Francja", "Włochy"],
+                        ),
+                    ]),
+                ]),
+            ]),
+
+            # ── Tables ───────────────────────────────────────────────────────
+            html.H2("Tabele", id="table", style=S["section-heading"]),
+            html.P("table_basic: precyzja i referencja. table_heatmap: wzorce wizualne + wartości.",
+                   style=S["section-desc"]),
+
+            html.Div(style=S["group"], children=[
+                html.Div("table_basic / table_heatmap", style=S["group-title"]),
+                html.Div(style=S["grid-2"], children=[
+                    html.Div(style=S["card"], children=[
+                        table_basic(
+                            "Wskaźniki fiskalne",
+                            subtitle="% PKB, 2024",
+                            headers=["Kraj", "Dochody", "Wydatki", "Saldo", "Dług"],
+                            rows=[
+                                ["Polska",    47.2, 50.4, -3.2, 54.1],
+                                ["Niemcy",    45.8, 47.5, -1.7, 63.2],
+                                ["Francja",   52.3, 55.8, -5.5, 109.1],
+                                ["Włochy",    48.1, 51.2, -7.2, 137.3],
+                                ["Czechy",    43.6, 45.1, -1.6, 44.1],
+                                ["Węgry",     44.2, 49.1, -4.9, 73.4],
+                            ],
+                            number_cols={1, 2, 3, 4},
+                        ),
+                    ]),
+                    html.Div(style=S["card"], children=[
+                        table_heatmap(
+                            "Wzrost PKB — mapa ciepła",
+                            subtitle="%, 2019–2024 — kolor = intensywność wzrostu",
+                            headers=["Kraj", "2019", "2020", "2021", "2022", "2023", "2024"],
+                            rows=[
+                                ["Polska",    4.5, -2.5, 5.9, 5.3, 0.1, 3.1],
+                                ["Niemcy",    1.0, -4.6, 3.1, 1.9, -0.3, 0.2],
+                                ["Francja",   1.8, -7.9, 6.4, 2.6, 0.9, 1.1],
+                                ["Włochy",    0.5, -8.9, 7.2, 3.7, 0.9, 0.7],
+                                ["Czechy",    3.0, -5.5, 3.5, 2.4, 0.0, 1.5],
+                            ],
+                            number_cols={1, 2, 3, 4, 5, 6},
+                            diverging=True,
+                        ),
+                    ]),
+                ]),
+            ]),
+
+            # ── Pie charts ───────────────────────────────────────────────────
+            html.H2("Wykresy kołowe", id="pie", style=S["section-heading"]),
+            html.P("Stosować tylko dla 2–5 kategorii z wyraźnymi udziałami. Preferować słupkowe dla porównań.",
+                   style=S["section-desc"]),
+
+            html.Div(style=S["group"], children=[
+                html.Div("pie_chart — donut i kołowy", style=S["group-title"]),
+                html.Div(style=S["grid-3"], children=[
+                    html.Div(style=S["card"], children=[
+                        pie_chart("Struktura dochodów",
+                                  subtitle="donut — max 5 kategorii",
+                                  labels=["VAT", "PIT", "CIT", "Akcyza", "Pozostałe"],
+                                  values=[295, 135, 92, 93, 60]),
+                    ]),
+                    html.Div(style=S["card"], children=[
+                        pie_chart("Struktura wydatków",
+                                  subtitle="donut — trzy kategorie",
+                                  labels=["Świadczenia", "Inwestycje", "Pozostałe"],
+                                  values=[390, 180, 95]),
+                    ]),
+                    html.Div(style=S["card"], children=[
+                        pie_chart("Dług wg walut",
+                                  subtitle="kołowy (bez środka)",
+                                  labels=["PLN", "EUR", "USD", "Inne"],
+                                  values=[68, 22, 7, 3],
                                   donut=False),
                     ]),
                 ]),
             ]),
 
-            # ── Visual settings reference ─────────────────────────────────
-            html.Div(style={**S["chart-group"], "marginTop": "48px"}, children=[
-                html.Div("Paleta wizualna — ustawienia motywu", style={
-                    **S["chart-group-title"],
-                    "fontSize": "16px",
-                    "fontWeight": "700",
-                    "marginBottom": "24px",
-                }),
+            # ── Colour palette reference ──────────────────────────────────────
+            html.H2("Paleta wizualna", id="palette", style=S["section-heading"]),
+            html.P("Kolory, typografia i ustawienia bazowe motywu Teal.", style=S["section-desc"]),
 
-                # Background colors
-                html.Div(style={"marginBottom": "32px"}, children=[
-                    html.Div("Kolory tła", style={
-                        "fontSize": "13px", "fontWeight": "600", "color": TEXT,
-                        "marginBottom": "12px",
-                    }),
+            *[
+                html.Div(style={"marginBottom": "28px"}, children=[
+                    html.Div(label, style={"fontSize": "13px", "fontWeight": "600", "color": TEXT, "marginBottom": "12px"}),
                     html.Div(style={"display": "flex", "gap": "16px", "flexWrap": "wrap"}, children=[
-                        _color_swatch("BG_PAGE", BG_PAGE),
-                        _color_swatch("BG_SURFACE", BG_SURFACE),
-                        _color_swatch("BORDER", BORDER),
-                        _color_swatch("GRID", GRID),
-                        _color_swatch("ZERO_LINE", ZERO_LINE),
+                        _color_swatch(n, c) for n, c in swatches
                     ]),
-                ]),
-
-                # Text colors
-                html.Div(style={"marginBottom": "32px"}, children=[
-                    html.Div("Kolory tekstu", style={
-                        "fontSize": "13px", "fontWeight": "600", "color": TEXT,
-                        "marginBottom": "12px",
-                    }),
-                    html.Div(style={"display": "flex", "gap": "16px", "flexWrap": "wrap"}, children=[
-                        _color_swatch("TEXT", TEXT),
-                        _color_swatch("SUBTEXT", SUBTEXT),
-                        _color_swatch("MUTED", MUTED),
-                    ]),
-                ]),
-
-                # Teal accent colors
-                html.Div(style={"marginBottom": "32px"}, children=[
-                    html.Div("Kolory akcentów (Teal — zielonkawy)", style={
-                        "fontSize": "13px", "fontWeight": "600", "color": TEXT,
-                        "marginBottom": "12px",
-                    }),
-                    html.Div(style={"display": "flex", "gap": "16px", "flexWrap": "wrap"}, children=[
-                        _color_swatch("TEAL_1", TEAL_1),
-                        _color_swatch("TEAL_2", TEAL_2),
-                        _color_swatch("TEAL_3", TEAL_3),
-                        _color_swatch("TEAL_4", TEAL_4),
-                        _color_swatch("TEAL_PALE", TEAL_PALE),
-                    ]),
-                ]),
-
-                # Azure accent colors
-                html.Div(style={"marginBottom": "32px"}, children=[
-                    html.Div("Kolory akcentów (Azure — niebieski)", style={
-                        "fontSize": "13px", "fontWeight": "600", "color": TEXT,
-                        "marginBottom": "12px",
-                    }),
-                    html.Div(style={"display": "flex", "gap": "16px", "flexWrap": "wrap"}, children=[
-                        _color_swatch("AZURE_1", AZURE_1),
-                        _color_swatch("AZURE_2", AZURE_2),
-                        _color_swatch("AZURE_3", AZURE_3),
-                        _color_swatch("AZURE_4", AZURE_4),
-                        _color_swatch("AZURE_PALE", AZURE_PALE),
-                    ]),
-                ]),
-
-                # Slate accent colors
-                html.Div(style={"marginBottom": "32px"}, children=[
-                    html.Div("Kolory akcentów (Slate — szary)", style={
-                        "fontSize": "13px", "fontWeight": "600", "color": TEXT,
-                        "marginBottom": "12px",
-                    }),
-                    html.Div(style={"display": "flex", "gap": "16px", "flexWrap": "wrap"}, children=[
-                        _color_swatch("SLATE_1", SLATE_1),
-                        _color_swatch("SLATE_2", SLATE_2),
-                        _color_swatch("SLATE_3", SLATE_3),
-                        _color_swatch("SLATE_4", SLATE_4),
-                    ]),
-                ]),
-
-                # Semantic colors
-                html.Div(style={"marginBottom": "32px"}, children=[
-                    html.Div("Kolory semantyczne", style={
-                        "fontSize": "13px", "fontWeight": "600", "color": TEXT,
-                        "marginBottom": "12px",
-                    }),
-                    html.Div(style={"display": "flex", "gap": "16px", "flexWrap": "wrap"}, children=[
-                        _color_swatch("POSITIVE", POSITIVE),
-                        _color_swatch("NEGATIVE", NEGATIVE),
-                        _color_swatch("WARNING", WARNING),
-                    ]),
-                ]),
-
-                # Colorway
-                html.Div(style={"marginBottom": "32px"}, children=[
-                    html.Div("COLORWAY — domyślna paleta wykresów", style={
-                        "fontSize": "13px", "fontWeight": "600", "color": TEXT,
-                        "marginBottom": "12px",
-                    }),
-                    html.Div(style={"display": "flex", "gap": "12px", "flexWrap": "wrap"}, children=[
-                        _color_swatch(f"COLORWAY[{i}]", c) for i, c in enumerate(COLORWAY)
-                    ]),
-                ]),
-
-                # Typography
-                html.Div(style={"marginBottom": "32px"}, children=[
-                    html.Div("Typografia", style={
-                        "fontSize": "13px", "fontWeight": "600", "color": TEXT,
-                        "marginBottom": "12px",
-                    }),
-                    html.Div(style={"display": "flex", "flexDirection": "column", "gap": "8px"}, children=[
-                        html.Div(children=[
-                            html.Span("Rodzina: ", style={"color": SUBTEXT, "fontSize": "12px"}),
-                            html.Span(FONT_FAMILY, style={"color": TEXT, "fontSize": "12px", "fontFamily": FONT_FAMILY}),
-                        ]),
-                        html.Div(children=[
-                            html.Span("Tytuł dashboardu: ", style={"color": SUBTEXT, "fontSize": "12px"}),
-                            html.Span("20px / 700 (bold)", style={"fontSize": "20px", "fontWeight": 700, "color": TEXT}),
-                        ]),
-                        html.Div(children=[
-                            html.Span("Podtytuł: ", style={"color": SUBTEXT, "fontSize": "12px"}),
-                            html.Span("13px / normal / SUBTEXT", style={"fontSize": "13px", "color": SUBTEXT}),
-                        ]),
-                        html.Div(children=[
-                            html.Span("Nagłówek grupy wykresów: ", style={"color": SUBTEXT, "fontSize": "12px"}),
-                            html.Span("14px / 600 (semibold)", style={"fontSize": "14px", "fontWeight": 600, "color": TEXT}),
-                        ]),
-                        html.Div(children=[
-                            html.Span("Tytuł wykresu: ", style={"color": SUBTEXT, "fontSize": "12px"}),
-                            html.Span("14px / 600", style={"fontSize": "14px", "fontWeight": 600, "color": TEXT}),
-                        ]),
-                        html.Div(children=[
-                            html.Span("Podtytuł wykresu: ", style={"color": SUBTEXT, "fontSize": "12px"}),
-                            html.Span("12px / SUBTEXT", style={"fontSize": "12px", "color": SUBTEXT}),
-                        ]),
-                        html.Div(children=[
-                            html.Span("Legenda: ", style={"color": SUBTEXT, "fontSize": "12px"}),
-                            html.Span("11px / SUBTEXT", style={"fontSize": "11px", "color": SUBTEXT}),
-                        ]),
-                        html.Div(children=[
-                            html.Span("Etykiety osi: ", style={"color": SUBTEXT, "fontSize": "12px"}),
-                            html.Span("11px / SUBTEXT", style={"fontSize": "11px", "color": SUBTEXT}),
-                        ]),
-                        html.Div(children=[
-                            html.Span("Stopka: ", style={"color": SUBTEXT, "fontSize": "12px"}),
-                            html.Span("12px / SUBTEXT", style={"fontSize": "12px", "color": SUBTEXT}),
-                        ]),
-                    ]),
-                ]),
-
-                # Chart settings
-                html.Div(style={"marginBottom": "32px"}, children=[
-                    html.Div("Ustawienia wykresów", style={
-                        "fontSize": "13px", "fontWeight": "600", "color": TEXT,
-                        "marginBottom": "12px",
-                    }),
-                    html.Div(style={"display": "flex", "flexDirection": "column", "gap": "6px"}, children=[
-                        html.Span("Wysokość wykresu: 320px", style={"fontSize": "12px", "color": TEXT}),
-                        html.Span("Hover mode: x unified", style={"fontSize": "12px", "color": TEXT}),
-                        html.Span("Siatka: tylko oś Y (GRID)", style={"fontSize": "12px", "color": TEXT}),
-                        html.Span("Wykresy słupkowe: zaczynają się od zera", style={"fontSize": "12px", "color": TEXT}),
-                        html.Span("Tło wykresu: przezroczyste", style={"fontSize": "12px", "color": TEXT}),
-                        html.Span("Grubość linii: 2px", style={"fontSize": "12px", "color": TEXT}),
-                    ]),
-                ]),
-            ]),
+                ])
+                for label, swatches in [
+                    ("Tło i powierzchnie",     [("BG_PAGE", BG_PAGE), ("BG_SURFACE", BG_SURFACE), ("BORDER", BORDER), ("GRID", GRID), ("ZERO_LINE", ZERO_LINE)]),
+                    ("Tekst",                  [("TEXT", TEXT), ("SUBTEXT", SUBTEXT), ("MUTED", MUTED)]),
+                    ("Teal (zielonkawy)",       [("TEAL_1", TEAL_1), ("TEAL_2", TEAL_2), ("TEAL_3", TEAL_3), ("TEAL_4", TEAL_4), ("TEAL_PALE", TEAL_PALE)]),
+                    ("Azure (niebieski)",       [("AZURE_1", AZURE_1), ("AZURE_2", AZURE_2), ("AZURE_3", AZURE_3), ("AZURE_4", AZURE_4), ("AZURE_PALE", AZURE_PALE)]),
+                    ("Slate (szary)",           [("SLATE_1", SLATE_1), ("SLATE_2", SLATE_2), ("SLATE_3", SLATE_3), ("SLATE_4", SLATE_4)]),
+                    ("Semantyczne",             [("POSITIVE", POSITIVE), ("NEGATIVE", NEGATIVE), ("WARNING", WARNING)]),
+                    ("COLORWAY — kolejność",    [(f"[{i}]", c) for i, c in enumerate(COLORWAY)]),
+                ]
+            ],
         ]),
 
         html.Hr(style=S["footer-divider"]),
@@ -609,7 +684,7 @@ app.layout = html.Div(style=S["body"], children=[
     ]),
 ])
 
-# ── Callbacks ─────────────────────────────────────────────────────────────────
+# ── Sidebar toggle callback ───────────────────────────────────────────────────
 
 @callback(
     Output("sidebar", "style"),
@@ -624,32 +699,14 @@ app.layout = html.Div(style=S["body"], children=[
 def toggle_sidebar(n_clicks, sidebar_style):
     is_expanded = sidebar_style.get("width", SIDEBAR_W) == SIDEBAR_W
 
-    btn_open = dict(S["toggle-btn"])
-    btn_open["right"] = "10px"
-    btn_open["transform"] = "none"
-
-    btn_closed = dict(S["toggle-btn"])
-    btn_closed["right"] = "50%"
-    btn_closed["transform"] = "translateX(50%)"
+    btn_open   = {**S["toggle-btn"], "right": "10px", "transform": "none"}
+    btn_closed = {**S["toggle-btn"], "right": "50%", "transform": "translateX(50%)"}
 
     if is_expanded:
-        sb = dict(sidebar_style)
-        sb["width"] = SIDEBAR_COLLAPSED
-        return (
-            sb,
-            btn_closed,
-            {"display": "none"},
-            {"display": "none"},
-            {"display": "none"},
-        )
+        return ({**sidebar_style, "width": SIDEBAR_COLLAPSED},
+                btn_closed, {"display": "none"}, {"display": "none"}, {"display": "none"})
     else:
-        return (
-            S["sidebar"],
-            btn_open,
-            S["sidebar-logo"],
-            S["sidebar-nav"],
-            S["logo"],
-        )
+        return (S["sidebar"], btn_open, S["sidebar-logo"], S["sidebar-nav"], S["logo"])
 
 # ── Entry point ───────────────────────────────────────────────────────────────
 

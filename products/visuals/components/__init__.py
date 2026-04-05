@@ -1,33 +1,50 @@
 #!/usr/bin/env python3
 """
 Open Reporting — Reusable chart components.
-Title/subtitle/legend as HTML, Plotly renders only chart area.
+Title/subtitle/legend as HTML, Plotly renders only the chart area.
+
+Common settings (change here to affect all charts):
+  PLOT_H      — standard chart height in px
+  PLOT_H_TALL — tall chart height (combo subplots, tables)
+  MARGIN_*    — chart margins
+
+All chart functions are KB-grounded:
+  bar_chart.py        — bar.md
+  line_chart.py       — line.md
+  combo_chart.py      — combo-subplots.md
+  waterfall_chart.py  — waterfall.md
+  scatter_chart.py    — scatter.md
+  table_chart.py      — table.md
 """
-import plotly.graph_objects as go
 from dash import dcc, html
+import plotly.graph_objects as go
 
 import products.visuals.lib.theme as _theme  # noqa: F401 — registers 'teal' template
 from products.visuals.lib.theme import (
-    BG_SURFACE, BORDER, COLORWAY, GRID, MUTED,
-    NEGATIVE, POSITIVE, SUBTEXT, TEXT, WARNING, ZERO_LINE,
-    FONT_FAMILY, TEAL_1, TEAL_2, TEAL_3, TEAL_4, TEAL_PALE,
+    BG_SURFACE, BORDER, COLORWAY, GRID,
+    NEGATIVE, POSITIVE, SUBTEXT, TEXT, ZERO_LINE,
+    FONT_FAMILY,
+    TEAL_1, TEAL_2, TEAL_3, TEAL_4, TEAL_PALE,
     AZURE_1, AZURE_2, AZURE_3, AZURE_4, AZURE_PALE,
     SLATE_1, SLATE_2, SLATE_3, SLATE_4,
 )
 
-# Fixed chart dimensions
-PLOT_H   = 280
-MARGIN_L = 30
-MARGIN_R = 16
-MARGIN_B = 40
+# ── Chart dimensions ──────────────────────────────────────────────────────────
+PLOT_H      = 280    # standard chart height
+PLOT_H_TALL = 400    # combo subplots, waterfall with many steps
+MARGIN_L    = 40
+MARGIN_R    = 16
+MARGIN_T    = 4
+MARGIN_B    = 40
 
 
-def _plotly_layout(**kw):
-    """Plotly layout — chart area only, no title/legend."""
+def _plotly_layout(height=None, **kw):
+    """Base Plotly layout — chart area only, no title/legend (those are HTML)."""
+    h = height if height is not None else PLOT_H
     return {
         "template": "teal",
-        "height": PLOT_H,
-        "margin": dict(l=MARGIN_L, r=MARGIN_R, t=0, b=MARGIN_B),
+        "height": h,
+        "margin": dict(l=MARGIN_L, r=MARGIN_R, t=MARGIN_T, b=MARGIN_B),
         "paper_bgcolor": "rgba(0,0,0,0)",
         "plot_bgcolor": "rgba(0,0,0,0)",
         "font": dict(family=FONT_FAMILY, color=TEXT, size=12),
@@ -49,28 +66,26 @@ def _plotly_layout(**kw):
     }
 
 
-def _chart(title, subtitle="", legend_items=None, figure=None):
-    """HTML header + Plotly chart. Title/legend are HTML, Plotly renders only the chart area."""
+def _chart(title, subtitle="", legend_items=None, figure=None, height=None):
+    """Wrap a Plotly figure with an HTML title/subtitle/legend header."""
+    h = height if height is not None else PLOT_H
     children = []
 
-    # Title
     children.append(html.Div(title, style={
         "fontSize": "14px", "fontWeight": "600", "color": TEXT,
         "marginBottom": "4px",
     }))
 
-    # Subtitle
     if subtitle:
         children.append(html.Div(subtitle, style={
             "fontSize": "12px", "color": SUBTEXT,
             "marginBottom": "8px",
         }))
 
-    # Legend
     if legend_items:
-        leg_items = []
+        leg = []
         for label, color in legend_items:
-            leg_items.append(html.Div(style={
+            leg.append(html.Div(style={
                 "display": "flex", "alignItems": "center", "marginRight": "16px",
             }, children=[
                 html.Div(style={
@@ -80,14 +95,15 @@ def _chart(title, subtitle="", legend_items=None, figure=None):
                 html.Span(label, style={"fontSize": "11px", "color": SUBTEXT}),
             ]))
         children.append(html.Div(style={
-            "display": "flex", "alignItems": "center", "marginBottom": "12px",
-        }, children=leg_items))
+            "display": "flex", "alignItems": "center", "flexWrap": "wrap",
+            "marginBottom": "12px",
+        }, children=leg))
 
-    # Chart — explicit height so cards align uniformly in CSS grid
+    # Explicit height keeps cards aligned in CSS grid
     children.append(dcc.Graph(
-        figure=figure.update_layout(_plotly_layout()),
+        figure=figure,
         config={"displayModeBar": False, "responsive": True},
-        style={"width": "100%", "height": f"{PLOT_H}px"},
+        style={"width": "100%", "height": f"{h}px"},
     ))
 
     return html.Div(children=children)
