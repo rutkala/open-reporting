@@ -19,7 +19,7 @@ Agent reference library. Load on demand at the start of `/domain-brief` and `/pl
 | [visualization/charts/map.md](visualization/charts/map.md) | Choropleth, symbol maps — geographic data | Before building any map |
 | [visualization/charts/table.md](visualization/charts/table.md) | Tables, heatmap tables, sparkline tables | Before building any table or grid |
 
-**Source materials:** `sources/` contains raw reference documents these files were written from.
+**Source materials:** Full extracted resources in `visualization/docs/viz-kb-full/` (618 files from playfairdata.com, EU Data Viz Guide, Google Material Design, Urban Institute styleguide). Source summaries in `sources/SUMMARY.md`.
 
 ---
 
@@ -42,11 +42,28 @@ Domain modules are added on a rolling basis — one per domain, before that doma
 
 ---
 
+## Source Materials
+
+Extracted and cached resources for visualization knowledge base:
+
+| Source | Files | Content Type | Location |
+|--------|-------|--------------|----------|
+| playfairdata.com | 618 | Tableau tutorials, viz guides, 4 PDFs | `visualization/docs/viz-kb-full/https:/playfairdata.com/` |
+| data.europa.eu | 20 | EU Data Visualisation Guide | `visualization/docs/viz-kb-full/https:/data.europa.eu/apps/data-visualisation-guide/` |
+| hype4.academy | 2 | Learning platform (courses) | `visualization/docs/viz-kb-full/https:/hype4.academy/` |
+| UrbanInstitute/graphics-styleguide | 470+ | Full git clone: CSS, PDFs, chart guides | `visualization/docs/viz-kb-full/graphics-styleguide/` |
+| m2.material.io | 9 | Google Material Design | `visualization/docs/viz-kb-full/https:/m2.material.io/` |
+| ibcs.com | 1 | IBCS standards overview | `visualization/docs/viz-kb-full/https:/ibcs.com/` |
+
+---
+
 ## Status
 
 | Module | Status | Issue |
 |--------|--------|-------|
 | Structure & delivery | ✅ Done | OR-117 |
-| visualization/ sub-tree | ⏳ Awaiting source materials from PO | OR-118 |
+| visualization/ principles.md | ✅ Complete | OR-118 |
+| visualization/ chart files | ✅ Complete | OR-118 |
+| sources/SUMMARY.md | ✅ Complete | OR-118 |
 | domains/public-finance.md | ⏳ Draft (opencode) — needs review | OR-120 |
 | Analytical thinking framework | 📋 Planned | OR-119 |
