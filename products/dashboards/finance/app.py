@@ -303,7 +303,7 @@ def _build_budget_combo_chart() -> go.Figure:
             showgrid=False,
         ),
         legend=dict(orientation="h", y=-0.15),
-        template="nordic",
+        template="teal",
         height=440,
     )
     return fig
@@ -347,7 +347,7 @@ def _build_debt_combo_chart() -> go.Figure:
             showgrid=False,
         ),
         legend=dict(orientation="h", y=-0.15),
-        template="nordic",
+        template="teal",
         height=440,
     )
     return fig
@@ -558,7 +558,7 @@ def _build_eu_fiscal_bar(year: int) -> go.Figure:
     fig.update_layout(
         title=f"Saldo fiskalne sektora rządowego (% PKB), {year}",
         xaxis_title="% PKB",
-        template="nordic",
+        template="teal",
         height=max(420, len(df) * 22),
         margin=dict(l=120, r=60, t=48, b=40),
     )
@@ -592,7 +592,7 @@ def _build_eu_debt_bar(year: int) -> go.Figure:
     fig.update_layout(
         title=f"Dług publiczny brutto (% PKB), {year}",
         xaxis_title="% PKB",
-        template="nordic",
+        template="teal",
         height=max(420, len(df) * 22),
         margin=dict(l=120, r=60, t=48, b=40),
     )
@@ -651,7 +651,7 @@ def _build_revenue_chart() -> go.Figure:
     fig.update_layout(
         title="Dochody podatkowe Polski (% PKB)",
         yaxis_title="% PKB",
-        template="nordic",
+        template="teal",
         height=420,
     )
     return fig
@@ -676,7 +676,7 @@ def _build_expenditure_chart() -> go.Figure:
     fig.update_layout(
         title="Struktura wydatków publicznych Polski (% PKB)",
         yaxis_title="% PKB",
-        template="nordic",
+        template="teal",
         height=420,
     )
     return fig
@@ -707,7 +707,7 @@ def _build_cofog_stacked_bar() -> go.Figure:
         barmode="stack",
         title="Wydatki Polski wg funkcji COFOG (% PKB)",
         yaxis_title="% PKB",
-        template="nordic",
+        template="teal",
         height=420,
     )
     return fig
@@ -751,7 +751,7 @@ def _build_cofog_comparison_bar() -> go.Figure:
         barmode="group",
         title=f"Porównanie struktury wydatków COFOG: Polska vs UE, {latest_year}",
         xaxis_title="% PKB",
-        template="nordic",
+        template="teal",
         height=500,
         margin=dict(l=140, r=40, t=48, b=40),
     )
@@ -816,7 +816,7 @@ def _build_imf_fiscal_chart(geos: list[str]) -> go.Figure:
     fig.update_layout(
         title="Saldo fiskalne Polski — historia i prognozy MFW (% PKB)",
         yaxis_title="% PKB",
-        template="nordic",
+        template="teal",
         height=420,
     )
     return fig
@@ -856,7 +856,7 @@ def _build_imf_debt_chart(geos: list[str]) -> go.Figure:
     fig.update_layout(
         title="Dług publiczny — historia i prognozy MFW (% PKB)",
         yaxis_title="% PKB",
-        template="nordic",
+        template="teal",
         height=420,
     )
     return fig
@@ -1188,7 +1188,7 @@ def update_explorer(detail_id, geos, year_range):
         ))
     fig.update_layout(
         title=detail_id,
-        template="nordic",
+        template="teal",
         height=450,
     )
     return _chart_wrapper(fig, h=450)
@@ -1225,7 +1225,7 @@ def update_source_comparison(indicator_key, geo):
     fig.update_layout(
         title=f"{label} — Eurostat vs MFW",
         yaxis_title="% PKB",
-        template="nordic",
+        template="teal",
         height=420,
     )
 
