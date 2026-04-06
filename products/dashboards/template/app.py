@@ -26,7 +26,7 @@ from products.visuals.lib.theme import (
 )
 
 # ── Chart components ──────────────────────────────────────────────────────────
-from products.visuals.components.kpi_card import kpi_standard
+from products.visuals.components.kpi_card import kpi_row, kpi_standard, kpi_compact
 from products.visuals.components.bar_chart import (
     clustered_column, stacked_column, pct_stacked_column,
     clustered_bar, stacked_bar, pct_stacked_bar,
@@ -331,11 +331,12 @@ app.layout = html.Div(style=S["body"], children=[
 
             # ── KPI card ─────────────────────────────────────────────────────
             html.H2("KPI card", id="kpi", style={**S["section-heading"], "marginTop": 0}),
-            html.P("kpi_standard — callout value, unit, subtitle, reference value, trend. "
-                   "Format driven by Measure (format_type, scale, decimals, currency_symbol).",
+            html.P("kpi_standard + kpi_row — multi-card row, equal height, responsive wrap. "
+                   "Format driven by Measure (format_type, scale, decimals, currency_symbol). "
+                   "kpi_compact variant for dense layouts.",
                    style=S["section-desc"]),
             html.Div(style=S["group"], children=[
-                html.Div(style={"maxWidth": "240px"}, children=[
+                kpi_row([
                     kpi_standard(
                         label=m.MEASURES["measure_a"].label,
                         value=m.MEASURES["measure_a"].kpi_value(_scalars["measure_a"]),
@@ -346,7 +347,58 @@ app.layout = html.Div(style=S["body"], children=[
                         trend="▲ +0.8",
                         trend_color=POSITIVE,
                     ),
+                    kpi_standard(
+                        label=m.MEASURES["measure_b"].label,
+                        value=m.MEASURES["measure_b"].kpi_value(_scalars["measure_b"]),
+                        unit=m.MEASURES["measure_b"].plotly_ticksuffix,
+                        reference_value=m.MEASURES["measure_b"].kpi_value(40.0),
+                        reference_label="Prior year",
+                    ),
+                    kpi_standard(
+                        label=m.MEASURES["measure_a_pct"].label,
+                        value=m.MEASURES["measure_a_pct"].kpi_value(_scalars["measure_a_pct"]),
+                        unit=m.MEASURES["measure_a_pct"].plotly_ticksuffix,
+                        trend="▼ -1.2",
+                        trend_color=NEGATIVE,
+                    ),
+                    kpi_standard(
+                        label=m.MEASURES["measure_a_cum"].label,
+                        value=m.MEASURES["measure_a_cum"].kpi_value(_scalars["measure_a_cum"]),
+                        unit=m.MEASURES["measure_a_cum"].plotly_ticksuffix,
+                        subtitle="All years combined",
+                    ),
                 ]),
+            ]),
+            html.Div(style=S["group"], children=[
+                kpi_row([
+                    kpi_compact(
+                        label=m.MEASURES["measure_a"].label,
+                        value=m.MEASURES["measure_a"].kpi_value(_scalars["measure_a"]),
+                        unit=m.MEASURES["measure_a"].plotly_ticksuffix,
+                        trend="▲ +0.8", trend_color=POSITIVE,
+                    ),
+                    kpi_compact(
+                        label=m.MEASURES["measure_b"].label,
+                        value=m.MEASURES["measure_b"].kpi_value(_scalars["measure_b"]),
+                        unit=m.MEASURES["measure_b"].plotly_ticksuffix,
+                    ),
+                    kpi_compact(
+                        label=m.MEASURES["measure_c"].label,
+                        value=m.MEASURES["measure_c"].kpi_value(_scalars["measure_c"]),
+                        unit=m.MEASURES["measure_c"].plotly_ticksuffix,
+                    ),
+                    kpi_compact(
+                        label=m.MEASURES["measure_d"].label,
+                        value=m.MEASURES["measure_d"].kpi_value(_scalars["measure_d"]),
+                        unit=m.MEASURES["measure_d"].plotly_ticksuffix,
+                    ),
+                    kpi_compact(
+                        label=m.MEASURES["measure_a_pct"].label,
+                        value=m.MEASURES["measure_a_pct"].kpi_value(_scalars["measure_a_pct"]),
+                        unit=m.MEASURES["measure_a_pct"].plotly_ticksuffix,
+                        trend="▼ -1.2", trend_color=NEGATIVE,
+                    ),
+                ], min_width="140px", gap="12px"),
             ]),
 
             # ── 1. Clustered column ───────────────────────────────────────────
