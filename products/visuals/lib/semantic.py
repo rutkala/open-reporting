@@ -110,8 +110,21 @@ class Measure:
     def scalar(self, df: pd.DataFrame) -> float:
         """
         Single aggregated value across the whole DataFrame — for KPI cards.
+        Applies calc transformation: pct_change → last period's change,
+        cumsum → running total, pct_of_total → last value's share.
         """
-        return _safe_float(df[self.column].agg(self.aggregation))
+        raw = _safe_float(df[self.column].agg(self.aggregation))
+        if self.calc is None:
+            return raw
+        # For scalar context, derive a single representative value from the
+        # full time-series so the KPI card reflects the transformed metric.
+        vals = [_safe_float(v) for v in df[self.column].tolist()]
+        transformed = _apply_calc(vals, self.calc)
+        # Return last non-NaN value (most recent period)
+        for v in reversed(transformed):
+            if not math.isnan(v):
+                return v
+        return float("nan")
 
     def format_value(self, v: float) -> str:
         """Format a numeric value with this measure's format string."""
