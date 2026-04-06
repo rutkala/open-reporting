@@ -85,7 +85,9 @@ def bubble_map(title, lat, lon, size, labels, subtitle="",
         color:  bubble colour (default AZURE_1)
     """
     import math
-    max_s = max(abs(s) for s in size) if size else 1
+    max_s = max(abs(s) for s in size) if size else 0
+    if max_s == 0:
+        max_s = 1  # all-zero or empty — render uniform minimum bubbles
     scaled = [math.sqrt(abs(s) / max_s) * 30 + 5 for s in size]
 
     fig = go.Figure(go.Scattergeo(

@@ -89,7 +89,9 @@ def scatter_bubble(title, x, y, size, subtitle="", labels=None, color_values=Non
     """
     # Normalise size to area (not radius) — KB requirement
     import math
-    max_size = max(abs(s) for s in size) if size else 1
+    max_size = max(abs(s) for s in size) if size else 0
+    if max_size == 0:
+        max_size = 1  # all-zero or empty — render uniform minimum bubbles
     scaled = [math.sqrt(abs(s) / max_size) * 40 + 6 for s in size]
 
     hover = labels if labels else [f"({xi}, {yi}, size={si})" for xi, yi, si in zip(x, y, size)]

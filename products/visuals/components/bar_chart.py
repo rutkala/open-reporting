@@ -93,8 +93,19 @@ def stacked_column(title, x, series, subtitle="", show_labels=False):
 
 def pct_stacked_column(title, x, series, subtitle="", show_labels=False):
     """Vertical 100% normalised stacked bars — composition only."""
+    # Normalise each category's values so they sum to 100
+    n = len(x)
+    totals = [sum(s["y"][i] for s in series if i < len(s["y"])) for i in range(n)]
+    norm_series = []
+    for s in series:
+        norm_y = [
+            round(s["y"][i] / totals[i] * 100, 1) if totals[i] else 0
+            for i in range(min(len(s["y"]), n))
+        ]
+        norm_series.append({**s, "y": norm_y})
+
     fig = go.Figure()
-    for i, s in enumerate(series):
+    for i, s in enumerate(norm_series):
         color = s.get("color", COLORWAY[i % len(COLORWAY)])
         fig.add_trace(go.Bar(
             x=x, y=s["y"], name=s["name"], marker_color=color,
@@ -169,8 +180,19 @@ def stacked_bar(title, categories, series, subtitle="", show_labels=False, sort=
 
 def pct_stacked_bar(title, categories, series, subtitle="", show_labels=False):
     """Horizontal 100% normalised stacked bars — composition only."""
+    # Normalise each category's values so they sum to 100
+    n = len(categories)
+    totals = [sum(s["y"][i] for s in series if i < len(s["y"])) for i in range(n)]
+    norm_series = []
+    for s in series:
+        norm_y = [
+            round(s["y"][i] / totals[i] * 100, 1) if totals[i] else 0
+            for i in range(min(len(s["y"]), n))
+        ]
+        norm_series.append({**s, "y": norm_y})
+
     fig = go.Figure()
-    for i, s in enumerate(series):
+    for i, s in enumerate(norm_series):
         color = s.get("color", COLORWAY[i % len(COLORWAY)])
         fig.add_trace(go.Bar(
             x=s["y"], y=categories, name=s["name"], orientation="h",
