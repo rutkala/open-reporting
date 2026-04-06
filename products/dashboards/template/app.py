@@ -58,24 +58,31 @@ log = logging.getLogger(__name__)
 PORT = 8055
 
 # ── Data (loaded once at startup — swap data.py to connect to warehouse) ──────
-_df        = _data.load()
-_df_geo    = _data.load_geo()
+# Pre-aggregated views — consumed directly by chart calls
+_df_by_cat    = _data.load_by_category()
+_df_by_year   = _data.load_by_year()
+_df_by_period = _data.load_by_period()
+_scalars      = _data.load_scalars()
+
+# Specialised datasets — already chart-ready (no aggregation needed)
+_df_geo              = _data.load_geo()
 _df_ohlc_a, _df_ohlc_b = _data.load_ohlc()
-_df_sc     = _data.load_scatter()
-_df_dist   = _data.load_distribution()
-_df_wf_c, _df_wf_v = _data.load_waterfall()
-_df_funnel = _data.load_funnel()
-_df_tree   = _data.load_treemap()
-_df_ribbon = _data.load_ribbon()
-_df_hmap   = _data.load_heatmap()
-_gauge     = _data.load_gauge()
-_df_table  = _data.load_table()
-_df_thmap  = _data.load_table_heatmap()
+_df_sc               = _data.load_scatter()
+_df_dist             = _data.load_distribution()
+_df_wf_c, _df_wf_v  = _data.load_waterfall()
+_df_funnel           = _data.load_funnel()
+_df_tree             = _data.load_treemap()
+_df_ribbon           = _data.load_ribbon()
+_df_hmap             = _data.load_heatmap()
+_gauge               = _data.load_gauge()
+_df_table            = _data.load_table()
+_df_thmap            = _data.load_table_heatmap()
 
 # ── Convenience shortcuts ─────────────────────────────────────────────────────
-_years      = m.DIMS["year"].values(_df)
-_categories = m.DIMS["category"].values(_df)
-_periods    = m.DIMS["period"].values(_df)
+_years       = m.DIMS["year"].values(_df_by_year)
+_categories  = m.DIMS["category"].values(_df_by_cat)
+_periods     = m.DIMS["period"].values(_df_by_period)
+_dist_groups = m.DIMS["group"].values(_df_dist)
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -251,7 +258,7 @@ app.layout = html.Div(style=S["body"], children=[
             html.A("Rozkłady", href="#distribution", style=S["nav-item"]),
             html.A("Specjalne", href="#special", style=S["nav-item"]),
             html.A("Mapy", href="#maps", style=S["nav-item"]),
-            html.A("Finansowe", href="#financial", style=S["nav-item"]),
+            html.A("OHLC / świecowe", href="#financial", style=S["nav-item"]),
             html.A("Tabele", href="#table", style=S["nav-item"]),
             html.A("Kołowe", href="#pie", style=S["nav-item"]),
             html.A("Paleta", href="#palette", style=S["nav-item"]),
@@ -295,19 +302,19 @@ app.layout = html.Div(style=S["body"], children=[
                 html.Div("kpi_standard", style=S["group-title"]),
                 html.Div(style=S["grid-auto"], children=[
                     kpi_standard(m.MEASURES["measure_a"].label,
-                                 m.MEASURES["measure_a"].kpi_value(_df),
+                                 m.MEASURES["measure_a"].kpi_value(_scalars["measure_a"]),
                                  unit=m.MEASURES["measure_a"].unit,
                                  trend="▲ +0,8", trend_color=POSITIVE),
                     kpi_standard(m.MEASURES["measure_b"].label,
-                                 m.MEASURES["measure_b"].kpi_value(_df),
+                                 m.MEASURES["measure_b"].kpi_value(_scalars["measure_b"]),
                                  unit=m.MEASURES["measure_b"].unit,
                                  trend="▼ −0,3", trend_color=NEGATIVE),
                     kpi_standard(m.MEASURES["measure_c"].label,
-                                 m.MEASURES["measure_c"].kpi_value(_df),
+                                 m.MEASURES["measure_c"].kpi_value(_scalars["measure_c"]),
                                  unit=m.MEASURES["measure_c"].unit,
                                  trend="▲ +0,5", trend_color=POSITIVE),
                     kpi_standard(m.MEASURES["measure_d"].label,
-                                 m.MEASURES["measure_d"].kpi_value(_df),
+                                 m.MEASURES["measure_d"].kpi_value(_scalars["measure_d"]),
                                  unit=m.MEASURES["measure_d"].unit),
                 ]),
             ]),
@@ -316,20 +323,20 @@ app.layout = html.Div(style=S["body"], children=[
                 html.Div("kpi_compact", style=S["group-title"]),
                 html.Div(style=S["grid-auto"], children=[
                     kpi_compact(m.MEASURES["measure_a"].label,
-                                m.MEASURES["measure_a"].kpi_value(_df),
+                                m.MEASURES["measure_a"].kpi_value(_scalars["measure_a"]),
                                 trend="▼ −0,3"),
                     kpi_compact(m.MEASURES["measure_b"].label,
-                                m.MEASURES["measure_b"].kpi_value(_df)),
+                                m.MEASURES["measure_b"].kpi_value(_scalars["measure_b"])),
                     kpi_compact(m.MEASURES["measure_c"].label,
-                                m.MEASURES["measure_c"].kpi_value(_df),
+                                m.MEASURES["measure_c"].kpi_value(_scalars["measure_c"]),
                                 trend="▲ +0,6", trend_color=POSITIVE),
                     kpi_compact(m.MEASURES["measure_d"].label,
-                                m.MEASURES["measure_d"].kpi_value(_df),
+                                m.MEASURES["measure_d"].kpi_value(_scalars["measure_d"]),
                                 trend="▲ +8,4%", trend_color=POSITIVE),
                     kpi_compact(m.MEASURES["measure_e"].label,
-                                m.MEASURES["measure_e"].kpi_value(_df)),
+                                m.MEASURES["measure_e"].kpi_value(_scalars["measure_e"])),
                     kpi_compact(m.MEASURES["measure_a_pct"].label,
-                                m.MEASURES["measure_a_pct"].kpi_value(_df),
+                                m.MEASURES["measure_a_pct"].kpi_value(_scalars["measure_a_pct"]),
                                 trend_color=POSITIVE),
                 ]),
             ]),
@@ -352,8 +359,8 @@ app.layout = html.Div(style=S["body"], children=[
                             subtitle="dane przykładowe",
                             x=_categories,
                             series=[
-                                m.MEASURES["measure_a"].series(_df, by=m.DIMS["category"]),
-                                m.MEASURES["measure_b"].series(_df, by=m.DIMS["category"]),
+                                m.MEASURES["measure_a"].to_series(_df_by_cat["val_a"].tolist()),
+                                m.MEASURES["measure_b"].to_series(_df_by_cat["val_b"].tolist()),
                             ],
                         ),
                     ]),
@@ -363,11 +370,11 @@ app.layout = html.Div(style=S["body"], children=[
                             subtitle="dane przykładowe",
                             x=_periods,
                             series=[
-                                m.MEASURES["measure_a"].series(_df, by=m.DIMS["period"]),
-                                m.MEASURES["measure_b"].series(_df, by=m.DIMS["period"]),
+                                m.MEASURES["measure_a"].to_series(_df_by_period["val_a"].tolist()),
+                                m.MEASURES["measure_b"].to_series(_df_by_period["val_b"].tolist()),
                             ],
                             show_labels=True,
-                            reference={"value": m.MEASURES["measure_a"].scalar(_df),
+                            reference={"value": _scalars["measure_a"],
                                        "label": "Poziom odniesienia"},
                         ),
                     ]),
@@ -383,10 +390,10 @@ app.layout = html.Div(style=S["body"], children=[
                             subtitle="dane przykładowe, 2018–2024",
                             x=_years,
                             series=[
-                                m.MEASURES["measure_a"].series(_df, by=m.DIMS["year"]),
-                                m.MEASURES["measure_b"].series(_df, by=m.DIMS["year"]),
-                                m.MEASURES["measure_c"].series(_df, by=m.DIMS["year"]),
-                                m.MEASURES["measure_d"].series(_df, by=m.DIMS["year"]),
+                                m.MEASURES["measure_a"].to_series(_df_by_year["val_a"].tolist()),
+                                m.MEASURES["measure_b"].to_series(_df_by_year["val_b"].tolist()),
+                                m.MEASURES["measure_c"].to_series(_df_by_year["val_c"].tolist()),
+                                m.MEASURES["measure_d"].to_series(_df_by_year["val_d"].tolist()),
                             ],
                         ),
                     ]),
@@ -396,9 +403,9 @@ app.layout = html.Div(style=S["body"], children=[
                             subtitle="dane przykładowe",
                             x=_categories,
                             series=[
-                                m.MEASURES["measure_a"].series(_df, by=m.DIMS["category"]),
-                                m.MEASURES["measure_b"].series(_df, by=m.DIMS["category"]),
-                                m.MEASURES["measure_c"].series(_df, by=m.DIMS["category"]),
+                                m.MEASURES["measure_a"].to_series(_df_by_cat["val_a"].tolist()),
+                                m.MEASURES["measure_b"].to_series(_df_by_cat["val_b"].tolist()),
+                                m.MEASURES["measure_c"].to_series(_df_by_cat["val_c"].tolist()),
                             ],
                         ),
                     ]),
@@ -413,7 +420,7 @@ app.layout = html.Div(style=S["body"], children=[
                             "Tytuł wykresu — ranking",
                             subtitle="dane przykładowe, posortowane malejąco",
                             categories=m.DIMS["label"].values(_df_geo),
-                            series=[m.MEASURES["geo_a"].series(_df_geo, by=m.DIMS["label"])],
+                            series=[m.MEASURES["geo_a"].to_series(_df_geo["val_a"].tolist())],
                         ),
                     ]),
                     html.Div(style=S["card"], children=[
@@ -422,9 +429,9 @@ app.layout = html.Div(style=S["body"], children=[
                             subtitle="dane przykładowe",
                             categories=_categories,
                             series=[
-                                m.MEASURES["measure_a"].series(_df, by=m.DIMS["category"]),
-                                m.MEASURES["measure_b"].series(_df, by=m.DIMS["category"]),
-                                m.MEASURES["measure_c"].series(_df, by=m.DIMS["category"]),
+                                m.MEASURES["measure_a"].to_series(_df_by_cat["val_a"].tolist()),
+                                m.MEASURES["measure_b"].to_series(_df_by_cat["val_b"].tolist()),
+                                m.MEASURES["measure_c"].to_series(_df_by_cat["val_c"].tolist()),
                             ],
                         ),
                     ]),
@@ -440,9 +447,9 @@ app.layout = html.Div(style=S["body"], children=[
                             subtitle="dane przykładowe",
                             categories=_categories,
                             series=[
-                                m.MEASURES["measure_a"].series(_df, by=m.DIMS["category"]),
-                                m.MEASURES["measure_b"].series(_df, by=m.DIMS["category"]),
-                                m.MEASURES["measure_c"].series(_df, by=m.DIMS["category"]),
+                                m.MEASURES["measure_a"].to_series(_df_by_cat["val_a"].tolist()),
+                                m.MEASURES["measure_b"].to_series(_df_by_cat["val_b"].tolist()),
+                                m.MEASURES["measure_c"].to_series(_df_by_cat["val_c"].tolist()),
                             ],
                         ),
                     ]),
@@ -451,7 +458,7 @@ app.layout = html.Div(style=S["body"], children=[
                             "Tytuł wykresu — wartości +/−",
                             subtitle="dane przykładowe",
                             x=_categories,
-                            values=m.MEASURES["measure_e"].values(_df, by=m.DIMS["category"]),
+                            values=_df_by_cat["val_e"].tolist(),
                         ),
                     ]),
                 ]),
@@ -473,8 +480,8 @@ app.layout = html.Div(style=S["body"], children=[
                             "Tytuł wykresu (z linią ref.)",
                             subtitle="dane przykładowe, 2018–2024",
                             x=_years,
-                            series=[m.MEASURES["measure_a"].series(_df, by=m.DIMS["year"])],
-                            reference={"value": m.MEASURES["measure_b"].scalar(_df),
+                            series=[m.MEASURES["measure_a"].to_series(_df_by_year["val_a"].tolist())],
+                            reference={"value": _scalars["measure_b"],
                                        "label": "Poziom odniesienia"},
                         ),
                     ]),
@@ -484,9 +491,9 @@ app.layout = html.Div(style=S["body"], children=[
                             subtitle="dane przykładowe, 2018–2024",
                             x=_years,
                             series=[
-                                m.MEASURES["measure_a"].series(_df, by=m.DIMS["year"]),
-                                m.MEASURES["measure_b"].series(_df, by=m.DIMS["year"]),
-                                m.MEASURES["measure_e"].series(_df, by=m.DIMS["year"]),
+                                m.MEASURES["measure_a"].to_series(_df_by_year["val_a"].tolist()),
+                                m.MEASURES["measure_b"].to_series(_df_by_year["val_b"].tolist()),
+                                m.MEASURES["measure_e"].to_series(_df_by_year["val_e"].tolist()),
                             ],
                         ),
                     ]),
@@ -501,7 +508,7 @@ app.layout = html.Div(style=S["body"], children=[
                             "Tytuł wykresu",
                             subtitle="dane przykładowe, 2018–2024",
                             x=_years,
-                            series=[m.MEASURES["measure_a"].series(_df, by=m.DIMS["year"])],
+                            series=[m.MEASURES["measure_a"].to_series(_df_by_year["val_a"].tolist())],
                         ),
                     ]),
                     html.Div(style=S["card"], children=[
@@ -510,10 +517,10 @@ app.layout = html.Div(style=S["body"], children=[
                             subtitle="dane przykładowe, 2018–2024",
                             x=_years,
                             series=[
-                                m.MEASURES["measure_a"].series(_df, by=m.DIMS["year"]),
-                                m.MEASURES["measure_b"].series(_df, by=m.DIMS["year"]),
-                                m.MEASURES["measure_c"].series(_df, by=m.DIMS["year"]),
-                                m.MEASURES["measure_d"].series(_df, by=m.DIMS["year"]),
+                                m.MEASURES["measure_a"].to_series(_df_by_year["val_a"].tolist()),
+                                m.MEASURES["measure_b"].to_series(_df_by_year["val_b"].tolist()),
+                                m.MEASURES["measure_c"].to_series(_df_by_year["val_c"].tolist()),
+                                m.MEASURES["measure_d"].to_series(_df_by_year["val_d"].tolist()),
                             ],
                         ),
                     ]),
@@ -523,10 +530,10 @@ app.layout = html.Div(style=S["body"], children=[
                             subtitle="dane przykładowe, 2018–2024",
                             x=_years,
                             series=[
-                                m.MEASURES["measure_a"].series(_df, by=m.DIMS["year"]),
-                                m.MEASURES["measure_b"].series(_df, by=m.DIMS["year"]),
-                                m.MEASURES["measure_c"].series(_df, by=m.DIMS["year"]),
-                                m.MEASURES["measure_d"].series(_df, by=m.DIMS["year"]),
+                                m.MEASURES["measure_a"].to_series(_df_by_year["val_a"].tolist()),
+                                m.MEASURES["measure_b"].to_series(_df_by_year["val_b"].tolist()),
+                                m.MEASURES["measure_c"].to_series(_df_by_year["val_c"].tolist()),
+                                m.MEASURES["measure_d"].to_series(_df_by_year["val_d"].tolist()),
                             ],
                         ),
                     ]),
@@ -549,8 +556,8 @@ app.layout = html.Div(style=S["body"], children=[
                             "Tytuł wykresu",
                             subtitle="dane przykładowe — ta sama skala, wspólna oś",
                             x=_years,
-                            bar_series=[m.MEASURES["measure_a"].series(_df, by=m.DIMS["year"])],
-                            line_series=[m.MEASURES["measure_b"].series(_df, by=m.DIMS["year"])],
+                            bar_series=[m.MEASURES["measure_a"].to_series(_df_by_year["val_a"].tolist())],
+                            line_series=[m.MEASURES["measure_b"].to_series(_df_by_year["val_b"].tolist())],
                         ),
                     ]),
                     html.Div(style=S["card"], children=[
@@ -559,11 +566,11 @@ app.layout = html.Div(style=S["body"], children=[
                             subtitle="dane przykładowe",
                             x=_years,
                             bar_series=[
-                                m.MEASURES["measure_a"].series(_df, by=m.DIMS["year"]),
-                                m.MEASURES["measure_c"].series(_df, by=m.DIMS["year"]),
-                                m.MEASURES["measure_d"].series(_df, by=m.DIMS["year"]),
+                                m.MEASURES["measure_a"].to_series(_df_by_year["val_a"].tolist()),
+                                m.MEASURES["measure_c"].to_series(_df_by_year["val_c"].tolist()),
+                                m.MEASURES["measure_d"].to_series(_df_by_year["val_d"].tolist()),
                             ],
-                            line_series=[m.MEASURES["measure_b"].series(_df, by=m.DIMS["year"])],
+                            line_series=[m.MEASURES["measure_b"].to_series(_df_by_year["val_b"].tolist())],
                         ),
                     ]),
                 ]),
@@ -579,11 +586,11 @@ app.layout = html.Div(style=S["body"], children=[
                             x=_years,
                             panels=[
                                 {"title": m.MEASURES["measure_a"].label, "type": "bar",
-                                 "series": [m.MEASURES["measure_a"].series(_df, by=m.DIMS["year"])]},
+                                 "series": [m.MEASURES["measure_a"].to_series(_df_by_year["val_a"].tolist())]},
                                 {"title": m.MEASURES["measure_b"].label, "type": "bar",
-                                 "series": [m.MEASURES["measure_b"].series(_df, by=m.DIMS["year"])]},
+                                 "series": [m.MEASURES["measure_b"].to_series(_df_by_year["val_b"].tolist())]},
                                 {"title": m.MEASURES["measure_e"].label, "type": "line", "diverging": True,
-                                 "series": [m.MEASURES["measure_e"].series(_df, by=m.DIMS["year"])]},
+                                 "series": [m.MEASURES["measure_e"].to_series(_df_by_year["val_e"].tolist())]},
                             ],
                         ),
                     ]),
@@ -594,9 +601,9 @@ app.layout = html.Div(style=S["body"], children=[
                             x=_years,
                             panels=[
                                 {"title": m.MEASURES["measure_a"].label, "type": "line",
-                                 "series": [m.MEASURES["measure_a"].series(_df, by=m.DIMS["year"])]},
+                                 "series": [m.MEASURES["measure_a"].to_series(_df_by_year["val_a"].tolist())]},
                                 {"title": m.MEASURES["measure_d"].label, "type": "line",
-                                 "series": [m.MEASURES["measure_d"].series(_df, by=m.DIMS["year"])]},
+                                 "series": [m.MEASURES["measure_d"].to_series(_df_by_year["val_d"].tolist())]},
                             ],
                         ),
                     ]),
@@ -675,10 +682,10 @@ app.layout = html.Div(style=S["body"], children=[
                 html.Div(style=S["grid-2"], children=[
                     html.Div(style=S["card"], children=[
                         histogram(
-                            "Tytuł wykresu — rozkład (Seria A)",
+                            f"Tytuł wykresu — rozkład ({_dist_groups[0]})",
                             subtitle="dane przykładowe",
-                            x=_df_dist.loc[_df_dist["dim_group"] == "Seria A", "val_obs"].tolist(),
-                            x_label=m.DIMS["category"].label,
+                            x=_df_dist.loc[_df_dist["dim_group"] == _dist_groups[0], "val_obs"].tolist(),
+                            x_label=m.DIMS["group"].label,
                             nbins=8,
                         ),
                     ]),
@@ -687,7 +694,7 @@ app.layout = html.Div(style=S["body"], children=[
                             "Tytuł wykresu — rozkład (wszystkie grupy)",
                             subtitle="dane przykładowe",
                             x=_df_dist["val_obs"].tolist(),
-                            x_label=m.DIMS["category"].label,
+                            x_label=m.DIMS["group"].label,
                         ),
                     ]),
                 ]),
@@ -702,8 +709,7 @@ app.layout = html.Div(style=S["body"], children=[
                             subtitle="dane przykładowe — mediana, IQR i outliery",
                             data={
                                 grp: _df_dist.loc[_df_dist["dim_group"] == grp, "val_obs"].tolist()
-                                for grp in m.DIMS["category"].values(_df_dist.rename(
-                                    columns={"dim_group": "dim_category"}))
+                                for grp in _dist_groups
                             },
                         ),
                     ]),
@@ -833,7 +839,7 @@ app.layout = html.Div(style=S["body"], children=[
                             f"Tytuł mapy — {m.MEASURES['geo_a'].label} wg regionu",
                             subtitle="dane przykładowe — skala sekwencyjna",
                             locations=m.DIMS["iso3"].values(_df_geo),
-                            values=m.MEASURES["geo_a"].values(_df_geo, by=m.DIMS["iso3"]),
+                            values=_df_geo["val_a"].tolist(),
                             hover_labels=m.DIMS["label"].values(_df_geo),
                         ),
                     ]),
@@ -842,7 +848,7 @@ app.layout = html.Div(style=S["body"], children=[
                             f"Tytuł mapy — {m.MEASURES['geo_b'].label} wg regionu (dywerg.)",
                             subtitle="dane przykładowe — zielony = wartości dodatnie",
                             locations=m.DIMS["iso3"].values(_df_geo),
-                            values=m.MEASURES["geo_b"].values(_df_geo, by=m.DIMS["iso3"]),
+                            values=_df_geo["val_b"].tolist(),
                             hover_labels=m.DIMS["label"].values(_df_geo),
                             color_scale="diverging",
                         ),
@@ -859,7 +865,7 @@ app.layout = html.Div(style=S["body"], children=[
                             subtitle="dane przykładowe",
                             lat=_df_geo["dim_lat"].tolist(),
                             lon=_df_geo["dim_lon"].tolist(),
-                            size=m.MEASURES["geo_a"].values(_df_geo, by=m.DIMS["iso3"]),
+                            size=_df_geo["val_a"].tolist(),
                             labels=m.DIMS["label"].values(_df_geo),
                         ),
                     ]),
@@ -869,7 +875,7 @@ app.layout = html.Div(style=S["body"], children=[
                             subtitle="dane przykładowe",
                             lat=_df_geo["dim_lat"].tolist(),
                             lon=_df_geo["dim_lon"].tolist(),
-                            size=m.MEASURES["geo_size"].values(_df_geo, by=m.DIMS["iso3"]),
+                            size=_df_geo["val_size"].tolist(),
                             labels=m.DIMS["label"].values(_df_geo),
                         ),
                     ]),
@@ -877,8 +883,8 @@ app.layout = html.Div(style=S["body"], children=[
             ]),
 
             # ── Financial charts ──────────────────────────────────────────────
-            html.H2("Wykresy finansowe", id="financial", style=S["section-heading"]),
-            html.P("candlestick: dane OHLC — cena akcji lub obligacji w czasie.",
+            html.H2("Wykresy OHLC / świecowe", id="financial", style=S["section-heading"]),
+            html.P("candlestick: dane OHLC (open, high, low, close) — szeregi czasowe cen.",
                    style=S["section-desc"]),
 
             html.Div(style=S["group"], children=[
@@ -886,7 +892,7 @@ app.layout = html.Div(style=S["body"], children=[
                 html.Div(style=S["grid-2"], children=[
                     html.Div(style=S["card"], children=[
                         candlestick(
-                            f"Tytuł wykresu — instrument A ({m.DIMS['date'].label})",
+                            f"Tytuł wykresu — seria A ({m.DIMS['date'].label})",
                             subtitle="dane przykładowe OHLC",
                             dates=m.DIMS["date"].values(_df_ohlc_a),
                             open_=_df_ohlc_a["open"].tolist(),
@@ -897,7 +903,7 @@ app.layout = html.Div(style=S["body"], children=[
                     ]),
                     html.Div(style=S["card"], children=[
                         candlestick(
-                            f"Tytuł wykresu — instrument B ({m.DIMS['date'].label})",
+                            f"Tytuł wykresu — seria B ({m.DIMS['date'].label})",
                             subtitle="dane przykładowe OHLC",
                             dates=m.DIMS["date"].values(_df_ohlc_b),
                             open_=_df_ohlc_b["open"].tolist(),
@@ -939,8 +945,8 @@ app.layout = html.Div(style=S["body"], children=[
                         table_heatmap(
                             "Tytuł tabeli — mapa ciepła",
                             subtitle="dane przykładowe — kolor = intensywność",
-                            headers=["Atrybut", "Rok 1", "Rok 2", "Rok 3",
-                                     "Rok 4", "Rok 5", "Rok 6"],
+                            headers=["Atrybut", "Okr. 1", "Okr. 2", "Okr. 3",
+                                     "Okr. 4", "Okr. 5", "Okr. 6"],
                             rows=[
                                 [row["dim_attribute"],
                                  row["yr_1"], row["yr_2"], row["yr_3"],
@@ -967,7 +973,7 @@ app.layout = html.Div(style=S["body"], children=[
                             f"Tytuł — {m.MEASURES['measure_a'].label} wg kategorii",
                             subtitle="donut — max 5 kategorii",
                             labels=_categories,
-                            values=m.MEASURES["measure_a"].values(_df, by=m.DIMS["category"]),
+                            values=_df_by_cat["val_a"].tolist(),
                         ),
                     ]),
                     html.Div(style=S["card"], children=[
@@ -975,7 +981,7 @@ app.layout = html.Div(style=S["body"], children=[
                             f"Tytuł — {m.MEASURES['measure_b'].label} wg okresu",
                             subtitle="donut — cztery okresy",
                             labels=_periods,
-                            values=m.MEASURES["measure_b"].values(_df, by=m.DIMS["period"]),
+                            values=_df_by_period["val_b"].tolist(),
                         ),
                     ]),
                     html.Div(style=S["card"], children=[
@@ -983,7 +989,7 @@ app.layout = html.Div(style=S["body"], children=[
                             f"Tytuł — {m.MEASURES['measure_d'].label} (pie)",
                             subtitle="pie — bez środka",
                             labels=_categories,
-                            values=m.MEASURES["measure_d"].values(_df, by=m.DIMS["category"]),
+                            values=_df_by_cat["val_d"].tolist(),
                             donut=False,
                         ),
                     ]),

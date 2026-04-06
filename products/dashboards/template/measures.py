@@ -1,11 +1,14 @@
 """
-Template dashboard — dimension and measure definitions.
+Template dashboard — dimension and measure display config.
 
-This file defines the semantic layer for the template showcase.
-When building a domain dashboard, replace these with domain-specific
-definitions referencing real indicator names and warehouse columns.
+This file defines labels, units, and column bindings for the template
+scaffold. When building a domain dashboard, update labels and column names
+to match the domain's warehouse mart.
 
-Finance domain example:
+All aggregation logic lives in data.py (template) or semantic_service.py
+(domain dashboards). Measures here carry display metadata only.
+
+Domain example:
     DIMS = {
         "country": Dimension("country", "Kraj",  "geo"),
         "year":    Dimension("year",    "Rok",   "year"),
@@ -13,9 +16,8 @@ Finance domain example:
     MEASURES = {
         "fiscal_balance": Measure(
             "fiscal_balance", "Saldo fiskalne", "fiscal_balance_pct_gdp",
-            aggregation="last", unit="% PKB", format="{:.1f}",
+            unit="% PKB", format="{:.1f}",
         ),
-        ...
     }
 """
 from products.visuals.lib.semantic import Dimension, Measure
@@ -23,80 +25,41 @@ from products.visuals.lib.semantic import Dimension, Measure
 # ── Dimensions ────────────────────────────────────────────────────────────────
 
 DIMS = {
-    # Main dataset (load())
+    # Main dataset (load_by_category / load_by_year / load_by_period)
     "category": Dimension("category", "Kategoria",  "dim_category"),
-    "year":     Dimension("year",     "Rok",         "dim_year"),
-    "period":   Dimension("period",   "Okres",        "dim_period"),
+    "year":     Dimension("year",     "Okres (rok)", "dim_year"),
+    "period":   Dimension("period",   "Okres",       "dim_period"),
 
-    # Geo dataset (load_geo())
-    "iso3":     Dimension("iso3",     "Kraj (ISO-3)", "dim_iso3"),
-    "label":    Dimension("label",    "Region",       "dim_label"),
+    # Distribution dataset (load_distribution)
+    "group":    Dimension("group",    "Grupa",       "dim_group"),
 
-    # OHLC dataset (load_ohlc())
-    "date":     Dimension("date",     "Data",         "dim_date"),
+    # Geo dataset (load_geo)
+    "iso3":     Dimension("iso3",     "ISO-3",       "dim_iso3"),
+    "label":    Dimension("label",    "Region",      "dim_label"),
+
+    # OHLC dataset (load_ohlc)
+    "date":     Dimension("date",     "Okres",       "dim_date"),
 }
 
 # ── Measures ──────────────────────────────────────────────────────────────────
 
 MEASURES = {
-    # ── Main measures (reference data from load()) ────────────────────────────
+    # ── Main measures ─────────────────────────────────────────────────────────
 
-    "measure_a": Measure(
-        name="measure_a", label="Miara A",
-        column="val_a", aggregation="mean",
-        unit="jedn.", format="{:.1f}",
-    ),
-    "measure_b": Measure(
-        name="measure_b", label="Miara B",
-        column="val_b", aggregation="mean",
-        unit="jedn.", format="{:.1f}",
-    ),
-    "measure_c": Measure(
-        name="measure_c", label="Miara C",
-        column="val_c", aggregation="mean",
-        unit="jedn.", format="{:.1f}",
-    ),
-    "measure_d": Measure(
-        name="measure_d", label="Miara D",
-        column="val_d", aggregation="mean",
-        unit="jedn.", format="{:.1f}",
-    ),
-    "measure_e": Measure(
-        name="measure_e", label="Miara E (dywerg.)",
-        column="val_e", aggregation="mean",
-        unit="jedn.", format="{:.1f}",
-    ),
+    "measure_a": Measure("measure_a", "Miara A",            "val_a", unit="jedn.", format="{:.1f}"),
+    "measure_b": Measure("measure_b", "Miara B",            "val_b", unit="jedn.", format="{:.1f}"),
+    "measure_c": Measure("measure_c", "Miara C",            "val_c", unit="jedn.", format="{:.1f}"),
+    "measure_d": Measure("measure_d", "Miara D",            "val_d", unit="jedn.", format="{:.1f}"),
+    "measure_e": Measure("measure_e", "Miara E (dywerg.)",  "val_e", unit="jedn.", format="{:.1f}"),
 
-    # ── Derived measures ──────────────────────────────────────────────────────
+    # ── Derived measures (pre-computed in data.py) ────────────────────────────
 
-    "measure_a_pct": Measure(
-        name="measure_a_pct", label="Miara A (zmiana r/r)",
-        column="val_a", aggregation="mean",
-        unit="%", format="{:.1f}",
-        calc="pct_change",
-    ),
-    "measure_a_cum": Measure(
-        name="measure_a_cum", label="Miara A (narastająco)",
-        column="val_a", aggregation="sum",
-        unit="jedn.", format="{:.0f}",
-        calc="cumsum",
-    ),
+    "measure_a_pct": Measure("measure_a_pct", "Miara A (zmiana r/r)", "val_a_pct", unit="%",    format="{:.1f}"),
+    "measure_a_cum": Measure("measure_a_cum", "Miara A (narastająco)", "val_a_cum", unit="jedn.", format="{:.0f}"),
 
-    # ── Geo measures (reference data from load_geo()) ─────────────────────────
+    # ── Geo measures ──────────────────────────────────────────────────────────
 
-    "geo_a": Measure(
-        name="geo_a", label="Miara A (geo)",
-        column="val_a", aggregation="first",
-        unit="jedn.", format="{:.1f}",
-    ),
-    "geo_b": Measure(
-        name="geo_b", label="Miara B (geo)",
-        column="val_b", aggregation="first",
-        unit="jedn.", format="{:.1f}",
-    ),
-    "geo_size": Measure(
-        name="geo_size", label="Rozmiar",
-        column="val_size", aggregation="first",
-        format="{:.0f}",
-    ),
+    "geo_a":    Measure("geo_a",    "Miara A", "val_a",    unit="jedn.", format="{:.1f}"),
+    "geo_b":    Measure("geo_b",    "Miara B", "val_b",    unit="jedn.", format="{:.1f}"),
+    "geo_size": Measure("geo_size", "Rozmiar", "val_size",               format="{:.0f}"),
 }

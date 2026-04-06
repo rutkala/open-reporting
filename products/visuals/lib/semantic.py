@@ -1,29 +1,30 @@
 """
 Semantic layer — Dimension and Measure dataclasses.
 
-Charts are pure renderers; they never know where data comes from.
-Data binding lives here: each dashboard defines DIMS and MEASURES
-that reference columns in its DataFrame, and uses these objects to
-produce the x/series/values arguments that chart functions accept.
+These are display-config objects only. They carry labels, units, and format
+strings for chart rendering. All aggregation and business logic lives in the
+domain's semantic_service.py (or data.py for the template scaffold).
 
 Usage pattern in app.py:
-    from . import data, measures as m
-    df = data.load()
+    import products.dashboards.template.data as _data
+    import products.dashboards.template.measures as m
+
+    _df_by_year = _data.load_by_year()
+    _years = m.DIMS["year"].values(_df_by_year)
 
     clustered_column(
-        m.MEASURES["revenue"].label,
-        x=m.DIMS["year"].values(df),
+        "Tytuł wykresu",
+        x=_years,
         series=[
-            m.MEASURES["revenue"].series(df, by=m.DIMS["year"]),
-            m.MEASURES["costs"].series(df, by=m.DIMS["year"]),
+            m.MEASURES["measure_a"].to_series(_df_by_year["val_a"].tolist()),
+            m.MEASURES["measure_b"].to_series(_df_by_year["val_b"].tolist()),
         ],
     )
 """
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass, field
-from typing import Optional
+from dataclasses import dataclass
 
 import pandas as pd
 
@@ -36,8 +37,8 @@ class Dimension:
     A categorical or temporal axis variable.
 
     Attributes:
-        name:   machine key used in DIMS dict (e.g. "country")
-        label:  user-facing label for axis / legend (e.g. "Kraj")
+        name:   machine key used in DIMS dict (e.g. "year")
+        label:  user-facing label for axis / legend (e.g. "Rok")
         column: DataFrame column that holds dimension values
     """
     name:   str
@@ -54,127 +55,41 @@ class Dimension:
 
 # ── Measure ───────────────────────────────────────────────────────────────────
 
-_VALID_AGG = {"sum", "mean", "median", "last", "first", "count", "min", "max"}
-_VALID_CALC = {None, "pct_change", "cumsum", "pct_of_total"}
-
-
 @dataclass
 class Measure:
     """
-    A numeric indicator with aggregation and display metadata.
+    Display metadata for a numeric indicator.
+
+    All aggregation and transformation logic lives upstream in the domain's
+    semantic_service.py (or data.py for the template). This class only carries
+    what is needed to render charts and KPI cards correctly.
 
     Attributes:
-        name:        machine key used in MEASURES dict (e.g. "fiscal_balance")
-        label:       user-facing label for legend / KPI title (e.g. "Saldo fiskalne")
-        column:      DataFrame column that holds raw values
-        aggregation: pandas aggregation method applied when grouping by a Dimension
-        unit:        display unit appended to formatted values (e.g. "% PKB")
-        format:      Python format string for a single number (e.g. "{:.1f}")
-        calc:        optional post-aggregation transformation:
-                       "pct_change"   — period-over-period % change
-                       "cumsum"       — running total
-                       "pct_of_total" — each value as % of group sum
+        name:   machine key used in MEASURES dict (e.g. "fiscal_balance")
+        label:  user-facing label for legend / KPI title (e.g. "Saldo fiskalne")
+        column: DataFrame column that holds pre-aggregated values
+        unit:   display unit appended to formatted values (e.g. "% PKB")
+        format: Python format string for a single number (e.g. "{:.1f}")
     """
-    name:        str
-    label:       str
-    column:      str
-    aggregation: str
-    unit:        str            = ""
-    format:      str            = "{:.1f}"
-    calc:        Optional[str]  = None
+    name:   str
+    label:  str
+    column: str
+    unit:   str = ""
+    format: str = "{:.1f}"
 
-    def __post_init__(self):
-        if self.aggregation not in _VALID_AGG:
-            raise ValueError(f"Measure '{self.name}': aggregation must be one of {_VALID_AGG}")
-        if self.calc not in _VALID_CALC:
-            raise ValueError(f"Measure '{self.name}': calc must be one of {_VALID_CALC}")
-
-    # ── core methods ──────────────────────────────────────────────────────────
-
-    def values(self, df: pd.DataFrame, by: Dimension) -> list:
-        """
-        Aggregated values aligned to the dimension's ordered unique values.
-        Missing combinations return NaN.
-        """
-        grouped = df.groupby(by.column)[self.column].agg(self.aggregation)
-        dim_vals = by.values(df)
-        result = [_safe_float(grouped.get(v)) for v in dim_vals]
-        return _apply_calc(result, self.calc)
-
-    def series(self, df: pd.DataFrame, by: Dimension) -> dict:
-        """
-        Returns {"name": label, "y": [...]} — drop-in for chart series lists.
-        """
-        return {"name": self.label, "y": self.values(df, by)}
-
-    def scalar(self, df: pd.DataFrame, by: Optional["Dimension"] = None) -> float:
-        """
-        Single aggregated value across the whole DataFrame — for KPI cards.
-
-        For measures without calc: returns the column aggregated over all rows.
-        For derived measures (calc set): requires ``by`` (a time Dimension) so
-        that the aggregation is performed per period before the transformation —
-        matching the same path as values().  Returns the last non-NaN value in
-        the transformed series.  Without ``by``, falls back to raw aggregation
-        (calc is ignored) and logs a warning.
-        """
-        if self.calc is None or by is None:
-            return _safe_float(df[self.column].agg(self.aggregation))
-        # Aggregate per period (same as values()), then take the last result
-        vals = self.values(df, by)
-        for v in reversed(vals):
-            if not math.isnan(v):
-                return v
-        return float("nan")
+    def to_series(self, y: list) -> dict:
+        """Returns {"name": label, "y": y} — drop-in for chart series lists."""
+        return {"name": self.label, "y": y}
 
     def format_value(self, v: float) -> str:
-        """Format a numeric value with this measure's format string."""
-        if math.isnan(v):
+        """Format a pre-computed numeric value with this measure's format string."""
+        try:
+            if math.isnan(float(v)):
+                return "—"
+        except (TypeError, ValueError):
             return "—"
         return self.format.format(v)
 
-    def kpi_value(self, df: pd.DataFrame, by: Optional["Dimension"] = None) -> str:
-        """
-        Formatted scalar string ready for kpi_standard / kpi_compact.
-        Pass ``by`` (the time Dimension) for derived measures so the correct
-        per-period aggregation is applied before the calc transformation.
-        """
-        return self.format_value(self.scalar(df, by=by))
-
-
-# ── Internal helpers ──────────────────────────────────────────────────────────
-
-def _safe_float(v) -> float:
-    try:
-        f = float(v)
-        return f if not math.isnan(f) else float("nan")
-    except (TypeError, ValueError):
-        return float("nan")
-
-
-def _apply_calc(vals: list, calc: Optional[str]) -> list:
-    if calc is None:
-        return vals
-    if calc == "pct_change":
-        result = [float("nan")]
-        for i in range(1, len(vals)):
-            prev, cur = vals[i - 1], vals[i]
-            if not math.isnan(prev) and not math.isnan(cur) and prev != 0:
-                result.append((cur - prev) / abs(prev) * 100)
-            else:
-                result.append(float("nan"))
-        return result
-    if calc == "cumsum":
-        total = 0.0
-        result = []
-        for v in vals:
-            if not math.isnan(v):
-                total += v
-            result.append(total)
-        return result
-    if calc == "pct_of_total":
-        total = sum(v for v in vals if not math.isnan(v))
-        if total == 0:
-            return [float("nan")] * len(vals)
-        return [v / total * 100 if not math.isnan(v) else float("nan") for v in vals]
-    return vals
+    def kpi_value(self, v: float) -> str:
+        """Formatted string ready for kpi_standard / kpi_compact."""
+        return self.format_value(v)
