@@ -1,21 +1,31 @@
 """
 Template dashboard — sample data loaders.
 
-This file is the ONLY thing that changes when building a domain dashboard.
-Replace the return values with warehouse queries; measures.py and app.py
-stay unchanged.
+Structure mirrors what a domain semantic_service.py would provide:
+- Raw loaders (load, load_geo, …) — source data, used internally
+- Aggregated loaders (load_by_year, load_by_category, load_by_period) —
+  pre-grouped DataFrames consumed directly by app.py chart calls
+- load_scalars() — single values for KPI cards
+
+When building a domain dashboard, replace these loaders with calls to
+semantic_service.py functions that execute SQL against the warehouse.
+measures.py and app.py stay unchanged.
 
 Domain example:
     from products.visuals.lib.db import query
 
-    def load() -> pd.DataFrame:
+    def load_by_year() -> pd.DataFrame:
         return query(\"\"\"
-            SELECT geo AS dim_category, year AS dim_year,
-                   revenue AS val_a, costs AS val_b, balance AS val_c, ...
+            SELECT year AS dim_year,
+                   AVG(revenue)  AS val_a,
+                   AVG(costs)    AS val_b,
+                   AVG(balance)  AS val_c
             FROM curated.mart_finance
-            ORDER BY dim_year, dim_category
+            GROUP BY year ORDER BY year
         \"\"\")
 """
+import math
+
 import numpy as np
 import pandas as pd
 
@@ -333,3 +343,100 @@ def load_table_heatmap() -> pd.DataFrame:
         "yr_5": [ 0.1, -0.3,  0.9,  0.9,  0.0],
         "yr_6": [ 3.1,  0.2,  1.1,  0.7,  1.5],
     })
+
+
+# ── Pre-aggregated loaders (semantic service layer) ───────────────────────────
+# These mirror what semantic_service.py domain functions return in real
+# dashboards: one row per dimension value, values already aggregated.
+
+_MEASURE_COLS = ["val_a", "val_b", "val_c", "val_d", "val_e"]
+
+
+def load_by_category() -> pd.DataFrame:
+    """
+    Main measures averaged by category — for category-axis charts.
+
+    Columns: dim_category, val_a … val_e
+    Order:   preserves original category order from load()
+    """
+    df = load()
+    order = list(dict.fromkeys(df["dim_category"].tolist()))
+    result = (
+        df.groupby("dim_category")[_MEASURE_COLS]
+        .mean()
+        .reindex(order)
+        .reset_index()
+        .round(1)
+    )
+    return result
+
+
+def load_by_year() -> pd.DataFrame:
+    """
+    Main measures averaged by year — for time-series charts.
+    Includes pre-computed derived columns:
+        val_a_pct — period-over-period % change of val_a
+        val_a_cum — cumulative sum of val_a
+
+    Columns: dim_year, val_a … val_e, val_a_pct, val_a_cum
+    Order:   ascending year
+    """
+    df = load()
+    result = (
+        df.groupby("dim_year")[_MEASURE_COLS]
+        .mean()
+        .reset_index()
+        .sort_values("dim_year")
+        .reset_index(drop=True)
+        .round(1)
+    )
+    result["val_a_pct"] = (result["val_a"].pct_change() * 100).round(1)
+    result["val_a_cum"] = result["val_a"].cumsum().round(0)
+    return result
+
+
+def load_by_period() -> pd.DataFrame:
+    """
+    Main measures averaged by period (Q1–Q4) — for period-axis charts.
+
+    Columns: dim_period, val_a … val_e
+    Order:   Q1 → Q4
+    """
+    df = load()
+    order = ["Q1", "Q2", "Q3", "Q4"]
+    result = (
+        df.groupby("dim_period")[_MEASURE_COLS]
+        .mean()
+        .reindex(order)
+        .reset_index()
+        .round(1)
+    )
+    return result
+
+
+def load_scalars() -> dict:
+    """
+    Single aggregated values per measure — for KPI cards.
+
+    Returns dict keyed by measure name:
+        measure_a … measure_e — overall mean across all categories and years
+        measure_a_pct         — most recent year-on-year % change of measure_a
+        measure_a_cum         — cumulative sum of measure_a over all years
+    """
+    df = load()
+    by_year = load_by_year()
+    agg = df[_MEASURE_COLS].mean()
+
+    pct_series = by_year["val_a_pct"].dropna()
+    last_pct = float(pct_series.iloc[-1]) if not pct_series.empty else float("nan")
+    last_cum = float(by_year["val_a_cum"].iloc[-1])
+
+    return {
+        "measure_a":     round(float(agg["val_a"]), 1),
+        "measure_b":     round(float(agg["val_b"]), 1),
+        "measure_c":     round(float(agg["val_c"]), 1),
+        "measure_d":     round(float(agg["val_d"]), 1),
+        "measure_e":     round(float(agg["val_e"]), 1),
+        "measure_a_pct": round(last_pct, 1) if not math.isnan(last_pct) else float("nan"),
+        "measure_a_cum": round(last_cum, 0),
+    }
