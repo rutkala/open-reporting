@@ -4,6 +4,45 @@ from dash import html
 from products.visuals.lib.theme import BG_SURFACE, BORDER, NEGATIVE, POSITIVE, SUBTEXT, TEXT
 
 
+def kpi_row(cards: list, min_width: str = "180px", gap: str = "16px") -> html.Div:
+    """
+    Flex row container for multiple KPI cards.
+
+    Wraps a list of kpi_standard() / kpi_compact() outputs so that cards
+    share the row width evenly, stay the same height, and wrap gracefully
+    on narrow screens.
+
+    Args:
+        cards:     list of html.Div outputs from kpi_standard() or kpi_compact()
+        min_width: minimum width before a card wraps to the next row (default "180px")
+        gap:       spacing between cards (default "16px")
+
+    Usage:
+        kpi_row([
+            kpi_standard("Revenue",  measure_a.kpi_value(val_a), unit=measure_a.plotly_ticksuffix),
+            kpi_standard("Expenses", measure_b.kpi_value(val_b), unit=measure_b.plotly_ticksuffix),
+            kpi_standard("Balance",  measure_c.kpi_value(val_c), unit=measure_c.plotly_ticksuffix,
+                         trend="▼ -0.4", trend_color=NEGATIVE),
+        ])
+    """
+    wrapped = []
+    for card in cards:
+        # Each card gets flex:1 so they share width evenly; minWidth controls wrap breakpoint
+        wrapped.append(html.Div(
+            style={"flex": "1", "minWidth": min_width},
+            children=[card],
+        ))
+    return html.Div(
+        style={
+            "display": "flex",
+            "flexWrap": "wrap",
+            "gap": gap,
+            "alignItems": "stretch",
+        },
+        children=wrapped,
+    )
+
+
 def kpi_standard(
     label: str,
     value: str,
