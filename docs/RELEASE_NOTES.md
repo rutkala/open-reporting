@@ -5,6 +5,9 @@
 ## Unreleased
 
 ### Visual components
+- **OR-126** — Template dashboard: all chart calls now pass `y_measure` (axis title + tick unit
+  driven by Measure metadata) and use `measure.to_series()` for series dicts. Polish colour
+  palette labels translated to English. Stale `bar_diverging` import removed.
 - **OR-125** — `kpi_row()` flex container: wraps multiple KPI cards in an equal-height responsive
   row with configurable `min_width` and `gap`. Template updated with 4-card `kpi_standard` row
   and 5-card `kpi_compact` row demonstrating the pattern.
