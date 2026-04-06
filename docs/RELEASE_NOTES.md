@@ -5,6 +5,9 @@
 ## Unreleased
 
 ### Visual components
+- **OR-125** — `kpi_row()` flex container: wraps multiple KPI cards in an equal-height responsive
+  row with configurable `min_width` and `gap`. Template updated with 4-card `kpi_standard` row
+  and 5-card `kpi_compact` row demonstrating the pattern.
 - **OR-124** — Measure-driven value formatting: `Measure` dataclass redesigned with structured
   format metadata (`format_type`, `scale`, `decimals`, `currency_symbol`, `show_unit`).
   All chart components accept optional `y_measure` param that auto-configures axis title,
