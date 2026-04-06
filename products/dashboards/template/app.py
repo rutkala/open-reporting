@@ -54,9 +54,12 @@ log = logging.getLogger(__name__)
 
 PORT = 8055
 
-# ── Sample data ───────────────────────────────────────────────────────────────
-YEARS = [2018, 2019, 2020, 2021, 2022, 2023, 2024]
-CATS  = ["Polska", "Niemcy", "Francja", "Włochy", "Czechy"]
+# ── Sample data (generic placeholders — replace with domain data) ─────────────
+YEARS    = [2018, 2019, 2020, 2021, 2022, 2023, 2024]
+QUARTERS = ["Q1", "Q2", "Q3", "Q4"]
+CATS     = ["Kat. A", "Kat. B", "Kat. C", "Kat. D", "Kat. E"]
+CATS_8   = ["Kat. A", "Kat. B", "Kat. C", "Kat. D",
+            "Kat. E", "Kat. F", "Kat. G", "Kat. H"]
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -275,25 +278,25 @@ app.layout = html.Div(style=S["body"], children=[
             html.Div(style=S["group"], children=[
                 html.Div("kpi_standard", style=S["group-title"]),
                 html.Div(style=S["grid-auto"], children=[
-                    kpi_standard("Dochody budżetu", "47,2", unit="% PKB",
-                                 trend="▲ +0,8 pp", trend_color=POSITIVE),
-                    kpi_standard("Wydatki budżetu", "50,4", unit="% PKB",
-                                 trend="▼ −0,3 pp", trend_color=NEGATIVE),
-                    kpi_standard("Saldo fiskalne", "−3,2", unit="% PKB",
-                                 trend="▲ +0,5 pp", trend_color=POSITIVE),
-                    kpi_standard("Dług publiczny", "54,1", unit="% PKB"),
+                    kpi_standard("Wskaźnik A", "47,2", unit="jedn.",
+                                 trend="▲ +0,8", trend_color=POSITIVE),
+                    kpi_standard("Wskaźnik B", "50,4", unit="jedn.",
+                                 trend="▼ −0,3", trend_color=NEGATIVE),
+                    kpi_standard("Wskaźnik C", "−3,2", unit="jedn.",
+                                 trend="▲ +0,5", trend_color=POSITIVE),
+                    kpi_standard("Wskaźnik D", "54,1", unit="jedn."),
                 ]),
             ]),
 
             html.Div(style=S["group"], children=[
                 html.Div("kpi_compact", style=S["group-title"]),
                 html.Div(style=S["grid-auto"], children=[
-                    kpi_compact("Inflacja CPI", "4,7%", trend="▼ −0,3 pp"),
-                    kpi_compact("Stopa bezrobocia", "2,9%"),
-                    kpi_compact("Wzrost PKB", "3,1%", trend="▲ +0,6 pp", trend_color=POSITIVE),
-                    kpi_compact("Eksport", "1 234 mld", trend="▲ +8,4%", trend_color=POSITIVE),
-                    kpi_compact("Import", "1 189 mld"),
-                    kpi_compact("Saldo handlowe", "+45 mld", trend_color=POSITIVE),
+                    kpi_compact("Miara A", "4,7", trend="▼ −0,3"),
+                    kpi_compact("Miara B", "2,9"),
+                    kpi_compact("Miara C", "3,1", trend="▲ +0,6", trend_color=POSITIVE),
+                    kpi_compact("Miara D", "1 234", trend="▲ +8,4%", trend_color=POSITIVE),
+                    kpi_compact("Miara E", "1 189"),
+                    kpi_compact("Miara F", "+45", trend_color=POSITIVE),
                 ]),
             ]),
 
@@ -311,26 +314,26 @@ app.layout = html.Div(style=S["body"], children=[
                 html.Div(style=S["grid-2"], children=[
                     html.Div(style=S["card"], children=[
                         clustered_column(
-                            "Dochody i wydatki wg krajów",
-                            subtitle="% PKB, 2024",
+                            "Tytuł wykresu",
+                            subtitle="dane przykładowe",
                             x=CATS,
                             series=[
-                                {"name": "Dochody", "y": [47.2, 45.8, 52.3, 48.1, 43.6]},
-                                {"name": "Wydatki", "y": [50.4, 47.5, 55.8, 51.2, 45.1]},
+                                {"name": "Seria A", "y": [47.2, 45.8, 52.3, 48.1, 43.6]},
+                                {"name": "Seria B", "y": [50.4, 47.5, 55.8, 51.2, 45.1]},
                             ],
                         ),
                     ]),
                     html.Div(style=S["card"], children=[
                         clustered_column(
-                            "Wykonanie budżetu",
-                            subtitle="mld zł, plan vs wykonanie",
-                            x=["Q1", "Q2", "Q3", "Q4"],
+                            "Tytuł wykresu (z etykietami i linią ref.)",
+                            subtitle="dane przykładowe",
+                            x=QUARTERS,
                             series=[
                                 {"name": "Plan",      "y": [280, 310, 295, 340]},
                                 {"name": "Wykonanie", "y": [265, 325, 288, 352]},
                             ],
                             show_labels=True,
-                            reference={"value": 300, "label": "Cel roczny /4"},
+                            reference={"value": 300, "label": "Poziom odniesienia"},
                         ),
                     ]),
                 ]),
@@ -341,26 +344,26 @@ app.layout = html.Div(style=S["body"], children=[
                 html.Div(style=S["grid-2"], children=[
                     html.Div(style=S["card"], children=[
                         stacked_column(
-                            "Struktura wydatków",
-                            subtitle="mld zł, 2020–2024",
+                            "Tytuł wykresu",
+                            subtitle="dane przykładowe, 2020–2024",
                             x=[2020, 2021, 2022, 2023, 2024],
                             series=[
-                                {"name": "Świadczenia społeczne", "y": [320, 335, 355, 370, 390]},
-                                {"name": "Inwestycje publiczne",  "y": [140, 155, 162, 170, 180]},
-                                {"name": "Obsługa długu",         "y": [45, 48, 52, 60, 68]},
-                                {"name": "Pozostałe",             "y": [95, 102, 108, 115, 122]},
+                                {"name": "Seria A", "y": [320, 335, 355, 370, 390]},
+                                {"name": "Seria B", "y": [140, 155, 162, 170, 180]},
+                                {"name": "Seria C", "y": [45, 48, 52, 60, 68]},
+                                {"name": "Seria D", "y": [95, 102, 108, 115, 122]},
                             ],
                         ),
                     ]),
                     html.Div(style=S["card"], children=[
                         pct_stacked_column(
-                            "Udział składników — 100%",
-                            subtitle="struktura procentowa, 2024",
+                            "Tytuł wykresu — udział 100%",
+                            subtitle="dane przykładowe",
                             x=CATS,
                             series=[
-                                {"name": "Transfery",   "y": [52, 48, 55, 50, 45]},
-                                {"name": "Inwestycje",  "y": [20, 22, 19, 21, 23]},
-                                {"name": "Pozostałe",   "y": [28, 30, 26, 29, 32]},
+                                {"name": "Seria A", "y": [52, 48, 55, 50, 45]},
+                                {"name": "Seria B", "y": [20, 22, 19, 21, 23]},
+                                {"name": "Seria C", "y": [28, 30, 26, 29, 32]},
                             ],
                         ),
                     ]),
@@ -372,22 +375,21 @@ app.layout = html.Div(style=S["body"], children=[
                 html.Div(style=S["grid-2"], children=[
                     html.Div(style=S["card"], children=[
                         clustered_bar(
-                            "Kraje wg długu publicznego",
-                            subtitle="% PKB, 2024 — posortowane malejąco",
-                            categories=["Grecja", "Włochy", "Portugalia", "Francja", "Belgia",
-                                        "Hiszpania", "Austria", "Polska", "Czechy", "Szwecja"],
-                            series=[{"name": "Dług", "y": [163, 137, 112, 109, 105, 103, 82, 54, 44, 32]}],
+                            "Tytuł wykresu — ranking",
+                            subtitle="dane przykładowe, posortowane malejąco",
+                            categories=CATS_8,
+                            series=[{"name": "Seria A", "y": [163, 137, 112, 109, 105, 103, 82, 54]}],
                         ),
                     ]),
                     html.Div(style=S["card"], children=[
                         stacked_bar(
-                            "Struktura dochodów wg kraju",
-                            subtitle="mld EUR — składniki poziomo",
+                            "Tytuł wykresu — skumulowany poziomy",
+                            subtitle="dane przykładowe",
                             categories=CATS,
                             series=[
-                                {"name": "Podatki bezpośrednie", "y": [180, 420, 390, 310, 95]},
-                                {"name": "Podatki pośrednie",    "y": [295, 380, 420, 280, 110]},
-                                {"name": "Składki",              "y": [120, 290, 310, 220, 75]},
+                                {"name": "Seria A", "y": [180, 420, 390, 310, 95]},
+                                {"name": "Seria B", "y": [295, 380, 420, 280, 110]},
+                                {"name": "Seria C", "y": [120, 290, 310, 220, 75]},
                             ],
                         ),
                     ]),
@@ -399,22 +401,21 @@ app.layout = html.Div(style=S["body"], children=[
                 html.Div(style=S["grid-2"], children=[
                     html.Div(style=S["card"], children=[
                         pct_stacked_bar(
-                            "Udział składników dochodów",
-                            subtitle="% — struktura pozioma",
+                            "Tytuł wykresu — udział 100% poziomy",
+                            subtitle="dane przykładowe",
                             categories=CATS,
                             series=[
-                                {"name": "Podatki bezpośrednie", "y": [180, 420, 390, 310, 95]},
-                                {"name": "Podatki pośrednie",    "y": [295, 380, 420, 280, 110]},
-                                {"name": "Składki",              "y": [120, 290, 310, 220, 75]},
+                                {"name": "Seria A", "y": [180, 420, 390, 310, 95]},
+                                {"name": "Seria B", "y": [295, 380, 420, 280, 110]},
+                                {"name": "Seria C", "y": [120, 290, 310, 220, 75]},
                             ],
                         ),
                     ]),
                     html.Div(style=S["card"], children=[
                         bar_diverging(
-                            "Saldo fiskalne wg krajów",
-                            subtitle="% PKB, 2024 — zielony = nadwyżka",
-                            x=["Dania", "Szwecja", "Holandia", "Austria", "Polska",
-                               "Francja", "Włochy", "Grecja"],
+                            "Tytuł wykresu — wartości +/−",
+                            subtitle="dane przykładowe",
+                            x=CATS_8,
                             values=[3.2, 0.6, -0.3, -2.1, -5.1, -5.5, -7.2, -1.6],
                         ),
                     ]),
@@ -434,22 +435,22 @@ app.layout = html.Div(style=S["body"], children=[
                 html.Div(style=S["grid-2"], children=[
                     html.Div(style=S["card"], children=[
                         line(
-                            "Dług publiczny Polski",
-                            subtitle="% PKB, 2018–2024",
+                            "Tytuł wykresu (z linią ref.)",
+                            subtitle="dane przykładowe, 2018–2024",
                             x=YEARS,
-                            series=[{"name": "% PKB", "y": [48.9, 45.7, 57.1, 53.8, 51.4, 49.7, 54.1]}],
-                            reference={"value": 60, "label": "Limit SGP 60%"},
+                            series=[{"name": "Seria A", "y": [48.9, 45.7, 57.1, 53.8, 51.4, 49.7, 54.1]}],
+                            reference={"value": 60, "label": "Poziom odniesienia"},
                         ),
                     ]),
                     html.Div(style=S["card"], children=[
                         line(
-                            "Dochody i wydatki",
-                            subtitle="% PKB, porównanie 2018–2024",
+                            "Tytuł wykresu — wiele serii",
+                            subtitle="dane przykładowe, 2018–2024",
                             x=YEARS,
                             series=[
-                                {"name": "Dochody", "y": [41.5, 42.3, 41.8, 43.2, 44.6, 46.1, 47.2]},
-                                {"name": "Wydatki", "y": [43.2, 44.0, 48.7, 46.5, 47.8, 49.3, 50.4]},
-                                {"name": "Saldo",   "y": [-1.7, -1.7, -6.9, -3.3, -3.2, -3.2, -3.2]},
+                                {"name": "Seria A", "y": [41.5, 42.3, 41.8, 43.2, 44.6, 46.1, 47.2]},
+                                {"name": "Seria B", "y": [43.2, 44.0, 48.7, 46.5, 47.8, 49.3, 50.4]},
+                                {"name": "Seria C", "y": [-1.7, -1.7, -6.9, -3.3, -3.2, -3.2, -3.2]},
                             ],
                         ),
                     ]),
@@ -461,35 +462,35 @@ app.layout = html.Div(style=S["body"], children=[
                 html.Div(style=S["grid-3"], children=[
                     html.Div(style=S["card"], children=[
                         area(
-                            "Dochody podatkowe",
-                            subtitle="mld zł, 2018–2024",
+                            "Tytuł wykresu",
+                            subtitle="dane przykładowe, 2018–2024",
                             x=YEARS,
-                            series=[{"name": "mld zł", "y": [380, 410, 395, 445, 520, 580, 615]}],
+                            series=[{"name": "Seria A", "y": [380, 410, 395, 445, 520, 580, 615]}],
                         ),
                     ]),
                     html.Div(style=S["card"], children=[
                         stacked_area(
-                            "Struktura dochodów",
-                            subtitle="mld zł — składniki skumulowane",
+                            "Tytuł wykresu — skumulowany",
+                            subtitle="dane przykładowe, 2018–2024",
                             x=YEARS,
                             series=[
-                                {"name": "VAT",    "y": [180, 195, 185, 215, 250, 278, 295]},
-                                {"name": "PIT",    "y": [85, 90, 88, 100, 115, 128, 135]},
-                                {"name": "CIT",    "y": [45, 52, 48, 58, 72, 85, 92]},
-                                {"name": "Akcyza", "y": [70, 73, 74, 72, 83, 89, 93]},
+                                {"name": "Seria A", "y": [180, 195, 185, 215, 250, 278, 295]},
+                                {"name": "Seria B", "y": [85, 90, 88, 100, 115, 128, 135]},
+                                {"name": "Seria C", "y": [45, 52, 48, 58, 72, 85, 92]},
+                                {"name": "Seria D", "y": [70, 73, 74, 72, 83, 89, 93]},
                             ],
                         ),
                     ]),
                     html.Div(style=S["card"], children=[
                         pct_stacked_area(
-                            "Udział składników — 100%",
-                            subtitle="struktura procentowa, 2018–2024",
+                            "Tytuł wykresu — udział 100%",
+                            subtitle="dane przykładowe, 2018–2024",
                             x=YEARS,
                             series=[
-                                {"name": "VAT",    "y": [180, 195, 185, 215, 250, 278, 295]},
-                                {"name": "PIT",    "y": [85, 90, 88, 100, 115, 128, 135]},
-                                {"name": "CIT",    "y": [45, 52, 48, 58, 72, 85, 92]},
-                                {"name": "Akcyza", "y": [70, 73, 74, 72, 83, 89, 93]},
+                                {"name": "Seria A", "y": [180, 195, 185, 215, 250, 278, 295]},
+                                {"name": "Seria B", "y": [85, 90, 88, 100, 115, 128, 135]},
+                                {"name": "Seria C", "y": [45, 52, 48, 58, 72, 85, 92]},
+                                {"name": "Seria D", "y": [70, 73, 74, 72, 83, 89, 93]},
                             ],
                         ),
                     ]),
@@ -509,22 +510,22 @@ app.layout = html.Div(style=S["body"], children=[
                 html.Div(style=S["grid-2"], children=[
                     html.Div(style=S["card"], children=[
                         line_clustered_column(
-                            "Wykonanie vs plan",
-                            subtitle="mld zł — ta sama skala, wspólna oś",
+                            "Tytuł wykresu",
+                            subtitle="dane przykładowe — ta sama skala, wspólna oś",
                             x=[2020, 2021, 2022, 2023, 2024],
-                            bar_series=[{"name": "Wykonanie", "y": [395, 445, 520, 580, 615]}],
-                            line_series=[{"name": "Plan",     "y": [400, 430, 510, 560, 600]}],
+                            bar_series=[{"name": "Seria A (słupki)", "y": [395, 445, 520, 580, 615]}],
+                            line_series=[{"name": "Seria B (linia)", "y": [400, 430, 510, 560, 600]}],
                         ),
                     ]),
                     html.Div(style=S["card"], children=[
                         line_stacked_column(
-                            "Dochody i trend skumulowany",
-                            subtitle="mld zł — składniki + suma liniowa",
+                            "Tytuł wykresu — składniki + suma",
+                            subtitle="dane przykładowe",
                             x=[2020, 2021, 2022, 2023, 2024],
                             bar_series=[
-                                {"name": "VAT", "y": [185, 215, 250, 278, 295]},
-                                {"name": "PIT", "y": [88, 100, 115, 128, 135]},
-                                {"name": "CIT", "y": [48, 58, 72, 85, 92]},
+                                {"name": "Seria A", "y": [185, 215, 250, 278, 295]},
+                                {"name": "Seria B", "y": [88, 100, 115, 128, 135]},
+                                {"name": "Seria C", "y": [48, 58, 72, 85, 92]},
                             ],
                             line_series=[{"name": "Razem", "y": [321, 373, 437, 491, 522]}],
                         ),
@@ -533,33 +534,33 @@ app.layout = html.Div(style=S["body"], children=[
             ]),
 
             html.Div(style=S["group"], children=[
-                html.Div("combo_subplots — panele ze wspólną osią X (wzorzec fiskalny IBCS)", style=S["group-title"]),
+                html.Div("combo_subplots — panele ze wspólną osią X", style=S["group-title"]),
                 html.Div(style=S["grid-2"], children=[
                     html.Div(style=S["card"], children=[
                         combo_subplots(
-                            "Dochody / Wydatki / Saldo",
-                            subtitle="mld zł, 2018–2024 — różne skale wymagają paneli",
+                            "Tytuł wykresu — 3 panele",
+                            subtitle="dane przykładowe — różne skale wymagają paneli",
                             x=YEARS,
                             panels=[
-                                {"title": "Dochody (mld zł)", "type": "bar",
-                                 "series": [{"name": "Dochody", "y": [380, 410, 395, 445, 520, 580, 615]}]},
-                                {"title": "Wydatki (mld zł)", "type": "bar",
-                                 "series": [{"name": "Wydatki", "y": [410, 440, 470, 488, 565, 630, 665]}]},
-                                {"title": "Saldo (mld zł)", "type": "line", "diverging": True,
-                                 "series": [{"name": "Saldo", "y": [-30, -30, -75, -43, -45, -50, -50]}]},
+                                {"title": "Miara A", "type": "bar",
+                                 "series": [{"name": "Seria A", "y": [380, 410, 395, 445, 520, 580, 615]}]},
+                                {"title": "Miara B", "type": "bar",
+                                 "series": [{"name": "Seria B", "y": [410, 440, 470, 488, 565, 630, 665]}]},
+                                {"title": "Miara C (dywerg.)", "type": "line", "diverging": True,
+                                 "series": [{"name": "Seria C", "y": [-30, -30, -75, -43, -45, -50, -50]}]},
                             ],
                         ),
                     ]),
                     html.Div(style=S["card"], children=[
                         combo_subplots(
-                            "Inflacja i stopy procentowe",
-                            subtitle="% — dwie miary, różne skale",
+                            "Tytuł wykresu — 2 panele",
+                            subtitle="dane przykładowe",
                             x=YEARS,
                             panels=[
-                                {"title": "Inflacja CPI (%)", "type": "line",
-                                 "series": [{"name": "CPI", "y": [1.2, 2.3, 3.4, 5.1, 14.4, 11.5, 4.7]}]},
-                                {"title": "Stopa NBP (%)", "type": "line",
-                                 "series": [{"name": "NBP", "y": [1.5, 1.5, 0.1, 0.1, 6.75, 5.75, 5.75]}]},
+                                {"title": "Miara A", "type": "line",
+                                 "series": [{"name": "Seria A", "y": [1.2, 2.3, 3.4, 5.1, 14.4, 11.5, 4.7]}]},
+                                {"title": "Miara B", "type": "line",
+                                 "series": [{"name": "Seria B", "y": [1.5, 1.5, 0.1, 0.1, 6.75, 5.75, 5.75]}]},
                             ],
                         ),
                     ]),
@@ -576,23 +577,23 @@ app.layout = html.Div(style=S["body"], children=[
                 html.Div(style=S["grid-2"], children=[
                     html.Div(style=S["card"], children=[
                         waterfall_contribution(
-                            "Struktura salda fiskalnego",
-                            subtitle="mld zł, 2024 — jak składniki tworzą wynik",
-                            categories=["VAT", "PIT", "CIT", "Akcyza", "Świadczenia",
-                                        "Inwestycje", "Pozostałe", "Razem"],
+                            "Tytuł wykresu — składniki wyniku",
+                            subtitle="dane przykładowe",
+                            categories=["Składnik A", "Składnik B", "Składnik C", "Składnik D",
+                                        "Korekta A", "Korekta B", "Korekta C", "Wynik"],
                             values=[295, 135, 92, 93, -390, -180, -95, -50],
-                            total_label="Razem",
+                            total_label="Wynik",
                         ),
                     ]),
                     html.Div(style=S["card"], children=[
                         waterfall_variance(
-                            "Zmiana długu 2023→2024",
-                            subtitle="mld zł — co zmieniło poziom długu",
-                            categories=["Dług 2023", "Nowe emisje", "Spłaty",
-                                        "Kurs walut", "Inne", "Dług 2024"],
+                            "Tytuł wykresu — zmiana wartości",
+                            subtitle="dane przykładowe",
+                            categories=["Start", "Wzrost A", "Spadek A",
+                                        "Wzrost B", "Korekta", "Koniec"],
                             values=[1240, 180, -140, 35, 15, 1330],
-                            base_label="Dług 2023",
-                            final_label="Dług 2024",
+                            base_label="Start",
+                            final_label="Koniec",
                         ),
                     ]),
                 ]),
@@ -608,24 +609,22 @@ app.layout = html.Div(style=S["body"], children=[
                 html.Div(style=S["grid-2"], children=[
                     html.Div(style=S["card"], children=[
                         scatter_basic(
-                            "Dług a deficyt",
-                            subtitle="% PKB, kraje UE — korelacja",
+                            "Tytuł wykresu — korelacja X i Y",
+                            subtitle="dane przykładowe",
                             x=[32, 44, 54, 82, 103, 105, 109, 112, 137, 163],
                             y=[-0.3, -3.2, -5.1, -2.1, -3.4, -4.8, -5.5, -3.1, -7.2, -1.6],
-                            labels=["Szwecja", "Czechy", "Polska", "Austria", "Belgia",
-                                    "Hiszpania", "Francja", "Portugalia", "Włochy", "Grecja"],
+                            labels=[f"Obs. {i}" for i in range(1, 11)],
                             trendline=True,
                         ),
                     ]),
                     html.Div(style=S["card"], children=[
                         scatter_bubble(
-                            "PKB, dług i populacja",
-                            subtitle="kraje UE — rozmiar = populacja",
+                            "Tytuł wykresu — rozmiar bąbla = trzecia zmienna",
+                            subtitle="dane przykładowe",
                             x=[32, 44, 54, 82, 103, 109, 137],
                             y=[3.1, 4.2, 3.1, 1.2, 1.8, 2.4, 0.8],
                             size=[38, 10, 38, 9, 11, 68, 60],
-                            labels=["Szwecja", "Czechy", "Polska", "Austria",
-                                    "Belgia", "Francja", "Włochy"],
+                            labels=[f"Obs. {i}" for i in range(1, 8)],
                         ),
                     ]),
                 ]),
@@ -642,22 +641,22 @@ app.layout = html.Div(style=S["body"], children=[
                 html.Div(style=S["grid-2"], children=[
                     html.Div(style=S["card"], children=[
                         histogram(
-                            "Rozkład deficytów fiskalnych",
-                            subtitle="% PKB, kraje UE — 2024",
+                            "Tytuł wykresu — rozkład",
+                            subtitle="dane przykładowe",
                             x=[-7.2, -5.5, -5.1, -4.9, -4.8, -3.4, -3.2, -3.2,
                                -2.1, -1.7, -1.6, -0.3, 0.6, 3.2],
-                            x_label="Saldo fiskalne (% PKB)",
+                            x_label="Zmienna X",
                             nbins=8,
                         ),
                     ]),
                     html.Div(style=S["card"], children=[
                         histogram(
-                            "Rozkład wzrostu PKB",
-                            subtitle="%, kraje UE 2015–2024",
+                            "Tytuł wykresu — rozkład (więcej obserwacji)",
+                            subtitle="dane przykładowe",
                             x=[-8.9, -7.9, -5.5, -4.6, -2.5, 0.0, 0.1, 0.2, 0.5, 0.7,
                                0.9, 0.9, 1.0, 1.1, 1.5, 1.8, 1.9, 2.4, 2.6, 3.0,
                                3.1, 3.1, 3.5, 3.7, 4.5, 5.3, 5.9, 6.4, 7.2],
-                            x_label="Wzrost PKB (%)",
+                            x_label="Zmienna X",
                         ),
                     ]),
                 ]),
@@ -668,23 +667,23 @@ app.layout = html.Div(style=S["body"], children=[
                 html.Div(style=S["grid-2"], children=[
                     html.Div(style=S["card"], children=[
                         box_plot(
-                            "Wzrost PKB wg dekad",
-                            subtitle="% — mediana, IQR i outliery",
+                            "Tytuł wykresu — rozkłady wg grup",
+                            subtitle="dane przykładowe — mediana, IQR i outliery",
                             data={
-                                "2000–2009": [1.2, 3.4, 5.9, 4.0, 2.1, 6.2, 3.8, 1.0, 0.5, 4.5],
-                                "2010–2019": [1.5, 2.3, 4.7, 3.1, 0.8, 2.9, 3.6, 1.4, 2.0, 3.0],
-                                "2020–2024": [-8.9, 5.9, 5.3, 0.1, 3.1],
+                                "Grupa A": [1.2, 3.4, 5.9, 4.0, 2.1, 6.2, 3.8, 1.0, 0.5, 4.5],
+                                "Grupa B": [1.5, 2.3, 4.7, 3.1, 0.8, 2.9, 3.6, 1.4, 2.0, 3.0],
+                                "Grupa C": [-8.9, 5.9, 5.3, 0.1, 3.1],
                             },
                         ),
                     ]),
                     html.Div(style=S["card"], children=[
                         violin_plot(
-                            "Rozkład dochodów podatkowych",
-                            subtitle="% PKB — kształt rozkładu",
+                            "Tytuł wykresu — kształt rozkładu",
+                            subtitle="dane przykładowe",
                             data={
-                                "Podatki bezpośrednie": [20, 22, 18, 25, 19, 23, 21, 24, 17, 26, 20, 22],
-                                "Podatki pośrednie":    [28, 30, 27, 32, 29, 31, 28, 33, 27, 30, 29, 31],
-                                "Składki społeczne":    [12, 14, 11, 15, 13, 12, 14, 16, 11, 13, 14, 12],
+                                "Seria A": [20, 22, 18, 25, 19, 23, 21, 24, 17, 26, 20, 22],
+                                "Seria B": [28, 30, 27, 32, 29, 31, 28, 33, 27, 30, 29, 31],
+                                "Seria C": [12, 14, 11, 15, 13, 12, 14, 16, 11, 13, 14, 12],
                             },
                         ),
                     ]),
@@ -701,21 +700,20 @@ app.layout = html.Div(style=S["body"], children=[
                 html.Div(style=S["grid-2"], children=[
                     html.Div(style=S["card"], children=[
                         funnel(
-                            "Lejek konwersji budżetowej",
-                            subtitle="planowanie → wykonanie (tys. projektów)",
-                            stages=["Wnioski złożone", "Zatwierdzone", "W realizacji",
-                                    "Zakończone", "Rozliczone"],
+                            "Tytuł wykresu — lejek konwersji",
+                            subtitle="dane przykładowe",
+                            stages=["Etap 1", "Etap 2", "Etap 3", "Etap 4", "Etap 5"],
                             values=[12400, 8900, 6200, 4800, 4100],
                         ),
                     ]),
                     html.Div(style=S["card"], children=[
                         treemap(
-                            "Struktura budżetu",
-                            subtitle="mld zł — pole = wartość",
-                            labels=["Razem", "Dochody", "Wydatki", "VAT", "PIT",
-                                    "Świadczenia", "Inwestycje", "Obsługa długu"],
-                            parents=["", "Razem", "Razem", "Dochody", "Dochody",
-                                     "Wydatki", "Wydatki", "Wydatki"],
+                            "Tytuł wykresu — struktura hierarchiczna",
+                            subtitle="dane przykładowe — pole = wartość",
+                            labels=["Razem", "Grupa A", "Grupa B",
+                                    "A1", "A2", "B1", "B2", "B3"],
+                            parents=["", "Razem", "Razem",
+                                     "Grupa A", "Grupa A", "Grupa B", "Grupa B", "Grupa B"],
                             values=[0, 615, 665, 295, 135, 390, 180, 68],
                         ),
                     ]),
@@ -727,8 +725,8 @@ app.layout = html.Div(style=S["body"], children=[
                 html.Div(style=S["grid-3"], children=[
                     html.Div(style=S["card"], children=[
                         gauge(
-                            "Wykonanie planu",
-                            subtitle="% celu rocznego",
+                            "Tytuł — wskaźnik vs zakres",
+                            subtitle="dane przykładowe",
                             value=78,
                             min_val=0, max_val=100,
                             reference=80,
@@ -737,23 +735,23 @@ app.layout = html.Div(style=S["body"], children=[
                     ]),
                     html.Div(style=S["card"], children=[
                         bullet(
-                            "Dochody podatkowe",
-                            subtitle="mld zł vs plan",
+                            "Tytuł — wartość vs cel",
+                            subtitle="dane przykładowe",
                             value=615,
                             target=600,
                             max_val=750,
-                            suffix=" mld",
+                            suffix=" jedn.",
                         ),
                     ]),
                     html.Div(style=S["card"], children=[
                         bullet(
-                            "Saldo fiskalne",
-                            subtitle="% PKB vs cel SGP",
+                            "Tytuł — wartość vs cel (ujemna)",
+                            subtitle="dane przykładowe",
                             value=-3.2,
                             target=-3.0,
                             min_val=-8.0,
                             max_val=0,
-                            suffix="%",
+                            suffix=" jedn.",
                         ),
                     ]),
                 ]),
@@ -764,27 +762,27 @@ app.layout = html.Div(style=S["body"], children=[
                 html.Div(style=S["grid-2"], children=[
                     html.Div(style=S["card"], children=[
                         ribbon(
-                            "Ranking zadłużenia krajów UE",
-                            subtitle="pozycja od najwyższego zadłużenia, 2020–2024",
+                            "Tytuł wykresu — zmiany pozycji rankingowej",
+                            subtitle="dane przykładowe, 2020–2024",
                             x=[2020, 2021, 2022, 2023, 2024],
                             series=[
-                                {"name": "Grecja",    "ranks": [1, 1, 1, 1, 1]},
-                                {"name": "Włochy",    "ranks": [2, 2, 2, 2, 2]},
-                                {"name": "Portugalia","ranks": [3, 3, 3, 3, 3]},
-                                {"name": "Francja",   "ranks": [4, 4, 4, 4, 4]},
-                                {"name": "Polska",    "ranks": [8, 7, 6, 6, 5]},
+                                {"name": "Podmiot A", "ranks": [1, 1, 1, 1, 1]},
+                                {"name": "Podmiot B", "ranks": [2, 2, 2, 2, 2]},
+                                {"name": "Podmiot C", "ranks": [3, 3, 3, 3, 3]},
+                                {"name": "Podmiot D", "ranks": [4, 4, 4, 4, 4]},
+                                {"name": "Podmiot E", "ranks": [8, 7, 6, 6, 5]},
                             ],
                         ),
                     ]),
                     html.Div(style=S["card"], children=[
                         heatmap_matrix(
-                            "Korelacja wskaźników fiskalnych",
-                            subtitle="kraje UE — wartości 0–1",
-                            x_labels=["Dochody", "Wydatki", "Saldo", "Dług"],
-                            y_labels=["Dochody", "Wydatki", "Saldo", "Dług"],
+                            "Tytuł wykresu — macierz korelacji",
+                            subtitle="dane przykładowe",
+                            x_labels=["Zmienna A", "Zmienna B", "Zmienna C", "Zmienna D"],
+                            y_labels=["Zmienna A", "Zmienna B", "Zmienna C", "Zmienna D"],
                             z_values=[
                                 [1.00,  0.82, -0.41, -0.23],
-                                [0.82,  1.00, -0.78, 0.15],
+                                [0.82,  1.00, -0.78,  0.15],
                                 [-0.41, -0.78, 1.00, -0.56],
                                 [-0.23,  0.15, -0.56, 1.00],
                             ],
@@ -804,28 +802,24 @@ app.layout = html.Div(style=S["body"], children=[
                 html.Div(style=S["grid-2"], children=[
                     html.Div(style=S["card"], children=[
                         choropleth_map(
-                            "Dług publiczny w Europie",
-                            subtitle="% PKB, 2024",
+                            "Tytuł mapy — miara A wg kraju",
+                            subtitle="dane przykładowe — skala sekwencyjna",
                             locations=["POL", "DEU", "FRA", "ITA", "CZE", "GRC",
                                        "ESP", "PRT", "AUT", "BEL", "SWE", "DNK"],
                             values=[54.1, 63.2, 109.1, 137.3, 44.1, 163.0,
                                     103.0, 112.0, 82.0, 105.0, 32.0, 29.0],
-                            hover_labels=["Polska", "Niemcy", "Francja", "Włochy", "Czechy",
-                                          "Grecja", "Hiszpania", "Portugalia", "Austria",
-                                          "Belgia", "Szwecja", "Dania"],
+                            hover_labels=[f"Region {chr(65+i)}" for i in range(12)],
                         ),
                     ]),
                     html.Div(style=S["card"], children=[
                         choropleth_map(
-                            "Saldo fiskalne w Europie",
-                            subtitle="% PKB, 2024 — zielony = nadwyżka",
+                            "Tytuł mapy — miara B wg kraju (dywergentna)",
+                            subtitle="dane przykładowe — zielony = wartości dodatnie",
                             locations=["POL", "DEU", "FRA", "ITA", "CZE", "GRC",
                                        "ESP", "PRT", "AUT", "SWE", "DNK"],
                             values=[-5.1, -1.7, -5.5, -7.2, -1.6, -1.6,
                                     -3.4, -3.1, -2.1, 0.6, 3.2],
-                            hover_labels=["Polska", "Niemcy", "Francja", "Włochy", "Czechy",
-                                          "Grecja", "Hiszpania", "Portugalia", "Austria",
-                                          "Szwecja", "Dania"],
+                            hover_labels=[f"Region {chr(65+i)}" for i in range(11)],
                             color_scale="diverging",
                         ),
                     ]),
@@ -837,25 +831,22 @@ app.layout = html.Div(style=S["body"], children=[
                 html.Div(style=S["grid-2"], children=[
                     html.Div(style=S["card"], children=[
                         bubble_map(
-                            "Rozmiar PKB w Europie",
-                            subtitle="bąbel = PKB (mld EUR), 2024",
+                            "Tytuł mapy — bąbel = miara A",
+                            subtitle="dane przykładowe",
                             lat=[52.2, 51.2, 46.2, 41.9, 50.1, 40.4, 38.7, 47.5, 50.8, 59.3, 55.7],
                             lon=[21.0, 10.4, 2.2, 12.5, 15.5, -3.7, -9.1, 14.6, 4.4, 18.1, 12.6],
                             size=[680, 4200, 2800, 2100, 290, 1500, 270, 470, 560, 580, 400],
-                            labels=["Polska", "Niemcy", "Francja", "Włochy", "Czechy",
-                                    "Hiszpania", "Portugalia", "Austria", "Belgia",
-                                    "Szwecja", "Dania"],
+                            labels=[f"Region {chr(65+i)}" for i in range(11)],
                         ),
                     ]),
                     html.Div(style=S["card"], children=[
                         bubble_map(
-                            "Wzrost PKB",
-                            subtitle="bąbel = tempo wzrostu, Europa 2024",
+                            "Tytuł mapy — bąbel = miara B",
+                            subtitle="dane przykładowe",
                             lat=[52.2, 51.2, 46.2, 41.9, 50.1, 40.4, 47.5, 59.3],
                             lon=[21.0, 10.4, 2.2, 12.5, 15.5, -3.7, 14.6, 18.1],
                             size=[3.1, 0.2, 1.1, 0.7, 1.5, 3.2, 0.8, 2.6],
-                            labels=["Polska", "Niemcy", "Francja", "Włochy",
-                                    "Czechy", "Hiszpania", "Austria", "Szwecja"],
+                            labels=[f"Region {chr(65+i)}" for i in range(8)],
                         ),
                     ]),
                 ]),
@@ -871,8 +862,8 @@ app.layout = html.Div(style=S["body"], children=[
                 html.Div(style=S["grid-2"], children=[
                     html.Div(style=S["card"], children=[
                         candlestick(
-                            "Rentowność 10-letnich obligacji PL",
-                            subtitle="%, dane dzienne — stylizowane",
+                            "Tytuł wykresu — instrument A",
+                            subtitle="dane przykładowe OHLC",
                             dates=["2024-01", "2024-02", "2024-03", "2024-04",
                                    "2024-05", "2024-06", "2024-07", "2024-08",
                                    "2024-09", "2024-10", "2024-11", "2024-12"],
@@ -888,8 +879,8 @@ app.layout = html.Div(style=S["body"], children=[
                     ]),
                     html.Div(style=S["card"], children=[
                         candlestick(
-                            "Kurs EUR/PLN",
-                            subtitle="dane miesięczne 2024 — stylizowane",
+                            "Tytuł wykresu — instrument B",
+                            subtitle="dane przykładowe OHLC",
                             dates=["2024-01", "2024-02", "2024-03", "2024-04",
                                    "2024-05", "2024-06", "2024-07", "2024-08",
                                    "2024-09", "2024-10", "2024-11", "2024-12"],
@@ -916,31 +907,31 @@ app.layout = html.Div(style=S["body"], children=[
                 html.Div(style=S["grid-2"], children=[
                     html.Div(style=S["card"], children=[
                         table_basic(
-                            "Wskaźniki fiskalne",
-                            subtitle="% PKB, 2024",
-                            headers=["Kraj", "Dochody", "Wydatki", "Saldo", "Dług"],
+                            "Tytuł tabeli",
+                            subtitle="dane przykładowe",
+                            headers=["Atrybut", "Miara A", "Miara B", "Miara C", "Miara D"],
                             rows=[
-                                ["Polska",    47.2, 50.4, -3.2, 54.1],
-                                ["Niemcy",    45.8, 47.5, -1.7, 63.2],
-                                ["Francja",   52.3, 55.8, -5.5, 109.1],
-                                ["Włochy",    48.1, 51.2, -7.2, 137.3],
-                                ["Czechy",    43.6, 45.1, -1.6, 44.1],
-                                ["Węgry",     44.2, 49.1, -4.9, 73.4],
+                                ["Wiersz A", 47.2, 50.4, -3.2, 54.1],
+                                ["Wiersz B", 45.8, 47.5, -1.7, 63.2],
+                                ["Wiersz C", 52.3, 55.8, -5.5, 109.1],
+                                ["Wiersz D", 48.1, 51.2, -7.2, 137.3],
+                                ["Wiersz E", 43.6, 45.1, -1.6, 44.1],
+                                ["Wiersz F", 44.2, 49.1, -4.9, 73.4],
                             ],
                             number_cols={1, 2, 3, 4},
                         ),
                     ]),
                     html.Div(style=S["card"], children=[
                         table_heatmap(
-                            "Wzrost PKB — mapa ciepła",
-                            subtitle="%, 2019–2024 — kolor = intensywność wzrostu",
-                            headers=["Kraj", "2019", "2020", "2021", "2022", "2023", "2024"],
+                            "Tytuł tabeli — mapa ciepła",
+                            subtitle="dane przykładowe — kolor = intensywność",
+                            headers=["Atrybut", "Rok 1", "Rok 2", "Rok 3", "Rok 4", "Rok 5", "Rok 6"],
                             rows=[
-                                ["Polska",    4.5, -2.5, 5.9, 5.3, 0.1, 3.1],
-                                ["Niemcy",    1.0, -4.6, 3.1, 1.9, -0.3, 0.2],
-                                ["Francja",   1.8, -7.9, 6.4, 2.6, 0.9, 1.1],
-                                ["Włochy",    0.5, -8.9, 7.2, 3.7, 0.9, 0.7],
-                                ["Czechy",    3.0, -5.5, 3.5, 2.4, 0.0, 1.5],
+                                ["Wiersz A", 4.5, -2.5, 5.9, 5.3, 0.1, 3.1],
+                                ["Wiersz B", 1.0, -4.6, 3.1, 1.9, -0.3, 0.2],
+                                ["Wiersz C", 1.8, -7.9, 6.4, 2.6, 0.9, 1.1],
+                                ["Wiersz D", 0.5, -8.9, 7.2, 3.7, 0.9, 0.7],
+                                ["Wiersz E", 3.0, -5.5, 3.5, 2.4, 0.0, 1.5],
                             ],
                             number_cols={1, 2, 3, 4, 5, 6},
                             diverging=True,
@@ -958,21 +949,21 @@ app.layout = html.Div(style=S["body"], children=[
                 html.Div("pie_chart — donut i kołowy", style=S["group-title"]),
                 html.Div(style=S["grid-3"], children=[
                     html.Div(style=S["card"], children=[
-                        pie_chart("Struktura dochodów",
+                        pie_chart("Tytuł — struktura (5 kategorii)",
                                   subtitle="donut — max 5 kategorii",
-                                  labels=["VAT", "PIT", "CIT", "Akcyza", "Pozostałe"],
+                                  labels=["Kat. A", "Kat. B", "Kat. C", "Kat. D", "Kat. E"],
                                   values=[295, 135, 92, 93, 60]),
                     ]),
                     html.Div(style=S["card"], children=[
-                        pie_chart("Struktura wydatków",
+                        pie_chart("Tytuł — struktura (3 kategorie)",
                                   subtitle="donut — trzy kategorie",
-                                  labels=["Świadczenia", "Inwestycje", "Pozostałe"],
+                                  labels=["Kat. A", "Kat. B", "Kat. C"],
                                   values=[390, 180, 95]),
                     ]),
                     html.Div(style=S["card"], children=[
-                        pie_chart("Dług wg walut",
-                                  subtitle="kołowy (bez środka)",
-                                  labels=["PLN", "EUR", "USD", "Inne"],
+                        pie_chart("Tytuł — kołowy (bez środka)",
+                                  subtitle="pie — cztery kategorie",
+                                  labels=["Kat. A", "Kat. B", "Kat. C", "Kat. D"],
                                   values=[68, 22, 7, 3],
                                   donut=False),
                     ]),
