@@ -299,11 +299,13 @@ app.layout = html.Div(style=S["body"], children=[
 
             # ── KPI cards ────────────────────────────────────────────────────
             html.H2("KPI — karty wskaźników", id="kpi", style={**S["section-heading"], "marginTop": 0}),
-            html.P("kpi_standard: duża liczba z trendem. kpi_compact: dense — wiele wskaźników w rzędzie.",
-                   style=S["section-desc"]),
+            html.P(
+                "kpi_standard — duża liczba z trendem i jednostką. "
+                "Wariant: kpi_compact (dense, wiele wskaźników w rzędzie).",
+                style=S["section-desc"],
+            ),
 
             html.Div(style=S["group"], children=[
-                html.Div("kpi_standard", style=S["group-title"]),
                 html.Div(style=S["grid-auto"], children=[
                     kpi_standard(m.MEASURES["measure_a"].label,
                                  m.MEASURES["measure_a"].kpi_value(_scalars["measure_a"]),
@@ -315,33 +317,7 @@ app.layout = html.Div(style=S["body"], children=[
                                  trend="▼ −0,3", trend_color=NEGATIVE),
                     kpi_standard(m.MEASURES["measure_c"].label,
                                  m.MEASURES["measure_c"].kpi_value(_scalars["measure_c"]),
-                                 unit=m.MEASURES["measure_c"].unit,
-                                 trend="▲ +0,5", trend_color=POSITIVE),
-                    kpi_standard(m.MEASURES["measure_d"].label,
-                                 m.MEASURES["measure_d"].kpi_value(_scalars["measure_d"]),
-                                 unit=m.MEASURES["measure_d"].unit),
-                ]),
-            ]),
-
-            html.Div(style=S["group"], children=[
-                html.Div("kpi_compact", style=S["group-title"]),
-                html.Div(style=S["grid-auto"], children=[
-                    kpi_compact(m.MEASURES["measure_a"].label,
-                                m.MEASURES["measure_a"].kpi_value(_scalars["measure_a"]),
-                                trend="▼ −0,3"),
-                    kpi_compact(m.MEASURES["measure_b"].label,
-                                m.MEASURES["measure_b"].kpi_value(_scalars["measure_b"])),
-                    kpi_compact(m.MEASURES["measure_c"].label,
-                                m.MEASURES["measure_c"].kpi_value(_scalars["measure_c"]),
-                                trend="▲ +0,6", trend_color=POSITIVE),
-                    kpi_compact(m.MEASURES["measure_d"].label,
-                                m.MEASURES["measure_d"].kpi_value(_scalars["measure_d"]),
-                                trend="▲ +8,4%", trend_color=POSITIVE),
-                    kpi_compact(m.MEASURES["measure_e"].label,
-                                m.MEASURES["measure_e"].kpi_value(_scalars["measure_e"])),
-                    kpi_compact(m.MEASURES["measure_a_pct"].label,
-                                m.MEASURES["measure_a_pct"].kpi_value(_scalars["measure_a_pct"]),
-                                trend_color=POSITIVE),
+                                 unit=m.MEASURES["measure_c"].unit),
                 ]),
             ]),
 
