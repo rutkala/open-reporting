@@ -306,18 +306,11 @@ app.layout = html.Div(style=S["body"], children=[
             ),
 
             html.Div(style=S["group"], children=[
-                html.Div(style=S["grid-auto"], children=[
+                html.Div(style={"maxWidth": "220px"}, children=[
                     kpi_standard(m.MEASURES["measure_a"].label,
                                  m.MEASURES["measure_a"].kpi_value(_scalars["measure_a"]),
                                  unit=m.MEASURES["measure_a"].unit,
                                  trend="▲ +0,8", trend_color=POSITIVE),
-                    kpi_standard(m.MEASURES["measure_b"].label,
-                                 m.MEASURES["measure_b"].kpi_value(_scalars["measure_b"]),
-                                 unit=m.MEASURES["measure_b"].unit,
-                                 trend="▼ −0,3", trend_color=NEGATIVE),
-                    kpi_standard(m.MEASURES["measure_c"].label,
-                                 m.MEASURES["measure_c"].kpi_value(_scalars["measure_c"]),
-                                 unit=m.MEASURES["measure_c"].unit),
                 ]),
             ]),
 
