@@ -99,8 +99,8 @@ def pct_stacked_column(title, x, series, subtitle="", show_labels=False):
     norm_series = []
     for s in series:
         norm_y = [
-            round(v / totals[i] * 100, 1) if totals[i] else 0
-            for i, v in enumerate(s["y"])
+            round(s["y"][i] / totals[i] * 100, 1) if totals[i] else 0
+            for i in range(min(len(s["y"]), n))
         ]
         norm_series.append({**s, "y": norm_y})
 
@@ -186,8 +186,8 @@ def pct_stacked_bar(title, categories, series, subtitle="", show_labels=False):
     norm_series = []
     for s in series:
         norm_y = [
-            round(v / totals[i] * 100, 1) if totals[i] else 0
-            for i, v in enumerate(s["y"])
+            round(s["y"][i] / totals[i] * 100, 1) if totals[i] else 0
+            for i in range(min(len(s["y"]), n))
         ]
         norm_series.append({**s, "y": norm_y})
 

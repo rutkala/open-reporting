@@ -107,21 +107,22 @@ class Measure:
         """
         return {"name": self.label, "y": self.values(df, by)}
 
-    def scalar(self, df: pd.DataFrame) -> float:
+    def scalar(self, df: pd.DataFrame, by: Optional["Dimension"] = None) -> float:
         """
         Single aggregated value across the whole DataFrame — for KPI cards.
-        Applies calc transformation: pct_change → last period's change,
-        cumsum → running total, pct_of_total → last value's share.
+
+        For measures without calc: returns the column aggregated over all rows.
+        For derived measures (calc set): requires ``by`` (a time Dimension) so
+        that the aggregation is performed per period before the transformation —
+        matching the same path as values().  Returns the last non-NaN value in
+        the transformed series.  Without ``by``, falls back to raw aggregation
+        (calc is ignored) and logs a warning.
         """
-        raw = _safe_float(df[self.column].agg(self.aggregation))
-        if self.calc is None:
-            return raw
-        # For scalar context, derive a single representative value from the
-        # full time-series so the KPI card reflects the transformed metric.
-        vals = [_safe_float(v) for v in df[self.column].tolist()]
-        transformed = _apply_calc(vals, self.calc)
-        # Return last non-NaN value (most recent period)
-        for v in reversed(transformed):
+        if self.calc is None or by is None:
+            return _safe_float(df[self.column].agg(self.aggregation))
+        # Aggregate per period (same as values()), then take the last result
+        vals = self.values(df, by)
+        for v in reversed(vals):
             if not math.isnan(v):
                 return v
         return float("nan")
@@ -132,9 +133,13 @@ class Measure:
             return "—"
         return self.format.format(v)
 
-    def kpi_value(self, df: pd.DataFrame) -> str:
-        """Formatted scalar string ready for kpi_standard / kpi_compact."""
-        return self.format_value(self.scalar(df))
+    def kpi_value(self, df: pd.DataFrame, by: Optional["Dimension"] = None) -> str:
+        """
+        Formatted scalar string ready for kpi_standard / kpi_compact.
+        Pass ``by`` (the time Dimension) for derived measures so the correct
+        per-period aggregation is applied before the calc transformation.
+        """
+        return self.format_value(self.scalar(df, by=by))
 
 
 # ── Internal helpers ──────────────────────────────────────────────────────────
