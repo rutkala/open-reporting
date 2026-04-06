@@ -77,7 +77,8 @@ Execute the appropriate next steps in sequence, pausing for user approval at eac
 3. **Implement** — create feature branch, write code, commit
 4. `/review` — standards compliance check before PR
 5. **Open PR** — push branch, create PR with review output and acceptance criteria checklist
-6. **Merge** — after approval, merge to main
-7. `/document` — update affected docs, RELEASE_NOTES.md
-8. **Lessons learned (mandatory)** — after every issue, reflect on what went wrong or could go better. Update standards, skills, or playbooks based on findings. See `/document` Step 5.
-9. **Close** — Linear issue → **Done** (only after PR is merged), delete feature branch
+6. **Codex review loop (when available)** — Codex triggers when a PR is opened or when you comment `@codex review`. After each review, read findings with `gh api repos/rutkala/open-reporting/pulls/{N}/comments` and `gh api repos/rutkala/open-reporting/pulls/{N}/reviews`. Fix every P1, push, then comment `@codex review` to trigger re-review. Repeat until no new P1s. P2s can be fixed in the same PR or captured as follow-up issues. If Codex is rate-limited or unavailable, proceed to merge — do not block on it.
+7. **Merge** — after approval and Codex findings addressed, merge to main
+8. `/document` — update affected docs, RELEASE_NOTES.md
+9. **Lessons learned (mandatory)** — after every issue, reflect on what went wrong or could go better. Update standards, skills, or playbooks based on findings. See `/document` Step 5.
+10. **Close** — Linear issue → **Done** (only after PR is merged), delete feature branch

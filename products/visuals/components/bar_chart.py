@@ -223,3 +223,79 @@ def bar_diverging(title, x, values, subtitle="", show_labels=False):
         yaxis={"zeroline": True, "zerolinewidth": 1.5, "zerolinecolor": "#C5D0D8"},
     ))
     return _chart(title=title, subtitle=subtitle, figure=fig)
+
+
+# ── Clustered-stacked variants ─────────────────────────────────────────────────
+
+def clustered_stacked_column(title, x, groups, subtitle=""):
+    """
+    Clustered-stacked column chart — groups clustered side by side, series
+    stacked within each group.
+
+    Args:
+        x:      list of category labels (shared x-axis)
+        groups: list of group dicts:
+                [{"name": str, "series": [{"name": str, "y": list[float]}]}]
+                Series colour is consistent across groups (index-based).
+    """
+    fig = go.Figure()
+    for gi, group in enumerate(groups):
+        cumulative = [0.0] * len(x)
+        for si, s in enumerate(group["series"]):
+            color = COLORWAY[si % len(COLORWAY)]
+            fig.add_trace(go.Bar(
+                name=s["name"],
+                x=x,
+                y=s["y"],
+                offsetgroup=gi,
+                base=cumulative[:],
+                marker_color=color,
+                legendgroup=s["name"],
+                showlegend=(gi == 0),
+                customdata=[[group["name"]]] * len(x),
+                hovertemplate=(
+                    "<b>%{customdata[0]}</b><br>"
+                    + s["name"] + ": %{y}<extra></extra>"
+                ),
+            ))
+            cumulative = [c + v for c, v in zip(cumulative, s["y"])]
+
+    legend_items = [{"name": s["name"]} for s in groups[0]["series"]] if groups else []
+    fig.update_layout(_plotly_layout(barmode="overlay", yaxis={"rangemode": "tozero"}))
+    return _chart(title=title, subtitle=subtitle, legend_items=_legend(legend_items), figure=fig)
+
+
+def clustered_stacked_bar(title, categories, groups, subtitle=""):
+    """
+    Clustered-stacked bar chart — horizontal variant of clustered_stacked_column.
+
+    Args:
+        categories: list of category labels (shared y-axis)
+        groups:     same structure as clustered_stacked_column
+    """
+    fig = go.Figure()
+    for gi, group in enumerate(groups):
+        cumulative = [0.0] * len(categories)
+        for si, s in enumerate(group["series"]):
+            color = COLORWAY[si % len(COLORWAY)]
+            fig.add_trace(go.Bar(
+                name=s["name"],
+                x=s["y"],
+                y=categories,
+                orientation="h",
+                offsetgroup=gi,
+                base=cumulative[:],
+                marker_color=color,
+                legendgroup=s["name"],
+                showlegend=(gi == 0),
+                customdata=[[group["name"]]] * len(categories),
+                hovertemplate=(
+                    "<b>%{customdata[0]}</b><br>"
+                    + s["name"] + ": %{x}<extra></extra>"
+                ),
+            ))
+            cumulative = [c + v for c, v in zip(cumulative, s["y"])]
+
+    legend_items = [{"name": s["name"]} for s in groups[0]["series"]] if groups else []
+    fig.update_layout(_bar_layout_h(barmode="overlay"))
+    return _chart(title=title, subtitle=subtitle, legend_items=_legend(legend_items), figure=fig)
