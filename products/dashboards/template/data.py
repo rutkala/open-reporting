@@ -466,3 +466,30 @@ def load_clustered_stacked() -> list:
             {"name": "Seria 3", "y": [10.0,  7.0, 11.0,  8.0,  6.0]},
         ]},
     ]
+
+
+def load_matrix() -> dict:
+    """
+    Sample data for table_matrix (pivot table).
+    5 categories × 4 periods — values at intersections.
+    """
+    categories = ["Category A", "Category B", "Category C", "Category D", "Category E"]
+    periods = ["Q1", "Q2", "Q3", "Q4"]
+    rng = np.random.default_rng(42)
+    values = [[round(float(v), 1) for v in rng.uniform(10, 80, len(periods))]
+              for _ in categories]
+    return {"row_labels": categories, "col_labels": periods, "values": values}
+
+
+def load_data_list() -> list:
+    """Sample items for data_list component."""
+    return [
+        {"label": "Item Alpha",   "value": "1,842"},
+        {"label": "Item Beta",    "value": "1,605"},
+        {"label": "Item Gamma",   "value": "1,347"},
+        {"label": "Item Delta",   "value": "1,219"},
+        {"label": "Item Epsilon", "value": "986"},
+        {"label": "Item Zeta",    "value": "874"},
+        {"label": "Item Eta",     "value": "731"},
+        {"label": "Item Theta",   "value": "612"},
+    ]

@@ -93,6 +93,46 @@ def line_stacked_column(title, x, bar_series, line_series, subtitle=""):
     return _chart(title=title, subtitle=subtitle, legend_items=legend, figure=fig)
 
 
+def line_pct_stacked_column(title, x, bar_series, line_series, subtitle=""):
+    """
+    Line + 100% stacked columns on a shared axis.
+    Columns are normalised to 100%; line shows a rate or % measure.
+
+    Args:
+        bar_series:  list of {"name": str, "y": list, "color": str (optional)}
+        line_series: list of {"name": str, "y": list, "color": str (optional)}
+    """
+    n = len(x)
+    totals = [sum(s["y"][i] for s in bar_series if i < len(s["y"])) for i in range(n)]
+    norm_series = []
+    for s in bar_series:
+        norm_y = [
+            round(s["y"][i] / totals[i] * 100, 1) if totals[i] else 0
+            for i in range(min(len(s["y"]), n))
+        ]
+        norm_series.append({**s, "y": norm_y})
+
+    fig = go.Figure()
+    for i, s in enumerate(norm_series):
+        fig.add_trace(go.Bar(
+            x=x, y=s["y"], name=s["name"],
+            marker_color=s.get("color", COLORWAY[i % len(COLORWAY)]),
+        ))
+    for i, s in enumerate(line_series):
+        color = s.get("color", COLORWAY[(len(bar_series) + i) % len(COLORWAY)])
+        fig.add_trace(go.Scatter(
+            x=x, y=s["y"], name=s["name"], mode="lines+markers",
+            line=dict(color=color, width=2, shape="linear"),
+            marker=dict(size=5, color=color),
+        ))
+    layout = _combo_base_layout(barmode="relative")
+    layout["yaxis"]["ticksuffix"] = "%"
+    fig.update_layout(layout)
+    all_series = bar_series + line_series
+    legend = [(s["name"], s.get("color", COLORWAY[i % len(COLORWAY)])) for i, s in enumerate(all_series)]
+    return _chart(title=title, subtitle=subtitle, legend_items=legend, figure=fig)
+
+
 def combo_subplots(title, x, panels, subtitle=""):
     """
     Stacked subplots sharing x-axis — the IBCS fiscal pattern.

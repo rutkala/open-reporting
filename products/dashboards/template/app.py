@@ -26,7 +26,7 @@ from products.visuals.lib.theme import (
 )
 
 # ── Chart components ──────────────────────────────────────────────────────────
-from products.visuals.components.kpi_card import kpi_standard, kpi_compact
+from products.visuals.components.kpi_card import kpi_standard
 from products.visuals.components.bar_chart import (
     clustered_column, stacked_column, pct_stacked_column,
     clustered_bar, stacked_bar, pct_stacked_bar,
@@ -37,18 +37,21 @@ from products.visuals.components.line_chart import (
     line, area, stacked_area, pct_stacked_area,
 )
 from products.visuals.components.combo_chart import (
-    line_clustered_column, line_stacked_column, combo_subplots,
+    line_clustered_column, line_stacked_column, line_pct_stacked_column,
 )
-from products.visuals.components.waterfall_chart import waterfall_contribution, waterfall_variance
-from products.visuals.components.scatter_chart import scatter_basic, scatter_bubble
-from products.visuals.components.distribution_chart import histogram, box_plot, violin_plot
+from products.visuals.components.waterfall_chart import waterfall_contribution
+from products.visuals.components.scatter_chart import scatter_bubble
+from products.visuals.components.distribution_chart import histogram, box_plot
 from products.visuals.components.special_chart import (
     funnel, treemap, gauge, bullet, ribbon, heatmap_matrix,
 )
 from products.visuals.components.map_chart import choropleth_map, bubble_map
 from products.visuals.components.financial_chart import candlestick
-from products.visuals.components.table_chart import table_basic, table_heatmap
+from products.visuals.components.table_chart import table_basic, table_matrix, data_list
 from products.visuals.components.pie_chart import pie_chart
+from products.visuals.components.slicer import (
+    dropdown_slicer, list_slicer, range_slicer, date_range_slicer, tile_slicer,
+)
 
 import products.dashboards.template.data as _data
 import products.dashboards.template.measures as m
@@ -77,8 +80,9 @@ _df_ribbon           = _data.load_ribbon()
 _df_hmap             = _data.load_heatmap()
 _gauge               = _data.load_gauge()
 _df_table            = _data.load_table()
-_df_thmap            = _data.load_table_heatmap()
 _groups_cs           = _data.load_clustered_stacked()
+_matrix              = _data.load_matrix()
+_list_items          = _data.load_data_list()
 
 # ── Convenience shortcuts ─────────────────────────────────────────────────────
 _years       = m.DIMS["year"].values(_df_by_year)
@@ -251,21 +255,48 @@ app.layout = html.Div(style=S["body"], children=[
         ]),
         html.Hr(id="sidebar-divider", style=S["sidebar-divider"]),
         html.Nav(id="sidebar-nav", style=S["sidebar-nav"], children=[
-            html.A("KPI", href="#kpi", style=S["nav-item-active"]),
-            html.A("Kolumnowe", href="#column", style=S["nav-item"]),
-            html.A("Słupkowe", href="#bar", style=S["nav-item"]),
-            html.A("Liniowe", href="#line", style=S["nav-item"]),
-            html.A("Obszarowe", href="#area", style=S["nav-item"]),
-            html.A("Kombinowane", href="#combo", style=S["nav-item"]),
-            html.A("Kaskadowe", href="#waterfall", style=S["nav-item"]),
-            html.A("Punktowe", href="#scatter", style=S["nav-item"]),
-            html.A("Rozkłady", href="#distribution", style=S["nav-item"]),
-            html.A("Specjalne", href="#special", style=S["nav-item"]),
-            html.A("Mapy", href="#maps", style=S["nav-item"]),
-            html.A("OHLC / świecowe", href="#financial", style=S["nav-item"]),
-            html.A("Tabele", href="#table", style=S["nav-item"]),
-            html.A("Kołowe", href="#pie", style=S["nav-item"]),
-            html.A("Paleta", href="#palette", style=S["nav-item"]),
+            html.A("KPI card", href="#kpi", style=S["nav-item-active"]),
+            html.A("Clustered column", href="#col-clustered", style=S["nav-item"]),
+            html.A("Stacked column", href="#col-stacked", style=S["nav-item"]),
+            html.A("100% stacked column", href="#col-pct", style=S["nav-item"]),
+            html.A("Clustered+stacked column", href="#col-cs", style=S["nav-item"]),
+            html.A("Clustered bar", href="#bar-clustered", style=S["nav-item"]),
+            html.A("Stacked bar", href="#bar-stacked", style=S["nav-item"]),
+            html.A("100% stacked bar", href="#bar-pct", style=S["nav-item"]),
+            html.A("Clustered+stacked bar", href="#bar-cs", style=S["nav-item"]),
+            html.A("Line", href="#line", style=S["nav-item"]),
+            html.A("Clustered area", href="#area-clustered", style=S["nav-item"]),
+            html.A("Stacked area", href="#area-stacked", style=S["nav-item"]),
+            html.A("100% stacked area", href="#area-pct", style=S["nav-item"]),
+            html.A("Line + clustered column", href="#combo-lc", style=S["nav-item"]),
+            html.A("Line + stacked column", href="#combo-ls", style=S["nav-item"]),
+            html.A("Line + 100% stacked column", href="#combo-lp", style=S["nav-item"]),
+            html.A("Scatter / Bubble", href="#scatter", style=S["nav-item"]),
+            html.A("Pie / Donut", href="#pie", style=S["nav-item"]),
+            html.A("Treemap", href="#treemap", style=S["nav-item"]),
+            html.A("Funnel", href="#funnel", style=S["nav-item"]),
+            html.A("Waterfall", href="#waterfall", style=S["nav-item"]),
+            html.A("Histogram", href="#histogram", style=S["nav-item"]),
+            html.A("Box plot", href="#boxplot", style=S["nav-item"]),
+            html.A("Gauge", href="#gauge", style=S["nav-item"]),
+            html.A("Bullet", href="#bullet", style=S["nav-item"]),
+            html.A("Table", href="#table", style=S["nav-item"]),
+            html.A("Matrix / Pivot", href="#matrix", style=S["nav-item"]),
+            html.A("Data list", href="#datalist", style=S["nav-item"]),
+            html.A("Heatmap", href="#heatmap", style=S["nav-item"]),
+            html.A("Choropleth map", href="#choropleth", style=S["nav-item"]),
+            html.A("Bubble map", href="#bubblemap", style=S["nav-item"]),
+            html.A("Ribbon", href="#ribbon", style=S["nav-item"]),
+            html.A("Candlestick", href="#candlestick", style=S["nav-item"]),
+            html.A("— UI / Filters —", href="#slicers",
+                   style={**S["nav-item"], "color": SUBTEXT, "fontSize": "11px",
+                          "marginTop": "8px", "pointerEvents": "none"}),
+            html.A("Dropdown slicer", href="#slicer-dropdown", style=S["nav-item"]),
+            html.A("List slicer", href="#slicer-list", style=S["nav-item"]),
+            html.A("Range slicer", href="#slicer-range", style=S["nav-item"]),
+            html.A("Date range slicer", href="#slicer-date", style=S["nav-item"]),
+            html.A("Tile slicer", href="#slicer-tile", style=S["nav-item"]),
+            html.A("Colour palette", href="#palette", style=S["nav-item"]),
         ]),
         html.Button(id="btn-toggle", style=S["toggle-btn"], children=[
             html.Img(id="toggle-icon", src="/template/assets/images/sidebar.svg",
@@ -278,9 +309,9 @@ app.layout = html.Div(style=S["body"], children=[
 
         html.Div(id="main-header", style=S["main-header"], children=[
             html.Div(children=[
-                html.H1("Komponenty wizualne — referencja",
+                html.H1("Visual components — reference",
                         style={"fontSize": "20px", "fontWeight": 700, "color": TEXT, "margin": 0}),
-                html.P("Wszystkie warianty wykresów z przykładowymi danymi",
+                html.P("One example per chart family — sample data",
                        style={"fontSize": "13px", "color": SUBTEXT, "margin": "4px 0 0"}),
             ]),
             html.Div(style=S["header-actions"], children=[
@@ -297,384 +328,427 @@ app.layout = html.Div(style=S["body"], children=[
 
         html.Div(id="main-content-area", style=S["main-content-area"], children=[
 
-            # ── KPI cards ────────────────────────────────────────────────────
-            html.H2("KPI — karty wskaźników", id="kpi", style={**S["section-heading"], "marginTop": 0}),
-            html.P(
-                "kpi_standard — duża liczba z trendem i jednostką. "
-                "Wariant: kpi_compact (dense, wiele wskaźników w rzędzie).",
-                style=S["section-desc"],
-            ),
-
+            # ── KPI card ─────────────────────────────────────────────────────
+            html.H2("KPI card", id="kpi", style={**S["section-heading"], "marginTop": 0}),
+            html.P("kpi_standard — single prominent metric with optional trend. Variant: kpi_compact (dense row layout).",
+                   style=S["section-desc"]),
             html.Div(style=S["group"], children=[
                 html.Div(style={"maxWidth": "220px"}, children=[
-                    kpi_standard(m.MEASURES["measure_a"].label,
+                    kpi_standard("Measure A",
                                  m.MEASURES["measure_a"].kpi_value(_scalars["measure_a"]),
                                  unit=m.MEASURES["measure_a"].unit,
-                                 trend="▲ +0,8", trend_color=POSITIVE),
+                                 trend="▲ +0.8", trend_color=POSITIVE),
                 ]),
             ]),
 
-            # ── Column charts (vertical) ──────────────────────────────────────
-            html.H2("Wykresy kolumnowe (pionowe)", id="column", style=S["section-heading"]),
-            html.P(
-                "clustered_column — pionowe słupki grupowane. "
-                "Warianty: stacked_column, pct_stacked_column, bar_diverging (+/−), "
-                "clustered_stacked_column (grupy + stosy w pionowych kolumnach).",
-                style=S["section-desc"],
-            ),
-
-            html.Div(style=S["group"], children=[
-                html.Div(style=S["grid-2"], children=[
-                    html.Div(style=S["card"], children=[
-                        clustered_column(
-                            "clustered_column",
-                            subtitle="grupowane pionowe — wiele serii",
-                            x=_categories,
-                            series=[
-                                m.MEASURES["measure_a"].to_series(_df_by_cat["val_a"].tolist()),
-                                m.MEASURES["measure_b"].to_series(_df_by_cat["val_b"].tolist()),
-                                m.MEASURES["measure_c"].to_series(_df_by_cat["val_c"].tolist()),
-                            ],
-                        ),
+            # ── 1. Clustered column ───────────────────────────────────────────
+            html.H2("Clustered column", id="col-clustered", style=S["section-heading"]),
+            html.P("clustered_column — grouped vertical bars, compare multiple series side by side.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
+                clustered_column("Clustered column", subtitle="sample data",
+                    x=_categories,
+                    series=[
+                        {"name": "Measure A", "y": _df_by_cat["val_a"].tolist()},
+                        {"name": "Measure B", "y": _df_by_cat["val_b"].tolist()},
+                        {"name": "Measure C", "y": _df_by_cat["val_c"].tolist()},
                     ]),
-                    html.Div(style=S["card"], children=[
-                        clustered_stacked_column(
-                            "clustered_stacked_column",
-                            subtitle="grupy obok siebie, serie skumulowane wewnątrz grupy",
-                            x=_categories,
-                            groups=_groups_cs,
-                        ),
+            ])]),
+
+            # ── 2. Stacked column ─────────────────────────────────────────────
+            html.H2("Stacked column", id="col-stacked", style=S["section-heading"]),
+            html.P("stacked_column — vertical bars stacked, shows total and composition.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
+                stacked_column("Stacked column", subtitle="sample data",
+                    x=_years,
+                    series=[
+                        {"name": "Measure A", "y": _df_by_year["val_a"].tolist()},
+                        {"name": "Measure B", "y": _df_by_year["val_b"].tolist()},
+                        {"name": "Measure C", "y": _df_by_year["val_c"].tolist()},
+                        {"name": "Measure D", "y": _df_by_year["val_d"].tolist()},
                     ]),
-                ]),
-            ]),
+            ])]),
 
-            # ── Bar charts (horizontal) ───────────────────────────────────────
-            html.H2("Wykresy słupkowe (poziome)", id="bar", style=S["section-heading"]),
-            html.P(
-                "clustered_bar — poziome słupki grupowane; 1 seria → ranking (sortowanie malejąco). "
-                "Warianty: stacked_bar, pct_stacked_bar, "
-                "clustered_stacked_bar (grupy + stosy w poziomych słupkach).",
-                style=S["section-desc"],
-            ),
-
-            html.Div(style=S["group"], children=[
-                html.Div(style=S["card"], children=[
-                    clustered_bar(
-                        "clustered_bar",
-                        subtitle="ranking — sortowanie malejąco, 1 seria",
-                        categories=m.DIMS["label"].values(_df_geo),
-                        series=[m.MEASURES["geo_a"].to_series(_df_geo["val_a"].tolist())],
-                    ),
-                ]),
-            ]),
-
-            # ── Line charts ───────────────────────────────────────────────────
-            html.H2("Wykresy liniowe", id="line", style=S["section-heading"]),
-            html.P(
-                "line — trend w czasie, jedna lub wiele serii. "
-                "Obsługuje linię referencyjną (reference=).",
-                style=S["section-desc"],
-            ),
-
-            html.Div(style=S["group"], children=[
-                html.Div(style=S["card"], children=[
-                    line(
-                        "line",
-                        subtitle="wiele serii — trend w czasie",
-                        x=_years,
-                        series=[
-                            m.MEASURES["measure_a"].to_series(_df_by_year["val_a"].tolist()),
-                            m.MEASURES["measure_b"].to_series(_df_by_year["val_b"].tolist()),
-                            m.MEASURES["measure_e"].to_series(_df_by_year["val_e"].tolist()),
-                        ],
-                        reference={"value": _scalars["measure_b"], "label": "Poziom odniesienia"},
-                    ),
-                ]),
-            ]),
-
-            # ── Area charts ───────────────────────────────────────────────────
-            html.H2("Wykresy obszarowe", id="area", style=S["section-heading"]),
-            html.P(
-                "area — wolumen od zera, wiele serii zachodzących na siebie. "
-                "Warianty: stacked_area (skumulowany), pct_stacked_area (100% skumulowany).",
-                style=S["section-desc"],
-            ),
-
-            html.Div(style=S["group"], children=[
-                html.Div(style=S["card"], children=[
-                    area(
-                        "area",
-                        subtitle="wiele serii od zera — wolumen i porównanie",
-                        x=_years,
-                        series=[
-                            m.MEASURES["measure_a"].to_series(_df_by_year["val_a"].tolist()),
-                            m.MEASURES["measure_b"].to_series(_df_by_year["val_b"].tolist()),
-                            m.MEASURES["measure_c"].to_series(_df_by_year["val_c"].tolist()),
-                        ],
-                    ),
-                ]),
-            ]),
-
-            # ── Combo charts ─────────────────────────────────────────────────
-            html.H2("Wykresy kombinowane", id="combo", style=S["section-heading"]),
-            html.P(
-                "combo_subplots — wspólna oś X, osobne panele dla różnych skal (wzorzec IBCS). "
-                "Warianty: line_clustered_column, line_stacked_column (tylko dla tej samej skali).",
-                style=S["section-desc"],
-            ),
-
-            html.Div(style=S["group"], children=[
-                html.Div(style=S["card"], children=[
-                    combo_subplots(
-                        "combo_subplots",
-                        subtitle="3 panele — różne skale wymagają osobnych paneli",
-                        x=_years,
-                        panels=[
-                            {"title": m.MEASURES["measure_a"].label, "type": "bar",
-                             "series": [m.MEASURES["measure_a"].to_series(_df_by_year["val_a"].tolist())]},
-                            {"title": m.MEASURES["measure_b"].label, "type": "bar",
-                             "series": [m.MEASURES["measure_b"].to_series(_df_by_year["val_b"].tolist())]},
-                            {"title": m.MEASURES["measure_e"].label, "type": "line", "diverging": True,
-                             "series": [m.MEASURES["measure_e"].to_series(_df_by_year["val_e"].tolist())]},
-                        ],
-                    ),
-                ]),
-            ]),
-
-            # ── Waterfall charts ─────────────────────────────────────────────
-            html.H2("Wykresy kaskadowe", id="waterfall", style=S["section-heading"]),
-            html.P(
-                "waterfall_contribution — jak składniki budują wynik końcowy. "
-                "Wariant: waterfall_variance (zmiana wartości między dwoma punktami).",
-                style=S["section-desc"],
-            ),
-
-            html.Div(style=S["group"], children=[
-                html.Div(style=S["card"], children=[
-                    waterfall_contribution(
-                        "waterfall_contribution",
-                        subtitle="składniki wyniku — od punktu startowego do końcowego",
-                        categories=_df_wf_c["dim_stage"].tolist(),
-                        values=_df_wf_c["val_amount"].tolist(),
-                        total_label=_df_wf_c.loc[_df_wf_c["is_total"], "dim_stage"].iloc[0],
-                    ),
-                ]),
-            ]),
-
-            # ── Scatter charts ───────────────────────────────────────────────
-            html.H2("Wykresy punktowe", id="scatter", style=S["section-heading"]),
-            html.P(
-                "scatter_bubble — korelacja X/Y z trzecią zmienną jako rozmiar bąbla. "
-                "Wariant: scatter_basic (bez rozmiaru, z opcjonalną linią trendu).",
-                style=S["section-desc"],
-            ),
-
-            html.Div(style=S["group"], children=[
-                html.Div(style=S["card"], children=[
-                    scatter_bubble(
-                        "scatter_bubble",
-                        subtitle="korelacja X/Y — rozmiar bąbla = trzecia zmienna",
-                        x=_df_sc["val_x"].tolist(),
-                        y=_df_sc["val_y"].tolist(),
-                        size=_df_sc["val_size"].tolist(),
-                        labels=_df_sc["dim_label"].tolist(),
-                    ),
-                ]),
-            ]),
-
-            # ── Distribution charts ───────────────────────────────────────────
-            html.H2("Wykresy rozkładu", id="distribution", style=S["section-heading"]),
-            html.P(
-                "box_plot — mediana, IQR i outliery wg grup — wzorzec do porównań statystycznych. "
-                "Warianty: histogram (częstość wartości), violin_plot (kształt rozkładu).",
-                style=S["section-desc"],
-            ),
-
-            html.Div(style=S["group"], children=[
-                html.Div(style=S["card"], children=[
-                    box_plot(
-                        "box_plot",
-                        subtitle="rozkłady wg grup — mediana, IQR i outliery",
-                        data={
-                            grp: _df_dist.loc[_df_dist["dim_group"] == grp, "val_obs"].tolist()
-                            for grp in _dist_groups
-                        },
-                    ),
-                ]),
-            ]),
-
-            # ── Special charts ────────────────────────────────────────────────
-            html.H2("Wykresy specjalne", id="special", style=S["section-heading"]),
-            html.P(
-                "6 odrębnych typów — każdy do innego celu: "
-                "funnel (konwersja), treemap (hierarchia), gauge (zakres), "
-                "bullet (cel), ribbon (ranking), heatmap_matrix (macierz).",
-                style=S["section-desc"],
-            ),
-
-            html.Div(style=S["group"], children=[
-                html.Div(style=S["grid-2"], children=[
-                    html.Div(style=S["card"], children=[
-                        funnel(
-                            "funnel",
-                            subtitle="etapy konwersji — wartości malejące",
-                            stages=_df_funnel["dim_stage"].tolist(),
-                            values=_df_funnel["val_count"].tolist(),
-                        ),
+            # ── 3. 100% stacked column ────────────────────────────────────────
+            html.H2("100% stacked column", id="col-pct", style=S["section-heading"]),
+            html.P("pct_stacked_column — normalised to 100%, shows composition only.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
+                pct_stacked_column("100% stacked column", subtitle="sample data",
+                    x=_categories,
+                    series=[
+                        {"name": "Measure A", "y": _df_by_cat["val_a"].tolist()},
+                        {"name": "Measure B", "y": _df_by_cat["val_b"].tolist()},
+                        {"name": "Measure C", "y": _df_by_cat["val_c"].tolist()},
                     ]),
-                    html.Div(style=S["card"], children=[
-                        treemap(
-                            "treemap",
-                            subtitle="struktura hierarchiczna — pole = wartość",
-                            labels=_df_tree["dim_node"].tolist(),
-                            parents=_df_tree["dim_parent"].tolist(),
-                            values=_df_tree["val_size"].tolist(),
-                        ),
-                    ]),
-                    html.Div(style=S["card"], children=[
-                        gauge(
-                            "gauge",
-                            subtitle="wartość vs zakres z punktem referencyjnym",
-                            value=_gauge["gauge_value"],
-                            min_val=0, max_val=_gauge["gauge_max"],
-                            reference=_gauge["gauge_target"],
-                            suffix=" jedn.",
-                        ),
-                    ]),
-                    html.Div(style=S["card"], children=[
-                        bullet(
-                            "bullet",
-                            subtitle="wartość vs cel — precyzyjne porównanie",
-                            value=_gauge["bullet_a_value"],
-                            target=_gauge["bullet_a_target"],
-                            max_val=_gauge["bullet_a_max"],
-                            suffix=" jedn.",
-                        ),
-                    ]),
-                    html.Div(style=S["card"], children=[
-                        ribbon(
-                            "ribbon",
-                            subtitle="zmiany pozycji rankingowej w czasie",
-                            x=sorted(_df_ribbon["dim_year"].unique().tolist()),
-                            series=[
-                                {
-                                    "name": entity,
-                                    "ranks": _df_ribbon.loc[
-                                        _df_ribbon["dim_entity"] == entity
-                                    ].sort_values("dim_year")["val_rank"].tolist(),
-                                }
-                                for entity in _df_ribbon["dim_entity"].unique().tolist()
-                            ],
-                        ),
-                    ]),
-                    html.Div(style=S["card"], children=[
-                        heatmap_matrix(
-                            "heatmap_matrix",
-                            subtitle="macierz korelacji — kolor = intensywność",
-                            x_labels=_df_hmap["dim_col"].unique().tolist(),
-                            y_labels=_df_hmap["dim_row"].unique().tolist(),
-                            z_values=[
-                                _df_hmap.loc[_df_hmap["dim_row"] == row, "val_z"].tolist()
-                                for row in _df_hmap["dim_row"].unique().tolist()
-                            ],
-                            color_scale="diverging",
-                        ),
-                    ]),
-                ]),
-            ]),
+            ])]),
 
-            # ── Map charts ────────────────────────────────────────────────────
-            html.H2("Mapy", id="maps", style=S["section-heading"]),
-            html.P(
-                "choropleth_map — regiony wypełnione kolorem (sekwencyjny lub dywergentny). "
-                "Wariant: bubble_map (bąbelki w punktach geograficznych).",
-                style=S["section-desc"],
-            ),
+            # ── 4. Clustered + stacked column ─────────────────────────────────
+            html.H2("Clustered + stacked column", id="col-cs", style=S["section-heading"]),
+            html.P("clustered_stacked_column — groups side by side, series stacked within each group.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
+                clustered_stacked_column("Clustered + stacked column", subtitle="sample data",
+                    x=_categories, groups=_groups_cs),
+            ])]),
 
-            html.Div(style=S["group"], children=[
+            # ── 5. Clustered bar ──────────────────────────────────────────────
+            html.H2("Clustered bar", id="bar-clustered", style=S["section-heading"]),
+            html.P("clustered_bar — horizontal grouped bars; single series sorts descending (ranking).", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
+                clustered_bar("Clustered bar", subtitle="sample data — sorted descending",
+                    categories=m.DIMS["label"].values(_df_geo),
+                    series=[{"name": "Measure A", "y": _df_geo["val_a"].tolist()}]),
+            ])]),
+
+            # ── 6. Stacked bar ────────────────────────────────────────────────
+            html.H2("Stacked bar", id="bar-stacked", style=S["section-heading"]),
+            html.P("stacked_bar — horizontal stacked bars, shows total and composition.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
+                stacked_bar("Stacked bar", subtitle="sample data",
+                    categories=_categories,
+                    series=[
+                        {"name": "Measure A", "y": _df_by_cat["val_a"].tolist()},
+                        {"name": "Measure B", "y": _df_by_cat["val_b"].tolist()},
+                        {"name": "Measure C", "y": _df_by_cat["val_c"].tolist()},
+                    ]),
+            ])]),
+
+            # ── 7. 100% stacked bar ───────────────────────────────────────────
+            html.H2("100% stacked bar", id="bar-pct", style=S["section-heading"]),
+            html.P("pct_stacked_bar — normalised to 100%, horizontal, composition only.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
+                pct_stacked_bar("100% stacked bar", subtitle="sample data",
+                    categories=_categories,
+                    series=[
+                        {"name": "Measure A", "y": _df_by_cat["val_a"].tolist()},
+                        {"name": "Measure B", "y": _df_by_cat["val_b"].tolist()},
+                        {"name": "Measure C", "y": _df_by_cat["val_c"].tolist()},
+                    ]),
+            ])]),
+
+            # ── 8. Clustered + stacked bar ────────────────────────────────────
+            html.H2("Clustered + stacked bar", id="bar-cs", style=S["section-heading"]),
+            html.P("clustered_stacked_bar — horizontal variant of clustered+stacked.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
+                clustered_stacked_bar("Clustered + stacked bar", subtitle="sample data",
+                    categories=_categories, groups=_groups_cs),
+            ])]),
+
+            # ── 9. Line ───────────────────────────────────────────────────────
+            html.H2("Line", id="line", style=S["section-heading"]),
+            html.P("line — trends over time, one or multiple series. Supports reference line.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
+                line("Line", subtitle="sample data",
+                    x=_years,
+                    series=[
+                        {"name": "Measure A", "y": _df_by_year["val_a"].tolist()},
+                        {"name": "Measure B", "y": _df_by_year["val_b"].tolist()},
+                        {"name": "Measure E", "y": _df_by_year["val_e"].tolist()},
+                    ],
+                    reference={"value": _scalars["measure_b"], "label": "Reference"}),
+            ])]),
+
+            # ── 10. Clustered area ────────────────────────────────────────────
+            html.H2("Clustered area", id="area-clustered", style=S["section-heading"]),
+            html.P("area — all series fill from zero, overlapping with transparency. Shows volume.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
+                area("Clustered area", subtitle="sample data",
+                    x=_years,
+                    series=[
+                        {"name": "Measure A", "y": _df_by_year["val_a"].tolist()},
+                        {"name": "Measure B", "y": _df_by_year["val_b"].tolist()},
+                        {"name": "Measure C", "y": _df_by_year["val_c"].tolist()},
+                    ]),
+            ])]),
+
+            # ── 11. Stacked area ──────────────────────────────────────────────
+            html.H2("Stacked area", id="area-stacked", style=S["section-heading"]),
+            html.P("stacked_area — areas stacked cumulatively, shows total and composition over time.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
+                stacked_area("Stacked area", subtitle="sample data",
+                    x=_years,
+                    series=[
+                        {"name": "Measure A", "y": _df_by_year["val_a"].tolist()},
+                        {"name": "Measure B", "y": _df_by_year["val_b"].tolist()},
+                        {"name": "Measure C", "y": _df_by_year["val_c"].tolist()},
+                        {"name": "Measure D", "y": _df_by_year["val_d"].tolist()},
+                    ]),
+            ])]),
+
+            # ── 12. 100% stacked area ─────────────────────────────────────────
+            html.H2("100% stacked area", id="area-pct", style=S["section-heading"]),
+            html.P("pct_stacked_area — normalised to 100%, composition over time only.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
+                pct_stacked_area("100% stacked area", subtitle="sample data",
+                    x=_years,
+                    series=[
+                        {"name": "Measure A", "y": _df_by_year["val_a"].tolist()},
+                        {"name": "Measure B", "y": _df_by_year["val_b"].tolist()},
+                        {"name": "Measure C", "y": _df_by_year["val_c"].tolist()},
+                        {"name": "Measure D", "y": _df_by_year["val_d"].tolist()},
+                    ]),
+            ])]),
+
+            # ── 13. Line + clustered column ───────────────────────────────────
+            html.H2("Line + clustered column", id="combo-lc", style=S["section-heading"]),
+            html.P("line_clustered_column — line and grouped bars on a shared axis. Same scale only.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
+                line_clustered_column("Line + clustered column", subtitle="sample data — same scale",
+                    x=_years,
+                    bar_series=[{"name": "Measure A", "y": _df_by_year["val_a"].tolist()}],
+                    line_series=[{"name": "Measure B", "y": _df_by_year["val_b"].tolist()}]),
+            ])]),
+
+            # ── 14. Line + stacked column ─────────────────────────────────────
+            html.H2("Line + stacked column", id="combo-ls", style=S["section-heading"]),
+            html.P("line_stacked_column — stacked bars show components, line shows aggregate or rate.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
+                line_stacked_column("Line + stacked column", subtitle="sample data",
+                    x=_years,
+                    bar_series=[
+                        {"name": "Measure A", "y": _df_by_year["val_a"].tolist()},
+                        {"name": "Measure C", "y": _df_by_year["val_c"].tolist()},
+                        {"name": "Measure D", "y": _df_by_year["val_d"].tolist()},
+                    ],
+                    line_series=[{"name": "Measure B", "y": _df_by_year["val_b"].tolist()}]),
+            ])]),
+
+            # ── 15. Line + 100% stacked column ───────────────────────────────
+            html.H2("Line + 100% stacked column", id="combo-lp", style=S["section-heading"]),
+            html.P("line_pct_stacked_column — 100% normalised bars with a rate or % line overlay.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
+                line_pct_stacked_column("Line + 100% stacked column", subtitle="sample data",
+                    x=_years,
+                    bar_series=[
+                        {"name": "Measure A", "y": _df_by_year["val_a"].tolist()},
+                        {"name": "Measure B", "y": _df_by_year["val_b"].tolist()},
+                        {"name": "Measure C", "y": _df_by_year["val_c"].tolist()},
+                    ],
+                    line_series=[{"name": "Measure E", "y": _df_by_year["val_e"].tolist()}]),
+            ])]),
+
+            # ── 16. Scatter / Bubble ──────────────────────────────────────────
+            html.H2("Scatter / Bubble", id="scatter", style=S["section-heading"]),
+            html.P("scatter_bubble — X/Y correlation with bubble size as third variable. Variant: scatter_basic (no size).", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
+                scatter_bubble("Scatter / Bubble", subtitle="sample data",
+                    x=_df_sc["val_x"].tolist(),
+                    y=_df_sc["val_y"].tolist(),
+                    size=_df_sc["val_size"].tolist(),
+                    labels=_df_sc["dim_label"].tolist()),
+            ])]),
+
+            # ── 17. Pie / Donut ───────────────────────────────────────────────
+            html.H2("Pie / Donut", id="pie", style=S["section-heading"]),
+            html.P("pie_chart — part-to-whole for 2–5 categories. Donut by default; pie via donut=False.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style={"maxWidth": "360px"}, children=[
                 html.Div(style=S["card"], children=[
-                    choropleth_map(
-                        "choropleth_map",
-                        subtitle="regiony wg wartości — skala sekwencyjna",
-                        locations=m.DIMS["iso3"].values(_df_geo),
-                        values=_df_geo["val_a"].tolist(),
-                        hover_labels=m.DIMS["label"].values(_df_geo),
-                    ),
+                    pie_chart("Pie / Donut", subtitle="sample data — donut variant",
+                        labels=_categories, values=_df_by_cat["val_a"].tolist()),
                 ]),
-            ]),
+            ])]),
 
-            # ── Financial charts ──────────────────────────────────────────────
-            html.H2("Wykresy OHLC / świecowe", id="financial", style=S["section-heading"]),
-            html.P(
-                "candlestick — dane OHLC (open, high, low, close) dla szeregów czasowych cen.",
-                style=S["section-desc"],
-            ),
+            # ── 18. Treemap ───────────────────────────────────────────────────
+            html.H2("Treemap", id="treemap", style=S["section-heading"]),
+            html.P("treemap — hierarchical part-to-whole, rectangle size = value.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
+                treemap("Treemap", subtitle="sample data",
+                    labels=_df_tree["dim_node"].tolist(),
+                    parents=_df_tree["dim_parent"].tolist(),
+                    values=_df_tree["val_size"].tolist()),
+            ])]),
 
-            html.Div(style=S["group"], children=[
+            # ── 19. Funnel ────────────────────────────────────────────────────
+            html.H2("Funnel", id="funnel", style=S["section-heading"]),
+            html.P("funnel — sequential stages with drop-off, conversion tracking.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
+                funnel("Funnel", subtitle="sample data",
+                    stages=_df_funnel["dim_stage"].tolist(),
+                    values=_df_funnel["val_count"].tolist()),
+            ])]),
+
+            # ── 20. Waterfall ─────────────────────────────────────────────────
+            html.H2("Waterfall", id="waterfall", style=S["section-heading"]),
+            html.P("waterfall_contribution — running total showing how components build the final result. Variant: waterfall_variance.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
+                waterfall_contribution("Waterfall", subtitle="sample data",
+                    categories=_df_wf_c["dim_stage"].tolist(),
+                    values=_df_wf_c["val_amount"].tolist(),
+                    total_label=_df_wf_c.loc[_df_wf_c["is_total"], "dim_stage"].iloc[0]),
+            ])]),
+
+            # ── 21. Histogram ─────────────────────────────────────────────────
+            html.H2("Histogram", id="histogram", style=S["section-heading"]),
+            html.P("histogram — frequency distribution of a single numeric variable.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
+                histogram("Histogram", subtitle="sample data",
+                    x=_df_dist["val_obs"].tolist(),
+                    x_label="Observed value"),
+            ])]),
+
+            # ── 22. Box plot ──────────────────────────────────────────────────
+            html.H2("Box plot", id="boxplot", style=S["section-heading"]),
+            html.P("box_plot — median, IQR and outliers by group. Use for distribution comparisons.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
+                box_plot("Box plot", subtitle="sample data",
+                    data={grp: _df_dist.loc[_df_dist["dim_group"] == grp, "val_obs"].tolist()
+                          for grp in _dist_groups}),
+            ])]),
+
+            # ── 23. Gauge ─────────────────────────────────────────────────────
+            html.H2("Gauge", id="gauge", style=S["section-heading"]),
+            html.P("gauge — single value measured against a range with a reference point.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style={"maxWidth": "360px"}, children=[
                 html.Div(style=S["card"], children=[
-                    candlestick(
-                        "candlestick",
-                        subtitle="dane OHLC — świece japonki",
-                        dates=m.DIMS["date"].values(_df_ohlc_a),
-                        open_=_df_ohlc_a["open"].tolist(),
-                        high= _df_ohlc_a["high"].tolist(),
-                        low=  _df_ohlc_a["low"].tolist(),
-                        close=_df_ohlc_a["close"].tolist(),
-                    ),
+                    gauge("Gauge", subtitle="sample data",
+                        value=_gauge["gauge_value"],
+                        min_val=0, max_val=_gauge["gauge_max"],
+                        reference=_gauge["gauge_target"],
+                        suffix=" units"),
                 ]),
-            ]),
+            ])]),
 
-            # ── Tables ───────────────────────────────────────────────────────
-            html.H2("Tabele", id="table", style=S["section-heading"]),
-            html.P(
-                "table_basic — precyzja i referencja liczbowa. "
-                "Wariant: table_heatmap (kolorowanie komórek wg intensywności).",
-                style=S["section-desc"],
-            ),
-
-            html.Div(style=S["group"], children=[
+            # ── 24. Bullet ────────────────────────────────────────────────────
+            html.H2("Bullet", id="bullet", style=S["section-heading"]),
+            html.P("bullet — value vs target with a background range. Precise goal tracking.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style={"maxWidth": "360px"}, children=[
                 html.Div(style=S["card"], children=[
-                    table_basic(
-                        "table_basic",
-                        subtitle="dane tabelaryczne z wyrównaniem liczb",
-                        headers=["Atrybut",
-                                 m.MEASURES["measure_a"].label,
-                                 m.MEASURES["measure_b"].label,
-                                 m.MEASURES["measure_c"].label,
-                                 m.MEASURES["measure_d"].label],
-                        rows=[
-                            [row["dim_attribute"],
-                             row["val_a"], row["val_b"],
-                             row["val_c"], row["val_d"]]
-                            for _, row in _df_table.iterrows()
-                        ],
-                        number_cols={1, 2, 3, 4},
-                    ),
+                    bullet("Bullet", subtitle="sample data",
+                        value=_gauge["bullet_a_value"],
+                        target=_gauge["bullet_a_target"],
+                        max_val=_gauge["bullet_a_max"],
+                        suffix=" units"),
                 ]),
-            ]),
+            ])]),
 
-            # ── Pie charts ───────────────────────────────────────────────────
-            html.H2("Wykresy kołowe", id="pie", style=S["section-heading"]),
-            html.P(
-                "pie_chart (donut=True) — tylko dla 2–5 kategorii z wyraźnymi udziałami. "
-                "Preferować słupkowe dla porównań. Wariant: donut=False (pełne koło).",
-                style=S["section-desc"],
-            ),
+            # ── 25. Table ─────────────────────────────────────────────────────
+            html.H2("Table", id="table", style=S["section-heading"]),
+            html.P("table_basic — exact values in rows and columns, numbers right-aligned.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
+                table_basic("Table", subtitle="sample data",
+                    headers=["Attribute", "Measure A", "Measure B", "Measure C", "Measure D"],
+                    rows=[[row["dim_attribute"], row["val_a"], row["val_b"],
+                           row["val_c"], row["val_d"]]
+                          for _, row in _df_table.iterrows()],
+                    number_cols={1, 2, 3, 4}),
+            ])]),
 
-            html.Div(style=S["group"], children=[
-                html.Div(style=S["card"], children=[
-                    pie_chart(
-                        "pie_chart",
-                        subtitle="donut — udziały procentowe, max 5 kategorii",
-                        labels=_categories,
-                        values=_df_by_cat["val_a"].tolist(),
-                    ),
-                ]),
-            ]),
+            # ── 26. Matrix / Pivot ────────────────────────────────────────────
+            html.H2("Matrix / Pivot table", id="matrix", style=S["section-heading"]),
+            html.P("table_matrix — row dimension × column dimension, values at intersections.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
+                table_matrix("Matrix / Pivot table", subtitle="sample data",
+                    row_labels=_matrix["row_labels"],
+                    col_labels=_matrix["col_labels"],
+                    values=_matrix["values"],
+                    row_dim="Category"),
+            ])]),
+
+            # ── 27. Data list ─────────────────────────────────────────────────
+            html.H2("Data list", id="datalist", style=S["section-heading"]),
+            html.P("data_list — scrollable list of labelled items with optional values.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style={"maxWidth": "360px"}, children=[
+                data_list("Data list", subtitle="sample data", items=_list_items),
+            ])]),
+
+            # ── 28. Heatmap ───────────────────────────────────────────────────
+            html.H2("Heatmap", id="heatmap", style=S["section-heading"]),
+            html.P("heatmap_matrix — matrix of values coloured by intensity, diverging or sequential.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
+                heatmap_matrix("Heatmap", subtitle="sample data — diverging colour scale",
+                    x_labels=_df_hmap["dim_col"].unique().tolist(),
+                    y_labels=_df_hmap["dim_row"].unique().tolist(),
+                    z_values=[_df_hmap.loc[_df_hmap["dim_row"] == row, "val_z"].tolist()
+                               for row in _df_hmap["dim_row"].unique().tolist()],
+                    color_scale="diverging"),
+            ])]),
+
+            # ── 29. Choropleth map ────────────────────────────────────────────
+            html.H2("Choropleth map", id="choropleth", style=S["section-heading"]),
+            html.P("choropleth_map — geographic regions filled by value, sequential or diverging colour scale.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
+                choropleth_map("Choropleth map", subtitle="sample data — sequential scale",
+                    locations=m.DIMS["iso3"].values(_df_geo),
+                    values=_df_geo["val_a"].tolist(),
+                    hover_labels=m.DIMS["label"].values(_df_geo)),
+            ])]),
+
+            # ── 30. Bubble map ────────────────────────────────────────────────
+            html.H2("Bubble map", id="bubblemap", style=S["section-heading"]),
+            html.P("bubble_map — geographic points sized by value.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
+                bubble_map("Bubble map", subtitle="sample data",
+                    lat=_df_geo["dim_lat"].tolist(),
+                    lon=_df_geo["dim_lon"].tolist(),
+                    size=_df_geo["val_a"].tolist(),
+                    labels=m.DIMS["label"].values(_df_geo)),
+            ])]),
+
+            # ── 31. Ribbon ────────────────────────────────────────────────────
+            html.H2("Ribbon", id="ribbon", style=S["section-heading"]),
+            html.P("ribbon — rank changes over time, highest rank always on top.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
+                ribbon("Ribbon", subtitle="sample data",
+                    x=sorted(_df_ribbon["dim_year"].unique().tolist()),
+                    series=[{"name": entity,
+                             "ranks": _df_ribbon.loc[_df_ribbon["dim_entity"] == entity
+                                      ].sort_values("dim_year")["val_rank"].tolist()}
+                            for entity in _df_ribbon["dim_entity"].unique().tolist()]),
+            ])]),
+
+            # ── 32. Candlestick ───────────────────────────────────────────────
+            html.H2("Candlestick", id="candlestick", style=S["section-heading"]),
+            html.P("candlestick — OHLC financial data (open, high, low, close) over time.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
+                candlestick("Candlestick", subtitle="sample OHLC data",
+                    dates=m.DIMS["date"].values(_df_ohlc_a),
+                    open_=_df_ohlc_a["open"].tolist(),
+                    high= _df_ohlc_a["high"].tolist(),
+                    low=  _df_ohlc_a["low"].tolist(),
+                    close=_df_ohlc_a["close"].tolist()),
+            ])]),
+
+            # ── UI / Filter components ────────────────────────────────────────
+            html.H2("UI / Filter components", id="slicers",
+                    style={**S["section-heading"], "marginTop": "64px"}),
+            html.P("Interactive filter controls. Connect to callbacks in the host app.", style=S["section-desc"]),
+
+            # ── 33. Dropdown slicer ───────────────────────────────────────────
+            html.H2("Dropdown slicer", id="slicer-dropdown", style=S["section-heading"]),
+            html.P("dropdown_slicer — single select from a collapsed list.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style={"maxWidth": "320px"}, children=[
+                dropdown_slicer("Category", options=_categories, value=_categories[0]),
+            ])]),
+
+            # ── 34. List slicer ───────────────────────────────────────────────
+            html.H2("List slicer", id="slicer-list", style=S["section-heading"]),
+            html.P("list_slicer — checklist (multi=True) or radio (multi=False).", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style={"maxWidth": "320px"}, children=[
+                list_slicer("Period", options=_periods, value=_periods[:2], multi=True),
+            ])]),
+
+            # ── 35. Range slicer ──────────────────────────────────────────────
+            html.H2("Range slicer", id="slicer-range", style=S["section-heading"]),
+            html.P("range_slicer — dual-handle numeric range slider.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style={"maxWidth": "480px"}, children=[
+                range_slicer("Value range", min_val=0, max_val=100, value=[20, 80]),
+            ])]),
+
+            # ── 36. Date range slicer ─────────────────────────────────────────
+            html.H2("Date range slicer", id="slicer-date", style=S["section-heading"]),
+            html.P("date_range_slicer — start and end date picker.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style={"maxWidth": "480px"}, children=[
+                date_range_slicer("Date range", start_date="2024-01-01", end_date="2024-12-31"),
+            ])]),
+
+            # ── 37. Tile slicer ───────────────────────────────────────────────
+            html.H2("Tile slicer", id="slicer-tile", style=S["section-heading"]),
+            html.P("tile_slicer — clickable button tiles, single or multi-select.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style={"maxWidth": "480px"}, children=[
+                tile_slicer("Period", options=_periods, value=_periods[0]),
+            ])]),
 
             # ── Colour palette reference ──────────────────────────────────────
-            html.H2("Paleta wizualna", id="palette", style=S["section-heading"]),
-            html.P("Kolory, typografia i ustawienia bazowe motywu Teal.", style=S["section-desc"]),
+            html.H2("Colour palette", id="palette", style=S["section-heading"]),
+            html.P("Colours, typography and base settings of the Teal theme.", style=S["section-desc"]),
 
             *[
                 html.Div(style={"marginBottom": "28px"}, children=[
@@ -703,7 +777,7 @@ app.layout = html.Div(style=S["body"], children=[
         html.Hr(style=S["footer-divider"]),
 
         html.Footer(style=S["main-footer"], children=[
-            html.Span("Open Reporting — szablon dashboardu", style=S["footer-text"]),
+            html.Span("Open Reporting — visual components template", style=S["footer-text"]),
             html.A("open-reporting.dev", href="https://open-reporting.dev",
                    style={**S["footer-text"], "textDecoration": "none"}),
         ]),

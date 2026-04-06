@@ -7,6 +7,8 @@ Rules applied:
 - Header: bold, distinct background
 - table_heatmap: colour encoding + values always shown (KB: never hide values behind colour)
 - go.Table used (not DataTable) — consistent with component pattern, works inside card wrapper
+- table_matrix: pivot/cross-tab — row dim × col dim, values at intersections
+- data_list: simple scrollable list of labelled items
 """
 import plotly.graph_objects as go
 
@@ -172,3 +174,61 @@ def table_heatmap(title, headers, rows, subtitle="", number_cols=None, diverging
     })
 
     return _chart(title=title, subtitle=subtitle, figure=fig, height=h)
+
+
+def table_matrix(title, row_labels, col_labels, values, row_dim="", subtitle=""):
+    """
+    Matrix / pivot table — row dimension × column dimension, values at intersections.
+
+    Args:
+        row_labels: list of row dimension values (e.g. categories)
+        col_labels: list of column dimension values (e.g. years)
+        values:     2D list [row][col] of cell values
+        row_dim:    label for the first (row dimension) column header
+    """
+    headers = [row_dim] + list(col_labels)
+    rows = [[row_labels[i]] + list(values[i]) for i in range(len(row_labels))]
+    number_cols = set(range(1, len(col_labels) + 1))
+    return table_basic(title=title, subtitle=subtitle,
+                       headers=headers, rows=rows, number_cols=number_cols)
+
+
+def data_list(title, items, subtitle=""):
+    """
+    Simple data list — scrollable list of labelled items with optional values.
+
+    Args:
+        items: list of {"label": str, "value": str (optional)}
+               or list of plain strings
+    """
+    from dash import html
+    from products.visuals.lib.theme import BG_SURFACE, BORDER, SUBTEXT, TEXT, FONT_FAMILY
+
+    def _row(item, i):
+        label = item["label"] if isinstance(item, dict) else item
+        value = item.get("value", "") if isinstance(item, dict) else ""
+        bg = BG_SURFACE if i % 2 == 0 else "#F8FAFB"
+        return html.Div(style={
+            "display": "flex", "justifyContent": "space-between", "alignItems": "center",
+            "padding": "8px 12px", "backgroundColor": bg,
+            "borderBottom": f"1px solid {BORDER}",
+            "fontFamily": FONT_FAMILY, "fontSize": "13px",
+        }, children=[
+            html.Span(label, style={"color": TEXT}),
+            html.Span(value, style={"color": SUBTEXT, "fontWeight": "600"}) if value else None,
+        ])
+
+    list_div = html.Div(style={
+        "border": f"1px solid {BORDER}", "borderRadius": "6px",
+        "overflow": "hidden", "maxHeight": "280px", "overflowY": "auto",
+    }, children=[_row(item, i) for i, item in enumerate(items)])
+
+    title_el = html.Div(title, style={
+        "fontSize": "14px", "fontWeight": "600", "color": TEXT,
+        "marginBottom": "4px",
+    })
+    subtitle_el = html.Div(subtitle, style={
+        "fontSize": "12px", "color": SUBTEXT, "marginBottom": "8px",
+    }) if subtitle else None
+
+    return html.Div(children=[c for c in [title_el, subtitle_el, list_div] if c])
