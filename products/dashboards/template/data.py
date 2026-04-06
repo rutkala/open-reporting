@@ -36,7 +36,7 @@ def load() -> pd.DataFrame:
 
     Columns
     -------
-    dim_category : str    — 5 generic categories (Kat. A–E)
+    dim_category : str    — 5 generic categories (Cat. A–E)
     dim_year     : int    — years 2018–2024
     dim_period   : str    — Q1–Q4 cycling
     val_a        : float  — primary measure (positive, ~45–55 range)
@@ -45,12 +45,12 @@ def load() -> pd.DataFrame:
     val_d        : float  — small positive measure (~15% of val_a)
     val_e        : float  — diverging measure (positive and negative)
     """
-    categories = ["Kat. A", "Kat. B", "Kat. C", "Kat. D", "Kat. E"]
+    categories = ["Cat. A", "Cat. B", "Cat. C", "Cat. D", "Cat. E"]
     years = list(range(2018, 2025))
     quarters = ["Q1", "Q2", "Q3", "Q4"]
 
     rng = np.random.default_rng(42)
-    base = {"Kat. A": 47.2, "Kat. B": 45.8, "Kat. C": 52.3, "Kat. D": 48.1, "Kat. E": 43.6}
+    base = {"Cat. A": 47.2, "Cat. B": 45.8, "Cat. C": 52.3, "Cat. D": 48.1, "Cat. E": 43.6}
 
     rows = []
     for cat in categories:
@@ -159,15 +159,15 @@ def load_distribution() -> pd.DataFrame:
 
     Columns
     -------
-    dim_group : str   — group label (Seria A / B / C)
+    dim_group : str   — group label (Series A / B / C)
     val_obs   : float — observed value
     """
     rng = np.random.default_rng(11)
     rows = []
     params = [
-        ("Seria A", 21.0, 2.5),
-        ("Seria B", 29.5, 1.8),
-        ("Seria C", 13.0, 1.4),
+        ("Series A", 21.0, 2.5),
+        ("Series B", 29.5, 1.8),
+        ("Series C", 13.0, 1.4),
     ]
     for group, mu, sigma in params:
         for v in rng.normal(mu, sigma, 12):
@@ -188,14 +188,14 @@ def load_waterfall() -> tuple[pd.DataFrame, pd.DataFrame]:
     Returns (df_contribution, df_variance).
     """
     df_contribution = pd.DataFrame({
-        "dim_stage":  ["Składnik A", "Składnik B", "Składnik C", "Składnik D",
-                       "Korekta A",  "Korekta B",  "Korekta C",  "Wynik"],
+        "dim_stage":  ["Component A", "Component B", "Component C", "Component D",
+                       "Adjustment A", "Adjustment B", "Adjustment C", "Result"],
         "val_amount": [295.0, 135.0, 92.0, 93.0, -390.0, -180.0, -95.0, -50.0],
         "is_total":   [False, False, False, False, False, False, False, True],
         "is_base":    [False] * 8,
     })
     df_variance = pd.DataFrame({
-        "dim_stage":  ["Start", "Wzrost A", "Wzrost B", "Spadek A", "Korekta", "Koniec"],
+        "dim_stage":  ["Opening", "Growth A", "Growth B", "Decline A", "Adjustment", "Closing"],
         "val_amount": [1240.0, 180.0, 35.0, -140.0, 15.0, 1330.0],
         "is_total":   [False, False, False, False, False, True],
         "is_base":    [True,  False, False, False, False, False],
@@ -209,11 +209,11 @@ def load_funnel() -> pd.DataFrame:
 
     Columns
     -------
-    dim_stage : str — stage label (Etap 1–5)
+    dim_stage : str — stage label (Stage 1–5)
     val_count : int — volume at this stage
     """
     return pd.DataFrame({
-        "dim_stage": ["Etap 1", "Etap 2", "Etap 3", "Etap 4", "Etap 5"],
+        "dim_stage": ["Stage 1", "Stage 2", "Stage 3", "Stage 4", "Stage 5"],
         "val_count": [12400, 8900, 6200, 4800, 4100],
     })
 
@@ -226,13 +226,15 @@ def load_treemap() -> pd.DataFrame:
     -------
     dim_node   : str   — node label (unique)
     dim_parent : str   — parent node label ("" for root)
-    val_size   : float — node value (0 for internal nodes)
+    val_size   : float — node value; with branchvalues="total" each parent must
+                         equal the sum of its children (Group A=430, Group B=638,
+                         Total=1068)
     """
     return pd.DataFrame({
-        "dim_node":   ["Razem", "Grupa A", "Grupa B", "A1", "A2", "B1", "B2", "B3"],
-        "dim_parent": ["",      "Razem",   "Razem",   "Grupa A", "Grupa A",
-                       "Grupa B", "Grupa B", "Grupa B"],
-        "val_size":   [0.0,     615.0,     665.0,     295.0, 135.0, 390.0, 180.0, 68.0],
+        "dim_node":   ["Total", "Group A", "Group B", "A1", "A2", "B1", "B2", "B3"],
+        "dim_parent": ["",      "Total",   "Total",   "Group A", "Group A",
+                       "Group B", "Group B", "Group B"],
+        "val_size":   [1068.0,  430.0,     638.0,     295.0, 135.0, 390.0, 180.0, 68.0],
     })
 
 
@@ -242,21 +244,21 @@ def load_ribbon() -> pd.DataFrame:
 
     Columns
     -------
-    dim_entity : str — entity label (Podmiot A–E)
+    dim_entity : str — entity label (Entity A–E)
     dim_year   : int — year (2020–2024)
     val_rank   : int — rank (1 = best position)
     """
     rows = [
-        ("Podmiot A", 2020, 1), ("Podmiot A", 2021, 1), ("Podmiot A", 2022, 1),
-        ("Podmiot A", 2023, 1), ("Podmiot A", 2024, 1),
-        ("Podmiot B", 2020, 2), ("Podmiot B", 2021, 2), ("Podmiot B", 2022, 2),
-        ("Podmiot B", 2023, 2), ("Podmiot B", 2024, 2),
-        ("Podmiot C", 2020, 3), ("Podmiot C", 2021, 3), ("Podmiot C", 2022, 3),
-        ("Podmiot C", 2023, 3), ("Podmiot C", 2024, 3),
-        ("Podmiot D", 2020, 4), ("Podmiot D", 2021, 4), ("Podmiot D", 2022, 4),
-        ("Podmiot D", 2023, 4), ("Podmiot D", 2024, 4),
-        ("Podmiot E", 2020, 8), ("Podmiot E", 2021, 7), ("Podmiot E", 2022, 6),
-        ("Podmiot E", 2023, 6), ("Podmiot E", 2024, 5),
+        ("Entity A", 2020, 1), ("Entity A", 2021, 1), ("Entity A", 2022, 1),
+        ("Entity A", 2023, 1), ("Entity A", 2024, 1),
+        ("Entity B", 2020, 2), ("Entity B", 2021, 2), ("Entity B", 2022, 2),
+        ("Entity B", 2023, 2), ("Entity B", 2024, 2),
+        ("Entity C", 2020, 3), ("Entity C", 2021, 3), ("Entity C", 2022, 3),
+        ("Entity C", 2023, 3), ("Entity C", 2024, 3),
+        ("Entity D", 2020, 4), ("Entity D", 2021, 4), ("Entity D", 2022, 4),
+        ("Entity D", 2023, 4), ("Entity D", 2024, 4),
+        ("Entity E", 2020, 8), ("Entity E", 2021, 7), ("Entity E", 2022, 6),
+        ("Entity E", 2023, 6), ("Entity E", 2024, 5),
     ]
     return pd.DataFrame(rows, columns=["dim_entity", "dim_year", "val_rank"])
 
@@ -267,11 +269,11 @@ def load_heatmap() -> pd.DataFrame:
 
     Columns
     -------
-    dim_row : str   — row label (Zmienna A–D)
-    dim_col : str   — column label (Zmienna A–D)
+    dim_row : str   — row label (Variable A–D)
+    dim_col : str   — column label (Variable A–D)
     val_z   : float — cell value
     """
-    labels = ["Zmienna A", "Zmienna B", "Zmienna C", "Zmienna D"]
+    labels = ["Variable A", "Variable B", "Variable C", "Variable D"]
     matrix = [
         [1.00,  0.82, -0.41, -0.23],
         [0.82,  1.00, -0.78,  0.15],
@@ -312,12 +314,12 @@ def load_table() -> pd.DataFrame:
 
     Columns
     -------
-    dim_attribute : str   — row label (Wiersz A–F)
+    dim_attribute : str   — row label (Row A–F)
     val_a … val_d : float — numeric measures
     """
     return pd.DataFrame({
-        "dim_attribute": ["Wiersz A", "Wiersz B", "Wiersz C",
-                          "Wiersz D", "Wiersz E", "Wiersz F"],
+        "dim_attribute": ["Row A", "Row B", "Row C",
+                          "Row D", "Row E", "Row F"],
         "val_a": [47.2, 45.8, 52.3, 48.1, 43.6, 44.2],
         "val_b": [50.4, 47.5, 55.8, 51.2, 45.1, 49.1],
         "val_c": [-3.2, -1.7, -5.5, -7.2, -1.6, -4.9],
@@ -331,11 +333,11 @@ def load_table_heatmap() -> pd.DataFrame:
 
     Columns
     -------
-    dim_attribute : str   — row label (Wiersz A–E)
+    dim_attribute : str   — row label (Row A–E)
     yr_1 … yr_6   : float — yearly numeric values (positive and negative)
     """
     return pd.DataFrame({
-        "dim_attribute": ["Wiersz A", "Wiersz B", "Wiersz C", "Wiersz D", "Wiersz E"],
+        "dim_attribute": ["Row A", "Row B", "Row C", "Row D", "Row E"],
         "yr_1": [ 4.5,  1.0,  1.8,  0.5,  3.0],
         "yr_2": [-2.5, -4.6, -7.9, -8.9, -5.5],
         "yr_3": [ 5.9,  3.1,  6.4,  7.2,  3.5],
@@ -450,20 +452,20 @@ def load_clustered_stacked() -> list:
     Series names are consistent across groups; colours are index-based.
     """
     return [
-        {"name": "Grupa A", "series": [
-            {"name": "Seria 1", "y": [42.0, 38.0, 45.0, 41.0, 39.0]},
-            {"name": "Seria 2", "y": [18.0, 22.0, 16.0, 20.0, 23.0]},
-            {"name": "Seria 3", "y": [ 8.0,  6.0,  9.0,  7.0,  5.0]},
+        {"name": "Group A", "series": [
+            {"name": "Series 1", "y": [42.0, 38.0, 45.0, 41.0, 39.0]},
+            {"name": "Series 2", "y": [18.0, 22.0, 16.0, 20.0, 23.0]},
+            {"name": "Series 3", "y": [ 8.0,  6.0,  9.0,  7.0,  5.0]},
         ]},
-        {"name": "Grupa B", "series": [
-            {"name": "Seria 1", "y": [35.0, 40.0, 38.0, 42.0, 44.0]},
-            {"name": "Seria 2", "y": [24.0, 19.0, 26.0, 21.0, 18.0]},
-            {"name": "Seria 3", "y": [ 6.0,  9.0,  7.0, 10.0,  8.0]},
+        {"name": "Group B", "series": [
+            {"name": "Series 1", "y": [35.0, 40.0, 38.0, 42.0, 44.0]},
+            {"name": "Series 2", "y": [24.0, 19.0, 26.0, 21.0, 18.0]},
+            {"name": "Series 3", "y": [ 6.0,  9.0,  7.0, 10.0,  8.0]},
         ]},
-        {"name": "Grupa C", "series": [
-            {"name": "Seria 1", "y": [48.0, 44.0, 50.0, 46.0, 43.0]},
-            {"name": "Seria 2", "y": [15.0, 20.0, 14.0, 19.0, 22.0]},
-            {"name": "Seria 3", "y": [10.0,  7.0, 11.0,  8.0,  6.0]},
+        {"name": "Group C", "series": [
+            {"name": "Series 1", "y": [48.0, 44.0, 50.0, 46.0, 43.0]},
+            {"name": "Series 2", "y": [15.0, 20.0, 14.0, 19.0, 22.0]},
+            {"name": "Series 3", "y": [10.0,  7.0, 11.0,  8.0,  6.0]},
         ]},
     ]
 

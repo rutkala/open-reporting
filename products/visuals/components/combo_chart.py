@@ -6,6 +6,10 @@ Rules applied:
   - line_clustered_column / line_stacked_column: same-scale data only (KB rule)
   - combo_subplots: stacked panels sharing x-axis — the IBCS fiscal pattern
   - No dual-axis implementation (KB: dual-axis misleads unless scales truly identical)
+
+y_measure (optional Measure):
+  When provided on line_* variants, sets y-axis title, tickformat and ticksuffix.
+  combo_subplots uses per-panel "title" string instead (multiple y-axes).
 """
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
@@ -13,11 +17,16 @@ from plotly.subplots import make_subplots
 from products.visuals.lib.theme import (
     COLORWAY, POSITIVE, NEGATIVE, SUBTEXT, TEXT, BORDER, GRID, ZERO_LINE, FONT_FAMILY,
 )
-from products.visuals.components import PLOT_H, PLOT_H_TALL, MARGIN_L, MARGIN_R, MARGIN_T, MARGIN_B, _chart
+from products.visuals.components import (
+    PLOT_H, PLOT_H_TALL, MARGIN_L, MARGIN_R, MARGIN_T, MARGIN_B, _chart,
+)
 
 
 def _legend(series):
-    return [(s["name"], s.get("color", COLORWAY[i % len(COLORWAY)])) for i, s in enumerate(series)] if len(series) > 1 else None
+    return (
+        [(s["name"], s.get("color", COLORWAY[i % len(COLORWAY)])) for i, s in enumerate(series)]
+        if len(series) > 1 else None
+    )
 
 
 def _combo_base_layout(barmode="group"):
@@ -37,7 +46,7 @@ def _combo_base_layout(barmode="group"):
     }
 
 
-def line_clustered_column(title, x, bar_series, line_series, subtitle=""):
+def line_clustered_column(title, x, bar_series, line_series, subtitle="", y_measure=None):
     """
     Line + clustered columns on a shared axis.
     Use only when both series share the same scale and units (KB rule).
@@ -45,6 +54,7 @@ def line_clustered_column(title, x, bar_series, line_series, subtitle=""):
     Args:
         bar_series:  list of {"name": str, "y": list, "color": str (optional)}
         line_series: list of {"name": str, "y": list, "color": str (optional)}
+        y_measure:   when provided, sets y-axis title, tickformat and ticksuffix
     """
     fig = go.Figure()
     for i, s in enumerate(bar_series):
@@ -59,13 +69,19 @@ def line_clustered_column(title, x, bar_series, line_series, subtitle=""):
             line=dict(color=color, width=2, shape="linear"),
             marker=dict(size=5, color=color),
         ))
-    fig.update_layout(_combo_base_layout(barmode="group"))
+    layout = _combo_base_layout(barmode="group")
+    if y_measure is not None:
+        y_measure.apply_to_yaxis(layout["yaxis"])
+    fig.update_layout(layout)
     all_series = bar_series + line_series
-    legend = [(s["name"], s.get("color", COLORWAY[i % len(COLORWAY)])) for i, s in enumerate(all_series)]
+    legend = [
+        (s["name"], s.get("color", COLORWAY[i % len(COLORWAY)]))
+        for i, s in enumerate(all_series)
+    ]
     return _chart(title=title, subtitle=subtitle, legend_items=legend, figure=fig)
 
 
-def line_stacked_column(title, x, bar_series, line_series, subtitle=""):
+def line_stacked_column(title, x, bar_series, line_series, subtitle="", y_measure=None):
     """
     Line + stacked columns on a shared axis.
     Columns show composition; line shows a related aggregate metric.
@@ -73,6 +89,7 @@ def line_stacked_column(title, x, bar_series, line_series, subtitle=""):
     Args:
         bar_series:  list of {"name": str, "y": list, "color": str (optional)}
         line_series: list of {"name": str, "y": list, "color": str (optional)}
+        y_measure:   when provided, sets y-axis title, tickformat and ticksuffix
     """
     fig = go.Figure()
     for i, s in enumerate(bar_series):
@@ -87,13 +104,19 @@ def line_stacked_column(title, x, bar_series, line_series, subtitle=""):
             line=dict(color=color, width=2, shape="linear"),
             marker=dict(size=5, color=color),
         ))
-    fig.update_layout(_combo_base_layout(barmode="stack"))
+    layout = _combo_base_layout(barmode="stack")
+    if y_measure is not None:
+        y_measure.apply_to_yaxis(layout["yaxis"])
+    fig.update_layout(layout)
     all_series = bar_series + line_series
-    legend = [(s["name"], s.get("color", COLORWAY[i % len(COLORWAY)])) for i, s in enumerate(all_series)]
+    legend = [
+        (s["name"], s.get("color", COLORWAY[i % len(COLORWAY)]))
+        for i, s in enumerate(all_series)
+    ]
     return _chart(title=title, subtitle=subtitle, legend_items=legend, figure=fig)
 
 
-def line_pct_stacked_column(title, x, bar_series, line_series, subtitle=""):
+def line_pct_stacked_column(title, x, bar_series, line_series, subtitle="", y_measure=None):
     """
     Line + 100% stacked columns on a shared axis.
     Columns are normalised to 100%; line shows a rate or % measure.
@@ -101,6 +124,8 @@ def line_pct_stacked_column(title, x, bar_series, line_series, subtitle=""):
     Args:
         bar_series:  list of {"name": str, "y": list, "color": str (optional)}
         line_series: list of {"name": str, "y": list, "color": str (optional)}
+        y_measure:   when provided, sets y-axis title, tickformat and ticksuffix
+                     (overrides the default "%" ticksuffix on the normalised axis)
     """
     n = len(x)
     totals = [sum(s["y"][i] for s in bar_series if i < len(s["y"])) for i in range(n)]
@@ -127,9 +152,14 @@ def line_pct_stacked_column(title, x, bar_series, line_series, subtitle=""):
         ))
     layout = _combo_base_layout(barmode="relative")
     layout["yaxis"]["ticksuffix"] = "%"
+    if y_measure is not None:
+        y_measure.apply_to_yaxis(layout["yaxis"])
     fig.update_layout(layout)
     all_series = bar_series + line_series
-    legend = [(s["name"], s.get("color", COLORWAY[i % len(COLORWAY)])) for i, s in enumerate(all_series)]
+    legend = [
+        (s["name"], s.get("color", COLORWAY[i % len(COLORWAY)]))
+        for i, s in enumerate(all_series)
+    ]
     return _chart(title=title, subtitle=subtitle, legend_items=legend, figure=fig)
 
 
@@ -146,6 +176,9 @@ def combo_subplots(title, x, panels, subtitle=""):
                 "series":    [{"name": str, "y": list, "color": str (optional)}]
                 "diverging": bool (optional) — POSITIVE/NEGATIVE colours per value
             }
+
+    Note: each panel has its own y-axis; use panel["title"] for per-panel labels.
+    y_measure is not supported here — configure per panel via the "title" key.
     """
     n = len(panels)
     total_h = max(PLOT_H_TALL, n * 130 + 60)

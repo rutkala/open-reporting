@@ -6,24 +6,20 @@ Rules applied:
 - Axes do NOT force zero (KB: scatter is exempt from zero-baseline rule)
 - Bubble size mapped proportionally (KB: area encoding, not radius)
 - Opacity 0.7 to handle overlapping points (KB: 60–80%)
-- Optional trendline in scatter_basic
+
+y_measure / x_measure (optional Measure):
+  When provided, sets the respective axis title, tickformat and ticksuffix.
 """
+import math
+
 import plotly.graph_objects as go
 import numpy as np
 
-from products.visuals.lib.theme import COLORWAY, AZURE_1, SLATE_1, SUBTEXT, TEXT, BORDER, GRID, ZERO_LINE
+from products.visuals.lib.theme import (
+    COLORWAY, AZURE_1, SLATE_1, SUBTEXT, TEXT, BORDER, GRID, ZERO_LINE,
+)
 from products.visuals.components import PLOT_H, MARGIN_L, MARGIN_R, MARGIN_T, MARGIN_B, _chart
 from products.visuals.lib.theme import FONT_FAMILY
-
-_SCATTER_LAYOUT = {
-    "template": "teal",
-    "height": PLOT_H,
-    "margin_l": MARGIN_L,
-    "paper_bgcolor": "rgba(0,0,0,0)",
-    "plot_bgcolor": "rgba(0,0,0,0)",
-    "showlegend": False,
-    "hovermode": "closest",
-}
 
 
 def _base_layout(**kw):
@@ -44,13 +40,16 @@ def _base_layout(**kw):
     }
 
 
-def scatter_basic(title, x, y, subtitle="", labels=None, trendline=False):
+def scatter_basic(title, x, y, subtitle="", labels=None, trendline=False,
+                  x_measure=None, y_measure=None):
     """
     Basic scatter plot — correlation between two continuous variables.
 
     Args:
         labels:    list of point labels (shown in hover, optional)
         trendline: if True, add a linear regression line
+        x_measure: when provided, sets x-axis title, tickformat and ticksuffix
+        y_measure: when provided, sets y-axis title, tickformat and ticksuffix
     """
     hover = labels if labels else [f"({xi}, {yi})" for xi, yi in zip(x, y)]
     fig = go.Figure(go.Scatter(
@@ -73,11 +72,17 @@ def scatter_basic(title, x, y, subtitle="", labels=None, trendline=False):
             hoverinfo="skip",
         ))
 
-    fig.update_layout(_base_layout())
+    layout = _base_layout()
+    if x_measure is not None:
+        x_measure.apply_to_xaxis(layout["xaxis"])
+    if y_measure is not None:
+        y_measure.apply_to_yaxis(layout["yaxis"])
+    fig.update_layout(layout)
     return _chart(title=title, subtitle=subtitle, figure=fig)
 
 
-def scatter_bubble(title, x, y, size, subtitle="", labels=None, color_values=None):
+def scatter_bubble(title, x, y, size, subtitle="", labels=None, color_values=None,
+                   x_measure=None, y_measure=None):
     """
     Bubble chart — three variables encoded as x, y, and bubble size.
     Size is mapped to area (proportional encoding per KB).
@@ -86,12 +91,12 @@ def scatter_bubble(title, x, y, size, subtitle="", labels=None, color_values=Non
         size:         list of values for bubble size (proportional to area)
         labels:       list of point labels for hover
         color_values: optional list of numeric values for colour encoding
+        x_measure:    when provided, sets x-axis title, tickformat and ticksuffix
+        y_measure:    when provided, sets y-axis title, tickformat and ticksuffix
     """
-    # Normalise size to area (not radius) — KB requirement
-    import math
     max_size = max(abs(s) for s in size) if size else 0
     if max_size == 0:
-        max_size = 1  # all-zero or empty — render uniform minimum bubbles
+        max_size = 1
     scaled = [math.sqrt(abs(s) / max_size) * 40 + 6 for s in size]
 
     hover = labels if labels else [f"({xi}, {yi}, size={si})" for xi, yi, si in zip(x, y, size)]
@@ -117,5 +122,10 @@ def scatter_bubble(title, x, y, size, subtitle="", labels=None, color_values=Non
         hovertemplate="%{text}<extra></extra>",
     ))
 
-    fig.update_layout(_base_layout())
+    layout = _base_layout()
+    if x_measure is not None:
+        x_measure.apply_to_xaxis(layout["xaxis"])
+    if y_measure is not None:
+        y_measure.apply_to_yaxis(layout["yaxis"])
+    fig.update_layout(layout)
     return _chart(title=title, subtitle=subtitle, figure=fig)
