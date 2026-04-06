@@ -2,6 +2,20 @@
 
 ---
 
+## Unreleased
+
+### Visual components
+- **OR-124** — Measure-driven value formatting: `Measure` dataclass redesigned with structured
+  format metadata (`format_type`, `scale`, `decimals`, `currency_symbol`, `show_unit`).
+  All chart components accept optional `y_measure` param that auto-configures axis title,
+  tick format and tick suffix. `kpi_standard` gains `subtitle`, `reference_value`,
+  `reference_label`. Polish strings removed from component library code.
+- **Template dashboard** — All sample data and measure labels translated to English;
+  waterfall split into contribution and variance variants (39 families total).
+  Treemap fixed (branchvalues="total" consistency).
+
+---
+
 ## v0.1.0 — MVP (2026-03-28)
 
 ### Products launched

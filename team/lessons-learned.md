@@ -211,3 +211,42 @@ docker exec ghost node -e "
 **Process change:** At project setup, run `sudo chown -R radek:radek /opt/open-reporting` once. If Edit/Write tools return EACCES, the fix is always the same command.
 
 **Applies to:** All file editing — environment setup step.
+
+---
+
+## 2026-04-06 — format_value() vs kpi_value() separation needed
+
+**What happened:** `format_value()` was designed to return a complete formatted string
+including unit suffix (e.g. "47.2 units"). The KPI card takes `value` and `unit` as separate
+params so they can be styled differently. Using `format_value()` for both `value` and `unit`
+would double-render the unit ("47.2 units units").
+
+**Root cause:** When designing the format API, "full formatted string" and "number for KPI card"
+were conflated. A KPI card needs to split the number from its unit for independent styling.
+
+**Process change:** Measure now exposes two methods:
+- `format_value(v)` — complete string with unit, for data labels and tooltips
+- `kpi_value(v)` — number+scale only (no unit), for KPI card `value` param
+
+KPI callers always pass `unit=measure.plotly_ticksuffix` separately.
+
+**Applies to:** Any component that needs to display a formatted number with separately-styled unit.
+
+---
+
+## 2026-04-06 — Plotly treemap empty with branchvalues="total" and inconsistent values
+
+**What happened:** Treemap rendered blank. Root node had `val_size=0.0`, and intermediate
+node values did not equal the sum of their leaf descendants.
+
+**Root cause:** Plotly `branchvalues="total"` requires every parent node's value to exactly
+equal the sum of all its children. Any inconsistency (including root=0) results in a silent
+empty render — no error is shown.
+
+**Process change:** When defining treemap data, always verify the hierarchy:
+- Each parent value = sum of direct children values
+- Root = sum of all leaf values
+
+The `data.py` docstring now documents this constraint with the expected sums.
+
+**Applies to:** All treemap chart calls using `branchvalues="total"`.
