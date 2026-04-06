@@ -7,6 +7,10 @@ gauge        — single KPI vs range (use sparingly — bullet is usually better
 bullet       — KPI vs target with performance bands (better than gauge)
 ribbon       — rank changes over time (bump chart)
 heatmap_matrix — correlation or cross-tab colour matrix
+
+y_measure (optional Measure) on gauge and bullet:
+  When provided, formats the value display using measure.format_value().
+  The suffix param on gauge/bullet is overridden by y_measure.plotly_ticksuffix.
 """
 import plotly.graph_objects as go
 
@@ -15,7 +19,9 @@ from products.visuals.lib.theme import (
     BORDER, GRID, SLATE_1, SLATE_4, SUBTEXT, TEXT, ZERO_LINE, FONT_FAMILY,
     TEAL_1, TEAL_PALE, BG_SURFACE,
 )
-from products.visuals.components import PLOT_H, PLOT_H_TALL, MARGIN_L, MARGIN_R, MARGIN_T, MARGIN_B, _chart
+from products.visuals.components import (
+    PLOT_H, PLOT_H_TALL, MARGIN_L, MARGIN_R, MARGIN_T, MARGIN_B, _chart,
+)
 
 
 def _base(height=None, **kw):
@@ -60,6 +66,7 @@ def funnel(title, stages, values, subtitle=""):
 def treemap(title, labels, parents, values, subtitle=""):
     """
     Treemap — hierarchical composition, area proportional to value.
+    Requires branchvalues="total": each parent value must equal the sum of its children.
 
     Args:
         labels:  list of node labels (root has parent "")
@@ -67,9 +74,9 @@ def treemap(title, labels, parents, values, subtitle=""):
         values:  list of numeric values
 
     Example:
-        treemap("Budżet", ["Razem","Dochody","Wydatki","VAT","PIT","Świadczenia"],
-                          ["","Razem","Razem","Dochody","Dochody","Wydatki"],
-                          [0, 615, 665, 295, 135, 390])
+        treemap("Budget", ["Total", "Revenue", "Expenses", "VAT", "PIT", "Benefits"],
+                          ["", "Total", "Total", "Revenue", "Revenue", "Expenses"],
+                          [1068, 430, 638, 295, 135, 638])
     """
     fig = go.Figure(go.Treemap(
         labels=labels,
@@ -82,13 +89,14 @@ def treemap(title, labels, parents, values, subtitle=""):
             colorscale=[[0, TEAL_PALE], [1, TEAL_1]],
             line=dict(width=1, color="white"),
         ),
-        hovertemplate="<b>%{label}</b><br>Wartość: %{value}<br>Udział: %{percentParent:.1%}<extra></extra>",
+        hovertemplate="<b>%{label}</b><br>Value: %{value}<br>Share: %{percentParent:.1%}<extra></extra>",
     ))
     fig.update_layout(_base(margin=dict(l=0, r=0, t=4, b=0)))
     return _chart(title=title, subtitle=subtitle, figure=fig)
 
 
-def gauge(title, value, min_val=0, max_val=100, subtitle="", reference=None, suffix=""):
+def gauge(title, value, min_val=0, max_val=100, subtitle="", reference=None, suffix="",
+          y_measure=None):
     """
     Gauge chart — single KPI vs range.
     Note: prefer bullet() for KPI vs target — gauge is best for speed/progress metaphors.
@@ -98,8 +106,11 @@ def gauge(title, value, min_val=0, max_val=100, subtitle="", reference=None, suf
         min_val:   minimum of gauge range
         max_val:   maximum of gauge range
         reference: target value (shown as threshold line)
-        suffix:    unit suffix (e.g. "%", " mld")
+        suffix:    unit suffix (e.g. "%", " bn") — overridden by y_measure if provided
+        y_measure: when provided, derives suffix from measure.plotly_ticksuffix
     """
+    display_suffix = y_measure.plotly_ticksuffix if y_measure is not None else suffix
+
     steps = [
         dict(range=[min_val, max_val * 0.5], color=SLATE_4),
         dict(range=[max_val * 0.5, max_val * 0.75], color=AZURE_PALE),
@@ -110,7 +121,7 @@ def gauge(title, value, min_val=0, max_val=100, subtitle="", reference=None, suf
     fig = go.Figure(go.Indicator(
         mode="gauge+number",
         value=value,
-        number=dict(suffix=suffix, font=dict(size=28, color=TEXT)),
+        number=dict(suffix=display_suffix, font=dict(size=28, color=TEXT)),
         gauge=dict(
             axis=dict(range=[min_val, max_val], tickfont=dict(size=10, color=SUBTEXT)),
             bar=dict(color=AZURE_1, thickness=0.3),
@@ -124,22 +135,25 @@ def gauge(title, value, min_val=0, max_val=100, subtitle="", reference=None, suf
     return _chart(title=title, subtitle=subtitle, figure=fig, height=220)
 
 
-def bullet(title, value, target, min_val=0, max_val=None, subtitle="", suffix=""):
+def bullet(title, value, target, min_val=0, max_val=None, subtitle="", suffix="",
+           y_measure=None):
     """
     Bullet chart — KPI value vs target with performance bands.
     Superior to gauge: clearer, more compact, works in grids.
 
     Args:
-        value:   actual value
-        target:  target / benchmark value
-        min_val: range minimum (default 0)
-        max_val: range maximum (default: 120% of max(value, target))
-        suffix:  unit suffix
+        value:     actual value
+        target:    target / benchmark value
+        min_val:   range minimum (default 0)
+        max_val:   range maximum (default: 125% of max(value, target))
+        suffix:    unit suffix — overridden by y_measure if provided
+        y_measure: when provided, derives suffix from measure.plotly_ticksuffix
     """
     if max_val is None:
         max_val = max(value, target) * 1.25
 
-    # Performance bands: poor / acceptable / good
+    display_suffix = y_measure.plotly_ticksuffix if y_measure is not None else suffix
+
     band = max_val - min_val
     bands = [min_val + band * 0.5, min_val + band * 0.75, max_val]
 
@@ -152,7 +166,7 @@ def bullet(title, value, target, min_val=0, max_val=None, subtitle="", suffix=""
             decreasing=dict(color=NEGATIVE),
             font=dict(size=14),
         ),
-        number=dict(suffix=suffix, font=dict(size=24, color=TEXT)),
+        number=dict(suffix=display_suffix, font=dict(size=24, color=TEXT)),
         gauge=dict(
             shape="bullet",
             axis=dict(range=[min_val, max_val], tickfont=dict(size=10, color=SUBTEXT)),
@@ -191,7 +205,6 @@ def ribbon(title, x, series, subtitle=""):
     for i, s in enumerate(series):
         color = s.get("color", COLORWAY[i % len(COLORWAY)])
         ranks = s["ranks"]
-        # Invert ranks for display (rank 1 at top)
         y_vals = [n_ranks + 1 - r for r in ranks]
 
         fig.add_trace(go.Scatter(
@@ -202,7 +215,7 @@ def ribbon(title, x, series, subtitle=""):
             text=[s["name"] if xi == len(x) - 1 else "" for xi in range(len(x))],
             textposition="middle right",
             textfont=dict(size=11, color=color),
-            hovertemplate=f"<b>{s['name']}</b><br>%{{x}}: Miejsce %{{customdata}}<extra></extra>",
+            hovertemplate=f"<b>{s['name']}</b><br>%{{x}}: Rank %{{customdata}}<extra></extra>",
             customdata=ranks,
         ))
 
@@ -222,7 +235,7 @@ def ribbon(title, x, series, subtitle=""):
             showgrid=True, gridcolor=GRID,
             tickvals=tick_vals, ticktext=tick_text,
             tickfont=dict(size=11, color=SUBTEXT),
-            title=dict(text="Miejsce", font=dict(size=11, color=SUBTEXT)),
+            title=dict(text="Rank", font=dict(size=11, color=SUBTEXT)),
             range=[0.5, n_ranks + 0.5],
         ),
         "showlegend": False,
@@ -262,7 +275,7 @@ def heatmap_matrix(title, x_labels, y_labels, z_values, subtitle="",
         text=text_vals,
         texttemplate="%{text}" if show_values else "",
         textfont=dict(size=11),
-        hovertemplate="%{y} × %{x}<br>Wartość: %{z}<extra></extra>",
+        hovertemplate="%{y} × %{x}<br>Value: %{z}<extra></extra>",
         showscale=True,
         colorbar=dict(
             thickness=12, len=0.8,

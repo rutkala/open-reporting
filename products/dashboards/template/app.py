@@ -39,7 +39,7 @@ from products.visuals.components.line_chart import (
 from products.visuals.components.combo_chart import (
     line_clustered_column, line_stacked_column, line_pct_stacked_column,
 )
-from products.visuals.components.waterfall_chart import waterfall_contribution
+from products.visuals.components.waterfall_chart import waterfall_contribution, waterfall_variance
 from products.visuals.components.scatter_chart import scatter_bubble
 from products.visuals.components.distribution_chart import histogram, box_plot
 from products.visuals.components.special_chart import (
@@ -275,7 +275,8 @@ app.layout = html.Div(style=S["body"], children=[
             html.A("Pie / Donut", href="#pie", style=S["nav-item"]),
             html.A("Treemap", href="#treemap", style=S["nav-item"]),
             html.A("Funnel", href="#funnel", style=S["nav-item"]),
-            html.A("Waterfall", href="#waterfall", style=S["nav-item"]),
+            html.A("Waterfall — contribution", href="#waterfall-contribution", style=S["nav-item"]),
+            html.A("Waterfall — variance", href="#waterfall-variance", style=S["nav-item"]),
             html.A("Histogram", href="#histogram", style=S["nav-item"]),
             html.A("Box plot", href="#boxplot", style=S["nav-item"]),
             html.A("Gauge", href="#gauge", style=S["nav-item"]),
@@ -330,14 +331,21 @@ app.layout = html.Div(style=S["body"], children=[
 
             # ── KPI card ─────────────────────────────────────────────────────
             html.H2("KPI card", id="kpi", style={**S["section-heading"], "marginTop": 0}),
-            html.P("kpi_standard — single prominent metric with optional trend. Variant: kpi_compact (dense row layout).",
+            html.P("kpi_standard — callout value, unit, subtitle, reference value, trend. "
+                   "Format driven by Measure (format_type, scale, decimals, currency_symbol).",
                    style=S["section-desc"]),
             html.Div(style=S["group"], children=[
-                html.Div(style={"maxWidth": "220px"}, children=[
-                    kpi_standard("Measure A",
-                                 m.MEASURES["measure_a"].kpi_value(_scalars["measure_a"]),
-                                 unit=m.MEASURES["measure_a"].unit,
-                                 trend="▲ +0.8", trend_color=POSITIVE),
+                html.Div(style={"maxWidth": "240px"}, children=[
+                    kpi_standard(
+                        label=m.MEASURES["measure_a"].label,
+                        value=m.MEASURES["measure_a"].kpi_value(_scalars["measure_a"]),
+                        unit=m.MEASURES["measure_a"].plotly_ticksuffix,
+                        subtitle="Average 2018–2024",
+                        reference_value=m.MEASURES["measure_a"].kpi_value(50.0),
+                        reference_label="Target",
+                        trend="▲ +0.8",
+                        trend_color=POSITIVE,
+                    ),
                 ]),
             ]),
 
@@ -565,17 +573,26 @@ app.layout = html.Div(style=S["body"], children=[
                     values=_df_funnel["val_count"].tolist()),
             ])]),
 
-            # ── 20. Waterfall ─────────────────────────────────────────────────
-            html.H2("Waterfall", id="waterfall", style=S["section-heading"]),
-            html.P("waterfall_contribution — running total showing how components build the final result. Variant: waterfall_variance.", style=S["section-desc"]),
+            # ── 20. Waterfall — contribution ──────────────────────────────────
+            html.H2("Waterfall — contribution", id="waterfall-contribution", style=S["section-heading"]),
+            html.P("waterfall_contribution — components building a total; bars show additive decomposition of the final result.", style=S["section-desc"]),
             html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
-                waterfall_contribution("Waterfall", subtitle="sample data",
+                waterfall_contribution("Waterfall — contribution", subtitle="sample data",
                     categories=_df_wf_c["dim_stage"].tolist(),
                     values=_df_wf_c["val_amount"].tolist(),
                     total_label=_df_wf_c.loc[_df_wf_c["is_total"], "dim_stage"].iloc[0]),
             ])]),
 
-            # ── 21. Histogram ─────────────────────────────────────────────────
+            # ── 21. Waterfall — variance ──────────────────────────────────────
+            html.H2("Waterfall — variance", id="waterfall-variance", style=S["section-heading"]),
+            html.P("waterfall_variance — bridge between two absolute values; explains how a base becomes the final value.", style=S["section-desc"]),
+            html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
+                waterfall_variance("Waterfall — variance", subtitle="sample data",
+                    categories=_df_wf_v["dim_stage"].tolist(),
+                    values=_df_wf_v["val_amount"].tolist()),
+            ])]),
+
+            # ── 22. Histogram ─────────────────────────────────────────────────
             html.H2("Histogram", id="histogram", style=S["section-heading"]),
             html.P("histogram — frequency distribution of a single numeric variable.", style=S["section-desc"]),
             html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
@@ -584,7 +601,7 @@ app.layout = html.Div(style=S["body"], children=[
                     x_label="Observed value"),
             ])]),
 
-            # ── 22. Box plot ──────────────────────────────────────────────────
+            # ── 23. Box plot ──────────────────────────────────────────────────
             html.H2("Box plot", id="boxplot", style=S["section-heading"]),
             html.P("box_plot — median, IQR and outliers by group. Use for distribution comparisons.", style=S["section-desc"]),
             html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
@@ -593,7 +610,7 @@ app.layout = html.Div(style=S["body"], children=[
                           for grp in _dist_groups}),
             ])]),
 
-            # ── 23. Gauge ─────────────────────────────────────────────────────
+            # ── 24. Gauge ─────────────────────────────────────────────────────
             html.H2("Gauge", id="gauge", style=S["section-heading"]),
             html.P("gauge — single value measured against a range with a reference point.", style=S["section-desc"]),
             html.Div(style=S["group"], children=[html.Div(style={"maxWidth": "360px"}, children=[
@@ -606,7 +623,7 @@ app.layout = html.Div(style=S["body"], children=[
                 ]),
             ])]),
 
-            # ── 24. Bullet ────────────────────────────────────────────────────
+            # ── 25. Bullet ────────────────────────────────────────────────────
             html.H2("Bullet", id="bullet", style=S["section-heading"]),
             html.P("bullet — value vs target with a background range. Precise goal tracking.", style=S["section-desc"]),
             html.Div(style=S["group"], children=[html.Div(style={"maxWidth": "360px"}, children=[
@@ -619,7 +636,7 @@ app.layout = html.Div(style=S["body"], children=[
                 ]),
             ])]),
 
-            # ── 25. Table ─────────────────────────────────────────────────────
+            # ── 26. Table ─────────────────────────────────────────────────────
             html.H2("Table", id="table", style=S["section-heading"]),
             html.P("table_basic — exact values in rows and columns, numbers right-aligned.", style=S["section-desc"]),
             html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
@@ -631,7 +648,7 @@ app.layout = html.Div(style=S["body"], children=[
                     number_cols={1, 2, 3, 4}),
             ])]),
 
-            # ── 26. Matrix / Pivot ────────────────────────────────────────────
+            # ── 27. Matrix / Pivot ────────────────────────────────────────────
             html.H2("Matrix / Pivot table", id="matrix", style=S["section-heading"]),
             html.P("table_matrix — row dimension × column dimension, values at intersections.", style=S["section-desc"]),
             html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
@@ -642,14 +659,14 @@ app.layout = html.Div(style=S["body"], children=[
                     row_dim="Category"),
             ])]),
 
-            # ── 27. Data list ─────────────────────────────────────────────────
+            # ── 28. Data list ─────────────────────────────────────────────────
             html.H2("Data list", id="datalist", style=S["section-heading"]),
             html.P("data_list — scrollable list of labelled items with optional values.", style=S["section-desc"]),
             html.Div(style=S["group"], children=[html.Div(style={"maxWidth": "360px"}, children=[
                 data_list("Data list", subtitle="sample data", items=_list_items),
             ])]),
 
-            # ── 28. Heatmap ───────────────────────────────────────────────────
+            # ── 29. Heatmap ───────────────────────────────────────────────────
             html.H2("Heatmap", id="heatmap", style=S["section-heading"]),
             html.P("heatmap_matrix — matrix of values coloured by intensity, diverging or sequential.", style=S["section-desc"]),
             html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
@@ -661,7 +678,7 @@ app.layout = html.Div(style=S["body"], children=[
                     color_scale="diverging"),
             ])]),
 
-            # ── 29. Choropleth map ────────────────────────────────────────────
+            # ── 30. Choropleth map ────────────────────────────────────────────
             html.H2("Choropleth map", id="choropleth", style=S["section-heading"]),
             html.P("choropleth_map — geographic regions filled by value, sequential or diverging colour scale.", style=S["section-desc"]),
             html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
@@ -671,7 +688,7 @@ app.layout = html.Div(style=S["body"], children=[
                     hover_labels=m.DIMS["label"].values(_df_geo)),
             ])]),
 
-            # ── 30. Bubble map ────────────────────────────────────────────────
+            # ── 31. Bubble map ────────────────────────────────────────────────
             html.H2("Bubble map", id="bubblemap", style=S["section-heading"]),
             html.P("bubble_map — geographic points sized by value.", style=S["section-desc"]),
             html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
@@ -682,7 +699,7 @@ app.layout = html.Div(style=S["body"], children=[
                     labels=m.DIMS["label"].values(_df_geo)),
             ])]),
 
-            # ── 31. Ribbon ────────────────────────────────────────────────────
+            # ── 32. Ribbon ────────────────────────────────────────────────────
             html.H2("Ribbon", id="ribbon", style=S["section-heading"]),
             html.P("ribbon — rank changes over time, highest rank always on top.", style=S["section-desc"]),
             html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
@@ -694,7 +711,7 @@ app.layout = html.Div(style=S["body"], children=[
                             for entity in _df_ribbon["dim_entity"].unique().tolist()]),
             ])]),
 
-            # ── 32. Candlestick ───────────────────────────────────────────────
+            # ── 33. Candlestick ───────────────────────────────────────────────
             html.H2("Candlestick", id="candlestick", style=S["section-heading"]),
             html.P("candlestick — OHLC financial data (open, high, low, close) over time.", style=S["section-desc"]),
             html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
@@ -711,35 +728,35 @@ app.layout = html.Div(style=S["body"], children=[
                     style={**S["section-heading"], "marginTop": "64px"}),
             html.P("Interactive filter controls. Connect to callbacks in the host app.", style=S["section-desc"]),
 
-            # ── 33. Dropdown slicer ───────────────────────────────────────────
+            # ── 34. Dropdown slicer ───────────────────────────────────────────
             html.H2("Dropdown slicer", id="slicer-dropdown", style=S["section-heading"]),
             html.P("dropdown_slicer — single select from a collapsed list.", style=S["section-desc"]),
             html.Div(style=S["group"], children=[html.Div(style={"maxWidth": "320px"}, children=[
                 dropdown_slicer("Category", options=_categories, value=_categories[0]),
             ])]),
 
-            # ── 34. List slicer ───────────────────────────────────────────────
+            # ── 35. List slicer ───────────────────────────────────────────────
             html.H2("List slicer", id="slicer-list", style=S["section-heading"]),
             html.P("list_slicer — checklist (multi=True) or radio (multi=False).", style=S["section-desc"]),
             html.Div(style=S["group"], children=[html.Div(style={"maxWidth": "320px"}, children=[
                 list_slicer("Period", options=_periods, value=_periods[:2], multi=True),
             ])]),
 
-            # ── 35. Range slicer ──────────────────────────────────────────────
+            # ── 36. Range slicer ──────────────────────────────────────────────
             html.H2("Range slicer", id="slicer-range", style=S["section-heading"]),
             html.P("range_slicer — dual-handle numeric range slider.", style=S["section-desc"]),
             html.Div(style=S["group"], children=[html.Div(style={"maxWidth": "480px"}, children=[
                 range_slicer("Value range", min_val=0, max_val=100, value=[20, 80]),
             ])]),
 
-            # ── 36. Date range slicer ─────────────────────────────────────────
+            # ── 37. Date range slicer ─────────────────────────────────────────
             html.H2("Date range slicer", id="slicer-date", style=S["section-heading"]),
             html.P("date_range_slicer — start and end date picker.", style=S["section-desc"]),
             html.Div(style=S["group"], children=[html.Div(style={"maxWidth": "480px"}, children=[
                 date_range_slicer("Date range", start_date="2024-01-01", end_date="2024-12-31"),
             ])]),
 
-            # ── 37. Tile slicer ───────────────────────────────────────────────
+            # ── 38. Tile slicer ───────────────────────────────────────────────
             html.H2("Tile slicer", id="slicer-tile", style=S["section-heading"]),
             html.P("tile_slicer — clickable button tiles, single or multi-select.", style=S["section-desc"]),
             html.Div(style=S["group"], children=[html.Div(style={"maxWidth": "480px"}, children=[

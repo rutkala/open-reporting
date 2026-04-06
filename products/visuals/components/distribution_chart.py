@@ -5,6 +5,11 @@ KB reference: team/analytics/visualization/charts/scatter.md (distribution secti
 histogram  — frequency distribution of a single variable
 box_plot   — distribution summary: median, IQR, outliers
 violin_plot — distribution shape + box summary
+
+y_measure (optional Measure):
+  When provided, sets the value axis title, tickformat and ticksuffix.
+  For histogram: applied to x-axis (the observed variable).
+  For box_plot / violin_plot: applied to y-axis.
 """
 import plotly.graph_objects as go
 
@@ -39,15 +44,16 @@ def _base_layout(**kw):
     }
 
 
-def histogram(title, x, subtitle="", nbins=None, color=None, x_label=""):
+def histogram(title, x, subtitle="", nbins=None, color=None, x_label="", y_measure=None):
     """
     Frequency distribution of a single continuous variable.
 
     Args:
-        x:      list of numeric values
-        nbins:  number of bins (auto if None)
-        color:  bar colour (default AZURE_1)
-        x_label: x-axis label
+        x:        list of numeric values
+        nbins:    number of bins (auto if None)
+        color:    bar colour (default AZURE_1)
+        x_label:  x-axis label (overridden by y_measure.axis_label if provided)
+        y_measure: when provided, sets x-axis title, tickformat and ticksuffix
     """
     bar_color = color or AZURE_1
     fig = go.Figure(go.Histogram(
@@ -56,23 +62,26 @@ def histogram(title, x, subtitle="", nbins=None, color=None, x_label=""):
         marker_color=bar_color,
         marker_line=dict(color="white", width=0.5),
         opacity=0.85,
-        hovertemplate="Zakres: %{x}<br>Liczba: %{y}<extra></extra>",
+        hovertemplate="Range: %{x}<br>Count: %{y}<extra></extra>",
     ))
     layout = _base_layout()
-    if x_label:
+    if y_measure is not None:
+        y_measure.apply_to_xaxis(layout["xaxis"])
+    elif x_label:
         layout["xaxis"]["title"] = dict(text=x_label, font=dict(size=11, color=SUBTEXT))
-    layout["yaxis"]["title"] = dict(text="Liczba", font=dict(size=11, color=SUBTEXT))
+    layout["yaxis"]["title"] = dict(text="Count", font=dict(size=11, color=SUBTEXT))
     fig.update_layout(layout)
     return _chart(title=title, subtitle=subtitle, figure=fig)
 
 
-def box_plot(title, data, subtitle="", show_points=True):
+def box_plot(title, data, subtitle="", show_points=True, y_measure=None):
     """
     Box plot — distribution summary: median, IQR, whiskers, outliers.
 
     Args:
         data:        dict of {label: [values]} or list of {"name": str, "y": list}
         show_points: overlay individual data points (jittered)
+        y_measure:   when provided, sets y-axis title, tickformat and ticksuffix
     """
     if isinstance(data, dict):
         items = [{"name": k, "y": v} for k, v in data.items()]
@@ -99,19 +108,25 @@ def box_plot(title, data, subtitle="", show_points=True):
     layout["hovermode"] = "closest"
     if len(items) > 1:
         layout["showlegend"] = False
+    if y_measure is not None:
+        y_measure.apply_to_yaxis(layout["yaxis"])
     fig.update_layout(layout)
 
-    legend = [(item["name"], item.get("color", COLORWAY[i % len(COLORWAY)])) for i, item in enumerate(items)] if len(items) > 1 else None
+    legend = (
+        [(item["name"], item.get("color", COLORWAY[i % len(COLORWAY)])) for i, item in enumerate(items)]
+        if len(items) > 1 else None
+    )
     return _chart(title=title, subtitle=subtitle, legend_items=legend, figure=fig)
 
 
-def violin_plot(title, data, subtitle="", show_box=True):
+def violin_plot(title, data, subtitle="", show_box=True, y_measure=None):
     """
     Violin plot — distribution shape with optional embedded box.
 
     Args:
-        data:     dict of {label: [values]} or list of {"name": str, "y": list}
-        show_box: embed box plot inside violin
+        data:      dict of {label: [values]} or list of {"name": str, "y": list}
+        show_box:  embed box plot inside violin
+        y_measure: when provided, sets y-axis title, tickformat and ticksuffix
     """
     if isinstance(data, dict):
         items = [{"name": k, "y": v} for k, v in data.items()]
@@ -135,7 +150,12 @@ def violin_plot(title, data, subtitle="", show_box=True):
     layout = _base_layout()
     layout["xaxis"].update(showgrid=False, showline=False)
     layout["hovermode"] = "closest"
+    if y_measure is not None:
+        y_measure.apply_to_yaxis(layout["yaxis"])
     fig.update_layout(layout)
 
-    legend = [(item["name"], item.get("color", COLORWAY[i % len(COLORWAY)])) for i, item in enumerate(items)] if len(items) > 1 else None
+    legend = (
+        [(item["name"], item.get("color", COLORWAY[i % len(COLORWAY)])) for i, item in enumerate(items)]
+        if len(items) > 1 else None
+    )
     return _chart(title=title, subtitle=subtitle, legend_items=legend, figure=fig)

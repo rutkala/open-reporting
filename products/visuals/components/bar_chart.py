@@ -10,10 +10,16 @@ Rules applied:
   - All column variants enforce rangemode="tozero"
   - bar_diverging uses POSITIVE/NEGATIVE semantic colours
   - Horizontal variants sort descending by default (KB: largest at top)
+
+y_measure (optional Measure):
+  When provided, sets y-axis (or x-axis for horizontal) title, tickformat,
+  and ticksuffix. Also formats data labels via measure.fmt_labels().
 """
 import plotly.graph_objects as go
 
-from products.visuals.lib.theme import COLORWAY, POSITIVE, NEGATIVE, SLATE_1, SUBTEXT, TEXT, BORDER, GRID, ZERO_LINE, AZURE_1
+from products.visuals.lib.theme import (
+    COLORWAY, POSITIVE, NEGATIVE, SLATE_1, SUBTEXT, TEXT, BORDER, GRID, ZERO_LINE, AZURE_1,
+)
 from products.visuals.components import PLOT_H, _plotly_layout, _chart
 
 
@@ -44,23 +50,35 @@ def _bar_layout_h(**kw):
 
 
 def _legend(series):
-    return [(s["name"], s.get("color", COLORWAY[i % len(COLORWAY)])) for i, s in enumerate(series)] if len(series) > 1 else None
+    return (
+        [(s["name"], s.get("color", COLORWAY[i % len(COLORWAY)])) for i, s in enumerate(series)]
+        if len(series) > 1 else None
+    )
+
+
+def _fmt_labels(values, measure):
+    if measure is not None:
+        return measure.fmt_labels(values)
+    return [str(v) for v in values]
 
 
 # ── Column (vertical) variants ────────────────────────────────────────────────
 
-def clustered_column(title, x, series, subtitle="", show_labels=False, reference=None):
+def clustered_column(title, x, series, subtitle="", show_labels=False, reference=None,
+                     y_measure=None):
     """Vertical grouped bars — compare multiple series side by side."""
     fig = go.Figure()
     for i, s in enumerate(series):
         color = s.get("color", COLORWAY[i % len(COLORWAY)])
         fig.add_trace(go.Bar(
             x=x, y=s["y"], name=s["name"], marker_color=color,
-            text=[str(v) for v in s["y"]] if show_labels else None,
+            text=_fmt_labels(s["y"], y_measure) if show_labels else None,
             textposition="outside" if show_labels else "none",
             textfont=dict(size=11, color=SUBTEXT),
         ))
     layout = _plotly_layout(barmode="group", yaxis={"rangemode": "tozero"})
+    if y_measure is not None:
+        y_measure.apply_to_yaxis(layout["yaxis"])
     if reference:
         layout.setdefault("shapes", []).append(dict(
             type="line", x0=-0.5, x1=len(x) - 0.5,
@@ -76,24 +94,26 @@ def clustered_column(title, x, series, subtitle="", show_labels=False, reference
     return _chart(title=title, subtitle=subtitle, legend_items=_legend(series), figure=fig)
 
 
-def stacked_column(title, x, series, subtitle="", show_labels=False):
+def stacked_column(title, x, series, subtitle="", show_labels=False, y_measure=None):
     """Vertical stacked bars — total AND composition."""
     fig = go.Figure()
     for i, s in enumerate(series):
         color = s.get("color", COLORWAY[i % len(COLORWAY)])
         fig.add_trace(go.Bar(
             x=x, y=s["y"], name=s["name"], marker_color=color,
-            text=[str(v) for v in s["y"]] if show_labels else None,
+            text=_fmt_labels(s["y"], y_measure) if show_labels else None,
             textposition="inside" if show_labels else "none",
             textfont=dict(size=11, color="white"),
         ))
-    fig.update_layout(_plotly_layout(barmode="stack", yaxis={"rangemode": "tozero"}))
+    layout = _plotly_layout(barmode="stack", yaxis={"rangemode": "tozero"})
+    if y_measure is not None:
+        y_measure.apply_to_yaxis(layout["yaxis"])
+    fig.update_layout(layout)
     return _chart(title=title, subtitle=subtitle, legend_items=_legend(series), figure=fig)
 
 
-def pct_stacked_column(title, x, series, subtitle="", show_labels=False):
+def pct_stacked_column(title, x, series, subtitle="", show_labels=False, y_measure=None):
     """Vertical 100% normalised stacked bars — composition only."""
-    # Normalise each category's values so they sum to 100
     n = len(x)
     totals = [sum(s["y"][i] for s in series if i < len(s["y"])) for i in range(n)]
     norm_series = []
@@ -114,20 +134,24 @@ def pct_stacked_column(title, x, series, subtitle="", show_labels=False):
             textfont=dict(size=11, color="white"),
         ))
     layout = _plotly_layout(barmode="relative", yaxis={"rangemode": "tozero", "ticksuffix": "%"})
+    if y_measure is not None:
+        y_measure.apply_to_yaxis(layout["yaxis"])
     fig.update_layout(layout)
     return _chart(title=title, subtitle=subtitle, legend_items=_legend(series), figure=fig)
 
 
 # ── Bar (horizontal) variants ─────────────────────────────────────────────────
 
-def clustered_bar(title, categories, series, subtitle="", show_labels=False, sort=True):
+def clustered_bar(title, categories, series, subtitle="", show_labels=False, sort=True,
+                  y_measure=None):
     """
     Horizontal grouped bars.
     Single series → ranked list (sorted descending).
     Multiple series → grouped horizontal comparison.
 
     Args:
-        sort: sort by first series descending (applies to single-series only)
+        sort:      sort by first series descending (applies to single-series only)
+        y_measure: when provided, sets x-axis title, tickformat and ticksuffix
     """
     if sort and len(series) == 1:
         pairs = sorted(zip(series[0]["y"], categories), reverse=True)
@@ -145,15 +169,19 @@ def clustered_bar(title, categories, series, subtitle="", show_labels=False, sor
         fig.add_trace(go.Bar(
             x=s["y"], y=plot_cats, name=s["name"], orientation="h",
             marker_color=color,
-            text=[str(v) for v in s["y"]] if show_labels else None,
+            text=_fmt_labels(s["y"], y_measure) if show_labels else None,
             textposition="outside" if show_labels else "none",
             textfont=dict(size=11, color=SUBTEXT),
         ))
-    fig.update_layout(_bar_layout_h(barmode="group"))
+    layout = _bar_layout_h(barmode="group")
+    if y_measure is not None:
+        y_measure.apply_to_xaxis(layout["xaxis"])
+    fig.update_layout(layout)
     return _chart(title=title, subtitle=subtitle, legend_items=_legend(plot_series), figure=fig)
 
 
-def stacked_bar(title, categories, series, subtitle="", show_labels=False, sort=False):
+def stacked_bar(title, categories, series, subtitle="", show_labels=False, sort=False,
+                y_measure=None):
     """Horizontal stacked bars — total AND composition."""
     if sort and len(series) >= 1:
         totals = [sum(s["y"][i] for s in series) for i in range(len(categories))]
@@ -170,17 +198,19 @@ def stacked_bar(title, categories, series, subtitle="", show_labels=False, sort=
         fig.add_trace(go.Bar(
             x=s["y"], y=sorted_cats, name=s["name"], orientation="h",
             marker_color=color,
-            text=[str(v) for v in s["y"]] if show_labels else None,
+            text=_fmt_labels(s["y"], y_measure) if show_labels else None,
             textposition="inside" if show_labels else "none",
             textfont=dict(size=11, color="white"),
         ))
-    fig.update_layout(_bar_layout_h(barmode="stack"))
+    layout = _bar_layout_h(barmode="stack")
+    if y_measure is not None:
+        y_measure.apply_to_xaxis(layout["xaxis"])
+    fig.update_layout(layout)
     return _chart(title=title, subtitle=subtitle, legend_items=_legend(plot_series), figure=fig)
 
 
-def pct_stacked_bar(title, categories, series, subtitle="", show_labels=False):
+def pct_stacked_bar(title, categories, series, subtitle="", show_labels=False, y_measure=None):
     """Horizontal 100% normalised stacked bars — composition only."""
-    # Normalise each category's values so they sum to 100
     n = len(categories)
     totals = [sum(s["y"][i] for s in series if i < len(s["y"])) for i in range(n)]
     norm_series = []
@@ -203,40 +233,47 @@ def pct_stacked_bar(title, categories, series, subtitle="", show_labels=False):
         ))
     layout = _bar_layout_h(barmode="relative")
     layout["xaxis"]["ticksuffix"] = "%"
+    if y_measure is not None:
+        y_measure.apply_to_xaxis(layout["xaxis"])
     fig.update_layout(layout)
     return _chart(title=title, subtitle=subtitle, legend_items=_legend(series), figure=fig)
 
 
-def bar_diverging(title, x, values, subtitle="", show_labels=False):
+def bar_diverging(title, x, values, subtitle="", show_labels=False, y_measure=None):
     """
     Vertical diverging bars — positive/negative from zero.
     POSITIVE (green) for gains, NEGATIVE (red) for losses.
     """
     colors = [POSITIVE if v >= 0 else NEGATIVE for v in values]
+    labels = _fmt_labels(values, y_measure) if show_labels else None
     fig = go.Figure(go.Bar(
         x=x, y=values, marker_color=colors,
-        text=[str(v) for v in values] if show_labels else None,
+        text=labels,
         textposition="outside" if show_labels else "none",
         textfont=dict(size=11, color=SUBTEXT),
     ))
-    fig.update_layout(_plotly_layout(
+    layout = _plotly_layout(
         yaxis={"zeroline": True, "zerolinewidth": 1.5, "zerolinecolor": "#C5D0D8"},
-    ))
+    )
+    if y_measure is not None:
+        y_measure.apply_to_yaxis(layout["yaxis"])
+    fig.update_layout(layout)
     return _chart(title=title, subtitle=subtitle, figure=fig)
 
 
 # ── Clustered-stacked variants ─────────────────────────────────────────────────
 
-def clustered_stacked_column(title, x, groups, subtitle=""):
+def clustered_stacked_column(title, x, groups, subtitle="", y_measure=None):
     """
     Clustered-stacked column chart — groups clustered side by side, series
     stacked within each group.
 
     Args:
-        x:      list of category labels (shared x-axis)
-        groups: list of group dicts:
-                [{"name": str, "series": [{"name": str, "y": list[float]}]}]
-                Series colour is consistent across groups (index-based).
+        x:        list of category labels (shared x-axis)
+        groups:   list of group dicts:
+                  [{"name": str, "series": [{"name": str, "y": list[float]}]}]
+                  Series colour is consistent across groups (index-based).
+        y_measure: when provided, sets y-axis title, tickformat and ticksuffix
     """
     fig = go.Figure()
     for gi, group in enumerate(groups):
@@ -261,17 +298,21 @@ def clustered_stacked_column(title, x, groups, subtitle=""):
             cumulative = [c + v for c, v in zip(cumulative, s["y"])]
 
     legend_items = [{"name": s["name"]} for s in groups[0]["series"]] if groups else []
-    fig.update_layout(_plotly_layout(barmode="overlay", yaxis={"rangemode": "tozero"}))
+    layout = _plotly_layout(barmode="overlay", yaxis={"rangemode": "tozero"})
+    if y_measure is not None:
+        y_measure.apply_to_yaxis(layout["yaxis"])
+    fig.update_layout(layout)
     return _chart(title=title, subtitle=subtitle, legend_items=_legend(legend_items), figure=fig)
 
 
-def clustered_stacked_bar(title, categories, groups, subtitle=""):
+def clustered_stacked_bar(title, categories, groups, subtitle="", y_measure=None):
     """
     Clustered-stacked bar chart — horizontal variant of clustered_stacked_column.
 
     Args:
         categories: list of category labels (shared y-axis)
         groups:     same structure as clustered_stacked_column
+        y_measure:  when provided, sets x-axis title, tickformat and ticksuffix
     """
     fig = go.Figure()
     for gi, group in enumerate(groups):
@@ -297,5 +338,8 @@ def clustered_stacked_bar(title, categories, groups, subtitle=""):
             cumulative = [c + v for c, v in zip(cumulative, s["y"])]
 
     legend_items = [{"name": s["name"]} for s in groups[0]["series"]] if groups else []
-    fig.update_layout(_bar_layout_h(barmode="overlay"))
+    layout = _bar_layout_h(barmode="overlay")
+    if y_measure is not None:
+        y_measure.apply_to_xaxis(layout["xaxis"])
+    fig.update_layout(layout)
     return _chart(title=title, subtitle=subtitle, legend_items=_legend(legend_items), figure=fig)
