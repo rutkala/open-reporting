@@ -30,7 +30,6 @@ from products.visuals.components.kpi_card import kpi_row, kpi_standard, kpi_comp
 from products.visuals.components.bar_chart import (
     clustered_column, stacked_column, pct_stacked_column,
     clustered_bar, stacked_bar, pct_stacked_bar,
-    bar_diverging,
     clustered_stacked_column, clustered_stacked_bar,
 )
 from products.visuals.components.line_chart import (
@@ -408,10 +407,11 @@ app.layout = html.Div(style=S["body"], children=[
                 clustered_column("Clustered column", subtitle="sample data",
                     x=_categories,
                     series=[
-                        {"name": "Measure A", "y": _df_by_cat["val_a"].tolist()},
-                        {"name": "Measure B", "y": _df_by_cat["val_b"].tolist()},
-                        {"name": "Measure C", "y": _df_by_cat["val_c"].tolist()},
-                    ]),
+                        m.MEASURES["measure_a"].to_series(_df_by_cat["val_a"].tolist()),
+                        m.MEASURES["measure_b"].to_series(_df_by_cat["val_b"].tolist()),
+                        m.MEASURES["measure_c"].to_series(_df_by_cat["val_c"].tolist()),
+                    ],
+                    y_measure=m.MEASURES["measure_a"]),
             ])]),
 
             # ── 2. Stacked column ─────────────────────────────────────────────
@@ -421,11 +421,12 @@ app.layout = html.Div(style=S["body"], children=[
                 stacked_column("Stacked column", subtitle="sample data",
                     x=_years,
                     series=[
-                        {"name": "Measure A", "y": _df_by_year["val_a"].tolist()},
-                        {"name": "Measure B", "y": _df_by_year["val_b"].tolist()},
-                        {"name": "Measure C", "y": _df_by_year["val_c"].tolist()},
-                        {"name": "Measure D", "y": _df_by_year["val_d"].tolist()},
-                    ]),
+                        m.MEASURES["measure_a"].to_series(_df_by_year["val_a"].tolist()),
+                        m.MEASURES["measure_b"].to_series(_df_by_year["val_b"].tolist()),
+                        m.MEASURES["measure_c"].to_series(_df_by_year["val_c"].tolist()),
+                        m.MEASURES["measure_d"].to_series(_df_by_year["val_d"].tolist()),
+                    ],
+                    y_measure=m.MEASURES["measure_a"]),
             ])]),
 
             # ── 3. 100% stacked column ────────────────────────────────────────
@@ -435,9 +436,9 @@ app.layout = html.Div(style=S["body"], children=[
                 pct_stacked_column("100% stacked column", subtitle="sample data",
                     x=_categories,
                     series=[
-                        {"name": "Measure A", "y": _df_by_cat["val_a"].tolist()},
-                        {"name": "Measure B", "y": _df_by_cat["val_b"].tolist()},
-                        {"name": "Measure C", "y": _df_by_cat["val_c"].tolist()},
+                        m.MEASURES["measure_a"].to_series(_df_by_cat["val_a"].tolist()),
+                        m.MEASURES["measure_b"].to_series(_df_by_cat["val_b"].tolist()),
+                        m.MEASURES["measure_c"].to_series(_df_by_cat["val_c"].tolist()),
                     ]),
             ])]),
 
@@ -446,7 +447,8 @@ app.layout = html.Div(style=S["body"], children=[
             html.P("clustered_stacked_column — groups side by side, series stacked within each group.", style=S["section-desc"]),
             html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
                 clustered_stacked_column("Clustered + stacked column", subtitle="sample data",
-                    x=_categories, groups=_groups_cs),
+                    x=_categories, groups=_groups_cs,
+                    y_measure=m.MEASURES["measure_a"]),
             ])]),
 
             # ── 5. Clustered bar ──────────────────────────────────────────────
@@ -455,7 +457,8 @@ app.layout = html.Div(style=S["body"], children=[
             html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
                 clustered_bar("Clustered bar", subtitle="sample data — sorted descending",
                     categories=m.DIMS["label"].values(_df_geo),
-                    series=[{"name": "Measure A", "y": _df_geo["val_a"].tolist()}]),
+                    series=[m.MEASURES["geo_a"].to_series(_df_geo["val_a"].tolist())],
+                    y_measure=m.MEASURES["geo_a"]),
             ])]),
 
             # ── 6. Stacked bar ────────────────────────────────────────────────
@@ -465,10 +468,11 @@ app.layout = html.Div(style=S["body"], children=[
                 stacked_bar("Stacked bar", subtitle="sample data",
                     categories=_categories,
                     series=[
-                        {"name": "Measure A", "y": _df_by_cat["val_a"].tolist()},
-                        {"name": "Measure B", "y": _df_by_cat["val_b"].tolist()},
-                        {"name": "Measure C", "y": _df_by_cat["val_c"].tolist()},
-                    ]),
+                        m.MEASURES["measure_a"].to_series(_df_by_cat["val_a"].tolist()),
+                        m.MEASURES["measure_b"].to_series(_df_by_cat["val_b"].tolist()),
+                        m.MEASURES["measure_c"].to_series(_df_by_cat["val_c"].tolist()),
+                    ],
+                    y_measure=m.MEASURES["measure_a"]),
             ])]),
 
             # ── 7. 100% stacked bar ───────────────────────────────────────────
@@ -478,9 +482,9 @@ app.layout = html.Div(style=S["body"], children=[
                 pct_stacked_bar("100% stacked bar", subtitle="sample data",
                     categories=_categories,
                     series=[
-                        {"name": "Measure A", "y": _df_by_cat["val_a"].tolist()},
-                        {"name": "Measure B", "y": _df_by_cat["val_b"].tolist()},
-                        {"name": "Measure C", "y": _df_by_cat["val_c"].tolist()},
+                        m.MEASURES["measure_a"].to_series(_df_by_cat["val_a"].tolist()),
+                        m.MEASURES["measure_b"].to_series(_df_by_cat["val_b"].tolist()),
+                        m.MEASURES["measure_c"].to_series(_df_by_cat["val_c"].tolist()),
                     ]),
             ])]),
 
@@ -489,7 +493,8 @@ app.layout = html.Div(style=S["body"], children=[
             html.P("clustered_stacked_bar — horizontal variant of clustered+stacked.", style=S["section-desc"]),
             html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
                 clustered_stacked_bar("Clustered + stacked bar", subtitle="sample data",
-                    categories=_categories, groups=_groups_cs),
+                    categories=_categories, groups=_groups_cs,
+                    y_measure=m.MEASURES["measure_a"]),
             ])]),
 
             # ── 9. Line ───────────────────────────────────────────────────────
@@ -499,11 +504,12 @@ app.layout = html.Div(style=S["body"], children=[
                 line("Line", subtitle="sample data",
                     x=_years,
                     series=[
-                        {"name": "Measure A", "y": _df_by_year["val_a"].tolist()},
-                        {"name": "Measure B", "y": _df_by_year["val_b"].tolist()},
-                        {"name": "Measure E", "y": _df_by_year["val_e"].tolist()},
+                        m.MEASURES["measure_a"].to_series(_df_by_year["val_a"].tolist()),
+                        m.MEASURES["measure_b"].to_series(_df_by_year["val_b"].tolist()),
+                        m.MEASURES["measure_e"].to_series(_df_by_year["val_e"].tolist()),
                     ],
-                    reference={"value": _scalars["measure_b"], "label": "Reference"}),
+                    reference={"value": _scalars["measure_b"], "label": "Reference"},
+                    y_measure=m.MEASURES["measure_a"]),
             ])]),
 
             # ── 10. Clustered area ────────────────────────────────────────────
@@ -513,10 +519,11 @@ app.layout = html.Div(style=S["body"], children=[
                 area("Clustered area", subtitle="sample data",
                     x=_years,
                     series=[
-                        {"name": "Measure A", "y": _df_by_year["val_a"].tolist()},
-                        {"name": "Measure B", "y": _df_by_year["val_b"].tolist()},
-                        {"name": "Measure C", "y": _df_by_year["val_c"].tolist()},
-                    ]),
+                        m.MEASURES["measure_a"].to_series(_df_by_year["val_a"].tolist()),
+                        m.MEASURES["measure_b"].to_series(_df_by_year["val_b"].tolist()),
+                        m.MEASURES["measure_c"].to_series(_df_by_year["val_c"].tolist()),
+                    ],
+                    y_measure=m.MEASURES["measure_a"]),
             ])]),
 
             # ── 11. Stacked area ──────────────────────────────────────────────
@@ -526,11 +533,12 @@ app.layout = html.Div(style=S["body"], children=[
                 stacked_area("Stacked area", subtitle="sample data",
                     x=_years,
                     series=[
-                        {"name": "Measure A", "y": _df_by_year["val_a"].tolist()},
-                        {"name": "Measure B", "y": _df_by_year["val_b"].tolist()},
-                        {"name": "Measure C", "y": _df_by_year["val_c"].tolist()},
-                        {"name": "Measure D", "y": _df_by_year["val_d"].tolist()},
-                    ]),
+                        m.MEASURES["measure_a"].to_series(_df_by_year["val_a"].tolist()),
+                        m.MEASURES["measure_b"].to_series(_df_by_year["val_b"].tolist()),
+                        m.MEASURES["measure_c"].to_series(_df_by_year["val_c"].tolist()),
+                        m.MEASURES["measure_d"].to_series(_df_by_year["val_d"].tolist()),
+                    ],
+                    y_measure=m.MEASURES["measure_a"]),
             ])]),
 
             # ── 12. 100% stacked area ─────────────────────────────────────────
@@ -540,10 +548,10 @@ app.layout = html.Div(style=S["body"], children=[
                 pct_stacked_area("100% stacked area", subtitle="sample data",
                     x=_years,
                     series=[
-                        {"name": "Measure A", "y": _df_by_year["val_a"].tolist()},
-                        {"name": "Measure B", "y": _df_by_year["val_b"].tolist()},
-                        {"name": "Measure C", "y": _df_by_year["val_c"].tolist()},
-                        {"name": "Measure D", "y": _df_by_year["val_d"].tolist()},
+                        m.MEASURES["measure_a"].to_series(_df_by_year["val_a"].tolist()),
+                        m.MEASURES["measure_b"].to_series(_df_by_year["val_b"].tolist()),
+                        m.MEASURES["measure_c"].to_series(_df_by_year["val_c"].tolist()),
+                        m.MEASURES["measure_d"].to_series(_df_by_year["val_d"].tolist()),
                     ]),
             ])]),
 
@@ -553,8 +561,9 @@ app.layout = html.Div(style=S["body"], children=[
             html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
                 line_clustered_column("Line + clustered column", subtitle="sample data — same scale",
                     x=_years,
-                    bar_series=[{"name": "Measure A", "y": _df_by_year["val_a"].tolist()}],
-                    line_series=[{"name": "Measure B", "y": _df_by_year["val_b"].tolist()}]),
+                    bar_series=[m.MEASURES["measure_a"].to_series(_df_by_year["val_a"].tolist())],
+                    line_series=[m.MEASURES["measure_b"].to_series(_df_by_year["val_b"].tolist())],
+                    y_measure=m.MEASURES["measure_a"]),
             ])]),
 
             # ── 14. Line + stacked column ─────────────────────────────────────
@@ -564,11 +573,12 @@ app.layout = html.Div(style=S["body"], children=[
                 line_stacked_column("Line + stacked column", subtitle="sample data",
                     x=_years,
                     bar_series=[
-                        {"name": "Measure A", "y": _df_by_year["val_a"].tolist()},
-                        {"name": "Measure C", "y": _df_by_year["val_c"].tolist()},
-                        {"name": "Measure D", "y": _df_by_year["val_d"].tolist()},
+                        m.MEASURES["measure_a"].to_series(_df_by_year["val_a"].tolist()),
+                        m.MEASURES["measure_c"].to_series(_df_by_year["val_c"].tolist()),
+                        m.MEASURES["measure_d"].to_series(_df_by_year["val_d"].tolist()),
                     ],
-                    line_series=[{"name": "Measure B", "y": _df_by_year["val_b"].tolist()}]),
+                    line_series=[m.MEASURES["measure_b"].to_series(_df_by_year["val_b"].tolist())],
+                    y_measure=m.MEASURES["measure_a"]),
             ])]),
 
             # ── 15. Line + 100% stacked column ───────────────────────────────
@@ -578,11 +588,11 @@ app.layout = html.Div(style=S["body"], children=[
                 line_pct_stacked_column("Line + 100% stacked column", subtitle="sample data",
                     x=_years,
                     bar_series=[
-                        {"name": "Measure A", "y": _df_by_year["val_a"].tolist()},
-                        {"name": "Measure B", "y": _df_by_year["val_b"].tolist()},
-                        {"name": "Measure C", "y": _df_by_year["val_c"].tolist()},
+                        m.MEASURES["measure_a"].to_series(_df_by_year["val_a"].tolist()),
+                        m.MEASURES["measure_b"].to_series(_df_by_year["val_b"].tolist()),
+                        m.MEASURES["measure_c"].to_series(_df_by_year["val_c"].tolist()),
                     ],
-                    line_series=[{"name": "Measure E", "y": _df_by_year["val_e"].tolist()}]),
+                    line_series=[m.MEASURES["measure_e"].to_series(_df_by_year["val_e"].tolist())]),
             ])]),
 
             # ── 16. Scatter / Bubble ──────────────────────────────────────────
@@ -593,7 +603,9 @@ app.layout = html.Div(style=S["body"], children=[
                     x=_df_sc["val_x"].tolist(),
                     y=_df_sc["val_y"].tolist(),
                     size=_df_sc["val_size"].tolist(),
-                    labels=_df_sc["dim_label"].tolist()),
+                    labels=_df_sc["dim_label"].tolist(),
+                    x_measure=m.MEASURES["measure_a"],
+                    y_measure=m.MEASURES["measure_b"]),
             ])]),
 
             # ── 17. Pie / Donut ───────────────────────────────────────────────
@@ -632,7 +644,8 @@ app.layout = html.Div(style=S["body"], children=[
                 waterfall_contribution("Waterfall — contribution", subtitle="sample data",
                     categories=_df_wf_c["dim_stage"].tolist(),
                     values=_df_wf_c["val_amount"].tolist(),
-                    total_label=_df_wf_c.loc[_df_wf_c["is_total"], "dim_stage"].iloc[0]),
+                    total_label=_df_wf_c.loc[_df_wf_c["is_total"], "dim_stage"].iloc[0],
+                    y_measure=m.MEASURES["measure_a"]),
             ])]),
 
             # ── 21. Waterfall — variance ──────────────────────────────────────
@@ -641,7 +654,8 @@ app.layout = html.Div(style=S["body"], children=[
             html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
                 waterfall_variance("Waterfall — variance", subtitle="sample data",
                     categories=_df_wf_v["dim_stage"].tolist(),
-                    values=_df_wf_v["val_amount"].tolist()),
+                    values=_df_wf_v["val_amount"].tolist(),
+                    y_measure=m.MEASURES["measure_a"]),
             ])]),
 
             # ── 22. Histogram ─────────────────────────────────────────────────
@@ -650,7 +664,8 @@ app.layout = html.Div(style=S["body"], children=[
             html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
                 histogram("Histogram", subtitle="sample data",
                     x=_df_dist["val_obs"].tolist(),
-                    x_label="Observed value"),
+                    x_label=m.MEASURES["measure_a"].axis_label,
+                    y_measure=m.MEASURES["measure_a"]),
             ])]),
 
             # ── 23. Box plot ──────────────────────────────────────────────────
@@ -659,7 +674,8 @@ app.layout = html.Div(style=S["body"], children=[
             html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
                 box_plot("Box plot", subtitle="sample data",
                     data={grp: _df_dist.loc[_df_dist["dim_group"] == grp, "val_obs"].tolist()
-                          for grp in _dist_groups}),
+                          for grp in _dist_groups},
+                    y_measure=m.MEASURES["measure_a"]),
             ])]),
 
             # ── 24. Gauge ─────────────────────────────────────────────────────
@@ -671,7 +687,7 @@ app.layout = html.Div(style=S["body"], children=[
                         value=_gauge["gauge_value"],
                         min_val=0, max_val=_gauge["gauge_max"],
                         reference=_gauge["gauge_target"],
-                        suffix=" units"),
+                        y_measure=m.MEASURES["measure_a"]),
                 ]),
             ])]),
 
@@ -684,7 +700,7 @@ app.layout = html.Div(style=S["body"], children=[
                         value=_gauge["bullet_a_value"],
                         target=_gauge["bullet_a_target"],
                         max_val=_gauge["bullet_a_max"],
-                        suffix=" units"),
+                        y_measure=m.MEASURES["measure_a"]),
                 ]),
             ])]),
 
@@ -772,7 +788,8 @@ app.layout = html.Div(style=S["body"], children=[
                     open_=_df_ohlc_a["open"].tolist(),
                     high= _df_ohlc_a["high"].tolist(),
                     low=  _df_ohlc_a["low"].tolist(),
-                    close=_df_ohlc_a["close"].tolist()),
+                    close=_df_ohlc_a["close"].tolist(),
+                    y_measure=m.MEASURES["measure_a"]),
             ])]),
 
             # ── UI / Filter components ────────────────────────────────────────
@@ -828,17 +845,17 @@ app.layout = html.Div(style=S["body"], children=[
                     ]),
                 ])
                 for label, swatches in [
-                    ("Tło i powierzchnie",     [("BG_PAGE", BG_PAGE), ("BG_SURFACE", BG_SURFACE),
+                    ("Background & surfaces",  [("BG_PAGE", BG_PAGE), ("BG_SURFACE", BG_SURFACE),
                                                 ("BORDER", BORDER), ("GRID", GRID), ("ZERO_LINE", ZERO_LINE)]),
-                    ("Tekst",                  [("TEXT", TEXT), ("SUBTEXT", SUBTEXT), ("MUTED", MUTED)]),
-                    ("Teal (zielonkawy)",       [("TEAL_1", TEAL_1), ("TEAL_2", TEAL_2),
+                    ("Text",                   [("TEXT", TEXT), ("SUBTEXT", SUBTEXT), ("MUTED", MUTED)]),
+                    ("Teal",                   [("TEAL_1", TEAL_1), ("TEAL_2", TEAL_2),
                                                 ("TEAL_3", TEAL_3), ("TEAL_4", TEAL_4), ("TEAL_PALE", TEAL_PALE)]),
-                    ("Azure (niebieski)",       [("AZURE_1", AZURE_1), ("AZURE_2", AZURE_2),
+                    ("Azure",                  [("AZURE_1", AZURE_1), ("AZURE_2", AZURE_2),
                                                 ("AZURE_3", AZURE_3), ("AZURE_4", AZURE_4), ("AZURE_PALE", AZURE_PALE)]),
-                    ("Slate (szary)",           [("SLATE_1", SLATE_1), ("SLATE_2", SLATE_2),
+                    ("Slate",                  [("SLATE_1", SLATE_1), ("SLATE_2", SLATE_2),
                                                 ("SLATE_3", SLATE_3), ("SLATE_4", SLATE_4)]),
-                    ("Semantyczne",             [("POSITIVE", POSITIVE), ("NEGATIVE", NEGATIVE), ("WARNING", WARNING)]),
-                    ("COLORWAY — kolejność",    [(f"[{i}]", c) for i, c in enumerate(COLORWAY)]),
+                    ("Semantic",               [("POSITIVE", POSITIVE), ("NEGATIVE", NEGATIVE), ("WARNING", WARNING)]),
+                    ("COLORWAY — order",       [(f"[{i}]", c) for i, c in enumerate(COLORWAY)]),
                 ]
             ],
         ]),
