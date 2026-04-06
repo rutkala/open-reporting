@@ -440,3 +440,29 @@ def load_scalars() -> dict:
         "measure_a_pct": round(last_pct, 1) if not math.isnan(last_pct) else float("nan"),
         "measure_a_cum": round(last_cum, 0),
     }
+
+
+def load_clustered_stacked() -> list:
+    """
+    Sample data for clustered_stacked_column / clustered_stacked_bar.
+
+    Returns list of group dicts — 3 groups × 3 stacked series × 5 categories.
+    Series names are consistent across groups; colours are index-based.
+    """
+    return [
+        {"name": "Grupa A", "series": [
+            {"name": "Seria 1", "y": [42.0, 38.0, 45.0, 41.0, 39.0]},
+            {"name": "Seria 2", "y": [18.0, 22.0, 16.0, 20.0, 23.0]},
+            {"name": "Seria 3", "y": [ 8.0,  6.0,  9.0,  7.0,  5.0]},
+        ]},
+        {"name": "Grupa B", "series": [
+            {"name": "Seria 1", "y": [35.0, 40.0, 38.0, 42.0, 44.0]},
+            {"name": "Seria 2", "y": [24.0, 19.0, 26.0, 21.0, 18.0]},
+            {"name": "Seria 3", "y": [ 6.0,  9.0,  7.0, 10.0,  8.0]},
+        ]},
+        {"name": "Grupa C", "series": [
+            {"name": "Seria 1", "y": [48.0, 44.0, 50.0, 46.0, 43.0]},
+            {"name": "Seria 2", "y": [15.0, 20.0, 14.0, 19.0, 22.0]},
+            {"name": "Seria 3", "y": [10.0,  7.0, 11.0,  8.0,  6.0]},
+        ]},
+    ]

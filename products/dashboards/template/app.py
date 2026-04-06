@@ -31,6 +31,7 @@ from products.visuals.components.bar_chart import (
     clustered_column, stacked_column, pct_stacked_column,
     clustered_bar, stacked_bar, pct_stacked_bar,
     bar_diverging,
+    clustered_stacked_column, clustered_stacked_bar,
 )
 from products.visuals.components.line_chart import (
     line, area, stacked_area, pct_stacked_area,
@@ -77,6 +78,7 @@ _df_hmap             = _data.load_heatmap()
 _gauge               = _data.load_gauge()
 _df_table            = _data.load_table()
 _df_thmap            = _data.load_table_heatmap()
+_groups_cs           = _data.load_clustered_stacked()
 
 # ── Convenience shortcuts ─────────────────────────────────────────────────────
 _years       = m.DIMS["year"].values(_df_by_year)
@@ -250,7 +252,8 @@ app.layout = html.Div(style=S["body"], children=[
         html.Hr(id="sidebar-divider", style=S["sidebar-divider"]),
         html.Nav(id="sidebar-nav", style=S["sidebar-nav"], children=[
             html.A("KPI", href="#kpi", style=S["nav-item-active"]),
-            html.A("Kolumnowe i słupkowe", href="#bar", style=S["nav-item"]),
+            html.A("Kolumnowe", href="#column", style=S["nav-item"]),
+            html.A("Słupkowe", href="#bar", style=S["nav-item"]),
             html.A("Liniowe i obszarowe", href="#line", style=S["nav-item"]),
             html.A("Kombinowane", href="#combo", style=S["nav-item"]),
             html.A("Kaskadowe", href="#waterfall", style=S["nav-item"]),
@@ -341,12 +344,13 @@ app.layout = html.Div(style=S["body"], children=[
                 ]),
             ]),
 
-            # ── Column & Bar charts ───────────────────────────────────────────
-            html.H2("Wykresy kolumnowe i słupkowe", id="bar", style=S["section-heading"]),
+            # ── Column charts (vertical) ──────────────────────────────────────
+            html.H2("Wykresy kolumnowe (pionowe)", id="column", style=S["section-heading"]),
             html.P(
-                "Kolumnowe = pionowe, słupkowe = poziome. "
-                "Grupowane / skumulowane / 100% skumulowane. "
-                "Dywergentne dla wartości +/−.",
+                "Kolumny pionowe. "
+                "clustered_column: grupowane. "
+                "Warianty: stacked_column, pct_stacked_column, bar_diverging (+/−), "
+                "clustered_stacked_column (grupy + stosy).",
                 style=S["section-desc"],
             ),
 
@@ -413,7 +417,39 @@ app.layout = html.Div(style=S["body"], children=[
             ]),
 
             html.Div(style=S["group"], children=[
-                html.Div("clustered_bar / stacked_bar — poziome", style=S["group-title"]),
+                html.Div("bar_diverging / clustered_stacked_column — dywergentny i grupowany-skumulowany",
+                         style=S["group-title"]),
+                html.Div(style=S["grid-2"], children=[
+                    html.Div(style=S["card"], children=[
+                        bar_diverging(
+                            "Tytuł wykresu — wartości +/−",
+                            subtitle="dane przykładowe",
+                            x=_categories,
+                            values=_df_by_cat["val_e"].tolist(),
+                        ),
+                    ]),
+                    html.Div(style=S["card"], children=[
+                        clustered_stacked_column(
+                            "Tytuł wykresu — grupy obok siebie, serie w stosie",
+                            subtitle="dane przykładowe — wariant poziomy: clustered_stacked_bar",
+                            x=_categories,
+                            groups=_groups_cs,
+                        ),
+                    ]),
+                ]),
+            ]),
+
+            # ── Bar charts (horizontal) ───────────────────────────────────────
+            html.H2("Wykresy słupkowe (poziome)", id="bar", style=S["section-heading"]),
+            html.P(
+                "Słupki poziome. "
+                "clustered_bar: rankingowe (sortowanie malejąco domyślnie dla 1 serii). "
+                "Warianty: stacked_bar, pct_stacked_bar, clustered_stacked_bar.",
+                style=S["section-desc"],
+            ),
+
+            html.Div(style=S["group"], children=[
+                html.Div("clustered_bar — rankingowe i grupowane poziome", style=S["group-title"]),
                 html.Div(style=S["grid-2"], children=[
                     html.Div(style=S["card"], children=[
                         clustered_bar(
@@ -423,6 +459,24 @@ app.layout = html.Div(style=S["body"], children=[
                             series=[m.MEASURES["geo_a"].to_series(_df_geo["val_a"].tolist())],
                         ),
                     ]),
+                    html.Div(style=S["card"], children=[
+                        clustered_bar(
+                            "Tytuł wykresu — porównanie wielu serii",
+                            subtitle="dane przykładowe",
+                            categories=_categories,
+                            series=[
+                                m.MEASURES["measure_a"].to_series(_df_by_cat["val_a"].tolist()),
+                                m.MEASURES["measure_b"].to_series(_df_by_cat["val_b"].tolist()),
+                            ],
+                            sort=False,
+                        ),
+                    ]),
+                ]),
+            ]),
+
+            html.Div(style=S["group"], children=[
+                html.Div("stacked_bar / pct_stacked_bar — skumulowane poziome", style=S["group-title"]),
+                html.Div(style=S["grid-2"], children=[
                     html.Div(style=S["card"], children=[
                         stacked_bar(
                             "Tytuł wykresu — skumulowany poziomy",
@@ -435,12 +489,6 @@ app.layout = html.Div(style=S["body"], children=[
                             ],
                         ),
                     ]),
-                ]),
-            ]),
-
-            html.Div(style=S["group"], children=[
-                html.Div("pct_stacked_bar / bar_diverging — 100% poziomy i dywergentny", style=S["group-title"]),
-                html.Div(style=S["grid-2"], children=[
                     html.Div(style=S["card"], children=[
                         pct_stacked_bar(
                             "Tytuł wykresu — udział 100% poziomy",
@@ -451,14 +499,6 @@ app.layout = html.Div(style=S["body"], children=[
                                 m.MEASURES["measure_b"].to_series(_df_by_cat["val_b"].tolist()),
                                 m.MEASURES["measure_c"].to_series(_df_by_cat["val_c"].tolist()),
                             ],
-                        ),
-                    ]),
-                    html.Div(style=S["card"], children=[
-                        bar_diverging(
-                            "Tytuł wykresu — wartości +/−",
-                            subtitle="dane przykładowe",
-                            x=_categories,
-                            values=_df_by_cat["val_e"].tolist(),
                         ),
                     ]),
                 ]),
