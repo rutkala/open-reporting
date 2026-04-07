@@ -55,6 +55,14 @@ See `team/PLATFORM.md §7` for the full KB map and priority build order.
 
 ---
 
+## Data Research
+
+| File | Covers | Read when |
+|------|--------|-----------|
+| [data-research/research.md](data-research/research.md) | Source discovery methodology, DAMA quality dimensions, source authority hierarchy (L1–L3), licence assessment, indicator prioritisation, structural break documentation | Before any data source research or ingestion planning |
+
+---
+
 ## Business Analysis
 
 | File | Covers | Read when |
@@ -109,6 +117,7 @@ Domain files are created via `/domain-brief` skill before dashboard work begins 
 | Data Architecture | ✅ Complete | OR-133 |
 | Data Engineering | ✅ Complete | OR-133 |
 | Business Analysis | ✅ Complete | OR-133 |
+| Data Research | ✅ Complete | OR-139 |
 | Content / Editorial | ✅ Complete | OR-135 |
 | Research Methods | ✅ Complete | OR-136 |
 | Platform / Ops | ✅ Complete | OR-137 |
