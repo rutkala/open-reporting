@@ -34,6 +34,7 @@ See `team/PLATFORM.md §8` for the full standards map and derivation chain.
 | Visualization — image | [evaluation/visualization-image.md](evaluation/visualization-image.md) | `knowledge-base/ux-perception/perception.md` ✓ + `knowledge-base/visualization/principles.md` ✓ | `visual-screenshot-reviewer` | PR |
 | Measures review | [evaluation/measures-review.md](evaluation/measures-review.md) | `knowledge-base/business-analysis/kpi-indicator-design.md` ✓ + `knowledge-base/analytical-methods/` ✓ + `build/measures.md` | `measures-reviewer` | PR (semantic layer only) |
 | Brief review | [evaluation/brief-review.md](evaluation/brief-review.md) | `knowledge-base/business-analysis/kpi-indicator-design.md` ✓ + `knowledge-base/analytical-methods/analytical-thinking.md` ✓ | `brief-reviewer` | Plan (after business-analyst) |
+| Content review | [evaluation/content-review.md](evaluation/content-review.md) | `knowledge-base/content/editorial.md` ✓ | `content-reviewer` | Pre-publication |
 | Cost estimation | *(heuristics in agent)* | `team/lessons-learned.md` | `cost-estimator` | Feasibility |
 | Domain review | *(heuristics in agent)* | `knowledge-base/domains/{domain}/` | `domain-specialist` | Plan + PR |
 
