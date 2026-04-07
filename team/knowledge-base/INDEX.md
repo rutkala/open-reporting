@@ -83,6 +83,22 @@ Domain files are created via `/domain-brief` skill before dashboard work begins 
 
 ---
 
+## Platform / Ops
+
+| File | Covers | Read when |
+|------|--------|-----------|
+| [platform-ops/ops.md](platform-ops/ops.md) | Docker Compose production, nginx security, systemd hygiene, TLS lifecycle, security posture, observability, backup & recovery | Before making any infrastructure change — nginx config, Docker Compose, systemd units, certs |
+
+---
+
+## Data Research
+
+| File | Covers | Read when |
+|------|--------|-----------|
+| [data-research/research.md](data-research/research.md) | Source discovery, DAMA quality assessment, licence evaluation, indicator prioritisation, structural break documentation, output format | Before researching any new data source for ingestion |
+
+---
+
 ## Content / Editorial
 
 | File | Covers | Read when |
@@ -103,5 +119,7 @@ Domain files are created via `/domain-brief` skill before dashboard work begins 
 | Business Analysis | ✅ Complete | OR-133 |
 | Content / Editorial | ✅ Complete | OR-135 |
 | Research Methods | ✅ Complete | OR-136 |
+| Platform / Ops | ✅ Complete | OR-137 |
+| Data Research | ✅ Complete | OR-139 |
 | Domains — public finance | ⏳ Draft | OR-120 |
 | Domains — labour market | 📋 Planned | — |

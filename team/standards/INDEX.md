@@ -36,6 +36,8 @@ See `team/PLATFORM.md §8` for the full standards map and derivation chain.
 | Brief review | [evaluation/brief-review.md](evaluation/brief-review.md) | `knowledge-base/business-analysis/kpi-indicator-design.md` ✓ + `knowledge-base/analytical-methods/analytical-thinking.md` ✓ | `brief-reviewer` | Plan (after business-analyst) |
 | Content review | [evaluation/content-review.md](evaluation/content-review.md) | `knowledge-base/content/editorial.md` ✓ | `content-reviewer` | Pre-publication |
 | Research review | [evaluation/research-review.md](evaluation/research-review.md) | `knowledge-base/research-methods/methods.md` ✓ | `research-reviewer` | Pre-publication |
+| Ops review | [evaluation/ops-review.md](evaluation/ops-review.md) | `knowledge-base/platform-ops/ops.md` ✓ | `ops-reviewer` | Pre-deployment |
+| Data research review | [evaluation/data-research-review.md](evaluation/data-research-review.md) | `knowledge-base/data-research/research.md` ✓ | `data-research-reviewer` | Research |
 | Cost estimation | *(heuristics in agent)* | `team/lessons-learned.md` | `cost-estimator` | Feasibility |
 | Domain review | *(heuristics in agent)* | `knowledge-base/domains/{domain}/` | `domain-specialist` | Plan + PR |
 
