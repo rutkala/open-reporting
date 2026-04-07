@@ -24,6 +24,7 @@ Visual component library + evaluation framework sprint. Template dashboard fully
 - OR-127: Code Reviewer agent (team/standards/code-review.md + .claude/agents/code-reviewer.md + /review Part 0)
 - OR-128: Visualization Reviewer agent (team/standards/visualization-review.md + .claude/agents/visualization-reviewer.md + /review Part 0 parallel)
 - OR-130: Architecture Critic agent (.claude/agents/architecture-critic.md + /plan Step 3.5)
+- OR-119: Analytical Thinking Framework (team/analytics/analytical-thinking.md — unblocks OR-131)
 
 ## Evaluation Framework — Backlog
 - OR-127: Code Reviewer ✓ DONE

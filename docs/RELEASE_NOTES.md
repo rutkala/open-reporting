@@ -4,6 +4,9 @@
 
 ## Unreleased
 
+### Analytics knowledge base
+- **OR-119** — Analytical thinking framework: `team/analytics/analytical-thinking.md` — structured KB covering the five analytical moves (describe/compare/change/relate/rank) with failure modes, four-layer insight hierarchy (headline → evidence → context → caveats), six when-is-it-interesting tests (statistical significance, practical significance, deviation from expectation, named threshold crossing, rate vs level, human scale), Polish public data context (V4/EU27 peer groups, six historical anchors from 2004 accession to present, domain-specific analyst questions for labour and fiscal), and aggregation/ratio rules (pp vs %, base effect, index comparability, per capita fallacy, Simpson's paradox, CAGR limits, definitional break handling). Includes worked example (Q4 2024 LFS unemployment).
+
 ### Evaluation framework
 - **OR-130** — Architecture Critic agent: `architecture-critic` subagent evaluates implementation plans before any code is written. Reads `team/standards/` and checks for BLOCK (layer violations, raw-from-dashboard, transform-in-ingestion, missing dbt staging model, silver queried by domain dashboard, circular dependencies), CONDITIONAL (missing fetched_at, schema naming, catalogue verification, upsert strategy, tight coupling), and NOTE concerns. `/plan` skill updated with Step 3.5: critic runs after plan is drafted, before presenting to user — BLOCK findings are fixed before the user ever sees the plan.
 - **OR-128** — Visualization Reviewer agent: `team/standards/visualization-review.md` (HIGH/MEDIUM/LOW
