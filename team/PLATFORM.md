@@ -183,7 +183,9 @@ Human touch-points are strategic only:
 | `visualization-reviewer` | Dashboard Dev / UX | Evaluator (diff) | PR | ✓ Live |
 | `visual-screenshot-reviewer` | UX / UI Design | Evaluator (screenshot + perception science) | PR | ✓ Live |
 | `analytical-validator` | Business Analysis | Evaluator | Plan + PR | ✓ Live |
+| `data-engineer-reviewer` | Data Engineering | Evaluator (platform/ only) | PR | ✓ Live |
 | `domain-specialist` | Domain Specialist | Evaluator | Plan + PR | ✓ Live |
+| `data-architect` | Data Architecture + Engineering | Builder | Implementation | ✓ Live |
 | `business-analyst` | Business Analysis | Builder | Plan + Implementation | ✓ Live |
 | `cost-estimator` | Cost Estimation | Evaluator | Feasibility | ✓ Live |
 
@@ -566,7 +568,7 @@ kickoff
 **Platform:** DuckDB warehouse (222 indicators, 18 domains) + 3-source ingestion (Eurostat, NBP, GUS DBW) + dbt (22 curated models) + Kimball dimensional model
 
 **Team infrastructure:**
-- 9 agents live (debug, architecture-critic, code-reviewer, visualization-reviewer, visual-screenshot-reviewer, analytical-validator, domain-specialist, business-analyst, cost-estimator)
+- 11 agents live (debug, architecture-critic, code-reviewer, data-engineer-reviewer, visualization-reviewer, visual-screenshot-reviewer, analytical-validator, domain-specialist, data-architect, business-analyst, cost-estimator)
 - 13 skills live (including /feasibility + /standards-review)
 - KB: analytical-methods ✓, visualization ✓, ux-perception ✓, data-architecture ✓, data-engineering ✓, business-analysis ✓; public-finance domain draft
 - Standards: 6 build standards live (KB-traceable), 5 evaluation standards live (full traceability — all KBs now complete)
@@ -575,9 +577,11 @@ kickoff
 
 | # | Item | Type | Status | Blocks |
 |---|------|------|--------|--------|
-| 1 | KB-to-standards trace audit | Standards update | 🔜 Next | Re-trace build standards against new KBs; update rules where gaps found |
-| 2 | Content / Editorial KB | Knowledge base | 📋 Planned | Blog editorial standards, data journalism quality |
-| 3 | Research Methods KB | Knowledge base | 📋 Planned | Econometrics, reproducible research standards |
+| 1 | `data-architect` builder agent | Agent | ✅ Done | Platform ETL/schema implementation |
+| 2 | `data-engineer-reviewer` evaluator agent | Agent | ✅ Done | Specialist PR review for platform/ changes |
+| 3 | KB-to-standards trace audit | Standards update | 🔜 Next | Re-trace build standards against new KBs; update rules where gaps found |
+| 4 | Content / Editorial KB | Knowledge base | 📋 Planned | Blog editorial standards, data journalism quality |
+| 5 | Research Methods KB | Knowledge base | 📋 Planned | Econometrics, reproducible research standards |
 | 6 | `/feasibility` skill + agents | Skill + agents | ✅ Done | Pre-sprint quality gate |
 | 7 | `cost-estimator` agent | Agent | ✅ Done | Token budget awareness |
 | 8 | Autonomous loop updates | Skill updates | ✅ Done | Reduced human involvement |

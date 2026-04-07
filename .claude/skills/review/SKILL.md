@@ -23,7 +23,7 @@ Review scope: `$ARGUMENTS` (if provided, focus here only — otherwise review al
 
 ## Part 0 — Independent agent passes
 
-Spawn all three review agents **in parallel** using three Agent tool calls in the same message:
+Spawn all agents **in parallel** using Agent tool calls in the same message. Agents A–C always run. D and E are conditional.
 
 **Agent A — `code-reviewer`**
 - Runs `git diff origin/main...HEAD` independently
@@ -48,10 +48,16 @@ Spawn all three review agents **in parallel** using three Agent tool calls in th
 - Pass diff as `$INPUT`
 - Only spawn if diff touches `products/dashboards/{domain}/` (not template, not explorer)
 
+**Agent E — `data-engineer-reviewer`** *(platform/ changes only)*
+- Runs `git diff origin/main...HEAD` independently
+- Reads `team/standards/evaluation/data-engineering-review.md`, checks ELT compliance, DuckDB patterns, dbt conventions, idempotency
+- Returns P1 / P2 / P3 findings with BLOCK / CONDITIONAL / PASS verdict
+- Only spawn if diff touches `platform/ingestion/`, `platform/processing/`, or `platform/warehouse/`
+
 Wait for all agents to complete, then map findings to review output:
-- code-reviewer P1 / visualization-reviewer HIGH / analytical-validator MISLEADING → **CRITICAL**
-- code-reviewer P2 / visualization-reviewer MEDIUM / analytical-validator QUESTIONABLE → **WARNING**
-- code-reviewer P3 / visualization-reviewer LOW / analytical-validator NOTED → **SUGGESTION**
+- code-reviewer P1 / data-engineer-reviewer P1 / visualization-reviewer HIGH / analytical-validator MISLEADING → **CRITICAL**
+- code-reviewer P2 / data-engineer-reviewer P2 / visualization-reviewer MEDIUM / analytical-validator QUESTIONABLE → **WARNING**
+- code-reviewer P3 / data-engineer-reviewer P3 / visualization-reviewer LOW / analytical-validator NOTED → **SUGGESTION**
 
 If any agent returns BLOCK → do NOT proceed to Part 0.5. Go to the **Autonomous Fix Loop** below.
 

@@ -116,6 +116,7 @@ Shared session memory at `team/session-memory.md` provides continuity across ses
 | `debug` | All directories | Read-only (plan) | Debugging, tracing, diagnostics |
 | `dashboard-dev` | `products/dashboards/`, `products/visuals/` | Full dev | Dashboard and chart building |
 | `data-engineer` | `platform/` | Full dev | ETL pipeline building |
+| `data-architect` | `platform/` | Full dev | Ingestion scripts, dbt models, schema DDL, warehouse queries |
 | `business-analyst` | Domain research | Read + Web | KPI design, indicator selection, analytical briefs |
 
 **Evaluator agents** (review output independently — invoked by skills, not directly):
@@ -125,6 +126,7 @@ Shared session memory at `team/session-memory.md` provides continuity across ses
 | `architecture-critic` | Plan | Layer violations, schema design, coupling |
 | `analytical-validator` | Plan + PR | Statistical correctness, aggregation, causal claims |
 | `code-reviewer` | PR | P1/P2/P3 code quality, security, conventions |
+| `data-engineer-reviewer` | PR (platform/ only) | ELT compliance, DuckDB patterns, dbt conventions, idempotency |
 | `visualization-reviewer` | PR | Chart calls — colour semantics, series count, axis labels |
 | `visual-screenshot-reviewer` | PR | Rendered screenshots — perception science, cognitive load, WCAG, colour blindness |
 | `domain-specialist` | Plan + PR | Domain KPI correctness, framing, benchmarks |

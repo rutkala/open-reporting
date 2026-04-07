@@ -31,6 +31,7 @@ See `team/PLATFORM.md §8` for the full standards map and derivation chain.
 | Visualization — diff | [evaluation/visualization-diff.md](evaluation/visualization-diff.md) | `knowledge-base/visualization/` ✓ + `knowledge-base/ux-perception/perception.md` ✓ | `visualization-reviewer` | PR |
 | Visualization — image | [evaluation/visualization-image.md](evaluation/visualization-image.md) | `knowledge-base/ux-perception/perception.md` ✓ | `visual-screenshot-reviewer` | PR |
 | Analytical review | [evaluation/analytical-review.md](evaluation/analytical-review.md) | `knowledge-base/analytical-methods/` ✓ | `analytical-validator` | Plan + PR |
+| Data engineering review | [evaluation/data-engineering-review.md](evaluation/data-engineering-review.md) | `knowledge-base/data-engineering/` ✓ + `knowledge-base/data-architecture/` ✓ | `data-engineer-reviewer` | PR (platform/ only) |
 | Cost estimation | [evaluation/cost-estimation.md](evaluation/cost-estimation.md) *(planned — heuristics in agent)* | `team/lessons-learned.md` | `cost-estimator` | Feasibility |
 | Domain review | *(heuristics in agent)* | `knowledge-base/domains/{domain}/` | `domain-specialist` | Plan + PR |
 
