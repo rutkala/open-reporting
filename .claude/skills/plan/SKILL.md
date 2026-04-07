@@ -61,6 +61,20 @@ N. {plain description of final step}
 {Anything the user needs to decide before I start. "None — I have everything I need." if clear.}
 ```
 
+## Step 3.5 — Architecture Review (before presenting to user)
+
+After writing the plan, spawn the `architecture-critic` agent **before presenting to the user**.
+
+Pass the plan text as the `$PLAN` variable. The agent reads `team/standards/` and evaluates the design against layer contracts, schema rules, and coupling risks.
+
+- **BLOCK** → fix the design flaw, update the plan, re-run the critic before presenting
+- **CONDITIONAL** → add the findings to the plan's **Risks** section, then present to user
+- **APPROVE** → present normally
+
+The user should only see architecturally sound plans. Structural problems are resolved before the conversation, not during it.
+
+Skip this step only if the plan touches no data layer (e.g. a pure UI or config change).
+
 ## Step 4 — Wait for Approval
 
 **NEVER start implementing without explicit user approval.**
