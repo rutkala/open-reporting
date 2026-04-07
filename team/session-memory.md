@@ -3,7 +3,8 @@
 <!-- last-updated: 2026-04-07 -->
 
 ## Current Focus
-OR-138 complete: `data-architect` agent renamed to `data-engineer` across all references. PLATFORM.md, CLAUDE.md, build standards, and kickoff skill updated.
+Working through OR-135 to OR-140 — KB + agent pairs for content, research, ops, data-research, and data-architecture.
+- OR-135: ✅ Complete — Content/Editorial KB, content-writer, content-reviewer agents, content-review.md standard
 
 ## MVP Status: COMPLETE (v0.1.0 — 2026-03-28)
 
