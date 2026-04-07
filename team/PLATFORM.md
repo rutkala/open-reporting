@@ -188,7 +188,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
-| Research | Source discovery, API/file analysis, indicator selection, data quality, licence | Data Research | `data-researcher` | `data-research-reviewer` | — | data-research-review.md |
+| Research | Source discovery, API/file analysis, indicator selection, data quality, licence | Data Research | `data-researcher` *(gap)* | `data-research-reviewer` *(gap)* | — | — |
 | Design | Schema design, ELT architecture, DuckDB patterns, upsert strategy | Data Architecture | `data-architect` *(gap — main Claude)* | `architecture-critic` | storage.md, ingestion.md | architecture-review.md |
 | Build | Python scripting, DuckDB SQL, upsert, fetched_at, dbt sources.yml, tests | Data Engineering | `data-engineer` | `data-engineer-reviewer` | ingestion.md | data-engineering-review.md |
 
@@ -261,8 +261,8 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
-| Configure | Ghost CMS config, content API, webhooks, member settings | Platform / Ops | `ops-engineer` | `ops-reviewer` | — | ops-review.md |
-| Operate | Docker lifecycle, database backup, token refresh, upgrades | Platform / Ops | `ops-engineer` | `ops-reviewer` | — | ops-review.md |
+| Configure | Ghost CMS config, content API, webhooks, member settings | Platform / Ops | `ops-engineer` *(planned)* | `ops-reviewer` *(planned)* | — | ops-review.md *(planned)* |
+| Operate | Docker lifecycle, database backup, token refresh, upgrades | Platform / Ops | `ops-engineer` *(planned)* | `ops-reviewer` *(planned)* | — | ops-review.md *(planned)* |
 
 ---
 
@@ -291,8 +291,8 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
-| Design | API integration architecture, token lifecycle, automation, scheduling | Platform / Ops | `ops-engineer` | `ops-reviewer` | — | ops-review.md |
-| Build | Meta API integration, token management scripts, cron scheduling | Platform / Ops | `ops-engineer` | `ops-reviewer` | — | ops-review.md |
+| Design | API integration architecture, token lifecycle, automation, scheduling | Platform / Ops | `ops-engineer` *(planned)* | `ops-reviewer` *(planned)* | — | ops-review.md *(planned)* |
+| Build | Meta API integration, token management scripts, cron scheduling | Platform / Ops | `ops-engineer` *(planned)* | `ops-reviewer` *(planned)* | — | ops-review.md *(planned)* |
 
 #### Sub-product 12 — Social card
 
@@ -303,7 +303,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 | Domain brief | Metric selection, framing, context, Polish convention | Business Analysis | `business-analyst` | `brief-reviewer` | — | brief-review.md |
 | Design | 1080×1080 layout, KPI card design, visual hierarchy, colour semantics | UX / UI Design | `dashboard-dev` | `visual-screenshot-reviewer` | visualisation.md, measures.md | visualization-image.md |
 | Build | Plotly figure generation, PNG export | Dashboard Development | `dashboard-dev` | `visualization-reviewer` | visualisation.md | visualization-diff.md |
-| Write caption | Polish language, factual precision, hashtag conventions | Content / Editorial | `content-writer` | `content-reviewer` | — | content-review.md |
+| Write caption | Polish language, factual precision, hashtag conventions | Content / Editorial | `content-writer` *(planned)* | `content-reviewer` *(planned)* | — | content-review.md *(planned)* |
 
 #### Sub-product 13 — Data card
 
@@ -324,8 +324,8 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
-| Design | Service topology, security posture, network design, backup strategy | Platform / Ops | `ops-engineer` | `ops-reviewer` | — | ops-review.md |
-| Build | Docker Compose, nginx config, systemd units, TLS certs, DNS, monitoring | Platform / Ops | `ops-engineer` | `ops-reviewer` | — | ops-review.md |
+| Design | Service topology, security posture, network design, backup strategy | Platform / Ops | `ops-engineer` *(planned)* | `ops-reviewer` *(planned)* | — | ops-review.md *(planned)* |
+| Build | Docker Compose, nginx config, systemd units, TLS certs, DNS, monitoring | Platform / Ops | `ops-engineer` *(planned)* | `ops-reviewer` *(planned)* | — | ops-review.md *(planned)* |
 
 ---
 
@@ -359,7 +359,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
 | Domain brief | Analytical framing, indicator selection, story angle | Business Analysis | `business-analyst` | `brief-reviewer` | — | brief-review.md |
-| Write | Data journalism, Polish language, factual precision, editorial standards | Content / Editorial | `content-writer` | `content-reviewer` | — | content-review.md |
+| Write | Data journalism, Polish language, factual precision, editorial standards | Content / Editorial | `content-writer` *(planned)* | `content-reviewer` *(planned)* | — | content-review.md *(planned)* |
 | Visual embed | Chart selection, integration into article template | Dashboard Development | `dashboard-dev` | `visualization-reviewer` | visualisation.md | visualization-diff.md |
 
 #### Sub-product 18 — Research
@@ -369,7 +369,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
 | Research question | Hypothesis design, methodology selection, data feasibility | Business Analysis | `business-analyst` | `brief-reviewer` | — | brief-review.md |
-| Model | Econometrics, statistical analysis, reproducible research, robustness checks | Research | `researcher` | `research-reviewer` | — | research-review.md |
+| Model | Econometrics, statistical analysis, reproducible research, robustness checks | Research | `researcher` *(planned)* | `research-reviewer` *(planned)* | — | research-review.md *(planned)* |
 | Analytical review | Model assumptions, aggregation, causal claims, interpretation | Analytical Methods | — *(evaluator only)* | `analytical-validator` | — | analytical-review.md |
 
 ---
@@ -386,7 +386,7 @@ Competency = a cluster of related skills. Each competency has a builder role (do
 
 | # | Competency | Core skills | Builder agent | Evaluator agent | Sub-products served |
 |---|-----------|-------------|--------------|-----------------|---------------------|
-| 0 | **Data Research** | Source discovery, API/file analysis, indicator selection, data quality, licence assessment | `data-researcher` | `data-research-reviewer` | #1 |
+| 0 | **Data Research** | Source discovery, API/file analysis, indicator selection, data quality, licence assessment | `data-researcher` *(gap)* | `data-research-reviewer` *(gap)* | #1 |
 | 1 | **Data Architecture** | Dimensional modelling, data vault, schema design, layer contracts, medallion architecture | `data-architect` *(gap — main Claude)* | `architecture-critic` | #1–#6 (Design tasks) |
 | 2 | **Data Engineering** | ETL scripting, SQL, DuckDB, dbt, API integration, data quality | `data-engineer` | `data-engineer-reviewer` | #1–#4, #6 (Build tasks) |
 | 3 | **Semantic Modelling** | MetricFlow measures/metrics/dimensions, aggregation correctness, format_type, unit/scale, Polish labelling | `data-engineer` | `measures-reviewer` | #4 |
@@ -442,8 +442,6 @@ Human touch-points are strategic only:
 | `research-reviewer` | Research | Evaluator (research only) | Pre-publication | ✓ Live |
 | `ops-engineer` | Platform / Ops | Builder | Implementation | ✓ Live |
 | `ops-reviewer` | Platform / Ops | Evaluator (infra only) | Pre-deployment | ✓ Live |
-| `data-researcher` | Data Research | Builder | Research | ✓ Live |
-| `data-research-reviewer` | Data Research | Evaluator (research only) | Research | ✓ Live |
 | `cost-estimator` | Cost Estimation | Evaluator | Feasibility | ✓ Live |
 
 ¹ Previously named `data-architect` — renamed to `data-engineer` (OR-138). Covers Data Engineering Build tasks and Semantic Modelling Build tasks. Does **not** cover Data Architecture Design tasks (those are a gap — see §5.2).
@@ -453,14 +451,14 @@ Human touch-points are strategic only:
 | Agent | Competency | Role | Phase | Track |
 |-------|-----------|------|-------|-------|
 | `data-architect` | Data Architecture | Builder (Design task) | Plan | **Gap** — currently main Claude via `/plan` |
-| `data-researcher` | Data Research | Builder | Research | ✓ Live (OR-139) |
-| `data-research-reviewer` | Data Research | Evaluator | Research | ✓ Live (OR-139) |
+| `data-researcher` | Data Research | Builder | Research | **Gap** — no dedicated agent |
+| `data-research-reviewer` | Data Research | Evaluator | Research | **Gap** — no evaluator for research output |
 | `content-writer` | Content / Editorial | Builder | Implementation | ✓ Live (OR-135) |
 | `content-reviewer` | Content / Editorial | Evaluator | PR | ✓ Live (OR-135) |
 | `researcher` | Research | Builder | Implementation | ✓ Live (OR-136) |
 | `research-reviewer` | Research | Evaluator | PR | ✓ Live (OR-136) |
-| `ops-engineer` | Platform / Ops | Builder | Implementation | Planned (OR-137) |
-| `ops-reviewer` | Platform / Ops | Evaluator | PR | Planned (OR-137) |
+| `ops-engineer` | Platform / Ops | Builder | Implementation | ✓ Live (OR-137) |
+| `ops-reviewer` | Platform / Ops | Evaluator | Pre-deployment | ✓ Live (OR-137) |
 
 ### 5.3 Agent invocation map
 
