@@ -7,6 +7,7 @@ reflects here — no code changes needed.
 Run: python3 products/dashboards/labour/app.py
 """
 import logging
+import os
 
 import plotly.graph_objects as go
 from dash import Dash, dcc, html, Input, Output, callback
@@ -319,4 +320,4 @@ def update_charts(regions, year_from, year_to, ranking_year):
 if __name__ == "__main__":
     log.info("Starting Dash app — domain: %s, measures: %s",
              domain.label, [m.id for _, m in section_measures])
-    app.run(host="0.0.0.0", port=8050, debug=False)
+    app.run(host="0.0.0.0", port=int(os.environ.get("OR_PORT", 8050)), debug=False)

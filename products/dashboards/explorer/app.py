@@ -25,7 +25,7 @@ log = logging.getLogger(__name__)
 
 FACT_TABLE     = "curated.all_indicators"
 MAX_PIVOT_COLS = 60
-PORT           = 8051
+PORT           = int(os.environ.get("OR_PORT", 8051))
 _PRIMARY       = "__primary__"
 
 # ── Semantic dimension columns ─────────────────────────────────────────────────
