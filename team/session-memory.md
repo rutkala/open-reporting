@@ -3,7 +3,7 @@
 <!-- last-updated: 2026-04-07 -->
 
 ## Current Focus
-Visual component library + evaluation framework sprint. Template dashboard fully wired. Code reviewer agent live.
+Evaluation framework sprint complete (OR-127–131). All 4 agents live. Analytics KB foundation in place.
 
 ## MVP Status: COMPLETE (v0.1.0 — 2026-03-28)
 
@@ -24,14 +24,15 @@ Visual component library + evaluation framework sprint. Template dashboard fully
 - OR-127: Code Reviewer agent (team/standards/code-review.md + .claude/agents/code-reviewer.md + /review Part 0)
 - OR-128: Visualization Reviewer agent (team/standards/visualization-review.md + .claude/agents/visualization-reviewer.md + /review Part 0 parallel)
 - OR-130: Architecture Critic agent (.claude/agents/architecture-critic.md + /plan Step 3.5)
-- OR-119: Analytical Thinking Framework (team/analytics/analytical-thinking.md — unblocks OR-131)
+- OR-119: Analytical Thinking Framework (team/analytics/analytical-thinking.md)
+- OR-131: Analytical Validator agent ✓ DONE (.claude/agents/analytical-validator.md + /plan Step 3.5 parallel + /review Part 0 three agents)
 
 ## Evaluation Framework — Backlog
 - OR-127: Code Reviewer ✓ DONE
 - OR-128: Visualization Reviewer ✓ DONE
 - OR-129: Domain Specialist agents (one per domain) — SKIPPED for now
 - OR-130: Architecture Critic agent ✓ DONE
-- OR-131: Analytical Validator agent
+- OR-131: Analytical Validator agent ✓ DONE
 
 ## Linear — Active
 - OR-78 (Ghost admin), OR-85 (daily cron), OR-90 (Instagram token ~2026-05-20)
