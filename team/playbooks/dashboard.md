@@ -1,5 +1,21 @@
 # Playbook: Domain Dashboard
 
+## Recipe (sub-product #15)
+
+*For the full routing rationale see `team/PLATFORM.md §3.7`.*
+
+| Task | Competency | Builder | Evaluator | Standard |
+|------|-----------|---------|-----------|----------|
+| Domain brief | Business Analysis | `business-analyst` | `brief-reviewer` | brief-review.md |
+| Domain review | Domain Specialist | — *(evaluator only)* | `domain-specialist` | — |
+| Design (layout, tabs, filters) | UX / UI Design + Dashboard Dev | `dashboard-dev` | `visual-screenshot-reviewer` | visualisation.md → visualization-image.md |
+| Build (Dash app, queries) | Dashboard Development | `dashboard-dev` | `visualization-reviewer` | visualisation.md → visualization-diff.md |
+| Analytical review | Analytical Methods | — *(evaluator only)* | `analytical-validator` | analytical-review.md |
+
+*Note: if new data is needed, first complete sub-products #1–#3 (ingest → silver → gold) via the data-ingestion and data-mart playbooks.*
+
+---
+
 ## Overview
 
 This playbook defines the complete process for building a **domain dashboard** — one dashboard per business domain (Public Finance, Labour, Health, etc.), covering the full pipeline from raw data sources to a published dashboard.
