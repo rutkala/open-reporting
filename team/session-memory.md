@@ -1,9 +1,9 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-03-31 — hook test 2 -->
+<!-- last-updated: 2026-04-07 -->
 
 ## Current Focus
-Finance dashboard complete. Sudo NOPASSWD configured. approve-claude-dir.js hook enables silent writes to .claude/. Ready for next epic.
+Visual component library + evaluation framework sprint. Template dashboard fully wired. Code reviewer agent live.
 
 ## MVP Status: COMPLETE (v0.1.0 — 2026-03-28)
 
@@ -17,9 +17,18 @@ Finance dashboard complete. Sudo NOPASSWD configured. approve-claude-dir.js hook
 - sudo NOPASSWD: systemctl or-* + cp infra/systemd/*.service
 - .claude/ writes: auto-approved via approve-claude-dir.js hook
 
-## OR-102 Done (2026-03-31)
-- curated.mart_finance: 29,914 rows, 50 indicators, 34 geos
-- Dashboard: 7 tabs at /finance/
+## Recently Completed (2026-04-06/07)
+- OR-124: Measure-driven value formatting across all chart components (format_type, scale, decimals, kpi_value, y_measure)
+- OR-125: kpi_row() flex container for multi-card KPI rows
+- OR-126: Template dashboard — y_measure and measure.to_series() wired to all chart calls; Polish palette labels fixed
+- OR-127: Code Reviewer agent (team/standards/code-review.md + .claude/agents/code-reviewer.md + /review Part 0)
+
+## Evaluation Framework — Backlog
+- OR-127: Code Reviewer ✓ DONE
+- OR-128: Visualization Reviewer ✓ DONE
+- OR-129: Domain Specialist agents (one per domain)
+- OR-130: Architecture Critic agent
+- OR-131: Analytical Validator agent
 
 ## Linear — Active
 - OR-78 (Ghost admin), OR-85 (daily cron), OR-90 (Instagram token ~2026-05-20)

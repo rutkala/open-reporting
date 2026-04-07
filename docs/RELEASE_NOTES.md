@@ -5,6 +5,10 @@
 ## Unreleased
 
 ### Evaluation framework
+- **OR-128** — Visualization Reviewer agent: `team/standards/visualization-review.md` (HIGH/MEDIUM/LOW
+  rules: colour semantics, KPI reference completeness, series count, y_measure on domain calls,
+  subtitle, pie slice limit, waterfall variant mismatch). `visualization-reviewer` subagent scoped
+  to domain dashboards. `/review` Part 0 now runs both agents in parallel.
 - **OR-127** — Code Reviewer agent: `team/standards/code-review.md` (P1/P2/P3 rules covering
   security, SQL injection, layer violations, logging, DB patterns, Python conventions, semantic
   layer). `code-reviewer` subagent runs independently on every PR diff. `/review` skill updated
