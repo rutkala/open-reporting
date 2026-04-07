@@ -23,7 +23,7 @@ Review scope: `$ARGUMENTS` (if provided, focus here only — otherwise review al
 
 ## Part 0 — Independent agent passes
 
-Before running any internal checks, spawn both review agents **in parallel** using two Agent tool calls in the same message:
+Before running any internal checks, spawn all three review agents **in parallel** using three Agent tool calls in the same message:
 
 **Agent A — `code-reviewer`**
 - Runs `git diff HEAD` independently
@@ -36,12 +36,18 @@ Before running any internal checks, spawn both review agents **in parallel** usi
 - Returns HIGH / MEDIUM / LOW findings with BLOCK / CONDITIONAL / PASS verdict
 - Scoped to `products/dashboards/` (excl. template) and `products/visuals/components/`
 
-Wait for both agents to complete, then map findings to review output:
-- code-reviewer P1 / visualization-reviewer HIGH → **CRITICAL**
-- code-reviewer P2 / visualization-reviewer MEDIUM → **WARNING**
-- code-reviewer P3 / visualization-reviewer LOW → **SUGGESTION**
+**Agent C — `analytical-validator`**
+- Runs `git diff HEAD` independently (diff-phase mode — leave $PLAN empty)
+- Reads `team/analytics/analytical-thinking.md`, checks SQL aggregation, CAGR, labelling, and causal language
+- Returns MISLEADING / QUESTIONABLE / NOTED findings with BLOCK / CONDITIONAL / PASS verdict
+- Scoped to SQL files, Python data queries, and chart call string literals
 
-If either agent returns BLOCK → overall review is blocked.
+Wait for all three agents to complete, then map findings to review output:
+- code-reviewer P1 / visualization-reviewer HIGH / analytical-validator MISLEADING → **CRITICAL**
+- code-reviewer P2 / visualization-reviewer MEDIUM / analytical-validator QUESTIONABLE → **WARNING**
+- code-reviewer P3 / visualization-reviewer LOW / analytical-validator NOTED → **SUGGESTION**
+
+If any agent returns BLOCK → overall review is blocked.
 
 ---
 
