@@ -8,8 +8,8 @@ Covers: Instagram (`@otwarteraporty`) — other platforms TBD.
 
 | Task | Competency | Builder | Evaluator | Standard |
 |------|-----------|---------|-----------|----------|
-| Design (API integration, token lifecycle) | Platform / Ops | `ops-engineer` *(planned)* | `ops-reviewer` *(planned)* | ops-review.md *(planned)* |
-| Build (Meta API scripts, token mgmt, cron) | Platform / Ops | `ops-engineer` *(planned)* | `ops-reviewer` *(planned)* | ops-review.md *(planned)* |
+| Design (API integration, token lifecycle) | Platform / Ops | `ops-engineer` | `ops-reviewer` | ops-review.md |
+| Build (Meta API scripts, token mgmt, cron) | Platform / Ops | `ops-engineer` | `ops-reviewer` | ops-review.md |
 
 ### Sub-product #12 — Social card
 
@@ -18,7 +18,7 @@ Covers: Instagram (`@otwarteraporty`) — other platforms TBD.
 | Domain brief (metric selection, framing) | Business Analysis | `business-analyst` | `brief-reviewer` | brief-review.md |
 | Design (1080×1080 layout, KPI card) | UX / UI Design | `dashboard-dev` | `visual-screenshot-reviewer` | visualisation.md → visualization-image.md |
 | Build (Plotly figure, PNG export) | Dashboard Development | `dashboard-dev` | `visualization-reviewer` | visualisation.md → visualization-diff.md |
-| Write caption (Polish, factual) | Content / Editorial | `content-writer` *(planned)* | `content-reviewer` *(planned)* | content-review.md *(planned)* |
+| Write caption (Polish, factual) | Content / Editorial | `content-writer` | `content-reviewer` | content-review.md |
 
 ### Sub-product #13 — Data card
 

@@ -8,10 +8,10 @@ Covers sub-product #14 (Platform infra).
 
 | Task | Competency | Builder | Evaluator | Standard |
 |------|-----------|---------|-----------|----------|
-| Design (service topology, security, backup strategy) | Platform / Ops | `ops-engineer` *(planned)* | `ops-reviewer` *(planned)* | — → ops-review.md *(planned)* |
-| Build (Docker Compose, nginx, systemd, TLS, DNS, monitoring) | Platform / Ops | `ops-engineer` *(planned)* | `ops-reviewer` *(planned)* | — → ops-review.md *(planned)* |
+| Design (service topology, security, backup strategy) | Platform / Ops | `ops-engineer` | `ops-reviewer` | ops-review.md |
+| Build (Docker Compose, nginx, systemd, TLS, DNS, monitoring) | Platform / Ops | `ops-engineer` | `ops-reviewer` | ops-review.md |
 
-**Gap note:** `ops-engineer` and `ops-reviewer` agents are planned (OR-137) but not yet live. Until they are, infrastructure changes are made by main Claude and reviewed by `code-reviewer`. Flag infra ORs accordingly.
+**Note:** `ops-engineer` and `ops-reviewer` are live (OR-137).
 
 ---
 
