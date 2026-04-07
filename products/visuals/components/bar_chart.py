@@ -1,6 +1,6 @@
 """
 Bar and column chart variants — Power BI naming convention.
-KB reference: team/analytics/visualization/charts/bar.md
+KB reference: team/knowledge-base/visualization/charts/bar.md
 
 Naming:
   column = vertical bars   bar = horizontal bars

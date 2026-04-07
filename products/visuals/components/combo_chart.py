@@ -1,6 +1,6 @@
 """
 Combo and subplot chart variants — Power BI naming convention.
-KB reference: team/analytics/visualization/charts/combo-subplots.md
+KB reference: team/knowledge-base/visualization/charts/combo-subplots.md
 
 Rules applied:
   - line_clustered_column / line_stacked_column: same-scale data only (KB rule)

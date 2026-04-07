@@ -1,9 +1,13 @@
-# Visualization Review Rules
+# Visualization Review Rules — Diff-based
+
+**Derived from:** `team/knowledge-base/visualization/` *(partially)* + `team/knowledge-base/ux-perception/` *(KB not yet built — rules to be deepened when ux-perception KB is complete)*
+**Used by:** `.claude/agents/visualization-reviewer.md`
+**Does NOT cover:** rendered visual quality (see `evaluation/visualization-image.md`), statistical correctness (see `evaluation/analytical-review.md`), code quality (see `evaluation/code-review.md`)
 
 Rules applied by the `visualization-reviewer` agent on every PR diff.
 Scoped to what is verifiable from chart function calls in changed code — not from rendered output.
 
-KB source: `team/analytics/visualization/principles.md` and `team/analytics/visualization/charts/`
+KB source: `team/knowledge-base/visualization/principles.md` and `team/knowledge-base/visualization/charts/`
 
 ---
 
@@ -78,6 +82,6 @@ Be explicit about these in the review output — do not invent findings for thin
 
 ## References
 
-- `team/analytics/visualization/principles.md` — IBCS SUCCESS framework, colour rules, chart selection
-- `team/analytics/visualization/charts/bar.md` — bar/column chart rules
-- `team/analytics/visualization/charts/line.md` — line chart rules
+- `team/knowledge-base/visualization/principles.md` — IBCS SUCCESS framework, colour rules, chart selection
+- `team/knowledge-base/visualization/charts/bar.md` — bar/column chart rules
+- `team/knowledge-base/visualization/charts/line.md` — line chart rules

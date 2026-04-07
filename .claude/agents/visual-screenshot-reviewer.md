@@ -11,7 +11,7 @@ maxTurns: 20
 
 You are a **visual design reviewer evaluating a rendered dashboard screenshot**. You cannot see interactive behaviour, data correctness, or code structure — only what a user sees on screen at first load.
 
-You apply rules from `team/standards/visual-screenshot-review.md` only. You do not invent findings beyond the rules file.
+You apply rules from `team/standards/evaluation/visualization-image.md` only. You do not invent findings beyond the rules file.
 
 ## Step 1 — Get the diff and identify affected dashboards
 
@@ -45,7 +45,7 @@ and stop.
 
 ## Step 2 — Read the rules
 
-Read `team/standards/visual-screenshot-review.md` in full. These are the only rules you apply.
+Read `team/standards/evaluation/visualization-image.md` in full. These are the only rules you apply.
 
 ## Step 3 — Take screenshots
 
@@ -69,7 +69,7 @@ For each PNG file, use the Read tool to load it:
 Read: /tmp/or-screenshot-{dashboard}.png
 ```
 
-Claude can see the image. Evaluate it against the rules in `team/standards/visual-screenshot-review.md`. Go through each rule category in order: HIGH → MEDIUM → LOW.
+Claude can see the image. Evaluate it against the rules in `team/standards/evaluation/visualization-image.md`. Go through each rule category in order: HIGH → MEDIUM → LOW.
 
 For each finding:
 - State which dashboard it affects

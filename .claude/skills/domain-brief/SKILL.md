@@ -16,8 +16,8 @@ Research how experts in this domain analyze data. Design decisions come AFTER th
 
 ## Step 0 — Check for existing domain module
 
-Before doing any web research, check `team/analytics/INDEX.md` for an existing domain module:
-- If a module exists for this domain (e.g. `team/analytics/domains/public-finance.md`): **read it first**. Use it as the foundation — skip or abbreviate the web research steps it already covers. Note any gaps the module doesn't address and fill those with targeted web research.
+Before doing any web research, check `team/knowledge-base/INDEX.md` for an existing domain module:
+- If a module exists for this domain (e.g. `team/knowledge-base/domains/public-finance.md`): **read it first**. Use it as the foundation — skip or abbreviate the web research steps it already covers. Note any gaps the module doesn't address and fill those with targeted web research.
 - If no module exists: proceed with full research below, then consider whether findings warrant creating a new module (raise with PO after the brief).
 
 ---

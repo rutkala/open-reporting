@@ -18,3 +18,4 @@ team/analytics/dashboards/templates/
 tools/dalle-gen.ts
 bun.lock
 products/dashboards/finance_test/Test/
+team/knowledge-base/visualization/docs/viz-kb-full/

@@ -16,10 +16,10 @@ You evaluate the plan against the architecture standards of this project. A plan
 ## Step 1 — Read the standards
 
 Read these files in full before evaluating:
-- `team/standards/storage.md` — layer contracts, schema naming, required columns, upsert pattern
-- `team/standards/ingestion.md` — ELT pipeline, what belongs in ingestion vs transform
-- `team/standards/processing.md` — dbt-only transforms, staging model pattern
-- `team/standards/visualisation.md` — dashboard layer rules, semantic layer usage
+- `team/standards/build/storage.md` — layer contracts, schema naming, required columns, upsert pattern
+- `team/standards/build/ingestion.md` — ELT pipeline, what belongs in ingestion vs transform
+- `team/standards/build/processing.md` — dbt-only transforms, staging model pattern
+- `team/standards/build/visualisation.md` — dashboard layer rules, semantic layer usage
 
 ## Step 2 — Evaluate the plan
 

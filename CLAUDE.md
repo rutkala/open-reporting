@@ -28,7 +28,22 @@ Your role is **50% business analyst, 50% technical architect**. You do not wait 
 ```
 /opt/open-reporting/
 ├── .claude/             → Claude Code config — hooks, skills, agents, settings
-├── team/                → Team knowledge — standards, playbooks, memory, lessons learned
+├── team/                → Team knowledge base, standards, playbooks, memory
+│   ├── PLATFORM.md      → Factory blueprint — product portfolio, competency map, agent roster, quality system
+│   ├── knowledge-base/  → Research syntheses (authoritative sources → KB → standards)
+│   │   ├── INDEX.md     → KB index with loading guide and status
+│   │   ├── analytical-methods/  → Analytical thinking, insight hierarchy
+│   │   ├── visualization/       → IBCS, chart-type rules, UI principles
+│   │   ├── domains/             → Per-domain KBs (public-finance, labour, …)
+│   │   └── [ux-perception/, data-architecture/, data-engineering/, business-analysis/ — planned]
+│   ├── standards/       → Derived from KB — actionable rules for builders and evaluators
+│   │   ├── INDEX.md     → Standards index with derivation traceability
+│   │   ├── build/       → How to build: ingestion, processing, storage, visualisation, measures, requirements
+│   │   └── evaluation/  → How to review: code-review, visualization-diff, visualization-image
+│   ├── domain-briefs/   → Domain research outputs (one per dashboard domain)
+│   ├── playbooks/       → Step-by-step process guides
+│   ├── session-memory.md
+│   └── lessons-learned.md
 ├── infra/               → Infrastructure — nginx (conf, certs, html web root)
 ├── data/                → Runtime data (git-ignored, entire folder)
 │   ├── landing/         → File landing zone (Excel, PDF, CSV)
@@ -215,7 +230,9 @@ Utility:
 
 ## Standards
 
-Reference files in `team/standards/` — followed by agents when building:
+Two categories in `team/standards/`. See `team/standards/INDEX.md` for the derivation chain.
+
+**Build standards** (`team/standards/build/`) — developer-facing, what to do when building:
 
 | File | Applies to | Purpose |
 |------|-----------|---------|
@@ -224,15 +241,26 @@ Reference files in `team/standards/` — followed by agents when building:
 | `processing.md` | Transform scripts | 6-category DQ framework, quality logging, processing script structure |
 | `storage.md` | All DB work | Schema naming, data types, upsert pattern, indexes |
 | `visualisation.md` | Dashboards | Nordic design, colour palette, Plotly template, chart types, layout |
+| `measures.md` | Semantic layer | Measure definitions, format_type, scale conventions |
 
-## Analytics Knowledge Base
+**Evaluation standards** (`team/standards/evaluation/`) — agent-facing, what to check when reviewing:
 
-Agent reference library in `team/analytics/` — read on demand during `/domain-brief` and `/plan` phases, not auto-loaded every session. See `team/analytics/INDEX.md` for the full module list and loading instructions.
+| File | Used by agent | Phase |
+|------|--------------|-------|
+| `code-review.md` | `code-reviewer` | PR |
+| `visualization-diff.md` | `visualization-reviewer` | PR |
+| `visualization-image.md` | `visual-screenshot-reviewer` | PR |
+
+## Knowledge Base
+
+Research syntheses in `team/knowledge-base/` — read on demand during `/domain-brief` and `/plan` phases, not auto-loaded every session. See `team/knowledge-base/INDEX.md` for the full module list and loading instructions.
 
 | File | Covers | Read when |
 |------|--------|-----------|
-| `visualization-guide.md` | Chart type selection, dual-axis, color semantics | Before designing any chart |
-| `analytical-thinking.md` | Data → insight → narrative framework | Before structuring any analysis |
+| `visualization/principles.md` | IBCS SUCCESS, Gestalt, colour semantics, reference lines | Before designing any chart or dashboard |
+| `visualization/ui-principles.md` | Layout, grid, dashboard types, interaction | Before designing dashboard layout |
+| `visualization/charts/*.md` | Chart-type rules (bar, line, waterfall, scatter, map, table) | Before building that chart type |
+| `analytical-methods/analytical-thinking.md` | 5 analytical moves, insight hierarchy, Polish public data context | Before structuring any analysis |
 | `domains/public-finance.md` | Fiscal KPIs, SGP rules, canonical chart patterns | Before any public finance work |
 
 ## Playbooks
@@ -291,7 +319,7 @@ print(query('SELECT 42 AS answer'))
 
 ## Code Standards
 
-Key rules (full details in `team/standards/`):
+Key rules (full details in `team/standards/build/`):
 - Parameterised queries always (no string concatenation in SQL)
 - Never commit `.env` — use env vars for all secrets
 - 100 char line length, 4-space indent

@@ -1,6 +1,6 @@
 """
 Map chart variants.
-KB reference: team/analytics/visualization/charts/map.md
+KB reference: team/knowledge-base/visualization/charts/map.md
 
 choropleth_map — filled countries/regions by value
 bubble_map     — sized bubbles at geographic points

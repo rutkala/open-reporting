@@ -1,5 +1,7 @@
 # Research — Agent Instructions
 
+**Extends:** root `CLAUDE.md` — collaboration model, safety guardrails, git workflow, and language rules all apply here. This file adds research-specific context on top.
+
 ## Purpose
 Academic-grade economic and statistical research using Polish public data. Work is grounded in
 established theory — models are applied from the library, not invented ad hoc.

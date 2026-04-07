@@ -1,6 +1,6 @@
 """
 Waterfall chart variants.
-KB reference: team/analytics/visualization/charts/waterfall.md
+KB reference: team/knowledge-base/visualization/charts/waterfall.md
 
 Rules applied:
 - Uses Plotly native go.Waterfall (built-in connector lines)

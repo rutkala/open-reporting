@@ -6,7 +6,7 @@ Extracted resources for building the visualization knowledge base. Cached in `vi
 
 ## Extraction Script
 
-**Location:** `team/analytics/visualization/docs/documents_extraction.sh`
+**Location:** `team/knowledge-base/visualization/docs/documents_extraction.sh` *(moved from `team/analytics/visualization/docs/` 2026-04-07)*
 
 **URLs processed:**
 ```

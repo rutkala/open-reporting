@@ -80,7 +80,7 @@ Each sub-issue goes through its own `/kickoff` when it is pulled into a sprint.
 
 **Deliverable:** `raw.{source}_{domain}` table(s) for each newly identified source.
 
-**Standard:** `.claude/standards/ingestion.md`
+**Standard:** `team/standards/build/ingestion.md`
 
 **Steps (for each new source):**
 1. Create `platform/ingestion/to_landing/fetch_{source}_{domain}.py` — download raw files to `data/landing/{source}_{domain}/`
@@ -99,7 +99,7 @@ Note: If a source was already ingested in a prior issue (e.g., DBW HVD for Publi
 
 **Deliverable:** dbt staging model(s) for each new source, unioned into `curated.all_indicators`.
 
-**Standard:** `.claude/standards/storage.md` — 33-column schema
+**Standard:** `team/standards/build/storage.md` — 33-column schema
 
 **Steps (for each new source):**
 1. Create `platform/processing/dbt/models/{source}/stg_{source}_{domain}.sql`
@@ -143,7 +143,7 @@ Note: If a source was already ingested in a prior issue (e.g., DBW HVD for Publi
 
 **Deliverable:** `products/dashboards/{domain}/app.py` — Dash application.
 
-**Standard:** `.claude/standards/visualisation.md`
+**Standard:** `team/standards/build/visualisation.md`
 
 ### Phase 5a — Domain Research (mandatory before any design)
 

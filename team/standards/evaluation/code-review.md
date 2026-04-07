@@ -1,5 +1,9 @@
 # Code Review Rules
 
+**Derived from:** `team/knowledge-base/data-engineering/` *(KB not yet built — rules currently based on project experience; to be re-audited when KB is complete)*
+**Used by:** `.claude/agents/code-reviewer.md`
+**Does NOT cover:** architectural layer compliance (see `evaluation/architecture-review.md`), statistical correctness (see `evaluation/analytical-review.md`), visual design (see `evaluation/visualization-diff.md`)
+
 Rules applied by the `code-reviewer` agent on every PR diff.
 Organised by severity — P1 blocks merge, P2 should be fixed, P3 is noted.
 
