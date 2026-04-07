@@ -438,7 +438,7 @@ Human touch-points are strategic only:
 | `business-analyst` | Business Analysis | Builder | Plan + Implementation | ✓ Live |
 | `cost-estimator` | Cost Estimation | Evaluator | Feasibility | ✓ Live |
 
-¹ Currently named `data-architect` — rename pending (OR to be created). Covers Data Engineering Build tasks and Semantic Modelling Build tasks. Does **not** cover Data Architecture Design tasks (those are a gap — see §5.2).
+¹ Previously named `data-architect` — renamed to `data-engineer` (OR-138). Covers Data Engineering Build tasks and Semantic Modelling Build tasks. Does **not** cover Data Architecture Design tasks (those are a gap — see §5.2).
 
 ### 5.2 Planned agents and gaps
 
@@ -834,13 +834,11 @@ kickoff
 **Platform:** DuckDB warehouse (222 indicators, 18 domains) + 3-source ingestion (Eurostat, NBP, GUS DBW) + dbt (22 curated models) + Kimball dimensional model
 
 **Team infrastructure:**
-- 14 agents live (debug, architecture-critic, code-reviewer, data-engineer-reviewer, visualization-reviewer, visual-screenshot-reviewer, analytical-validator, brief-reviewer, domain-specialist, measures-reviewer, data-architect¹, dashboard-dev, business-analyst, cost-estimator)
+- 14 agents live (debug, architecture-critic, code-reviewer, data-engineer-reviewer, visualization-reviewer, visual-screenshot-reviewer, analytical-validator, brief-reviewer, domain-specialist, measures-reviewer, data-engineer, dashboard-dev, business-analyst, cost-estimator)
 - 18 sub-products defined with formal recipes (§3) across 6 groups
 - 14 skills live (including /feasibility + /standards-review)
 - KB: analytical-methods ✓, visualization ✓, ux-perception ✓, data-architecture ✓, data-engineering ✓, business-analysis ✓; public-finance domain draft
 - Standards: 6 build standards ✓, 8 evaluation standards ✓
-
-¹ `data-architect` is correctly named `data-engineer` per the recipe system — rename is a pending OR.
 
 ### 11.2 What is next (priority order)
 
@@ -848,7 +846,7 @@ kickoff
 |---|------|------|--------|--------|
 | 1–6, 11 | Agent + standard gap closure (previous pass) | Agents + standards | ✅ Done | See git log |
 | 12 | Sub-product recipe system | PLATFORM.md restructure | ✅ Done | Recipe-based routing for all ORs |
-| 13 | Rename `data-architect` → `data-engineer` | Agent + references | 🔜 Next | Naming matches recipe system |
+| 13 | Rename `data-architect` → `data-engineer` | Agent + references | ✅ Done (OR-138) | Naming matches recipe system |
 | 14 | `data-researcher` + `data-research-reviewer` agents + standards | Agents + standards | 🔜 Next | Closes Data Research competency gap |
 | 15 | `data-architect` as dedicated Design-phase builder | Agent | 🔜 Next | Closes Data Architecture builder gap |
 | 7 | Content / Editorial KB + content-writer/reviewer agents | Knowledge base + agents | 📋 Planned (OR-135) | Blog editorial standards, data journalism quality |

@@ -75,7 +75,7 @@ Execute the appropriate next steps in sequence, pausing for user approval at eac
 
 1. `/research` — if data source or approach is unclear
 2. `/plan` — design the solution, present for approval before any code
-3. **Implement** — create feature branch, write code (use `data-architect` for `platform/` work, `dashboard-dev` for `products/dashboards/` and `products/visuals/` work)
+3. **Implement** — create feature branch, write code (use `data-engineer` for `platform/` work, `dashboard-dev` for `products/dashboards/` and `products/visuals/` work)
 4. `/review` — runs all evaluator agents in parallel; auto-commits, pushes, and opens PR when all pass; loops to fix when blocked (no human involvement during review loop)
 5. **Merge** — present PR URL to user; wait for merge approval (only human gate in the pipeline)
 6. `/document` — update affected docs, RELEASE_NOTES.md
