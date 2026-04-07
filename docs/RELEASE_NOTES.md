@@ -4,6 +4,12 @@
 
 ## Unreleased
 
+### Evaluation framework
+- **OR-127** — Code Reviewer agent: `team/standards/code-review.md` (P1/P2/P3 rules covering
+  security, SQL injection, layer violations, logging, DB patterns, Python conventions, semantic
+  layer). `code-reviewer` subagent runs independently on every PR diff. `/review` skill updated
+  with mandatory Part 0 agent pass before internal checks.
+
 ### Visual components
 - **OR-126** — Template dashboard: all chart calls now pass `y_measure` (axis title + tick unit
   driven by Measure metadata) and use `measure.to_series()` for series dicts. Polish colour
