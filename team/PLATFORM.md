@@ -188,8 +188,8 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
-| Research | Source discovery, API/file analysis, indicator selection, data quality, licence | Data Research | `data-researcher` *(gap)* | `data-research-reviewer` *(gap)* | — | — |
-| Design | Schema design, ELT architecture, DuckDB patterns, upsert strategy | Data Architecture | `data-architect` *(gap — main Claude)* | `architecture-critic` | storage.md, ingestion.md | architecture-review.md |
+| Research | Source discovery, API/file analysis, indicator selection, data quality, licence | Data Research | `data-researcher` | `data-research-reviewer` | — | data-research-review.md |
+| Design | Schema design, ELT architecture, DuckDB patterns, upsert strategy | Data Architecture | `data-architect` | `architecture-critic` | storage.md, ingestion.md | architecture-review.md |
 | Build | Python scripting, DuckDB SQL, upsert, fetched_at, dbt sources.yml, tests | Data Engineering | `data-engineer` | `data-engineer-reviewer` | ingestion.md | data-engineering-review.md |
 
 #### Sub-product 2 — Data curated (silver)
@@ -198,7 +198,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
-| Design | dbt staging model structure, conformed dimensions, grain declaration | Data Architecture | `data-architect` *(gap)* | `architecture-critic` | storage.md, processing.md | architecture-review.md |
+| Design | dbt staging model structure, conformed dimensions, grain declaration | Data Architecture | `data-architect` | `architecture-critic` | storage.md, processing.md | architecture-review.md |
 | Build | dbt SQL, staging pattern, sources.yml, schema.yml tests, all_indicators union | Data Engineering | `data-engineer` | `data-engineer-reviewer` | processing.md | data-engineering-review.md |
 
 #### Sub-product 3 — Data mart (gold)
@@ -207,7 +207,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
-| Design | Kimball star schema, fact/dimension design, derived metrics, bus matrix | Data Architecture | `data-architect` *(gap)* | `architecture-critic` | storage.md, processing.md | architecture-review.md |
+| Design | Kimball star schema, fact/dimension design, derived metrics, bus matrix | Data Architecture | `data-architect` | `architecture-critic` | storage.md, processing.md | architecture-review.md |
 | Build | dbt mart SQL, incremental models, bus_matrix.md update | Data Engineering | `data-engineer` | `data-engineer-reviewer` | processing.md | data-engineering-review.md |
 
 #### Sub-product 4 — Semantic layer
@@ -217,7 +217,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
 | Domain brief | Indicator selection, aggregation rules, SMART+FABRIC, stock/flow | Business Analysis | `business-analyst` | `brief-reviewer` | — | brief-review.md |
-| Design | MetricFlow measure/dimension/metric structure, entity model | Data Architecture + Semantic Modelling | `data-architect` *(gap)* | `architecture-critic` | measures.md | architecture-review.md |
+| Design | MetricFlow measure/dimension/metric structure, entity model | Data Architecture + Semantic Modelling | `data-architect` | `architecture-critic` | measures.md | architecture-review.md |
 | Build | MetricFlow YAML, agg declarations, format_type, scale, Polish labels | Semantic Modelling | `data-engineer` | `measures-reviewer` | measures.md | measures-review.md |
 
 ---
@@ -239,7 +239,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
-| Design | Query layer architecture, data access patterns, connection management | Data Architecture | `data-architect` *(gap)* | `architecture-critic` | storage.md | architecture-review.md |
+| Design | Query layer architecture, data access patterns, connection management | Data Architecture | `data-architect` | `architecture-critic` | storage.md | architecture-review.md |
 | Build | Python/DuckDB queries, lib/db.py patterns, filter logic | Data Engineering | `data-engineer` | `data-engineer-reviewer` | storage.md | data-engineering-review.md |
 
 ---
@@ -261,8 +261,8 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
-| Configure | Ghost CMS config, content API, webhooks, member settings | Platform / Ops | `ops-engineer` *(planned)* | `ops-reviewer` *(planned)* | — | ops-review.md *(planned)* |
-| Operate | Docker lifecycle, database backup, token refresh, upgrades | Platform / Ops | `ops-engineer` *(planned)* | `ops-reviewer` *(planned)* | — | ops-review.md *(planned)* |
+| Configure | Ghost CMS config, content API, webhooks, member settings | Platform / Ops | `ops-engineer` | `ops-reviewer` | — | ops-review.md |
+| Operate | Docker lifecycle, database backup, token refresh, upgrades | Platform / Ops | `ops-engineer` | `ops-reviewer` | — | ops-review.md |
 
 ---
 
@@ -291,8 +291,8 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
-| Design | API integration architecture, token lifecycle, automation, scheduling | Platform / Ops | `ops-engineer` *(planned)* | `ops-reviewer` *(planned)* | — | ops-review.md *(planned)* |
-| Build | Meta API integration, token management scripts, cron scheduling | Platform / Ops | `ops-engineer` *(planned)* | `ops-reviewer` *(planned)* | — | ops-review.md *(planned)* |
+| Design | API integration architecture, token lifecycle, automation, scheduling | Platform / Ops | `ops-engineer` | `ops-reviewer` | — | ops-review.md |
+| Build | Meta API integration, token management scripts, cron scheduling | Platform / Ops | `ops-engineer` | `ops-reviewer` | — | ops-review.md |
 
 #### Sub-product 12 — Social card
 
@@ -303,7 +303,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 | Domain brief | Metric selection, framing, context, Polish convention | Business Analysis | `business-analyst` | `brief-reviewer` | — | brief-review.md |
 | Design | 1080×1080 layout, KPI card design, visual hierarchy, colour semantics | UX / UI Design | `dashboard-dev` | `visual-screenshot-reviewer` | visualisation.md, measures.md | visualization-image.md |
 | Build | Plotly figure generation, PNG export | Dashboard Development | `dashboard-dev` | `visualization-reviewer` | visualisation.md | visualization-diff.md |
-| Write caption | Polish language, factual precision, hashtag conventions | Content / Editorial | `content-writer` *(planned)* | `content-reviewer` *(planned)* | — | content-review.md *(planned)* |
+| Write caption | Polish language, factual precision, hashtag conventions | Content / Editorial | `content-writer` | `content-reviewer` | — | content-review.md |
 
 #### Sub-product 13 — Data card
 
@@ -324,8 +324,8 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
-| Design | Service topology, security posture, network design, backup strategy | Platform / Ops | `ops-engineer` *(planned)* | `ops-reviewer` *(planned)* | — | ops-review.md *(planned)* |
-| Build | Docker Compose, nginx config, systemd units, TLS certs, DNS, monitoring | Platform / Ops | `ops-engineer` *(planned)* | `ops-reviewer` *(planned)* | — | ops-review.md *(planned)* |
+| Design | Service topology, security posture, network design, backup strategy | Platform / Ops | `ops-engineer` | `ops-reviewer` | — | ops-review.md |
+| Build | Docker Compose, nginx config, systemd units, TLS certs, DNS, monitoring | Platform / Ops | `ops-engineer` | `ops-reviewer` | — | ops-review.md |
 
 ---
 
@@ -359,7 +359,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
 | Domain brief | Analytical framing, indicator selection, story angle | Business Analysis | `business-analyst` | `brief-reviewer` | — | brief-review.md |
-| Write | Data journalism, Polish language, factual precision, editorial standards | Content / Editorial | `content-writer` *(planned)* | `content-reviewer` *(planned)* | — | content-review.md *(planned)* |
+| Write | Data journalism, Polish language, factual precision, editorial standards | Content / Editorial | `content-writer` | `content-reviewer` | — | content-review.md |
 | Visual embed | Chart selection, integration into article template | Dashboard Development | `dashboard-dev` | `visualization-reviewer` | visualisation.md | visualization-diff.md |
 
 #### Sub-product 18 — Research
@@ -369,7 +369,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
 | Research question | Hypothesis design, methodology selection, data feasibility | Business Analysis | `business-analyst` | `brief-reviewer` | — | brief-review.md |
-| Model | Econometrics, statistical analysis, reproducible research, robustness checks | Research | `researcher` *(planned)* | `research-reviewer` *(planned)* | — | research-review.md *(planned)* |
+| Model | Econometrics, statistical analysis, reproducible research, robustness checks | Research | `researcher` | `research-reviewer` | — | research-review.md |
 | Analytical review | Model assumptions, aggregation, causal claims, interpretation | Analytical Methods | — *(evaluator only)* | `analytical-validator` | — | analytical-review.md |
 
 ---
@@ -380,14 +380,14 @@ Competency = a cluster of related skills. Each competency has a builder role (do
 
 ### 4.1 Competencies
 
-**Note on Data Research:** Data Research is a required competency (see sub-product recipes §3.1) with no live agents yet — `data-researcher` (builder) and `data-research-reviewer` (evaluator) are gaps tracked in §5.2.
+**Note on Data Research:** Data Research is a required competency (see sub-product recipes §3.1). Agents are live — `data-researcher` (builder) and `data-research-reviewer` (evaluator), OR-139.
 
-**Note on Data Architecture builder:** The Design task in data sub-products requires a `data-architect` builder agent. This is currently done by main Claude via `/plan`. A dedicated agent is a gap tracked in §5.2.
+**Note on Data Architecture builder:** The Design task in data sub-products is handled by the `data-architect` agent (OR-140, live).
 
 | # | Competency | Core skills | Builder agent | Evaluator agent | Sub-products served |
 |---|-----------|-------------|--------------|-----------------|---------------------|
-| 0 | **Data Research** | Source discovery, API/file analysis, indicator selection, data quality, licence assessment | `data-researcher` *(gap)* | `data-research-reviewer` *(gap)* | #1 |
-| 1 | **Data Architecture** | Dimensional modelling, data vault, schema design, layer contracts, medallion architecture | `data-architect` *(gap — main Claude)* | `architecture-critic` | #1–#6 (Design tasks) |
+| 0 | **Data Research** | Source discovery, API/file analysis, indicator selection, data quality, licence assessment | `data-researcher` | `data-research-reviewer` | #1 |
+| 1 | **Data Architecture** | Dimensional modelling, data vault, schema design, layer contracts, medallion architecture | `data-architect` | `architecture-critic` | #1–#6 (Design tasks) |
 | 2 | **Data Engineering** | ETL scripting, SQL, DuckDB, dbt, API integration, data quality | `data-engineer` | `data-engineer-reviewer` | #1–#4, #6 (Build tasks) |
 | 3 | **Semantic Modelling** | MetricFlow measures/metrics/dimensions, aggregation correctness, format_type, unit/scale, Polish labelling | `data-engineer` | `measures-reviewer` | #4 |
 | 4 | **UX / UI Design** | Visual perception, cognitive load, Gestalt, colour theory, eye-tracking, WCAG, dashboard layout | `dashboard-dev` | `visual-screenshot-reviewer` | #5, #7, #9, #12, #13, #15, #16 (Design tasks) |
@@ -397,7 +397,7 @@ Competency = a cluster of related skills. Each competency has a builder role (do
 | 8 | **Analytical Methods** | Statistical correctness, aggregation in queries, causal language, chart labelling | — *(evaluator only)* | `analytical-validator` | #15, #18 (Analytical review tasks) |
 | 9 | **Content / Editorial** | Data journalism, Polish language, storytelling, editorial standards, Ghost CMS | `content-writer` | `content-reviewer` | #12, #17 |
 | 10 | **Research** | Econometrics, statistical methods, academic standards, model application | `researcher` | `research-reviewer` | #18 |
-| 11 | **Platform / Ops** | Linux, Docker, nginx, systemd, SSL, deployment, performance | `ops-engineer` *(planned)* | `ops-reviewer` *(planned)* | #8, #11, #14 |
+| 11 | **Platform / Ops** | Linux, Docker, nginx, systemd, SSL, deployment, performance | `ops-engineer` | `ops-reviewer` | #8, #11, #14 |
 | 12 | **Cost Estimation** | Token usage patterns, task complexity modelling, decomposition heuristics | — | `cost-estimator` | All (feasibility gate) |
 | 13 | **Diagnostics** | Tracing, root cause analysis, read-only investigation | — | `debug` | All (ad-hoc) |
 
@@ -440,23 +440,28 @@ Human touch-points are strategic only:
 | `content-reviewer` | Content / Editorial | Evaluator (content only) | Pre-publication | ✓ Live |
 | `researcher` | Research | Builder | Implementation | ✓ Live |
 | `research-reviewer` | Research | Evaluator (research only) | Pre-publication | ✓ Live |
+| `ops-engineer` | Platform / Ops | Builder | Implementation | ✓ Live |
+| `ops-reviewer` | Platform / Ops | Evaluator (infra only) | Pre-deployment | ✓ Live |
+| `data-researcher` | Data Research | Builder | Research | ✓ Live |
+| `data-research-reviewer` | Data Research | Evaluator (research only) | Research | ✓ Live |
+| `data-architect` | Data Architecture | Builder (Design task) | Plan | ✓ Live |
 | `cost-estimator` | Cost Estimation | Evaluator | Feasibility | ✓ Live |
 
-¹ Previously named `data-architect` — renamed to `data-engineer` (OR-138). Covers Data Engineering Build tasks and Semantic Modelling Build tasks. Does **not** cover Data Architecture Design tasks (those are a gap — see §5.2).
+¹ Previously named `data-architect` — renamed to `data-engineer` (OR-138). Covers Data Engineering Build tasks and Semantic Modelling Build tasks. Does **not** cover Data Architecture Design tasks (those are handled by the `data-architect` agent, OR-140).
 
 ### 5.2 Planned agents and gaps
 
 | Agent | Competency | Role | Phase | Track |
 |-------|-----------|------|-------|-------|
-| `data-architect` | Data Architecture | Builder (Design task) | Plan | **Gap** — currently main Claude via `/plan` |
-| `data-researcher` | Data Research | Builder | Research | **Gap** — no dedicated agent |
-| `data-research-reviewer` | Data Research | Evaluator | Research | **Gap** — no evaluator for research output |
+| `data-architect` | Data Architecture | Builder (Design task) | Plan | ✓ Live (OR-140) |
+| `data-researcher` | Data Research | Builder | Research | ✓ Live (OR-139) |
+| `data-research-reviewer` | Data Research | Evaluator | Research | ✓ Live (OR-139) |
 | `content-writer` | Content / Editorial | Builder | Implementation | ✓ Live (OR-135) |
 | `content-reviewer` | Content / Editorial | Evaluator | PR | ✓ Live (OR-135) |
 | `researcher` | Research | Builder | Implementation | ✓ Live (OR-136) |
 | `research-reviewer` | Research | Evaluator | PR | ✓ Live (OR-136) |
-| `ops-engineer` | Platform / Ops | Builder | Implementation | Planned (OR-137) |
-| `ops-reviewer` | Platform / Ops | Evaluator | PR | Planned (OR-137) |
+| `ops-engineer` | Platform / Ops | Builder | Implementation | ✓ Live (OR-137) |
+| `ops-reviewer` | Platform / Ops | Evaluator | PR | ✓ Live (OR-137) |
 
 ### 5.3 Agent invocation map
 
@@ -851,11 +856,11 @@ kickoff
 | 1–6, 11 | Agent + standard gap closure (previous pass) | Agents + standards | ✅ Done | See git log |
 | 12 | Sub-product recipe system | PLATFORM.md restructure | ✅ Done | Recipe-based routing for all ORs |
 | 13 | Rename `data-architect` → `data-engineer` | Agent + references | ✅ Done (OR-138) | Naming matches recipe system |
-| 14 | `data-researcher` + `data-research-reviewer` agents + standards | Agents + standards | 🔜 Next | Closes Data Research competency gap |
-| 15 | `data-architect` as dedicated Design-phase builder | Agent | 🔜 Next | Closes Data Architecture builder gap |
-| 7 | Content / Editorial KB + content-writer/reviewer agents | Knowledge base + agents | 📋 Planned (OR-135) | Blog editorial standards, data journalism quality |
-| 8 | Research Methods KB + researcher/research-reviewer agents | Knowledge base + agents | 📋 Planned (OR-136) | Econometrics, reproducible research standards |
-| 9 | Platform / Ops KB + ops-engineer/ops-reviewer agents | Knowledge base + agents | 📋 Planned (OR-137) | Infra change review quality |
+| 14 | `data-researcher` + `data-research-reviewer` agents + standards | Agents + standards | ✅ Done (OR-139) | Closes Data Research competency gap |
+| 15 | `data-architect` as dedicated Design-phase builder | Agent | ✅ Done (OR-140) | Closes Data Architecture builder gap |
+| 7 | Content / Editorial KB + content-writer/reviewer agents | Knowledge base + agents | ✅ Done (OR-135) | Blog editorial standards, data journalism quality |
+| 8 | Research Methods KB + researcher/research-reviewer agents | Knowledge base + agents | ✅ Done (OR-136) | Econometrics, reproducible research standards |
+| 9 | Platform / Ops KB + ops-engineer/ops-reviewer agents | Knowledge base + agents | ✅ Done (OR-137) | Infra change review quality |
 | 10 | Public-finance domain KB | KB — draft promotion | 🔜 Next | Move from Draft to Complete |
 | 16 | Article playbook | Playbook | 🔜 Next | Sub-product #17 has no playbook |
 | 17 | Research playbook | Playbook | 🔜 Next | Sub-product #18 has no playbook |
