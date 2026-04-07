@@ -395,9 +395,9 @@ Competency = a cluster of related skills. Each competency has a builder role (do
 | 6 | **Business Analysis** | KPI theory, indicator selection, aggregation methods, insight hierarchy, Polish public data context | `business-analyst` | `brief-reviewer` | #4, #12, #15, #17, #18 (Domain brief tasks) |
 | 7 | **Domain Specialist** | Domain-specific economics, policy frameworks, benchmark knowledge, Polish statistical context | — *(evaluator only)* | `domain-specialist` | #15 (Domain review tasks) |
 | 8 | **Analytical Methods** | Statistical correctness, aggregation in queries, causal language, chart labelling | — *(evaluator only)* | `analytical-validator` | #15, #18 (Analytical review tasks) |
-| 9 | **Content / Editorial** | Data journalism, Polish language, storytelling, editorial standards, Ghost CMS | `content-writer` *(planned)* | `content-reviewer` *(planned)* | #12, #17 |
-| 10 | **Research** | Econometrics, statistical methods, academic standards, model application | `researcher` *(planned)* | `research-reviewer` *(planned)* | #18 |
-| 11 | **Platform / Ops** | Linux, Docker, nginx, systemd, SSL, deployment, performance | `ops-engineer` *(planned)* | `ops-reviewer` *(planned)* | #8, #11, #14 |
+| 9 | **Content / Editorial** | Data journalism, Polish language, storytelling, editorial standards, Ghost CMS | `content-writer` | `content-reviewer` | #12, #17 |
+| 10 | **Research** | Econometrics, statistical methods, academic standards, model application | `researcher` | `research-reviewer` | #18 |
+| 11 | **Platform / Ops** | Linux, Docker, nginx, systemd, SSL, deployment, performance | `ops-engineer` | `ops-reviewer` | #8, #11, #14 |
 | 12 | **Cost Estimation** | Token usage patterns, task complexity modelling, decomposition heuristics | — | `cost-estimator` | All (feasibility gate) |
 | 13 | **Diagnostics** | Tracing, root cause analysis, read-only investigation | — | `debug` | All (ad-hoc) |
 
@@ -436,6 +436,12 @@ Human touch-points are strategic only:
 | `data-engineer` ¹ | Data Engineering + Semantic Modelling | Builder | Implementation | ✓ Live |
 | `dashboard-dev` | UX / UI Design + Dashboard Development | Builder | Implementation | ✓ Live |
 | `business-analyst` | Business Analysis | Builder | Plan + Implementation | ✓ Live |
+| `content-writer` | Content / Editorial | Builder | Implementation | ✓ Live |
+| `content-reviewer` | Content / Editorial | Evaluator (content only) | Pre-publication | ✓ Live |
+| `researcher` | Research | Builder | Implementation | ✓ Live |
+| `research-reviewer` | Research | Evaluator (research only) | Pre-publication | ✓ Live |
+| `ops-engineer` | Platform / Ops | Builder | Implementation | ✓ Live |
+| `ops-reviewer` | Platform / Ops | Evaluator (infra only) | Pre-deployment | ✓ Live |
 | `cost-estimator` | Cost Estimation | Evaluator | Feasibility | ✓ Live |
 
 ¹ Previously named `data-architect` — renamed to `data-engineer` (OR-138). Covers Data Engineering Build tasks and Semantic Modelling Build tasks. Does **not** cover Data Architecture Design tasks (those are a gap — see §5.2).
@@ -447,12 +453,12 @@ Human touch-points are strategic only:
 | `data-architect` | Data Architecture | Builder (Design task) | Plan | **Gap** — currently main Claude via `/plan` |
 | `data-researcher` | Data Research | Builder | Research | **Gap** — no dedicated agent |
 | `data-research-reviewer` | Data Research | Evaluator | Research | **Gap** — no evaluator for research output |
-| `content-writer` | Content / Editorial | Builder | Implementation | Planned (OR-135) |
-| `content-reviewer` | Content / Editorial | Evaluator | PR | Planned (OR-135) |
-| `researcher` | Research | Builder | Implementation | Planned (OR-136) |
-| `research-reviewer` | Research | Evaluator | PR | Planned (OR-136) |
-| `ops-engineer` | Platform / Ops | Builder | Implementation | Planned (OR-137) |
-| `ops-reviewer` | Platform / Ops | Evaluator | PR | Planned (OR-137) |
+| `content-writer` | Content / Editorial | Builder | Implementation | ✓ Live (OR-135) |
+| `content-reviewer` | Content / Editorial | Evaluator | PR | ✓ Live (OR-135) |
+| `researcher` | Research | Builder | Implementation | ✓ Live (OR-136) |
+| `research-reviewer` | Research | Evaluator | PR | ✓ Live (OR-136) |
+| `ops-engineer` | Platform / Ops | Builder | Implementation | ✓ Live (OR-137) |
+| `ops-reviewer` | Platform / Ops | Evaluator | Pre-deployment | ✓ Live (OR-137) |
 
 ### 5.3 Agent invocation map
 

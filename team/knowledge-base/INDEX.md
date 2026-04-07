@@ -75,11 +75,27 @@ Domain files are created via `/domain-brief` skill before dashboard work begins 
 
 ---
 
+## Research Methods
+
+| File | Covers | Read when |
+|------|--------|-----------|
+| [research-methods/methods.md](research-methods/methods.md) | Reproducible research, OLS/IV/DiD/synthetic control assumptions, robustness checks, standard errors, Polish data quirks, coefficient interpretation | Before building any econometric model, Jupyter notebook, or quantitative analysis |
+
+---
+
+## Platform / Ops
+
+| File | Covers | Read when |
+|------|--------|-----------|
+| [platform-ops/ops.md](platform-ops/ops.md) | Docker Compose production, nginx security, systemd hygiene, TLS lifecycle, security posture, observability, backup & recovery | Before making any infrastructure change — nginx config, Docker Compose, systemd units, certs |
+
+---
+
 ## Content / Editorial
 
-| File | Covers | Status |
-|------|--------|--------|
-| `content/` | Data journalism standards, Polish editorial style, storytelling frameworks | Planned |
+| File | Covers | Read when |
+|------|--------|-----------|
+| [content/editorial.md](content/editorial.md) | Inverted pyramid, fact-checking, source attribution, Polish press law, writing structure, social media card standards, blog article templates | Before writing any blog article, social card, or editorial content |
 
 ---
 
@@ -93,5 +109,8 @@ Domain files are created via `/domain-brief` skill before dashboard work begins 
 | Data Architecture | ✅ Complete | OR-133 |
 | Data Engineering | ✅ Complete | OR-133 |
 | Business Analysis | ✅ Complete | OR-133 |
+| Content / Editorial | ✅ Complete | OR-135 |
+| Research Methods | ✅ Complete | OR-136 |
+| Platform / Ops | ✅ Complete | OR-137 |
 | Domains — public finance | ⏳ Draft | OR-120 |
 | Domains — labour market | 📋 Planned | — |
