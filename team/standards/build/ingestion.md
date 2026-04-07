@@ -1,7 +1,7 @@
 # Ingestion Standard
 
 **Derived from:** `team/knowledge-base/data-engineering/engineering.md` ✓ (ELT principle, DuckDB read_csv/TRY_CAST/upsert/fetched_at, Python ETL standards, DAMA quality dimensions)
-**Used by builders:** `data-architect` (writing scripts in `platform/ingestion/`)
+**Used by builders:** `data-engineer` (writing scripts in `platform/ingestion/`)
 **Evaluated by:** `code-reviewer`, `data-engineer-reviewer` (PR-phase)
 **Does NOT cover:** transformation logic (see `processing.md`), schema design (see `storage.md`), semantic layer (see `measures.md`)
 

@@ -1,7 +1,7 @@
 # Measures Standard
 
 **Derived from:** `team/knowledge-base/business-analysis/kpi-indicator-design.md` ✓ + `team/knowledge-base/analytical-methods/analytical-thinking.md` ✓ (SMART+FABRIC indicator design, format/scale conventions, Polish unit conventions, percentage vs percentage-point distinction)
-**Used by builders:** `data-architect` (semantic-layer measures in `platform/processing/dbt/**/semantic_models/` and legacy `products/semantic/`), `dashboard-dev` (number rendering in KPI cards and chart axes)
+**Used by builders:** `data-engineer` (semantic-layer measures in `platform/processing/dbt/**/semantic_models/` and legacy `products/semantic/`), `dashboard-dev` (number rendering in KPI cards and chart axes)
 **Evaluated by:** `measures-reviewer` (PR-phase, semantic layer only)
 **Does NOT cover:** chart layout (see `visualisation.md`), aggregation correctness in ad-hoc queries (see `analytical-review.md`), KPI selection theory (see `business-analysis` KB)
 

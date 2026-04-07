@@ -1,7 +1,7 @@
 # Processing Standard
 
 **Derived from:** `team/knowledge-base/data-engineering/engineering.md` ✓ + `team/knowledge-base/data-architecture/architecture.md` ✓ (dbt staging/mart pattern, incremental models, sources.yml, tests, conformed dimensions, medallion silver→gold)
-**Used by builders:** `data-architect` (writing dbt models in `platform/processing/dbt/`)
+**Used by builders:** `data-engineer` (writing dbt models in `platform/processing/dbt/`)
 **Evaluated by:** `code-reviewer`, `data-engineer-reviewer` (PR-phase), `architecture-critic` (plan-phase)
 **Does NOT cover:** raw loading (see `ingestion.md`), DDL (see `storage.md`), semantic layer (see `measures.md`)
 

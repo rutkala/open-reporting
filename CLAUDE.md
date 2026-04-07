@@ -118,7 +118,7 @@ Shared session memory at `team/session-memory.md` provides continuity across ses
 | Agent | Scope | Mode | Description |
 |-------|-------|------|-------------|
 | `debug` | All directories | Read-only (plan) | Debugging, tracing, diagnostics |
-| `data-architect` | `platform/` | Full dev | Ingestion scripts, dbt models, schema DDL, warehouse queries, semantic layer (MetricFlow) |
+| `data-engineer` | `platform/` | Full dev | Ingestion scripts, dbt models, schema DDL, warehouse queries, semantic layer (MetricFlow) |
 | `dashboard-dev` | `products/dashboards/`, `products/visuals/` | Full dev | Dash apps, Plotly components, KPI cards, layout — reads ux-perception + visualization KBs |
 | `business-analyst` | Domain research | Read + Web | KPI design, indicator selection, analytical briefs |
 
@@ -140,7 +140,7 @@ Shared session memory at `team/session-memory.md` provides continuity across ses
 **When to delegate:**
 - Bug investigation → `debug` (read-only, safe)
 - Dashboard/visual work → `dashboard-dev`
-- Platform/ETL/schema/semantic-layer work → `data-architect`
+- Platform/ETL/schema/semantic-layer work → `data-engineer`
 - Domain KPI research → `business-analyst`
 - All evaluators are spawned automatically by `/plan`, `/review`, `/feasibility` — do not invoke directly
 

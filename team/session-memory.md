@@ -3,7 +3,7 @@
 <!-- last-updated: 2026-04-07 -->
 
 ## Current Focus
-Sub-product recipe system complete: 18 sub-products across 6 groups, each with formal task→skill→competency→agent→standard recipe tables. PLATFORM.md is now the routing index for all ORs.
+OR-138 complete: `data-architect` agent renamed to `data-engineer` across all references. PLATFORM.md, CLAUDE.md, build standards, and kickoff skill updated.
 
 ## MVP Status: COMPLETE (v0.1.0 — 2026-03-28)
 
@@ -49,16 +49,14 @@ Sub-product recipe system complete: 18 sub-products across 6 groups, each with f
 - Public Finance domain: ⏳ Draft
 
 ## Agent Infrastructure (14 live)
-- Builders: data-architect¹ (platform/ + semantic layer), dashboard-dev (products/dashboards/ + visuals/), business-analyst (analytical briefs)
+- Builders: data-engineer (platform/ + semantic layer), dashboard-dev (products/dashboards/ + visuals/), business-analyst (analytical briefs)
 - Evaluators: architecture-critic, code-reviewer, data-engineer-reviewer, analytical-validator, brief-reviewer, visualization-reviewer, visual-screenshot-reviewer, measures-reviewer, domain-specialist, cost-estimator
 - Diagnostics: debug
-
-¹ Correctly named `data-engineer` per recipe system — rename pending OR-138.
 
 ## Linear — Active
 - OR-78 (Ghost admin), OR-85 (daily cron), OR-90 (Instagram token ~2026-05-20)
 - OR-108: Mobile-optimized dashboards (Backlog)
-- OR-138: Rename data-architect → data-engineer (Backlog)
+- OR-138: Rename data-architect → data-engineer (Done)
 - OR-139: data-researcher + data-research-reviewer agents (Backlog — Idea)
 - OR-140: data-architect builder agent (Backlog — Idea)
 - OR-135/136/137: Content/Research/Ops KBs + agents (Backlog — Ideas)
