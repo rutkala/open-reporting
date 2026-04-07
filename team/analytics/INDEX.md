@@ -32,6 +32,14 @@ Agent reference library. Load on demand at the start of `/domain-brief` and `/pl
 
 ---
 
+## Analytical thinking
+
+| File | Covers | Read when |
+|------|--------|-----------|
+| [analytical-thinking.md](analytical-thinking.md) | Five analytical moves, insight hierarchy, when indicators are interesting, Polish public data context, aggregation rules | Before designing any analytical output (dashboard, article, social card) |
+
+---
+
 ## How to add a new domain module
 
 1. Create `team/analytics/domains/{domain-slug}.md`
@@ -66,4 +74,4 @@ Extracted and cached resources for visualization knowledge base:
 | visualization/ chart files | ✅ Complete | OR-118 |
 | sources/SUMMARY.md | ✅ Complete | OR-118 |
 | domains/public-finance.md | ⏳ Draft (opencode) — needs review | OR-120 |
-| Analytical thinking framework | 📋 Planned | OR-119 |
+| Analytical thinking framework | ✅ Complete | OR-119 |
