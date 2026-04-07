@@ -3,7 +3,7 @@
 <!-- last-updated: 2026-04-07 -->
 
 ## Current Focus
-Evaluation framework sprint complete (OR-127–131). All 4 agents live. Analytics KB foundation in place.
+Evaluation framework complete. 5 review agents live + screenshot reviewer. Analytics KB foundation in place.
 
 ## MVP Status: COMPLETE (v0.1.0 — 2026-03-28)
 
@@ -26,6 +26,7 @@ Evaluation framework sprint complete (OR-127–131). All 4 agents live. Analytic
 - OR-130: Architecture Critic agent (.claude/agents/architecture-critic.md + /plan Step 3.5)
 - OR-119: Analytical Thinking Framework (team/analytics/analytical-thinking.md)
 - OR-131: Analytical Validator agent ✓ DONE (.claude/agents/analytical-validator.md + /plan Step 3.5 parallel + /review Part 0 three agents)
+- OR-132: Screenshot visual reviewer ✓ DONE (tools/screenshot.py + Playwright + .claude/agents/visual-screenshot-reviewer.md + /review Part 0.5)
 
 ## Evaluation Framework — Backlog
 - OR-127: Code Reviewer ✓ DONE
