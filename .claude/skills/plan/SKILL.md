@@ -61,19 +61,27 @@ N. {plain description of final step}
 {Anything the user needs to decide before I start. "None — I have everything I need." if clear.}
 ```
 
-## Step 3.5 — Architecture Review (before presenting to user)
+## Step 3.5 — Pre-presentation review (before presenting to user)
 
-After writing the plan, spawn the `architecture-critic` agent **before presenting to the user**.
+After writing the plan, spawn **both** review agents **in parallel** using two Agent tool calls in the same message, **before presenting to the user**.
 
-Pass the plan text as the `$PLAN` variable. The agent reads `team/standards/` and evaluates the design against layer contracts, schema rules, and coupling risks.
+Pass the plan text as the `$PLAN` variable to both agents.
 
-- **BLOCK** → fix the design flaw, update the plan, re-run the critic before presenting
-- **CONDITIONAL** → add the findings to the plan's **Risks** section, then present to user
-- **APPROVE** → present normally
+**Agent A — `architecture-critic`**
+Reads `team/standards/` and evaluates layer contracts, schema naming, and coupling risks.
 
-The user should only see architecturally sound plans. Structural problems are resolved before the conversation, not during it.
+**Agent B — `analytical-validator`**
+Reads `team/analytics/analytical-thinking.md` and evaluates statistical and methodological soundness.
 
-Skip this step only if the plan touches no data layer (e.g. a pure UI or config change).
+Skip Agent A if the plan touches no data layer (e.g. a pure UI or config change).
+Skip Agent B if the plan contains no analytical design (e.g. a pure infrastructure or tooling change).
+
+**Handling findings:**
+- Either agent returns **BLOCK** → fix the design flaw, update the plan, re-run both critics before presenting
+- Either agent returns **CONDITIONAL** → add the findings to the plan's **Risks** section, then present to user
+- Both return **APPROVE** → present normally
+
+The user should only see structurally and analytically sound plans. Structural and methodological problems are resolved before the conversation, not during it.
 
 ## Step 4 — Wait for Approval
 
