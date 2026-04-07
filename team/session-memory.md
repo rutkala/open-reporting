@@ -3,7 +3,7 @@
 <!-- last-updated: 2026-04-07 -->
 
 ## Current Focus
-Evaluation framework complete. 5 review agents live + screenshot reviewer. Analytics KB foundation in place.
+Quality system infrastructure complete. All 6 core KBs built. Full derivation chain: sources → KB → standards → agents.
 
 ## MVP Status: COMPLETE (v0.1.0 — 2026-03-28)
 
@@ -17,23 +17,35 @@ Evaluation framework complete. 5 review agents live + screenshot reviewer. Analy
 - sudo NOPASSWD: systemctl or-* + cp infra/systemd/*.service
 - .claude/ writes: auto-approved via approve-claude-dir.js hook
 
-## Recently Completed (2026-04-06/07)
-- OR-124: Measure-driven value formatting across all chart components (format_type, scale, decimals, kpi_value, y_measure)
-- OR-125: kpi_row() flex container for multi-card KPI rows
-- OR-126: Template dashboard — y_measure and measure.to_series() wired to all chart calls; Polish palette labels fixed
-- OR-127: Code Reviewer agent (team/standards/code-review.md + .claude/agents/code-reviewer.md + /review Part 0)
-- OR-128: Visualization Reviewer agent (team/standards/visualization-review.md + .claude/agents/visualization-reviewer.md + /review Part 0 parallel)
-- OR-130: Architecture Critic agent (.claude/agents/architecture-critic.md + /plan Step 3.5)
-- OR-119: Analytical Thinking Framework (team/analytics/analytical-thinking.md)
-- OR-131: Analytical Validator agent ✓ DONE (.claude/agents/analytical-validator.md + /plan Step 3.5 parallel + /review Part 0 three agents)
-- OR-132: Screenshot visual reviewer ✓ DONE (tools/screenshot.py + Playwright + .claude/agents/visual-screenshot-reviewer.md + /review Part 0.5)
+## Directory Structure (current)
+- `team/PLATFORM.md` — factory blueprint (source of truth for competency map, agent roster, quality system)
+- `team/knowledge-base/` — research syntheses (was: team/analytics/)
+- `team/standards/build/` — developer-facing build rules
+- `team/standards/evaluation/` — agent-facing evaluation rules
+- `team/domain-briefs/` — domain research outputs (was: docs/domain-briefs/)
 
-## Evaluation Framework — Backlog
-- OR-127: Code Reviewer ✓ DONE
-- OR-128: Visualization Reviewer ✓ DONE
-- OR-129: Domain Specialist agents (one per domain) — SKIPPED for now
-- OR-130: Architecture Critic agent ✓ DONE
-- OR-131: Analytical Validator agent ✓ DONE
+## Recently Completed (2026-04-07)
+- OR-133 (PR #49): Quality system infrastructure
+  - 4 new KB files: ux-perception/perception.md, data-architecture/architecture.md, data-engineering/engineering.md, business-analysis/kpi-indicator-design.md
+  - 10 agents live: debug, architecture-critic, code-reviewer, visualization-reviewer, visual-screenshot-reviewer, visual-design-reviewer, analytical-validator, domain-specialist, business-analyst, cost-estimator
+  - 13 skills live (including /feasibility + /standards-review)
+  - 5 evaluation standards extracted to standalone files with full KB traceability
+  - /review autonomous loop: auto-commit/push/PR when all agents PASS
+  - /feasibility skill wired into /review-ideas, /sprint, /kickoff
+- Platform Blueprint Restructure (PR #48): team/PLATFORM.md, team/analytics/ → team/knowledge-base/, team/standards/ → build/ + evaluation/ subdirs
+
+## Knowledge Base Status
+- Analytical methods: ✅ Complete (team/knowledge-base/analytical-methods/)
+- Visualization + charts: ✅ Complete (team/knowledge-base/visualization/)
+- UX/Perception: ✅ Complete (team/knowledge-base/ux-perception/perception.md)
+- Data Architecture: ✅ Complete (team/knowledge-base/data-architecture/architecture.md)
+- Data Engineering: ✅ Complete (team/knowledge-base/data-engineering/engineering.md)
+- Business Analysis: ✅ Complete (team/knowledge-base/business-analysis/kpi-indicator-design.md)
+- Public Finance domain: ⏳ Draft (team/knowledge-base/domains/public-finance.md)
+
+## Agent Infrastructure (live)
+- debug, architecture-critic, code-reviewer, visualization-reviewer, visual-screenshot-reviewer
+- visual-design-reviewer, analytical-validator, domain-specialist, business-analyst, cost-estimator
 
 ## Linear — Active
 - OR-78 (Ghost admin), OR-85 (daily cron), OR-90 (Instagram token ~2026-05-20)

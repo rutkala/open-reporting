@@ -182,37 +182,35 @@ Human touch-points are strategic only:
 | `code-reviewer` | Data Engineering | Evaluator | PR | ✓ Live |
 | `visualization-reviewer` | Dashboard Dev / UX | Evaluator (diff) | PR | ✓ Live |
 | `visual-screenshot-reviewer` | UX / UI Design | Evaluator (image) | PR | ✓ Live |
+| `visual-design-reviewer` | UX / UI Design | Evaluator (deep perception) | PR | ✓ Live (needs ux-perception KB) |
 | `analytical-validator` | Business Analysis | Evaluator | Plan + PR | ✓ Live |
+| `domain-specialist` | Domain Specialist | Evaluator | Plan + PR | ✓ Live |
+| `business-analyst` | Business Analysis | Builder | Plan + Implementation | ✓ Live |
+| `cost-estimator` | Cost Estimation | Evaluator | Feasibility | ✓ Live |
 
 ### 5.2 Planned agents
 
 | Agent | Competency | Role | Phase | Priority |
 |-------|-----------|------|-------|----------|
-| `data-architect` | Data Architecture | Builder | Implementation | High |
-| `data-engineer-reviewer` | Data Engineering | Evaluator (domain-matched) | PR | High |
-| `ui-designer` | UX / UI Design | Builder | Implementation | Medium |
-| `visual-design-reviewer` | UX / UI Design | Evaluator (deep perception KB) | PR | High |
-| `business-analyst` | Business Analysis | Builder | Plan + Implementation | High |
-| `domain-specialist/{domain}` | Domain Specialist | Builder + Evaluator | Plan + PR | Medium |
+| `data-architect` | Data Architecture | Builder | Implementation | Medium |
+| `data-engineer-reviewer` | Data Engineering | Evaluator (domain-matched) | PR | Medium |
+| `ui-designer` | UX / UI Design | Builder | Implementation | Low |
 | `content-writer` | Content / Editorial | Builder | Implementation | Low |
 | `content-reviewer` | Content / Editorial | Evaluator | PR | Low |
 | `researcher` | Research | Builder | Implementation | Low |
 | `research-reviewer` | Research | Evaluator | PR | Low |
 | `ops-engineer` | Platform / Ops | Builder | Implementation | Low |
 | `ops-reviewer` | Platform / Ops | Evaluator | PR | Low |
-| `cost-estimator` | Cost Estimation | Evaluator | Feasibility + Plan | High |
-| `feasibility-panel` | All competencies | Multi-agent panel | Pre-sprint | High |
 
 ### 5.3 Agent invocation map
 
 ```
-/feasibility (pre-sprint)
+/feasibility (pre-sprint) ← NEW: wired via /review-ideas + /sprint + /kickoff
   → architecture-critic (data feasibility)
   → analytical-validator (analytical feasibility)
   → cost-estimator (token budget)
-  → domain-specialist (domain correctness)
-  → data-engineer-reviewer (source availability)
-  All parallel. Unanimous FEASIBLE → issue accepted.
+  All parallel. FEASIBLE → issue accepted.
+  PARTIAL → accept with conditions. BLOCKED → return for redesign.
 
 /plan (before coding)
   → architecture-critic (structural soundness)
@@ -348,9 +346,13 @@ Each KB entry is research-first — no opinions, only synthesis of authoritative
 | KB | Location | Status | Grounded in |
 |----|----------|--------|-------------|
 | Analytical methods | `team/knowledge-base/analytical-methods/analytical-thinking.md` | ✓ Complete | ONS, UNECE, IZA, GSS, IRE, GIJN |
-| Visualization principles | `team/knowledge-base/visualization/principles.md` | Partial — needs perception depth | Playfairdata, EU Data Viz Guide, IBCS |
+| Visualization principles | `team/knowledge-base/visualization/principles.md` | ✓ Complete | Playfairdata, EU Data Viz Guide, IBCS |
 | Visualization charts | `team/knowledge-base/visualization/charts/*.md` (7 files) | ✓ Complete | Same sources |
 | Visualization UI | `team/knowledge-base/visualization/ui-principles.md` | ✓ Complete | Same sources |
+| UX / Perception | `team/knowledge-base/ux-perception/perception.md` | ✓ Complete | Colin Ware, Treisman, Sweller, Nielsen Norman, WCAG 2.2 |
+| Data Architecture | `team/knowledge-base/data-architecture/architecture.md` | ✓ Complete | Kimball, Databricks medallion, dbt Labs |
+| Data Engineering | `team/knowledge-base/data-engineering/engineering.md` | ✓ Complete | DuckDB docs, dbt docs, DAMA, ANSI SQL |
+| Business Analysis | `team/knowledge-base/business-analysis/kpi-indicator-design.md` | ✓ Complete | Eurostat, OECD, Kaplan & Norton, ONS, IMF, GUS |
 | Domain — public finance | `team/knowledge-base/domains/public-finance.md` | Draft — needs review | Eurostat, IMF, MF Poland |
 | Domain — labour market | `team/knowledge-base/domains/labour-market.md` | Planned | ILO, Eurostat, IZA |
 | Economics theory | `products/research/library/` | Partial | Standard textbooks |
@@ -359,10 +361,6 @@ Each KB entry is research-first — no opinions, only synthesis of authoritative
 
 | KB | Location | Priority | Sources to research |
 |----|----------|----------|-------------------|
-| **UX / Perception** | `team/knowledge-base/ux-perception/` | **Critical** | Colin Ware "Information Visualization: Perception for Design", Steven Few, Alberto Cairo, Nielsen Norman Group eye-tracking corpus, WCAG 2.2, opponent-process colour theory, Gestalt (primary sources), cognitive load theory (Sweller), Miller's Law, pre-attentive processing research |
-| **Data Architecture** | `team/knowledge-base/data-architecture/` | High | Kimball "The Data Warehouse Toolkit", Inmon, Vault modelling, medallion architecture (Databricks), dbt best practices |
-| **Data Engineering** | `team/knowledge-base/data-engineering/` | High | DuckDB docs, dbt docs, ELT vs ETL research, SQL standards (ANSI), Python ETL patterns |
-| **Business Analysis** | `team/knowledge-base/business-analysis/` | High | KPI design frameworks, Balanced Scorecard, SMART indicators, public sector analytics (ONS, Eurostat methodology) |
 | **Content / Editorial** | `team/knowledge-base/content/` | Medium | Data journalism curricula (Columbia, CUL), Reuters Institute, GUS publication style, Polish editorial standards |
 | **Research Methods** | `team/knowledge-base/research-methods/` | Medium | Econometrics textbooks, panel data methods, reproducible research standards |
 
@@ -569,23 +567,23 @@ kickoff
 **Platform:** DuckDB warehouse (222 indicators, 18 domains) + 3-source ingestion (Eurostat, NBP, GUS DBW) + dbt (22 curated models) + Kimball dimensional model
 
 **Team infrastructure:**
-- 6 agents live (debug, architecture-critic, code-reviewer, visualization-reviewer, visual-screenshot-reviewer, analytical-validator)
-- 11 skills live
-- KB: analytical-methods ✓, visualization ✓ (partial depth), public-finance domain draft
-- Standards: 6 build standards live (not yet KB-traced), 4 evaluation standards live (not yet KB-traced)
+- 10 agents live (debug, architecture-critic, code-reviewer, visualization-reviewer, visual-screenshot-reviewer, visual-design-reviewer, analytical-validator, domain-specialist, business-analyst, cost-estimator)
+- 13 skills live (including /feasibility + /standards-review)
+- KB: analytical-methods ✓, visualization ✓, ux-perception ✓, data-architecture ✓, data-engineering ✓, business-analysis ✓; public-finance domain draft
+- Standards: 6 build standards live (KB-traceable), 5 evaluation standards live (full traceability — all KBs now complete)
 
 ### 11.2 What is next (priority order)
 
-| # | Item | Type | Blocks |
-|---|------|------|--------|
-| 1 | UX/perception KB | Knowledge base | visual-design-reviewer, updated visualization standards |
-| 2 | Data architecture KB | Knowledge base | architecture-critic quality, data-architect agent |
-| 3 | Data engineering KB | Knowledge base | data-engineer-reviewer, updated ingestion/processing standards |
-| 4 | Business analysis KB | Knowledge base | business-analyst agent, updated analytical standards |
-| 5 | KB-to-standards trace | Standards update | All evaluation quality |
-| 6 | `/feasibility` skill + panel | Skill + agents | Pre-sprint quality gate |
-| 7 | `cost-estimator` agent | Agent | Token budget awareness |
-| 8 | Autonomous loop updates | Skill updates | Reduced human involvement |
-| 9 | `visual-design-reviewer` (deep) | Agent | Image-based visual quality |
-| 10 | `domain-specialist` agents | Agents | Domain review quality |
-| 11 | `business-analyst` agent | Agent | Analytical build quality |
+| # | Item | Type | Status | Blocks |
+|---|------|------|--------|--------|
+| 1 | KB-to-standards trace audit | Standards update | 🔜 Next | Re-trace build standards against new KBs; update rules where gaps found |
+| 2 | Content / Editorial KB | Knowledge base | 📋 Planned | Blog editorial standards, data journalism quality |
+| 3 | Research Methods KB | Knowledge base | 📋 Planned | Econometrics, reproducible research standards |
+| 6 | `/feasibility` skill + agents | Skill + agents | ✅ Done | Pre-sprint quality gate |
+| 7 | `cost-estimator` agent | Agent | ✅ Done | Token budget awareness |
+| 8 | Autonomous loop updates | Skill updates | ✅ Done | Reduced human involvement |
+| 9 | `visual-design-reviewer` | Agent | ✅ Done (limited until KB) | Deep image-based review |
+| 10 | `domain-specialist` agent | Agent | ✅ Done | Domain review quality |
+| 11 | `business-analyst` agent | Agent | ✅ Done | Analytical build quality |
+| 12 | `/standards-review` skill | Skill | ✅ Done | Self-improvement loop |
+| 13 | Extracted evaluation standards | Standards | ✅ Done | Traceability (analytical-review.md, architecture-review.md) |

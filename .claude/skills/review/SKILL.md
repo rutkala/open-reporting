@@ -1,6 +1,6 @@
 ---
 name: review
-description: "Review completed implementation for quality, security, and correctness. Runs three parallel agent passes + optional screenshot review. Auto-commits when all agents pass. Loops to fix when blocked."
+description: "Review completed implementation for quality, security, and correctness. Runs parallel evaluator agents (code, visualization, analytical, domain). Auto-commits/pushes/opens PR when all pass. Loops autonomously to fix when blocked."
 user-invocable: true
 argument-hint: "[scope or directory]"
 ---
