@@ -21,20 +21,27 @@ Review scope: `$ARGUMENTS` (if provided, focus here only — otherwise review al
 
 ---
 
-## Part 0 — Independent Code Review (agent pass)
+## Part 0 — Independent agent passes
 
-Before running any internal checks, spawn the `code-reviewer` agent:
+Before running any internal checks, spawn both review agents **in parallel** using two Agent tool calls in the same message:
 
-- The agent runs `git diff HEAD` independently (fresh context — no knowledge of why the code was written this way)
-- It reads `team/standards/code-review.md` and applies rules to the diff
-- It returns structured P1 / P2 / P3 findings with a BLOCK / CONDITIONAL / PASS verdict
+**Agent A — `code-reviewer`**
+- Runs `git diff HEAD` independently
+- Reads `team/standards/code-review.md`, applies rules to the diff
+- Returns P1 / P2 / P3 findings with BLOCK / CONDITIONAL / PASS verdict
 
-Use the Agent tool to launch `code-reviewer`. Wait for its findings before proceeding to Part 1.
+**Agent B — `visualization-reviewer`**
+- Runs `git diff HEAD` independently
+- Reads `team/standards/visualization-review.md`, checks chart/KPI calls in domain dashboards
+- Returns HIGH / MEDIUM / LOW findings with BLOCK / CONDITIONAL / PASS verdict
+- Scoped to `products/dashboards/` (excl. template) and `products/visuals/components/`
 
-Map agent findings to review output:
-- Agent P1 → **CRITICAL** (must fix before committing)
-- Agent P2 → **WARNING** (should fix)
-- Agent P3 → **SUGGESTION** (optional)
+Wait for both agents to complete, then map findings to review output:
+- code-reviewer P1 / visualization-reviewer HIGH → **CRITICAL**
+- code-reviewer P2 / visualization-reviewer MEDIUM → **WARNING**
+- code-reviewer P3 / visualization-reviewer LOW → **SUGGESTION**
+
+If either agent returns BLOCK → overall review is blocked.
 
 ---
 
