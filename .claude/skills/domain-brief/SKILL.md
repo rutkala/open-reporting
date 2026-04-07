@@ -134,6 +134,18 @@ Write a structured brief:
 
 ---
 
+## Step 6.5 — Gate: Brief Review (before presenting to PO)
+
+After writing the brief, spawn `brief-reviewer` with the brief as `$BRIEF` input.
+
+- **BLOCK** → fix the flagged P1 issues, revise the brief, re-run brief-reviewer before presenting
+- **CONDITIONAL** → add P2 findings to the brief's **Notes / Caveats** section, then present
+- **PASS** → present normally
+
+The PO should only see structurally and methodologically sound briefs.
+
+---
+
 ## Step 7 — Use the Brief
 
 The domain brief informs:

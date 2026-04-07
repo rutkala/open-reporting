@@ -33,6 +33,7 @@ See `team/PLATFORM.md §8` for the full standards map and derivation chain.
 | Visualization — diff | [evaluation/visualization-diff.md](evaluation/visualization-diff.md) | `knowledge-base/visualization/` ✓ + `knowledge-base/ux-perception/perception.md` ✓ | `visualization-reviewer` | PR |
 | Visualization — image | [evaluation/visualization-image.md](evaluation/visualization-image.md) | `knowledge-base/ux-perception/perception.md` ✓ + `knowledge-base/visualization/principles.md` ✓ | `visual-screenshot-reviewer` | PR |
 | Measures review | [evaluation/measures-review.md](evaluation/measures-review.md) | `knowledge-base/business-analysis/kpi-indicator-design.md` ✓ + `knowledge-base/analytical-methods/` ✓ + `build/measures.md` | `measures-reviewer` | PR (semantic layer only) |
+| Brief review | [evaluation/brief-review.md](evaluation/brief-review.md) | `knowledge-base/business-analysis/kpi-indicator-design.md` ✓ + `knowledge-base/analytical-methods/analytical-thinking.md` ✓ | `brief-reviewer` | Plan (after business-analyst) |
 | Cost estimation | *(heuristics in agent)* | `team/lessons-learned.md` | `cost-estimator` | Feasibility |
 | Domain review | *(heuristics in agent)* | `knowledge-base/domains/{domain}/` | `domain-specialist` | Plan + PR |
 
@@ -47,4 +48,4 @@ Used by: .claude/agents/{agent}.md
 Does NOT cover: {explicit scope boundary}
 ```
 
-All evaluation standards are now KB-traced. Build standards reference complete KBs but their file headers do not yet carry the explicit `Derived from:` line — that re-trace is pending (see PLATFORM.md §11.2).
+All evaluation standards are KB-traced. Build standards now carry explicit `Derived from:` headers (completed 2026-04-07).

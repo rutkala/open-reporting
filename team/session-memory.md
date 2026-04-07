@@ -3,7 +3,7 @@
 <!-- last-updated: 2026-04-07 -->
 
 ## Current Focus
-Post-audit gap-closure pass: added Semantic Modelling competency, dashboard-dev + measures-reviewer agents, expanded data-architect to cover semantic layer, fixed all stale doc references and ghost agent rows. 13 agents, 7 evaluation standards live. Full derivation chain intact.
+Full gap-closure pass complete: all 18 audit items addressed. 14 agents, 8 evaluation standards, derivation chain intact on all standards.
 
 ## MVP Status: COMPLETE (v0.1.0 — 2026-03-28)
 
@@ -20,24 +20,25 @@ Post-audit gap-closure pass: added Semantic Modelling competency, dashboard-dev 
 ## Directory Structure (current)
 - `team/PLATFORM.md` — factory blueprint (source of truth for competency map, agent roster, quality system)
 - `team/knowledge-base/` — research syntheses (was: team/analytics/)
-- `team/standards/build/` — developer-facing build rules
-- `team/standards/evaluation/` — agent-facing evaluation rules
+- `team/standards/build/` — developer-facing build rules (all have "Derived from" headers)
+- `team/standards/evaluation/` — agent-facing evaluation rules (8 standards)
 - `team/domain-briefs/` — domain research outputs (was: docs/domain-briefs/)
 
 ## Recently Completed (2026-04-07)
-- Post-audit gap-closure pass:
-  - NEW agent: dashboard-dev (builder for products/dashboards/ + products/visuals/, reads ux-perception + visualization KBs)
-  - NEW agent: measures-reviewer (PR-phase semantic-layer reviewer)
-  - NEW evaluation standard: measures-review.md (KB-traced to business-analysis + analytical-methods)
-  - data-architect scope expanded to include semantic layer (MetricFlow, measures, dimensions, metrics)
-  - PLATFORM.md §4.1 added Semantic Modelling competency (12 competencies total)
-  - PLATFORM.md §5.1/§5.2/§5.3/§6.2/§8.2/§11.1 reconciled with disk reality (13 agents, 7 evaluation standards)
-  - CLAUDE.md ghost agents removed (dashboard-dev/data-engineer no-longer-stale), all KBs and standards listed correctly
-  - Four stale "KB not yet built" headers fixed in evaluation standards
-  - /kickoff step renumbering fixed
-  - /review skill wired with measures-reviewer (Agent F)
-- OR-133 (PR #49): Quality system infrastructure — 4 new KB files, 10 agents, 5 evaluation standards extracted
-- Platform Blueprint Restructure (PR #48): team/PLATFORM.md, team/analytics/ → team/knowledge-base/, team/standards/ → build/ + evaluation/ subdirs
+- Gap-closure pass part 2 (PR #51):
+  - NEW agent: brief-reviewer (plan-phase evaluator for business-analyst briefs — closes dual-control loop)
+  - NEW evaluation standard: brief-review.md (KB-traced to business-analysis + analytical-methods)
+  - Build-standard "Derived from" headers added to all 5 build standards (ingestion, processing, storage, visualisation, measures)
+  - /plan skill: Agent A/B descriptions updated to correct file paths + KB refs
+  - data-architect: DDL section expanded — PostgreSQL catalogue.* store + bus_matrix.md maintenance
+  - /domain-brief skill: Step 6.5 gate added (brief-reviewer runs before presenting to PO)
+  - PLATFORM.md §5.1 updated to 14 agents, §5.3 invocation map adds /domain-brief gate, §8.2 adds brief-review standard, §11.1/§11.2 updated
+  - CLAUDE.md: brief-reviewer added to evaluator table + standards table; evaluation/ directory listing updated
+  - standards/INDEX.md: brief-review.md row added; stale "header re-trace pending" note removed
+  - Linear ideas captured: OR-135 (Content KB), OR-136 (Research Methods KB), OR-137 (Platform/Ops KB)
+- PR #50 (merged): dashboard-dev, measures-reviewer, Semantic Modelling competency, 7 eval standards live
+- OR-133 (PR #49): Quality system infrastructure — 4 new KB files, 10 agents, 5 evaluation standards
+- Platform Blueprint Restructure (PR #48): team/PLATFORM.md, team/analytics/ → team/knowledge-base/, team/standards/ → build/ + evaluation/
 
 ## Knowledge Base Status
 - Analytical methods: ✅ Complete (team/knowledge-base/analytical-methods/)
@@ -48,11 +49,14 @@ Post-audit gap-closure pass: added Semantic Modelling competency, dashboard-dev 
 - Business Analysis: ✅ Complete (team/knowledge-base/business-analysis/kpi-indicator-design.md)
 - Public Finance domain: ⏳ Draft (team/knowledge-base/domains/public-finance.md)
 
-## Agent Infrastructure (13 live)
+## Agent Infrastructure (14 live)
 - Builders: data-architect (platform/ + semantic layer), dashboard-dev (products/dashboards/ + visuals/), business-analyst (analytical briefs)
-- Evaluators: architecture-critic, code-reviewer, data-engineer-reviewer, analytical-validator, visualization-reviewer, visual-screenshot-reviewer, measures-reviewer, domain-specialist, cost-estimator
+- Evaluators: architecture-critic, code-reviewer, data-engineer-reviewer, analytical-validator, brief-reviewer, visualization-reviewer, visual-screenshot-reviewer, measures-reviewer, domain-specialist, cost-estimator
 - Diagnostics: debug
 
 ## Linear — Active
 - OR-78 (Ghost admin), OR-85 (daily cron), OR-90 (Instagram token ~2026-05-20)
 - OR-108: Mobile-optimized dashboards (Backlog)
+- OR-135: Content/Editorial KB + agents (Backlog — Idea)
+- OR-136: Research Methods KB + agents (Backlog — Idea)
+- OR-137: Platform/Ops KB + agents (Backlog — Idea)

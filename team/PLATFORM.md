@@ -185,6 +185,7 @@ Human touch-points are strategic only:
 | `visualization-reviewer` | Dashboard Dev / UX | Evaluator (diff) | PR | ✓ Live |
 | `visual-screenshot-reviewer` | UX / UI Design | Evaluator (screenshot + perception science) | PR | ✓ Live |
 | `analytical-validator` | Business Analysis | Evaluator | Plan + PR | ✓ Live |
+| `brief-reviewer` | Business Analysis | Evaluator (brief only) | Plan | ✓ Live |
 | `domain-specialist` | Domain Specialist | Evaluator | Plan + PR | ✓ Live |
 | `measures-reviewer` | Semantic Modelling | Evaluator (semantic layer only) | PR | ✓ Live |
 | `data-architect` | Data Architecture + Engineering + Semantic Modelling | Builder | Implementation | ✓ Live |
@@ -212,6 +213,10 @@ Human touch-points are strategic only:
   → cost-estimator (token budget)
   All parallel. FEASIBLE → issue accepted.
   PARTIAL → accept with conditions. BLOCKED → return for redesign.
+
+/domain-brief (when business-analyst produces a brief)
+  → brief-reviewer (indicator design gate — SMART+FABRIC, aggregation, benchmarks, Polish structural breaks)
+  BLOCK → business-analyst revises → re-review. CONDITIONAL → noted in plan Risks.
 
 /plan (before coding)
   → architecture-critic (structural soundness)
@@ -409,6 +414,7 @@ Agent-facing. Derived from KB via build standard. Tells evaluator agents what to
 | Visualization diff | `team/standards/evaluation/visualization-diff.md` | `knowledge-base/visualization/` ✓ + `ux-perception/` ✓ | `visualization-reviewer` | ✓ Live |
 | Visualization image | `team/standards/evaluation/visualization-image.md` | `knowledge-base/ux-perception/` ✓ | `visual-screenshot-reviewer` | ✓ Live |
 | Measures review | `team/standards/evaluation/measures-review.md` | `knowledge-base/business-analysis/` ✓ + `analytical-methods/` ✓ + `build/measures.md` | `measures-reviewer` | ✓ Live |
+| Brief review | `team/standards/evaluation/brief-review.md` | `knowledge-base/business-analysis/` ✓ + `analytical-methods/` ✓ | `brief-reviewer` | ✓ Live |
 | Cost estimation rules | *(heuristics inline in agent)* | `team/lessons-learned.md` | `cost-estimator` | ✓ Live (no standalone file) |
 | Domain review | *(heuristics inline in agent)* | `knowledge-base/domains/{domain}/` | `domain-specialist` | ✓ Live (no standalone file) |
 
@@ -572,10 +578,10 @@ kickoff
 **Platform:** DuckDB warehouse (222 indicators, 18 domains) + 3-source ingestion (Eurostat, NBP, GUS DBW) + dbt (22 curated models) + Kimball dimensional model
 
 **Team infrastructure:**
-- 13 agents live (debug, architecture-critic, code-reviewer, data-engineer-reviewer, visualization-reviewer, visual-screenshot-reviewer, analytical-validator, domain-specialist, measures-reviewer, data-architect, dashboard-dev, business-analyst, cost-estimator)
+- 14 agents live (debug, architecture-critic, code-reviewer, data-engineer-reviewer, visualization-reviewer, visual-screenshot-reviewer, analytical-validator, brief-reviewer, domain-specialist, measures-reviewer, data-architect, dashboard-dev, business-analyst, cost-estimator)
 - 14 skills live (including /feasibility + /standards-review)
 - KB: analytical-methods ✓, visualization ✓, ux-perception ✓, data-architecture ✓, data-engineering ✓, business-analysis ✓; public-finance domain draft
-- Standards: 6 build standards live (KB complete; "Derived from" header re-trace pending), 7 evaluation standards live (code-review, architecture-review, analytical-review, data-engineering-review, visualization-diff, visualization-image, measures-review)
+- Standards: 6 build standards live (KB complete; "Derived from" headers added 2026-04-07), 8 evaluation standards live (code-review, architecture-review, analytical-review, data-engineering-review, visualization-diff, visualization-image, measures-review, brief-review)
 
 ### 11.2 What is next (priority order)
 
@@ -586,8 +592,9 @@ kickoff
 | 3 | `dashboard-dev` builder agent | Agent | ✅ Done | Dashboard + visual component implementation |
 | 4 | `measures-reviewer` evaluator agent + standard | Agent + standard | ✅ Done | Semantic layer PR review |
 | 5 | Semantic Modelling competency | Competency map | ✅ Done | Explicit owner for measures/dimensions/metrics |
-| 6 | Build-standard "Derived from" headers | Standards update | 🔜 Next | Header re-trace against complete KBs |
-| 7 | Content / Editorial KB + content-writer/reviewer agents | Knowledge base + agents | 📋 Planned | Blog editorial standards, data journalism quality |
-| 8 | Research Methods KB + researcher/research-reviewer agents | Knowledge base + agents | 📋 Planned | Econometrics, reproducible research standards |
-| 9 | Platform / Ops KB + ops-engineer/ops-reviewer agents | Knowledge base + agents | 📋 Planned | Infra change review quality |
+| 6 | Build-standard "Derived from" headers | Standards update | ✅ Done | Header re-trace against complete KBs |
+| 11 | `brief-reviewer` evaluator agent + standard | Agent + standard | ✅ Done | Closes dual-control loop on business-analyst briefs |
+| 7 | Content / Editorial KB + content-writer/reviewer agents | Knowledge base + agents | 📋 Planned (Linear) | Blog editorial standards, data journalism quality |
+| 8 | Research Methods KB + researcher/research-reviewer agents | Knowledge base + agents | 📋 Planned (Linear) | Econometrics, reproducible research standards |
+| 9 | Platform / Ops KB + ops-engineer/ops-reviewer agents | Knowledge base + agents | 📋 Planned (Linear) | Infra change review quality |
 | 10 | Public-finance domain KB | KB — draft promotion | 🔜 Next | Move from Draft to Complete |

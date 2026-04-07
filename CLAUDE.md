@@ -43,7 +43,7 @@ Your role is **50% business analyst, 50% technical architect**. You do not wait 
 │   ├── standards/       → Derived from KB — actionable rules for builders and evaluators
 │   │   ├── INDEX.md     → Standards index with derivation traceability
 │   │   ├── build/       → How to build: ingestion, processing, storage, visualisation, measures, requirements
-│   │   └── evaluation/  → How to review: code-review, architecture-review, analytical-review, data-engineering-review, visualization-diff, visualization-image, measures-review
+│   │   └── evaluation/  → How to review: code-review, architecture-review, analytical-review, data-engineering-review, visualization-diff, visualization-image, measures-review, brief-review
 │   ├── domain-briefs/   → Domain research outputs (one per dashboard domain)
 │   ├── playbooks/       → Step-by-step process guides
 │   ├── session-memory.md
@@ -128,6 +128,7 @@ Shared session memory at `team/session-memory.md` provides continuity across ses
 |-------|-------|---------------|
 | `architecture-critic` | Plan + Feasibility | Layer violations, schema design, coupling |
 | `analytical-validator` | Plan + Feasibility + PR | Statistical correctness, aggregation, causal claims |
+| `brief-reviewer` | Plan (after business-analyst) | Analytical brief — SMART+FABRIC, aggregation rules, stock/flow, benchmarks, Polish structural breaks |
 | `code-reviewer` | PR | P1/P2/P3 code quality, security, conventions |
 | `data-engineer-reviewer` | PR (platform/ only) | ELT compliance, DuckDB patterns, dbt conventions, idempotency |
 | `measures-reviewer` | PR (semantic layer only) | Measure definitions, agg correctness, format_type, Polish labels |
@@ -278,6 +279,7 @@ Two categories in `team/standards/`. See `team/standards/INDEX.md` for the deriv
 | `visualization-diff.md` | `visualization-reviewer` | PR |
 | `visualization-image.md` | `visual-screenshot-reviewer` | PR |
 | `measures-review.md` | `measures-reviewer` | PR (semantic layer only) |
+| `brief-review.md` | `brief-reviewer` | Plan (after business-analyst) |
 
 ## Knowledge Base
 

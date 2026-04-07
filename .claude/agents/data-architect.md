@@ -71,13 +71,17 @@ Do not assume — read the actual files.
 - **Measure names are unique within a semantic model** — collisions cause undefined resolution.
 - **Wages, salaries, incomes, rents → median or percentile**, never mean, unless the data shape is explicitly justified in a comment. The business-analysis KB is the authority here.
 
-### For DDL (`platform/warehouse/` and `platform/database/`)
+### For DDL (`platform/warehouse/` for DuckDB analytical, `platform/database/` for PostgreSQL operational)
 
-- **Schema naming:** `raw.{source}_{entity}`, `curated.{layer}_{name}` (e.g. `curated.mart_labour`, `curated.all_indicators`)
+- **Two stores, two purposes:**
+  - `platform/warehouse/` → DuckDB analytical warehouse (`raw.*`, `curated.*`) — large columnar reads, dbt models read/write here
+  - `platform/database/` → PostgreSQL operational store (`catalogue.*`) — source registry, domain mappings, ingestion metadata; small row-oriented writes
+- **Schema naming:** `raw.{source}_{entity}`, `curated.{layer}_{name}` (e.g. `curated.mart_labour`, `curated.all_indicators`), `catalogue.{entity}` for PostgreSQL operational tables
 - **`fetched_at TIMESTAMPTZ NOT NULL DEFAULT NOW()`** on every raw table
 - **`NOT NULL` constraints** on primary key columns to support `ON CONFLICT`
 - **DuckDB-appropriate types:** `VARCHAR` not `TEXT`, `DOUBLE` not `FLOAT8`, `TIMESTAMPTZ` for timestamps
 - **Deploy scripts:** schema changes are applied via files in `platform/warehouse/deploy/` or `platform/database/deploy/` — not applied ad hoc
+- **Bus matrix maintenance:** `platform/warehouse/bus_matrix.md` is the Kimball bus matrix — the canonical map of facts × conformed dimensions. When adding a new fact/mart or changing a conformed dimension, update the bus matrix in the same change.
 
 ## Step 4 — Implement
 

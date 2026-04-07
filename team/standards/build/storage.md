@@ -1,5 +1,12 @@
 # Database Standard
 
+**Derived from:** `team/knowledge-base/data-architecture/architecture.md` ✓ (medallion contracts, Kimball dimensional modelling, schema naming, SCD types, DuckDB type implications)
+**Used by builders:** `data-architect` (writing DDL in `platform/warehouse/` and `platform/database/`)
+**Evaluated by:** `architecture-critic` (plan-phase), `data-engineer-reviewer` (PR-phase)
+**Does NOT cover:** ingestion scripts (see `ingestion.md`), dbt model patterns (see `processing.md`), semantic layer (see `measures.md`)
+
+---
+
 ## Architecture
 
 Three-layer **medallion** pipeline in DuckDB (analytical warehouse):
