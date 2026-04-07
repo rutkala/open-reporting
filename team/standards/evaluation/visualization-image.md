@@ -1,7 +1,11 @@
-# Visual Screenshot Review — Rules
+# Visualization Review Rules — Image-based
+
+**Derived from:** `team/knowledge-base/ux-perception/` *(KB not yet built — rules currently based on general practice; to be significantly deepened when ux-perception KB is complete)*
+**Used by:** `.claude/agents/visual-screenshot-reviewer.md`
+**Does NOT cover:** code-level chart configuration (see `evaluation/visualization-diff.md`), statistical correctness (see `evaluation/analytical-review.md`)
 
 Agent reference for image-based dashboard review. Apply only these rules when evaluating a screenshot.
-Complement to `visualization-review.md` (diff-based) — covers what cannot be checked from code.
+Complement to `visualization-diff.md` (code-based) — covers what cannot be checked from code.
 
 ---
 
