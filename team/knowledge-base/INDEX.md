@@ -75,6 +75,14 @@ Domain files are created via `/domain-brief` skill before dashboard work begins 
 
 ---
 
+## Research Methods
+
+| File | Covers | Read when |
+|------|--------|-----------|
+| [research-methods/methods.md](research-methods/methods.md) | Reproducible research, OLS/IV/DiD/synthetic control assumptions, robustness checks, standard errors, Polish data quirks, coefficient interpretation | Before building any econometric model, Jupyter notebook, or quantitative analysis |
+
+---
+
 ## Content / Editorial
 
 | File | Covers | Read when |
@@ -94,5 +102,6 @@ Domain files are created via `/domain-brief` skill before dashboard work begins 
 | Data Engineering | ✅ Complete | OR-133 |
 | Business Analysis | ✅ Complete | OR-133 |
 | Content / Editorial | ✅ Complete | OR-135 |
+| Research Methods | ✅ Complete | OR-136 |
 | Domains — public finance | ⏳ Draft | OR-120 |
 | Domains — labour market | 📋 Planned | — |
