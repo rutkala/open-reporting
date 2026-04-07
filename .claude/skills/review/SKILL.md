@@ -21,51 +21,45 @@ Review scope: `$ARGUMENTS` (if provided, focus here only — otherwise review al
 
 ---
 
+## Part 0 — Independent Code Review (agent pass)
+
+Before running any internal checks, spawn the `code-reviewer` agent:
+
+- The agent runs `git diff HEAD` independently (fresh context — no knowledge of why the code was written this way)
+- It reads `team/standards/code-review.md` and applies rules to the diff
+- It returns structured P1 / P2 / P3 findings with a BLOCK / CONDITIONAL / PASS verdict
+
+Use the Agent tool to launch `code-reviewer`. Wait for its findings before proceeding to Part 1.
+
+Map agent findings to review output:
+- Agent P1 → **CRITICAL** (must fix before committing)
+- Agent P2 → **WARNING** (should fix)
+- Agent P3 → **SUGGESTION** (optional)
+
+---
+
 ## Part 1 — Technical Review (internal)
 
-Work through this checklist internally before presenting to the user.
+After the agent pass, run this checklist for concerns the rules file does not cover — architectural intent, domain correctness, plan alignment.
 
-### Code Quality
-- [ ] Functions are well-named and single-purpose
-- [ ] No duplicated logic
-- [ ] Error handling follows project patterns (try/except with logging, not bare except)
-- [ ] No leftover debug code, print statements, TODOs, or FIXMEs
-- [ ] Logging uses `logging.getLogger(__name__)`, not `print()`
+### Architecture & intent
+- [ ] Implementation matches the approved plan — no scope creep or silent changes
+- [ ] No layer violations missed by the agent (dashboard calling raw schema, ingestion doing transformation)
+- [ ] External data validated at system boundaries
 
-### Security
-- [ ] No hardcoded secrets, passwords, or API keys
-- [ ] SQL queries use parameterised queries — no string concatenation
-- [ ] External data is validated before storing
-- [ ] `.env` not committed
-
-### Python Conventions
-- [ ] `#!/usr/bin/env python3` shebang on scripts
-- [ ] Imports ordered: stdlib → third-party → local
-- [ ] Type hints present on function signatures
-- [ ] Line length ≤ 100 characters
-- [ ] f-strings used for formatting
-
-### Data & Database
-- [ ] Raw data lands in `raw.` schema, processed data in `public.` schema
-- [ ] `ON CONFLICT DO UPDATE` used for upserts
-- [ ] `fetched_at` timestamp included in ingestion tables
-- [ ] Connection closed in `finally` block
-
-### Dashboard Output
-- [ ] Output HTML written to `nginx/html/dashboards/`
-- [ ] Theme applied via `apply()` and `page()` from `charts.lib.theme`
+### Dashboard output (if applicable)
 - [ ] Source attribution visible in the dashboard
 - [ ] `include_plotlyjs="cdn"` used (not bundled)
 
-### Content Language
-- [ ] User-facing text (chart titles, labels, tooltips) is in Polish
+### Content language (if applicable)
+- [ ] Polish strings only in domain dashboard user-facing content — not in component library or template
 - [ ] Polish diacritics correct (ą, ć, ę, ł, ń, ó, ś, ź, ż)
 
 ---
 
 ## Part 2 — Business Summary (present to user)
 
-After the technical review, present this — in plain language, no code:
+Combine agent findings (Part 0) and internal checks (Part 1) into one summary:
 
 ```
 ## Review: {what was built}
@@ -77,9 +71,9 @@ After the technical review, present this — in plain language, no code:
 {Yes / Mostly (with minor differences) / No (explain)}
 
 ### Technical issues found
-{CRITICAL: must fix before committing — list if any, "None" if clean}
-{WARNING: should fix — list if any, "None" if clean}
-{SUGGESTION: optional improvements — list if any}
+CRITICAL: {agent P1 findings + any Part 1 blockers — "None" if clean}
+WARNING:  {agent P2 findings + Part 1 warnings — "None" if clean}
+SUGGESTION: {agent P3 findings — "None" if clean}
 
 ### Ready to commit?
 {Yes — all clear | No — fix required first (explain what)}
