@@ -8,7 +8,7 @@ Covers sub-products #3 (Data mart — gold) and #4 (Semantic layer).
 
 | Task | Competency | Builder | Evaluator | Standard |
 |------|-----------|---------|-----------|----------|
-| Design (star schema, derived metrics, bus matrix) | Data Architecture | `data-architect` *(gap — main Claude)* | `architecture-critic` | storage.md, processing.md → architecture-review.md |
+| Design (star schema, derived metrics, bus matrix) | Data Architecture | `data-architect` | `architecture-critic` | storage.md, processing.md → architecture-review.md |
 | Build (dbt mart SQL, incremental models) | Data Engineering | `data-engineer` | `data-engineer-reviewer` | processing.md → data-engineering-review.md |
 
 ### Sub-product #4 — Semantic layer
@@ -16,7 +16,7 @@ Covers sub-products #3 (Data mart — gold) and #4 (Semantic layer).
 | Task | Competency | Builder | Evaluator | Standard |
 |------|-----------|---------|-----------|----------|
 | Domain brief (indicator selection, aggregation rules) | Business Analysis | `business-analyst` | `brief-reviewer` | — → brief-review.md |
-| Design (MetricFlow entities, measures, dimensions, metrics) | Data Architecture + Semantic Modelling | `data-architect` *(gap — main Claude)* | `architecture-critic` | measures.md → architecture-review.md |
+| Design (MetricFlow entities, measures, dimensions, metrics) | Data Architecture + Semantic Modelling | `data-architect` | `architecture-critic` | measures.md → architecture-review.md |
 | Build (MetricFlow YAML, agg, format_type, Polish labels) | Semantic Modelling | `data-engineer` | `measures-reviewer` | measures.md → measures-review.md |
 
 ---

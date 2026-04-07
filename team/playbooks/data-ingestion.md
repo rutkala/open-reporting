@@ -8,15 +8,15 @@ Covers sub-products #1 (Data ingested) and #2 (Data curated — silver).
 
 | Task | Competency | Builder | Evaluator | Standard |
 |------|-----------|---------|-----------|----------|
-| Research (source, indicators, format, cadence) | Data Research | `data-researcher` *(gap)* | `data-research-reviewer` *(gap)* | — |
-| Design (raw DDL, ELT approach, upsert strategy) | Data Architecture | `data-architect` *(gap — main Claude)* | `architecture-critic` | storage.md, ingestion.md → architecture-review.md |
+| Research (source, indicators, format, cadence) | Data Research | `data-researcher` | `data-research-reviewer` | data-research-review.md |
+| Design (raw DDL, ELT approach, upsert strategy) | Data Architecture | `data-architect` | `architecture-critic` | storage.md, ingestion.md → architecture-review.md |
 | Build (ingestion script, DDL, sources.yml, tests) | Data Engineering | `data-engineer` | `data-engineer-reviewer` | ingestion.md → data-engineering-review.md |
 
 ### Sub-product #2 — Data curated (silver)
 
 | Task | Competency | Builder | Evaluator | Standard |
 |------|-----------|---------|-----------|----------|
-| Design (staging model structure, conformed dims) | Data Architecture | `data-architect` *(gap — main Claude)* | `architecture-critic` | storage.md, processing.md → architecture-review.md |
+| Design (staging model structure, conformed dims) | Data Architecture | `data-architect` | `architecture-critic` | storage.md, processing.md → architecture-review.md |
 | Build (dbt staging SQL, schema.yml, all_indicators union) | Data Engineering | `data-engineer` | `data-engineer-reviewer` | processing.md → data-engineering-review.md |
 
 ---
@@ -33,9 +33,7 @@ Before any schema design or code, research the source:
 6. **Check licence** — is the data open/public? Any attribution requirements?
 7. **Check for existing ingestion** — is any part of this source already ingested? Look in `platform/ingestion/` and `platform/warehouse/raw/`
 
-**Output:** A source summary (title, URL, format, cadence, relevant indicators, known quality issues) documented in the Linear issue comment before proceeding to design.
-
-**Note:** While `data-researcher` is a gap, this research is done by main Claude or the lead analyst. The output is reviewed implicitly by `architecture-critic` when it reviews the plan.
+**Output:** A source summary (title, URL, format, cadence, relevant indicators, known quality issues) documented in the Linear issue comment before proceeding to design. Reviewed by `data-research-reviewer`.
 
 ---
 

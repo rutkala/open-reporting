@@ -354,7 +354,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 
 #### Sub-product 17 — Article
 
-*Playbook:* *(planned — no playbook yet)* | *Depends on:* #3 (optional), #18 (optional)
+*Playbook:* `team/playbooks/article.md` | *Depends on:* #3 (optional), #18 (optional)
 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
@@ -364,7 +364,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 
 #### Sub-product 18 — Research
 
-*Playbook:* *(planned — no playbook yet)* | *Depends on:* #3
+*Playbook:* `team/playbooks/research.md` | *Depends on:* #3
 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|

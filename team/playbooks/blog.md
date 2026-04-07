@@ -15,10 +15,10 @@ Covers sub-products #7 (Blog frontend) and #8 (Blog backend).
 
 | Task | Competency | Builder | Evaluator | Standard |
 |------|-----------|---------|-----------|----------|
-| Configure (Ghost CMS config, content API, webhooks) | Platform / Ops | `ops-engineer` *(planned)* | `ops-reviewer` *(planned)* | — |
-| Operate (Docker lifecycle, database backup, token refresh) | Platform / Ops | `ops-engineer` *(planned)* | `ops-reviewer` *(planned)* | — |
+| Configure (Ghost CMS config, content API, webhooks) | Platform / Ops | `ops-engineer` | `ops-reviewer` | ops-review.md |
+| Operate (Docker lifecycle, database backup, token refresh) | Platform / Ops | `ops-engineer` | `ops-reviewer` | ops-review.md |
 
-**Gap note:** Ghost frontend development (Handlebars templating, Ghost theme API) has no live competency, KB, or agent coverage. Until `ops-engineer` is live, blog frontend work is done by main Claude with no dedicated agent review. Flag in the OR when taking on Ghost theme work.
+**Note:** `ops-engineer` and `ops-reviewer` are live (OR-137). Ghost frontend (Handlebars templating, Ghost theme API) remains a gap — no dedicated agent. Blog frontend work is done by `dashboard-dev` with `visual-screenshot-reviewer` review.
 
 ---
 
