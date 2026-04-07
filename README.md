@@ -41,7 +41,15 @@ PYTHONPATH=/opt/open-reporting python3 products/mobile/app.py              # por
 | [docs/DOMAINS.md](docs/DOMAINS.md) | Data domain taxonomy |
 | [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md) | Data sources, APIs, naming conventions |
 
-Agent instructions, standards, playbooks, and lessons learned are in [.claude/](.claude/).
+**Team knowledge base** (standards, KB, agents, playbooks):
+
+| Doc | Purpose |
+|-----|---------|
+| [team/PLATFORM.md](team/PLATFORM.md) | Factory blueprint — product portfolio, competency map, agent roster, quality system |
+| [team/knowledge-base/INDEX.md](team/knowledge-base/INDEX.md) | Research KB index — what's built, what's planned, loading guide |
+| [team/standards/INDEX.md](team/standards/INDEX.md) | Standards index — build rules + evaluation rules, derivation chain |
+| [team/lessons-learned.md](team/lessons-learned.md) | Post-issue retrospectives |
+| [CLAUDE.md](CLAUDE.md) | Lead Analyst & Architect instructions — collaboration model, repo structure, skills |
 
 ---
 

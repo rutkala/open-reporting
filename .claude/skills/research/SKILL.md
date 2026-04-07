@@ -22,7 +22,7 @@ Before searching, define clearly:
 - Are there existing patterns in this codebase already?
 
 Check first:
-- `.claude/standards/` for relevant standards
+- `team/standards/` for relevant standards
 - Existing code for patterns already in use
 - `.claude/session-memory.md` for recent relevant context
 
@@ -47,7 +47,7 @@ Do not present a list of options for the PO to choose from. Evaluate options int
 
 The recommendation should be grounded in:
 - Technical fit with the existing stack (DuckDB, dbt, Dash, Python)
-- Alignment with standards in `.claude/standards/`
+- Alignment with standards in `team/standards/`
 - What authoritative sources recommend for this problem type
 - Maintainability and simplicity
 

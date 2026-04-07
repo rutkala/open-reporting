@@ -23,7 +23,7 @@ Do not proceed until an issue is identified.
 
 Fetch the full Linear issue: title, description, acceptance criteria, comments, linked sub-issues.
 
-Also read `.claude/standards/requirements.md` to check the issue meets Definition of Ready for its type.
+Also read `team/standards/build/requirements.md` to check the issue meets Definition of Ready for its type.
 
 ## Step 3 — Feasibility assessment
 

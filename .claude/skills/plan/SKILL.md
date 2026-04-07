@@ -71,7 +71,7 @@ Pass the plan text as the `$PLAN` variable to both agents.
 Reads `team/standards/` and evaluates layer contracts, schema naming, and coupling risks.
 
 **Agent B — `analytical-validator`**
-Reads `team/analytics/analytical-thinking.md` and evaluates statistical and methodological soundness.
+Reads `team/knowledge-base/analytical-methods/analytical-thinking.md` and evaluates statistical and methodological soundness.
 
 Skip Agent A if the plan touches no data layer (e.g. a pure UI or config change).
 Skip Agent B if the plan contains no analytical design (e.g. a pure infrastructure or tooling change).

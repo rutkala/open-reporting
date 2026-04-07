@@ -1,6 +1,6 @@
 """
 Distribution chart variants.
-KB reference: team/analytics/visualization/charts/scatter.md (distribution section)
+KB reference: team/knowledge-base/visualization/charts/scatter.md (distribution section)
 
 histogram  — frequency distribution of a single variable
 box_plot   — distribution summary: median, IQR, outliers

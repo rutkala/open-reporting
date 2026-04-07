@@ -1,6 +1,6 @@
 """
 Table chart variants using Plotly go.Table.
-KB reference: team/analytics/visualization/charts/table.md
+KB reference: team/knowledge-base/visualization/charts/table.md
 
 Rules applied:
 - Numbers right-aligned, text left-aligned (KB)

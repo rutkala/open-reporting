@@ -1,6 +1,6 @@
 """
 Scatter and bubble chart variants.
-KB reference: team/analytics/visualization/charts/scatter.md
+KB reference: team/knowledge-base/visualization/charts/scatter.md
 
 Rules applied:
 - Axes do NOT force zero (KB: scatter is exempt from zero-baseline rule)

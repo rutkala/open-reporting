@@ -31,9 +31,9 @@ Direct Linear entry          Reject → archive           Move to Todo          
 ## Issue Lifecycle
 
 ### 1. Create the issue
-Create in Linear (`OR` project). Issue must meet the **Definition of Ready** defined in `.claude/standards/requirements.md` before work starts.
+Create in Linear (`OR` project). Issue must meet the **Definition of Ready** defined in `team/standards/build/requirements.md` before work starts.
 
-Issue types and required fields are defined in `.claude/standards/requirements.md`:
+Issue types and required fields are defined in `team/standards/build/requirements.md`:
 - **Feature** — new product capability
 - **Bug** — something broken that worked before
 - **Data** — new ingestion pipeline or data transformation
@@ -65,7 +65,7 @@ Branch naming convention:
 
 ### 4. Implementation
 - Commits on the feature branch reference the issue: `feat: OR-123 short description`
-- Follow all standards in `.claude/standards/`
+- Follow all standards in `team/standards/`
 - Never commit `.env` or secrets
 - Keep commits logical — one change per commit
 
@@ -209,4 +209,4 @@ Claude Code (this tool) acts as the implementation partner:
 - Updates Linear status and adds implementation notes as comments
 - Never pushes directly to `main`
 - Never auto-commits or auto-pushes without user instruction
-- Follows all standards in `.claude/standards/`
+- Follows all standards in `team/standards/`

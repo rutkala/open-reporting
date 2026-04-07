@@ -1,6 +1,6 @@
 ---
 name: code-reviewer
-description: "Independent code review agent. Applies project rules from team/standards/code-review.md to the current PR diff. Returns structured P1/P2/P3 findings. Adversarial by design — finds problems, does not validate decisions."
+description: "Independent code review agent. Applies project rules from team/standards/evaluation/code-review.md to the current PR diff. Returns structured P1/P2/P3 findings. Adversarial by design — finds problems, does not validate decisions."
 tools: Read, Bash, Grep, Glob
 model: sonnet
 permissionMode: plan
@@ -27,7 +27,7 @@ git diff origin/main...HEAD
 
 ## Step 2 — Read the rules
 
-Read `team/standards/code-review.md` in full. These are the only rules you apply. Do not invent rules not listed there.
+Read `team/standards/evaluation/code-review.md` in full. These are the only rules you apply. Do not invent rules not listed there.
 
 ## Step 3 — Apply rules to diff
 

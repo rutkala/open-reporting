@@ -1,6 +1,6 @@
 """
 Line and area chart variants — Power BI naming convention.
-KB reference: team/analytics/visualization/charts/line.md
+KB reference: team/knowledge-base/visualization/charts/line.md
 
 Rules applied:
   - line_shape="linear" — no smoothing (KB: straight lines = accurate)

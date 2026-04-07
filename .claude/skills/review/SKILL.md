@@ -32,13 +32,13 @@ Before running any internal checks, spawn all three review agents **in parallel*
 
 **Agent B — `visualization-reviewer`**
 - Runs `git diff HEAD` independently
-- Reads `team/standards/visualization-review.md`, checks chart/KPI calls in domain dashboards
+- Reads `team/standards/evaluation/visualization-diff.md`, checks chart/KPI calls in domain dashboards
 - Returns HIGH / MEDIUM / LOW findings with BLOCK / CONDITIONAL / PASS verdict
 - Scoped to `products/dashboards/` (excl. template) and `products/visuals/components/`
 
 **Agent C — `analytical-validator`**
 - Runs `git diff HEAD` independently (diff-phase mode — leave $PLAN empty)
-- Reads `team/analytics/analytical-thinking.md`, checks SQL aggregation, CAGR, labelling, and causal language
+- Reads `team/knowledge-base/analytical-methods/analytical-thinking.md`, checks SQL aggregation, CAGR, labelling, and causal language
 - Returns MISLEADING / QUESTIONABLE / NOTED findings with BLOCK / CONDITIONAL / PASS verdict
 - Scoped to SQL files, Python data queries, and chart call string literals
 

@@ -15,7 +15,7 @@ You evaluate whether the analysis is statistically sound and does not mislead. A
 
 ## Step 1 — Read the KB
 
-Read `team/analytics/analytical-thinking.md` in full before evaluating anything. This is your only rulebook — do not invent findings beyond what the KB documents.
+Read `team/knowledge-base/analytical-methods/analytical-thinking.md` in full before evaluating anything. This is your only rulebook — do not invent findings beyond what the KB documents.
 
 ## Step 2 — Determine mode
 

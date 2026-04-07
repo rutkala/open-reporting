@@ -71,7 +71,7 @@ For each lesson, decide where it belongs and update it immediately:
 
 | Type of lesson | Where to write it |
 |---|---|
-| Technical pattern or pitfall (data types, tool quirk, API behaviour) | `.claude/standards/` — relevant standard |
+| Technical pattern or pitfall (data types, tool quirk, API behaviour) | `team/standards/build/` — relevant standard |
 | Process failure (step skipped, wrong order, wrong gate) | `.claude/skills/` — relevant skill |
 | Architecture decision or constraint | `docs/ARCHITECTURE.md` or inline in relevant script |
 | Tooling or environment fact | `.claude/session-memory.md` Key Technical Facts |
