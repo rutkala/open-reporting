@@ -5,6 +5,7 @@
 ## Unreleased
 
 ### Evaluation framework
+- **OR-130** — Architecture Critic agent: `architecture-critic` subagent evaluates implementation plans before any code is written. Reads `team/standards/` and checks for BLOCK (layer violations, raw-from-dashboard, transform-in-ingestion, missing dbt staging model, silver queried by domain dashboard, circular dependencies), CONDITIONAL (missing fetched_at, schema naming, catalogue verification, upsert strategy, tight coupling), and NOTE concerns. `/plan` skill updated with Step 3.5: critic runs after plan is drafted, before presenting to user — BLOCK findings are fixed before the user ever sees the plan.
 - **OR-128** — Visualization Reviewer agent: `team/standards/visualization-review.md` (HIGH/MEDIUM/LOW
   rules: colour semantics, KPI reference completeness, series count, y_measure on domain calls,
   subtitle, pie slice limit, waterfall variant mismatch). `visualization-reviewer` subagent scoped

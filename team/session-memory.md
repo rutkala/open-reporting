@@ -22,12 +22,14 @@ Visual component library + evaluation framework sprint. Template dashboard fully
 - OR-125: kpi_row() flex container for multi-card KPI rows
 - OR-126: Template dashboard — y_measure and measure.to_series() wired to all chart calls; Polish palette labels fixed
 - OR-127: Code Reviewer agent (team/standards/code-review.md + .claude/agents/code-reviewer.md + /review Part 0)
+- OR-128: Visualization Reviewer agent (team/standards/visualization-review.md + .claude/agents/visualization-reviewer.md + /review Part 0 parallel)
+- OR-130: Architecture Critic agent (.claude/agents/architecture-critic.md + /plan Step 3.5)
 
 ## Evaluation Framework — Backlog
 - OR-127: Code Reviewer ✓ DONE
 - OR-128: Visualization Reviewer ✓ DONE
-- OR-129: Domain Specialist agents (one per domain)
-- OR-130: Architecture Critic agent
+- OR-129: Domain Specialist agents (one per domain) — SKIPPED for now
+- OR-130: Architecture Critic agent ✓ DONE
 - OR-131: Analytical Validator agent
 
 ## Linear — Active
