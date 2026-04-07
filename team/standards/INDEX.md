@@ -28,11 +28,12 @@ See `team/PLATFORM.md §8` for the full standards map and derivation chain.
 |----------|------|-------------|-------|-------|
 | Code review | [evaluation/code-review.md](evaluation/code-review.md) | `knowledge-base/data-engineering/engineering.md` ✓ | `code-reviewer` | PR |
 | Architecture review | [evaluation/architecture-review.md](evaluation/architecture-review.md) | `knowledge-base/data-architecture/architecture.md` ✓ | `architecture-critic` | Plan |
-| Visualization — diff | [evaluation/visualization-diff.md](evaluation/visualization-diff.md) | `knowledge-base/visualization/` ✓ + `knowledge-base/ux-perception/perception.md` ✓ | `visualization-reviewer` | PR |
-| Visualization — image | [evaluation/visualization-image.md](evaluation/visualization-image.md) | `knowledge-base/ux-perception/perception.md` ✓ | `visual-screenshot-reviewer` | PR |
 | Analytical review | [evaluation/analytical-review.md](evaluation/analytical-review.md) | `knowledge-base/analytical-methods/` ✓ | `analytical-validator` | Plan + PR |
 | Data engineering review | [evaluation/data-engineering-review.md](evaluation/data-engineering-review.md) | `knowledge-base/data-engineering/` ✓ + `knowledge-base/data-architecture/` ✓ | `data-engineer-reviewer` | PR (platform/ only) |
-| Cost estimation | [evaluation/cost-estimation.md](evaluation/cost-estimation.md) *(planned — heuristics in agent)* | `team/lessons-learned.md` | `cost-estimator` | Feasibility |
+| Visualization — diff | [evaluation/visualization-diff.md](evaluation/visualization-diff.md) | `knowledge-base/visualization/` ✓ + `knowledge-base/ux-perception/perception.md` ✓ | `visualization-reviewer` | PR |
+| Visualization — image | [evaluation/visualization-image.md](evaluation/visualization-image.md) | `knowledge-base/ux-perception/perception.md` ✓ + `knowledge-base/visualization/principles.md` ✓ | `visual-screenshot-reviewer` | PR |
+| Measures review | [evaluation/measures-review.md](evaluation/measures-review.md) | `knowledge-base/business-analysis/kpi-indicator-design.md` ✓ + `knowledge-base/analytical-methods/` ✓ + `build/measures.md` | `measures-reviewer` | PR (semantic layer only) |
+| Cost estimation | *(heuristics in agent)* | `team/lessons-learned.md` | `cost-estimator` | Feasibility |
 | Domain review | *(heuristics in agent)* | `knowledge-base/domains/{domain}/` | `domain-specialist` | Plan + PR |
 
 ---
@@ -46,4 +47,4 @@ Used by: .claude/agents/{agent}.md
 Does NOT cover: {explicit scope boundary}
 ```
 
-Standards marked "not yet traced" were written before the KB existed. They should be audited and updated when the corresponding KB is built.
+All evaluation standards are now KB-traced. Build standards reference complete KBs but their file headers do not yet carry the explicit `Derived from:` line — that re-trace is pending (see PLATFORM.md §11.2).

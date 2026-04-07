@@ -3,7 +3,7 @@
 <!-- last-updated: 2026-04-07 -->
 
 ## Current Focus
-Quality system infrastructure complete. All 6 core KBs built. Full derivation chain: sources → KB → standards → agents.
+Post-audit gap-closure pass: added Semantic Modelling competency, dashboard-dev + measures-reviewer agents, expanded data-architect to cover semantic layer, fixed all stale doc references and ghost agent rows. 13 agents, 7 evaluation standards live. Full derivation chain intact.
 
 ## MVP Status: COMPLETE (v0.1.0 — 2026-03-28)
 
@@ -25,13 +25,18 @@ Quality system infrastructure complete. All 6 core KBs built. Full derivation ch
 - `team/domain-briefs/` — domain research outputs (was: docs/domain-briefs/)
 
 ## Recently Completed (2026-04-07)
-- OR-133 (PR #49): Quality system infrastructure
-  - 4 new KB files: ux-perception/perception.md, data-architecture/architecture.md, data-engineering/engineering.md, business-analysis/kpi-indicator-design.md
-  - 10 agents live: debug, architecture-critic, code-reviewer, visualization-reviewer, visual-screenshot-reviewer, visual-design-reviewer, analytical-validator, domain-specialist, business-analyst, cost-estimator
-  - 13 skills live (including /feasibility + /standards-review)
-  - 5 evaluation standards extracted to standalone files with full KB traceability
-  - /review autonomous loop: auto-commit/push/PR when all agents PASS
-  - /feasibility skill wired into /review-ideas, /sprint, /kickoff
+- Post-audit gap-closure pass:
+  - NEW agent: dashboard-dev (builder for products/dashboards/ + products/visuals/, reads ux-perception + visualization KBs)
+  - NEW agent: measures-reviewer (PR-phase semantic-layer reviewer)
+  - NEW evaluation standard: measures-review.md (KB-traced to business-analysis + analytical-methods)
+  - data-architect scope expanded to include semantic layer (MetricFlow, measures, dimensions, metrics)
+  - PLATFORM.md §4.1 added Semantic Modelling competency (12 competencies total)
+  - PLATFORM.md §5.1/§5.2/§5.3/§6.2/§8.2/§11.1 reconciled with disk reality (13 agents, 7 evaluation standards)
+  - CLAUDE.md ghost agents removed (dashboard-dev/data-engineer no-longer-stale), all KBs and standards listed correctly
+  - Four stale "KB not yet built" headers fixed in evaluation standards
+  - /kickoff step renumbering fixed
+  - /review skill wired with measures-reviewer (Agent F)
+- OR-133 (PR #49): Quality system infrastructure — 4 new KB files, 10 agents, 5 evaluation standards extracted
 - Platform Blueprint Restructure (PR #48): team/PLATFORM.md, team/analytics/ → team/knowledge-base/, team/standards/ → build/ + evaluation/ subdirs
 
 ## Knowledge Base Status
@@ -43,9 +48,10 @@ Quality system infrastructure complete. All 6 core KBs built. Full derivation ch
 - Business Analysis: ✅ Complete (team/knowledge-base/business-analysis/kpi-indicator-design.md)
 - Public Finance domain: ⏳ Draft (team/knowledge-base/domains/public-finance.md)
 
-## Agent Infrastructure (live)
-- debug, architecture-critic, code-reviewer, visualization-reviewer, visual-screenshot-reviewer (merged with visual-design-reviewer — now KB-backed)
-- analytical-validator, domain-specialist, business-analyst, cost-estimator
+## Agent Infrastructure (13 live)
+- Builders: data-architect (platform/ + semantic layer), dashboard-dev (products/dashboards/ + visuals/), business-analyst (analytical briefs)
+- Evaluators: architecture-critic, code-reviewer, data-engineer-reviewer, analytical-validator, visualization-reviewer, visual-screenshot-reviewer, measures-reviewer, domain-specialist, cost-estimator
+- Diagnostics: debug
 
 ## Linear — Active
 - OR-78 (Ghost admin), OR-85 (daily cron), OR-90 (Instagram token ~2026-05-20)

@@ -1,6 +1,6 @@
 # Architecture Review Rules
 
-**Derived from:** `team/knowledge-base/data-architecture/` *(planned — rules currently based on project design decisions; to be re-traced when data-architecture KB is complete)*
+**Derived from:** `team/knowledge-base/data-architecture/architecture.md` ✓ (KB complete — medallion, Kimball, dbt patterns, schema naming, SCD types)
 **Used by:** `.claude/agents/architecture-critic.md`
 **Does NOT cover:** code quality (see `evaluation/code-review.md`), statistical correctness (see `evaluation/analytical-review.md`), visual design (see `evaluation/visualization-diff.md`)
 

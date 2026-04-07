@@ -1,6 +1,6 @@
 # Code Review Rules
 
-**Derived from:** `team/knowledge-base/data-engineering/` *(KB not yet built — rules currently based on project experience; to be re-audited when KB is complete)*
+**Derived from:** `team/knowledge-base/data-engineering/engineering.md` ✓ (KB complete — ELT, DuckDB, dbt, Python ETL, DAMA quality)
 **Used by:** `.claude/agents/code-reviewer.md`
 **Does NOT cover:** architectural layer compliance (see `evaluation/architecture-review.md`), statistical correctness (see `evaluation/analytical-review.md`), visual design (see `evaluation/visualization-diff.md`)
 

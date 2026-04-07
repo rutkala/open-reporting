@@ -34,12 +34,16 @@ Your role is **50% business analyst, 50% technical architect**. You do not wait 
 │   │   ├── INDEX.md     → KB index with loading guide and status
 │   │   ├── analytical-methods/  → Analytical thinking, insight hierarchy
 │   │   ├── visualization/       → IBCS, chart-type rules, UI principles
+│   │   ├── ux-perception/       → Pre-attentive, Gestalt, cognitive load, WCAG
+│   │   ├── data-architecture/   → Kimball, medallion, dbt patterns
+│   │   ├── data-engineering/    → ELT, DuckDB, dbt conventions, DAMA
+│   │   ├── business-analysis/   → KPI theory, SMART+FABRIC, indicator design
 │   │   ├── domains/             → Per-domain KBs (public-finance, labour, …)
-│   │   └── [ux-perception/, data-architecture/, data-engineering/, business-analysis/ — planned]
+│   │   └── [content/, research-methods/ — planned]
 │   ├── standards/       → Derived from KB — actionable rules for builders and evaluators
 │   │   ├── INDEX.md     → Standards index with derivation traceability
 │   │   ├── build/       → How to build: ingestion, processing, storage, visualisation, measures, requirements
-│   │   └── evaluation/  → How to review: code-review, visualization-diff, visualization-image
+│   │   └── evaluation/  → How to review: code-review, architecture-review, analytical-review, data-engineering-review, visualization-diff, visualization-image, measures-review
 │   ├── domain-briefs/   → Domain research outputs (one per dashboard domain)
 │   ├── playbooks/       → Step-by-step process guides
 │   ├── session-memory.md
@@ -114,19 +118,19 @@ Shared session memory at `team/session-memory.md` provides continuity across ses
 | Agent | Scope | Mode | Description |
 |-------|-------|------|-------------|
 | `debug` | All directories | Read-only (plan) | Debugging, tracing, diagnostics |
-| `dashboard-dev` | `products/dashboards/`, `products/visuals/` | Full dev | Dashboard and chart building |
-| `data-engineer` | `platform/` | Full dev | ETL pipeline building |
-| `data-architect` | `platform/` | Full dev | Ingestion scripts, dbt models, schema DDL, warehouse queries |
+| `data-architect` | `platform/` | Full dev | Ingestion scripts, dbt models, schema DDL, warehouse queries, semantic layer (MetricFlow) |
+| `dashboard-dev` | `products/dashboards/`, `products/visuals/` | Full dev | Dash apps, Plotly components, KPI cards, layout — reads ux-perception + visualization KBs |
 | `business-analyst` | Domain research | Read + Web | KPI design, indicator selection, analytical briefs |
 
 **Evaluator agents** (review output independently — invoked by skills, not directly):
 
 | Agent | Phase | What it checks |
 |-------|-------|---------------|
-| `architecture-critic` | Plan | Layer violations, schema design, coupling |
-| `analytical-validator` | Plan + PR | Statistical correctness, aggregation, causal claims |
+| `architecture-critic` | Plan + Feasibility | Layer violations, schema design, coupling |
+| `analytical-validator` | Plan + Feasibility + PR | Statistical correctness, aggregation, causal claims |
 | `code-reviewer` | PR | P1/P2/P3 code quality, security, conventions |
 | `data-engineer-reviewer` | PR (platform/ only) | ELT compliance, DuckDB patterns, dbt conventions, idempotency |
+| `measures-reviewer` | PR (semantic layer only) | Measure definitions, agg correctness, format_type, Polish labels |
 | `visualization-reviewer` | PR | Chart calls — colour semantics, series count, axis labels |
 | `visual-screenshot-reviewer` | PR | Rendered screenshots — perception science, cognitive load, WCAG, colour blindness |
 | `domain-specialist` | Plan + PR | Domain KPI correctness, framing, benchmarks |
@@ -135,7 +139,7 @@ Shared session memory at `team/session-memory.md` provides continuity across ses
 **When to delegate:**
 - Bug investigation → `debug` (read-only, safe)
 - Dashboard/visual work → `dashboard-dev`
-- ETL/processing work → `data-engineer`
+- Platform/ETL/schema/semantic-layer work → `data-architect`
 - Domain KPI research → `business-analyst`
 - All evaluators are spawned automatically by `/plan`, `/review`, `/feasibility` — do not invoke directly
 
@@ -270,8 +274,10 @@ Two categories in `team/standards/`. See `team/standards/INDEX.md` for the deriv
 | `code-review.md` | `code-reviewer` | PR |
 | `architecture-review.md` | `architecture-critic` | Plan |
 | `analytical-review.md` | `analytical-validator` | Plan + PR |
+| `data-engineering-review.md` | `data-engineer-reviewer` | PR (platform/ only) |
 | `visualization-diff.md` | `visualization-reviewer` | PR |
 | `visualization-image.md` | `visual-screenshot-reviewer` | PR |
+| `measures-review.md` | `measures-reviewer` | PR (semantic layer only) |
 
 ## Knowledge Base
 
@@ -282,6 +288,10 @@ Research syntheses in `team/knowledge-base/` — read on demand during `/domain-
 | `visualization/principles.md` | IBCS SUCCESS, Gestalt, colour semantics, reference lines | Before designing any chart or dashboard |
 | `visualization/ui-principles.md` | Layout, grid, dashboard types, interaction | Before designing dashboard layout |
 | `visualization/charts/*.md` | Chart-type rules (bar, line, waterfall, scatter, map, table) | Before building that chart type |
+| `ux-perception/perception.md` | Pre-attentive attributes, Gestalt, cognitive load, WCAG 2.2, Cowan 4±1 | Before designing any layout or colour scheme |
+| `data-architecture/architecture.md` | Medallion, Kimball, dbt patterns, schema naming, SCD | Before any schema design or new mart |
+| `data-engineering/engineering.md` | ELT, DuckDB patterns, dbt conventions, DAMA quality | Before writing any ingestion script or dbt model |
+| `business-analysis/kpi-indicator-design.md` | SMART+FABRIC, stock/flow, aggregation correctness, Polish structural breaks | Before designing any KPI or semantic-layer measure |
 | `analytical-methods/analytical-thinking.md` | 5 analytical moves, insight hierarchy, Polish public data context | Before structuring any analysis |
 | `domains/public-finance.md` | Fiscal KPIs, SGP rules, canonical chart patterns | Before any public finance work |
 
