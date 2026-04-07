@@ -397,7 +397,7 @@ Competency = a cluster of related skills. Each competency has a builder role (do
 | 8 | **Analytical Methods** | Statistical correctness, aggregation in queries, causal language, chart labelling | — *(evaluator only)* | `analytical-validator` | #15, #18 (Analytical review tasks) |
 | 9 | **Content / Editorial** | Data journalism, Polish language, storytelling, editorial standards, Ghost CMS | `content-writer` | `content-reviewer` | #12, #17 |
 | 10 | **Research** | Econometrics, statistical methods, academic standards, model application | `researcher` | `research-reviewer` | #18 |
-| 11 | **Platform / Ops** | Linux, Docker, nginx, systemd, SSL, deployment, performance | `ops-engineer` *(planned)* | `ops-reviewer` *(planned)* | #8, #11, #14 |
+| 11 | **Platform / Ops** | Linux, Docker, nginx, systemd, SSL, deployment, performance | `ops-engineer` | `ops-reviewer` | #8, #11, #14 |
 | 12 | **Cost Estimation** | Token usage patterns, task complexity modelling, decomposition heuristics | — | `cost-estimator` | All (feasibility gate) |
 | 13 | **Diagnostics** | Tracing, root cause analysis, read-only investigation | — | `debug` | All (ad-hoc) |
 
@@ -440,6 +440,8 @@ Human touch-points are strategic only:
 | `content-reviewer` | Content / Editorial | Evaluator (content only) | Pre-publication | ✓ Live |
 | `researcher` | Research | Builder | Implementation | ✓ Live |
 | `research-reviewer` | Research | Evaluator (research only) | Pre-publication | ✓ Live |
+| `ops-engineer` | Platform / Ops | Builder | Implementation | ✓ Live |
+| `ops-reviewer` | Platform / Ops | Evaluator (infra only) | Pre-deployment | ✓ Live |
 | `cost-estimator` | Cost Estimation | Evaluator | Feasibility | ✓ Live |
 
 ¹ Previously named `data-architect` — renamed to `data-engineer` (OR-138). Covers Data Engineering Build tasks and Semantic Modelling Build tasks. Does **not** cover Data Architecture Design tasks (those are a gap — see §5.2).
@@ -455,8 +457,8 @@ Human touch-points are strategic only:
 | `content-reviewer` | Content / Editorial | Evaluator | PR | ✓ Live (OR-135) |
 | `researcher` | Research | Builder | Implementation | ✓ Live (OR-136) |
 | `research-reviewer` | Research | Evaluator | PR | ✓ Live (OR-136) |
-| `ops-engineer` | Platform / Ops | Builder | Implementation | Planned (OR-137) |
-| `ops-reviewer` | Platform / Ops | Evaluator | PR | Planned (OR-137) |
+| `ops-engineer` | Platform / Ops | Builder | Implementation | ✓ Live (OR-137) |
+| `ops-reviewer` | Platform / Ops | Evaluator | Pre-deployment | ✓ Live (OR-137) |
 
 ### 5.3 Agent invocation map
 
