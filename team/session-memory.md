@@ -44,8 +44,8 @@ Quality system infrastructure complete. All 6 core KBs built. Full derivation ch
 - Public Finance domain: ⏳ Draft (team/knowledge-base/domains/public-finance.md)
 
 ## Agent Infrastructure (live)
-- debug, architecture-critic, code-reviewer, visualization-reviewer, visual-screenshot-reviewer
-- visual-design-reviewer, analytical-validator, domain-specialist, business-analyst, cost-estimator
+- debug, architecture-critic, code-reviewer, visualization-reviewer, visual-screenshot-reviewer (merged with visual-design-reviewer — now KB-backed)
+- analytical-validator, domain-specialist, business-analyst, cost-estimator
 
 ## Linear — Active
 - OR-78 (Ghost admin), OR-85 (daily cron), OR-90 (Instagram token ~2026-05-20)

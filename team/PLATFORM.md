@@ -181,8 +181,7 @@ Human touch-points are strategic only:
 | `architecture-critic` | Data Architecture | Evaluator | Plan | ✓ Live |
 | `code-reviewer` | Data Engineering | Evaluator | PR | ✓ Live |
 | `visualization-reviewer` | Dashboard Dev / UX | Evaluator (diff) | PR | ✓ Live |
-| `visual-screenshot-reviewer` | UX / UI Design | Evaluator (image) | PR | ✓ Live |
-| `visual-design-reviewer` | UX / UI Design | Evaluator (deep perception) | PR | ✓ Live (needs ux-perception KB) |
+| `visual-screenshot-reviewer` | UX / UI Design | Evaluator (screenshot + perception science) | PR | ✓ Live |
 | `analytical-validator` | Business Analysis | Evaluator | Plan + PR | ✓ Live |
 | `domain-specialist` | Domain Specialist | Evaluator | Plan + PR | ✓ Live |
 | `business-analyst` | Business Analysis | Builder | Plan + Implementation | ✓ Live |
@@ -567,7 +566,7 @@ kickoff
 **Platform:** DuckDB warehouse (222 indicators, 18 domains) + 3-source ingestion (Eurostat, NBP, GUS DBW) + dbt (22 curated models) + Kimball dimensional model
 
 **Team infrastructure:**
-- 10 agents live (debug, architecture-critic, code-reviewer, visualization-reviewer, visual-screenshot-reviewer, visual-design-reviewer, analytical-validator, domain-specialist, business-analyst, cost-estimator)
+- 9 agents live (debug, architecture-critic, code-reviewer, visualization-reviewer, visual-screenshot-reviewer, analytical-validator, domain-specialist, business-analyst, cost-estimator)
 - 13 skills live (including /feasibility + /standards-review)
 - KB: analytical-methods ✓, visualization ✓, ux-perception ✓, data-architecture ✓, data-engineering ✓, business-analysis ✓; public-finance domain draft
 - Standards: 6 build standards live (KB-traceable), 5 evaluation standards live (full traceability — all KBs now complete)
@@ -582,7 +581,7 @@ kickoff
 | 6 | `/feasibility` skill + agents | Skill + agents | ✅ Done | Pre-sprint quality gate |
 | 7 | `cost-estimator` agent | Agent | ✅ Done | Token budget awareness |
 | 8 | Autonomous loop updates | Skill updates | ✅ Done | Reduced human involvement |
-| 9 | `visual-design-reviewer` | Agent | ✅ Done (limited until KB) | Deep image-based review |
+| 9 | `visual-screenshot-reviewer` merged with `visual-design-reviewer` | Agent | ✅ Done | Consolidated into one agent backed by ux-perception KB |
 | 10 | `domain-specialist` agent | Agent | ✅ Done | Domain review quality |
 | 11 | `business-analyst` agent | Agent | ✅ Done | Analytical build quality |
 | 12 | `/standards-review` skill | Skill | ✅ Done | Self-improvement loop |

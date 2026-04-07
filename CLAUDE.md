@@ -126,8 +126,7 @@ Shared session memory at `team/session-memory.md` provides continuity across ses
 | `analytical-validator` | Plan + PR | Statistical correctness, aggregation, causal claims |
 | `code-reviewer` | PR | P1/P2/P3 code quality, security, conventions |
 | `visualization-reviewer` | PR | Chart calls — colour semantics, series count, axis labels |
-| `visual-screenshot-reviewer` | PR | Rendered screenshots — basic visual rules |
-| `visual-design-reviewer` | PR | Deep perception science review (needs ux-perception KB) |
+| `visual-screenshot-reviewer` | PR | Rendered screenshots — perception science, cognitive load, WCAG, colour blindness |
 | `domain-specialist` | Plan + PR | Domain KPI correctness, framing, benchmarks |
 | `cost-estimator` | Feasibility | Token budget forecast, split recommendation |
 
