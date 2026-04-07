@@ -26,7 +26,7 @@ from products.visuals.lib.db import query
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
 
-PORT = 8053
+PORT = int(os.environ.get("OR_PORT", 8053))
 
 # ── EU-27 individual country codes (excludes aggregates and non-members) ─────
 EU27 = {

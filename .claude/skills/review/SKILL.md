@@ -51,6 +51,27 @@ If any agent returns BLOCK → overall review is blocked.
 
 ---
 
+## Part 0.5 — Screenshot review (dashboard changes only)
+
+After Part 0 completes, check whether the diff touches `products/dashboards/` (excluding template) or `products/visuals/`. If yes, spawn **`visual-screenshot-reviewer`**:
+
+- Starts each affected dashboard from branch code on a temp port
+- Takes a Playwright screenshot at 1440×900
+- Reads the PNG image and evaluates against `team/standards/visual-screenshot-review.md`
+- Returns HIGH / MEDIUM / LOW findings with BLOCK / CONDITIONAL / PASS verdict
+
+Map findings to review output:
+- HIGH → **CRITICAL**
+- MEDIUM → **WARNING**
+- LOW → **SUGGESTION**
+
+If the agent returns BLOCK → overall review is blocked.
+If the dashboard could not be started (agent notes startup failure) → flag as WARNING, do not block.
+
+Skip this step if the diff contains only non-dashboard changes (config, docs, platform code).
+
+---
+
 ## Part 1 — Technical Review (internal)
 
 After the agent pass, run this checklist for concerns the rules file does not cover — architectural intent, domain correctness, plan alignment.
