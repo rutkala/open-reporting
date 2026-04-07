@@ -1,6 +1,33 @@
-# Social Media Publishing Playbook
+# Playbook: Social Media
 
 Covers: Instagram (`@otwarteraporty`) — other platforms TBD.
+
+## Recipe
+
+### Sub-product #11 — Social platform setup
+
+| Task | Competency | Builder | Evaluator | Standard |
+|------|-----------|---------|-----------|----------|
+| Design (API integration, token lifecycle) | Platform / Ops | `ops-engineer` *(planned)* | `ops-reviewer` *(planned)* | ops-review.md *(planned)* |
+| Build (Meta API scripts, token mgmt, cron) | Platform / Ops | `ops-engineer` *(planned)* | `ops-reviewer` *(planned)* | ops-review.md *(planned)* |
+
+### Sub-product #12 — Social card
+
+| Task | Competency | Builder | Evaluator | Standard |
+|------|-----------|---------|-----------|----------|
+| Domain brief (metric selection, framing) | Business Analysis | `business-analyst` | `brief-reviewer` | brief-review.md |
+| Design (1080×1080 layout, KPI card) | UX / UI Design | `dashboard-dev` | `visual-screenshot-reviewer` | visualisation.md → visualization-image.md |
+| Build (Plotly figure, PNG export) | Dashboard Development | `dashboard-dev` | `visualization-reviewer` | visualisation.md → visualization-diff.md |
+| Write caption (Polish, factual) | Content / Editorial | `content-writer` *(planned)* | `content-reviewer` *(planned)* | content-review.md *(planned)* |
+
+### Sub-product #13 — Data card
+
+| Task | Competency | Builder | Evaluator | Standard |
+|------|-----------|---------|-----------|----------|
+| Design (single-stat layout) | UX / UI Design | `dashboard-dev` | `visual-screenshot-reviewer` | measures.md → visualization-image.md |
+| Build (Plotly, PNG export) | Dashboard Development | `dashboard-dev` | `visualization-reviewer` | visualisation.md → visualization-diff.md |
+
+---
 
 ---
 
