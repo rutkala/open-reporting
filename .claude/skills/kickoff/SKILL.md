@@ -25,18 +25,13 @@ Fetch the full Linear issue: title, description, acceptance criteria, comments, 
 
 Also read `team/standards/build/requirements.md` to check the issue meets Definition of Ready for its type.
 
-## Step 3 — Feasibility assessment
+## Step 3 — Feasibility + cost
 
-Assess internally before presenting:
-- **Data**: Does required data exist in the warehouse? If not, is there a known source?
-- **Dependencies**: Does this depend on something not yet built?
-- **Scope**: Is this one task or multiple in disguise?
-- **Ambiguity**: Anything unclear or open to interpretation?
-- **Complexity**: Small (hours) / Medium (a day) / Large (multiple sessions)?
+Run `/feasibility {issue ID}` — spawns architecture-critic, analytical-validator, and cost-estimator in parallel against the issue description. This runs silently; surface findings in Step 4.
 
 ## Step 4 — Present to user
 
-Plain business language. No code, no jargon.
+Plain business language. No code, no jargon. Include feasibility findings.
 
 ```
 ## {ID} — {Title}
@@ -45,8 +40,12 @@ Plain business language. No code, no jargon.
 {1–2 paragraphs: what needs to be built and why}
 
 ### Feasibility
-{FEASIBLE / PARTIALLY FEASIBLE / BLOCKED}
-{Plain explanation}
+{FEASIBLE / PARTIAL / BLOCKED — from /feasibility output}
+{Plain explanation of any blocking or conditional findings}
+
+### Cost estimate
+{Range from cost-estimator: e.g. "120–250k tokens, Medium risk"}
+{If split recommended: suggest how to split}
 
 ### Dependencies
 {List, or "None."}
@@ -58,9 +57,11 @@ Plain business language. No code, no jargon.
 {"/research [topic]" if approach is unclear, or "/plan [task]" if ready to design}
 ```
 
+If BLOCKED → stop here. Document the blocker on the Linear issue. Do not proceed.
+
 ## Step 5 — Wait for confirmation
 
-Do NOT proceed until the user confirms understanding and answers any open questions.
+Present the summary, then wait for user confirmation. If FEASIBLE and no open questions: user confirmation is a brief "yes" or equivalent — do not require more.
 
 ## Step 6 — Update Linear
 
@@ -74,11 +75,9 @@ Execute the appropriate next steps in sequence, pausing for user approval at eac
 
 1. `/research` — if data source or approach is unclear
 2. `/plan` — design the solution, present for approval before any code
-3. **Implement** — create feature branch, write code, commit
-4. `/review` — standards compliance check before PR
-5. **Open PR** — push branch, create PR with review output and acceptance criteria checklist
-6. **Codex review loop (when available)** — Codex triggers when a PR is opened or when you comment `@codex review`. After each review, read findings with `gh api repos/rutkala/open-reporting/pulls/{N}/comments` and `gh api repos/rutkala/open-reporting/pulls/{N}/reviews`. Fix every P1, push, then comment `@codex review` to trigger re-review. Repeat until no new P1s. P2s can be fixed in the same PR or captured as follow-up issues. If Codex is rate-limited or unavailable, proceed to merge — do not block on it.
-7. **Merge** — after approval and Codex findings addressed, merge to main
+3. **Implement** — create feature branch, write code
+4. `/review` — runs all evaluator agents in parallel; auto-commits, pushes, and opens PR when all pass; loops to fix when blocked (no human involvement during review loop)
+5. **Merge** — present PR URL to user; wait for merge approval (only human gate in the pipeline)
 8. `/document` — update affected docs, RELEASE_NOTES.md
 9. **Lessons learned (mandatory)** — after every issue, reflect on what went wrong or could go better. Update standards, skills, or playbooks based on findings. See `/document` Step 5.
 10. **Close** — Linear issue → **Done** (only after PR is merged), delete feature branch

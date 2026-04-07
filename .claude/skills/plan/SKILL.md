@@ -68,20 +68,25 @@ After writing the plan, spawn **both** review agents **in parallel** using two A
 Pass the plan text as the `$PLAN` variable to both agents.
 
 **Agent A — `architecture-critic`**
-Reads `team/standards/` and evaluates layer contracts, schema naming, and coupling risks.
+Reads `team/standards/build/` and evaluates layer contracts, schema naming, and coupling risks.
 
 **Agent B — `analytical-validator`**
 Reads `team/knowledge-base/analytical-methods/analytical-thinking.md` and evaluates statistical and methodological soundness.
 
+**Agent C — `domain-specialist`** *(if domain dashboard or domain indicator work)*
+Reads `team/knowledge-base/domains/{domain}.md` and evaluates KPI selection, framing, and benchmark correctness.
+Pass `$PLAN` as `$INPUT`. Only invoke if the plan involves domain-specific indicator selection or dashboard design.
+
 Skip Agent A if the plan touches no data layer (e.g. a pure UI or config change).
 Skip Agent B if the plan contains no analytical design (e.g. a pure infrastructure or tooling change).
+Skip Agent C if the plan is not domain-specific (e.g. infrastructure, tooling, or generic feature work).
 
 **Handling findings:**
-- Either agent returns **BLOCK** → fix the design flaw, update the plan, re-run both critics before presenting
-- Either agent returns **CONDITIONAL** → add the findings to the plan's **Risks** section, then present to user
-- Both return **APPROVE** → present normally
+- Any agent returns **BLOCK** → fix the design flaw, update the plan, re-run before presenting
+- Any agent returns **CONDITIONAL** → add the findings to the plan's **Risks** section, then present to user
+- All return **APPROVE** → present normally
 
-The user should only see structurally and analytically sound plans. Structural and methodological problems are resolved before the conversation, not during it.
+The user should only see structurally, analytically, and domain-correct plans.
 
 ## Step 4 — Wait for Approval
 

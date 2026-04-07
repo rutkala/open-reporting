@@ -109,17 +109,34 @@ Shared session memory at `team/session-memory.md` provides continuity across ses
 
 ## Custom Subagents
 
+**Builder agents** (do the work):
+
 | Agent | Scope | Mode | Description |
 |-------|-------|------|-------------|
 | `debug` | All directories | Read-only (plan) | Debugging, tracing, diagnostics |
 | `dashboard-dev` | `products/dashboards/`, `products/visuals/` | Full dev | Dashboard and chart building |
 | `data-engineer` | `platform/` | Full dev | ETL pipeline building |
+| `business-analyst` | Domain research | Read + Web | KPI design, indicator selection, analytical briefs |
+
+**Evaluator agents** (review output independently — invoked by skills, not directly):
+
+| Agent | Phase | What it checks |
+|-------|-------|---------------|
+| `architecture-critic` | Plan | Layer violations, schema design, coupling |
+| `analytical-validator` | Plan + PR | Statistical correctness, aggregation, causal claims |
+| `code-reviewer` | PR | P1/P2/P3 code quality, security, conventions |
+| `visualization-reviewer` | PR | Chart calls — colour semantics, series count, axis labels |
+| `visual-screenshot-reviewer` | PR | Rendered screenshots — basic visual rules |
+| `visual-design-reviewer` | PR | Deep perception science review (needs ux-perception KB) |
+| `domain-specialist` | Plan + PR | Domain KPI correctness, framing, benchmarks |
+| `cost-estimator` | Feasibility | Token budget forecast, split recommendation |
 
 **When to delegate:**
 - Bug investigation → `debug` (read-only, safe)
 - Dashboard/visual work → `dashboard-dev`
 - ETL/processing work → `data-engineer`
-- Architecture decisions, schema changes, git ops → orchestrator handles directly
+- Domain KPI research → `business-analyst`
+- All evaluators are spawned automatically by `/plan`, `/review`, `/feasibility` — do not invoke directly
 
 ## Collaboration Model
 
@@ -207,18 +224,19 @@ Four primary skills drive the entire workflow:
 | Skill | Stage | Description |
 |-------|-------|-------------|
 | `/capture-idea` | 1 — Collect | Save idea from chat to Linear (Backlog + Idea label) |
-| `/review-ideas` | 2 — Convert | Review ideas board, convert accepted to proper issues in Backlog |
-| `/sprint` | 3 — Prioritise | Sprint planning — pick issues from Backlog, move to Todo |
-| `/kickoff [OR-XXX]` | 4 — Implement | Full pipeline: plan → branch → code → review → PR → Done |
+| `/review-ideas` | 2 — Convert | Review ideas board, run feasibility, convert accepted to proper issues |
+| `/sprint` | 3 — Prioritise | Sprint planning — run feasibility gate, pick issues, move to Todo |
+| `/kickoff [OR-XXX]` | 4 — Implement | Full pipeline: feasibility → plan → branch → code → review → PR → Done |
 
 Internal sub-steps (called from within `/kickoff`, not invoked directly):
 
 | Skill | Called from | Description |
 |-------|-------------|-------------|
+| `/feasibility [OR-XXX]` | kickoff, review-ideas, sprint | Multi-agent feasibility gate before any work starts |
 | `/domain-brief` | kickoff (domain tasks) | Business/economic domain research before any design |
 | `/research` | kickoff | Technical approach research before planning |
-| `/plan` | kickoff | Design solution, present before coding |
-| `/review` | kickoff | Standards compliance check before PR |
+| `/plan` | kickoff | Design solution + parallel critics; present to user |
+| `/review` | kickoff | All evaluators in parallel; auto-commit/push/PR when clean |
 | `/commit` | kickoff | Smart conventional commit |
 | `/document` | kickoff (post-merge) | Update docs, RELEASE_NOTES, lessons-learned |
 
@@ -227,6 +245,7 @@ Utility:
 | Skill | Description |
 |-------|-------------|
 | `/status-check` | Diagnostic — git state, services, open items |
+| `/standards-review` | Self-improvement — reads lessons-learned, proposes standards updates |
 
 ## Standards
 
@@ -248,6 +267,8 @@ Two categories in `team/standards/`. See `team/standards/INDEX.md` for the deriv
 | File | Used by agent | Phase |
 |------|--------------|-------|
 | `code-review.md` | `code-reviewer` | PR |
+| `architecture-review.md` | `architecture-critic` | Plan |
+| `analytical-review.md` | `analytical-validator` | Plan + PR |
 | `visualization-diff.md` | `visualization-reviewer` | PR |
 | `visualization-image.md` | `visual-screenshot-reviewer` | PR |
 

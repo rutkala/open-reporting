@@ -27,13 +27,12 @@ See `team/PLATFORM.md §8` for the full standards map and derivation chain.
 | Standard | File | Derived from | Agent | Phase |
 |----------|------|-------------|-------|-------|
 | Code review | [evaluation/code-review.md](evaluation/code-review.md) | `knowledge-base/data-engineering/` *(not yet traced)* | `code-reviewer` | PR |
+| Architecture review | [evaluation/architecture-review.md](evaluation/architecture-review.md) | `knowledge-base/data-architecture/` *(planned)* | `architecture-critic` | Plan |
 | Visualization — diff | [evaluation/visualization-diff.md](evaluation/visualization-diff.md) | `knowledge-base/visualization/` + `ux-perception/` *(not yet traced)* | `visualization-reviewer` | PR |
 | Visualization — image | [evaluation/visualization-image.md](evaluation/visualization-image.md) | `knowledge-base/ux-perception/` *(not yet traced)* | `visual-screenshot-reviewer` | PR |
-| Analytical review | *(embedded in agent — extraction planned)* | `knowledge-base/analytical-methods/` | `analytical-validator` | Plan + PR |
-| Architecture review | *(embedded in agent — extraction planned)* | `knowledge-base/data-architecture/` | `architecture-critic` | Plan |
-| Feasibility criteria | *(planned)* | All KB | `feasibility-panel` | Pre-sprint |
-| Cost estimation | *(planned)* | `team/lessons-learned.md` | `cost-estimator` | Feasibility |
-| Domain review | *(planned)* | `knowledge-base/domains/{domain}/` | `domain-specialist` | Plan + PR |
+| Analytical review | [evaluation/analytical-review.md](evaluation/analytical-review.md) | `knowledge-base/analytical-methods/` ✓ | `analytical-validator` | Plan + PR |
+| Cost estimation | [evaluation/cost-estimation.md](evaluation/cost-estimation.md) *(planned — heuristics in agent)* | `team/lessons-learned.md` | `cost-estimator` | Feasibility |
+| Domain review | *(heuristics in agent)* | `knowledge-base/domains/{domain}/` | `domain-specialist` | Plan + PR |
 
 ---
 
