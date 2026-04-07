@@ -3,8 +3,7 @@
 <!-- last-updated: 2026-04-07 -->
 
 ## Current Focus
-Working through OR-135 to OR-140 — KB + agent pairs for content, research, ops, data-research, and data-architecture.
-- OR-135: ✅ Complete — Content/Editorial KB, content-writer, content-reviewer agents, content-review.md standard
+Infrastructure build-out complete. All KB + agent pairs done. Backlog now shifts to product work.
 
 ## MVP Status: COMPLETE (v0.1.0 — 2026-03-28)
 
@@ -20,44 +19,43 @@ Working through OR-135 to OR-140 — KB + agent pairs for content, research, ops
 
 ## Directory Structure (current)
 - `team/PLATFORM.md` — factory blueprint (source of truth: sub-product recipes, competency map, agent roster, quality system)
-- `team/knowledge-base/` — research syntheses
-- `team/standards/build/` — developer-facing build rules (all have "Derived from" headers)
-- `team/standards/evaluation/` — agent-facing evaluation rules (8 standards)
-- `team/playbooks/` — step-by-step process guides with recipe tables at top
+- `team/knowledge-base/` — 10 KB modules (all complete except public-finance domain ⏳ draft)
+- `team/standards/build/` — 6 build standards (all with "Derived from" headers)
+- `team/standards/evaluation/` — 12 eval standards (all wired to agents)
+- `team/playbooks/` — 9 playbooks covering all sub-products
 
 ## Recently Completed (2026-04-07)
-- Sub-product recipe system (PR #52):
-  - PLATFORM.md §1.2 expanded to 18 sub-products across 6 groups (Data Platform, Portal, Blog, Mobile, Social Media, Infra, Content)
-  - PLATFORM.md §3 rewritten: Task Taxonomy → Sub-product Recipes (18 recipe tables: task→skill→competency→builder→evaluator→standards)
-  - PLATFORM.md §4.1 Competency Map updated: 14 competencies with builder+evaluator columns and sub-products served
-  - PLATFORM.md §5.1 corrected: data-architect footnoted as misnamed (should be data-engineer); OR-138 created
-  - PLATFORM.md §5.2 updated: 3 new gaps flagged (data-researcher, data-research-reviewer, data-architect builder)
-  - PLATFORM.md §5.3 invocation map: recipe-based routing documented
-  - PLATFORM.md §11 updated to reflect current state
-  - Recipe tables added to dashboard.md and social.md playbooks
-  - NEW playbooks: data-ingestion.md, data-mart.md, portal.md, blog.md, infra.md
-  - Linear issues: OR-138 (rename data-architect→data-engineer), OR-139 (data-researcher agents), OR-140 (data-architect builder agent)
-- PR #51 (merged): brief-reviewer agent, build-standard headers, doc wiring (14 agents, 8 eval standards)
-- PR #50 (merged): dashboard-dev, measures-reviewer, Semantic Modelling competency
+- OR-138 (PR #53, merged by Claude): Rename data-architect → data-engineer across all 17 references
+- OR-135–137, 139–141 (merged by opencode):
+  - Content/Editorial KB + content-writer + content-reviewer + content-review.md
+  - Research Methods KB + researcher + research-reviewer + research-review.md
+  - Platform/Ops KB + ops-engineer + ops-reviewer + ops-review.md
+  - Data Research KB + data-researcher + data-research-reviewer + data-research-review.md
+  - data-architect builder agent (Design-phase, Data Architecture competency)
+  - article.md + research.md playbooks (sub-products #17, #18)
+- Index gap fix (direct commit): data-research KB and eval standard added to INDEX files
 
-## Knowledge Base Status
+## Knowledge Base Status (10 modules)
 - Analytical methods: ✅ Complete
 - Visualization + charts: ✅ Complete
 - UX/Perception: ✅ Complete
 - Data Architecture: ✅ Complete
 - Data Engineering: ✅ Complete
 - Business Analysis: ✅ Complete
-- Public Finance domain: ⏳ Draft
+- Data Research: ✅ Complete (OR-139)
+- Content/Editorial: ✅ Complete (OR-135)
+- Research Methods: ✅ Complete (OR-136)
+- Platform/Ops: ✅ Complete (OR-137)
+- Public Finance domain: ⏳ Draft (OR-120)
 
-## Agent Infrastructure (14 live)
-- Builders: data-engineer (platform/ + semantic layer), dashboard-dev (products/dashboards/ + visuals/), business-analyst (analytical briefs)
-- Evaluators: architecture-critic, code-reviewer, data-engineer-reviewer, analytical-validator, brief-reviewer, visualization-reviewer, visual-screenshot-reviewer, measures-reviewer, domain-specialist, cost-estimator
-- Diagnostics: debug
+## Agent Infrastructure (23 live)
+Builders: data-engineer, data-architect, data-researcher, dashboard-dev, business-analyst, content-writer, researcher, ops-engineer
+Evaluators: architecture-critic, code-reviewer, data-engineer-reviewer, data-research-reviewer, analytical-validator, brief-reviewer, visualization-reviewer, visual-screenshot-reviewer, measures-reviewer, domain-specialist, cost-estimator, content-reviewer, research-reviewer, ops-reviewer
+Diagnostics: debug
 
 ## Linear — Active
 - OR-78 (Ghost admin), OR-85 (daily cron), OR-90 (Instagram token ~2026-05-20)
 - OR-108: Mobile-optimized dashboards (Backlog)
-- OR-138: Rename data-architect → data-engineer (Done)
-- OR-139: data-researcher + data-research-reviewer agents (Backlog — Idea)
-- OR-140: data-architect builder agent (Backlog — Idea)
-- OR-135/136/137: Content/Research/Ops KBs + agents (Backlog — Ideas)
+- OR-120: Public Finance domain KB — review & promote (Backlog)
+- OR-129: Domain Specialist agents one-per-domain (Backlog — Infra)
+- Product backlog: OR-74 to OR-113 (dashboards, data pipeline, content, social)
