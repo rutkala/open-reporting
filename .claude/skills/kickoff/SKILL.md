@@ -75,9 +75,9 @@ Execute the appropriate next steps in sequence, pausing for user approval at eac
 
 1. `/research` — if data source or approach is unclear
 2. `/plan` — design the solution, present for approval before any code
-3. **Implement** — create feature branch, write code
+3. **Implement** — create feature branch, write code (use `data-architect` for `platform/` work, `dashboard-dev` for `products/dashboards/` and `products/visuals/` work)
 4. `/review` — runs all evaluator agents in parallel; auto-commits, pushes, and opens PR when all pass; loops to fix when blocked (no human involvement during review loop)
 5. **Merge** — present PR URL to user; wait for merge approval (only human gate in the pipeline)
-8. `/document` — update affected docs, RELEASE_NOTES.md
-9. **Lessons learned (mandatory)** — after every issue, reflect on what went wrong or could go better. Update standards, skills, or playbooks based on findings. See `/document` Step 5.
-10. **Close** — Linear issue → **Done** (only after PR is merged), delete feature branch
+6. `/document` — update affected docs, RELEASE_NOTES.md
+7. **Lessons learned (mandatory)** — after every issue, reflect on what went wrong or could go better. Update standards, skills, or playbooks based on findings. See `/document` Step 5.
+8. **Close** — Linear issue → **Done** (only after PR is merged), delete feature branch

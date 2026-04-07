@@ -1,6 +1,6 @@
 # Visualization Review Rules — Diff-based
 
-**Derived from:** `team/knowledge-base/visualization/` *(partially)* + `team/knowledge-base/ux-perception/` *(KB not yet built — rules to be deepened when ux-perception KB is complete)*
+**Derived from:** `team/knowledge-base/visualization/principles.md` ✓ + `team/knowledge-base/visualization/charts/*.md` ✓ + `team/knowledge-base/ux-perception/perception.md` ✓ (all KBs complete)
 **Used by:** `.claude/agents/visualization-reviewer.md`
 **Does NOT cover:** rendered visual quality (see `evaluation/visualization-image.md`), statistical correctness (see `evaluation/analytical-review.md`), code quality (see `evaluation/code-review.md`)
 

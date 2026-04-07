@@ -1,6 +1,6 @@
 # Visualization Review Rules — Image-based
 
-**Derived from:** `team/knowledge-base/ux-perception/` *(KB not yet built — rules currently based on general practice; to be significantly deepened when ux-perception KB is complete)*
+**Derived from:** `team/knowledge-base/ux-perception/perception.md` ✓ + `team/knowledge-base/visualization/principles.md` ✓ (KBs complete — pre-attentive, Gestalt, WCAG, cognitive load)
 **Used by:** `.claude/agents/visual-screenshot-reviewer.md`
 **Does NOT cover:** code-level chart configuration (see `evaluation/visualization-diff.md`), statistical correctness (see `evaluation/analytical-review.md`)
 

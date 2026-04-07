@@ -145,15 +145,16 @@ Competency = a cluster of related skills. Each competency has a builder role (do
 |---|-----------|-------------|-------------------|
 | 1 | **Data Architecture** | Dimensional modelling, data vault, schema design, layer contracts, medallion architecture | `knowledge-base/data-architecture/` |
 | 2 | **Data Engineering** | ETL scripting, SQL, DuckDB, dbt, API integration, data quality | `knowledge-base/data-engineering/` |
-| 3 | **UX / UI Design** | Visual perception, cognitive load, Gestalt, colour theory, eye-tracking, WCAG, dashboard layout | `knowledge-base/ux-perception/` |
-| 4 | **Dashboard Development** | Plotly, Dash, Python, Nordic design system, component API, responsive layout | `knowledge-base/ux-perception/` + `standards/build/visualisation.md` |
-| 5 | **Business Analysis** | KPI theory, indicator selection, aggregation methods, insight hierarchy, Polish public data context | `knowledge-base/business-analysis/` + `knowledge-base/analytical-methods/` |
-| 6 | **Domain Specialist** | Domain-specific economics, policy frameworks, benchmark knowledge, Polish statistical context | `knowledge-base/domains/{domain}.md` |
-| 7 | **Content / Editorial** | Data journalism, Polish language, storytelling, editorial standards, Ghost CMS | `knowledge-base/content/` |
-| 8 | **Research** | Econometrics, statistical methods, academic standards, model application | `products/research/library/` |
-| 9 | **Platform / Ops** | Linux, Docker, nginx, systemd, SSL, deployment, performance | — |
-| 10 | **Cost Estimation** | Token usage patterns, task complexity modelling, decomposition heuristics | `team/lessons-learned.md` (historical) |
-| 11 | **Diagnostics** | Tracing, root cause analysis, read-only investigation | — |
+| 3 | **Semantic Modelling** | MetricFlow measures/metrics/dimensions, aggregation correctness (stock vs flow, rate summation rules), format_type, unit/scale declarations, measure naming, Polish labelling | `knowledge-base/business-analysis/` + `knowledge-base/analytical-methods/` + `standards/build/measures.md` |
+| 4 | **UX / UI Design** | Visual perception, cognitive load, Gestalt, colour theory, eye-tracking, WCAG, dashboard layout | `knowledge-base/ux-perception/` |
+| 5 | **Dashboard Development** | Plotly, Dash, Python, Nordic design system, component API, responsive layout | `knowledge-base/ux-perception/` + `knowledge-base/visualization/` + `standards/build/visualisation.md` |
+| 6 | **Business Analysis** | KPI theory, indicator selection, aggregation methods, insight hierarchy, Polish public data context | `knowledge-base/business-analysis/` + `knowledge-base/analytical-methods/` |
+| 7 | **Domain Specialist** | Domain-specific economics, policy frameworks, benchmark knowledge, Polish statistical context | `knowledge-base/domains/{domain}.md` |
+| 8 | **Content / Editorial** | Data journalism, Polish language, storytelling, editorial standards, Ghost CMS | `knowledge-base/content/` |
+| 9 | **Research** | Econometrics, statistical methods, academic standards, model application | `products/research/library/` |
+| 10 | **Platform / Ops** | Linux, Docker, nginx, systemd, SSL, deployment, performance | — |
+| 11 | **Cost Estimation** | Token usage patterns, task complexity modelling, decomposition heuristics | `team/lessons-learned.md` (historical) |
+| 12 | **Diagnostics** | Tracing, root cause analysis, read-only investigation | — |
 
 ### 4.2 Builder / Evaluator principle
 
@@ -180,12 +181,14 @@ Human touch-points are strategic only:
 | `debug` | Diagnostics | Evaluator | Ad-hoc | ✓ Live |
 | `architecture-critic` | Data Architecture | Evaluator | Plan | ✓ Live |
 | `code-reviewer` | Data Engineering | Evaluator | PR | ✓ Live |
+| `data-engineer-reviewer` | Data Engineering | Evaluator (platform/ only) | PR | ✓ Live |
 | `visualization-reviewer` | Dashboard Dev / UX | Evaluator (diff) | PR | ✓ Live |
 | `visual-screenshot-reviewer` | UX / UI Design | Evaluator (screenshot + perception science) | PR | ✓ Live |
 | `analytical-validator` | Business Analysis | Evaluator | Plan + PR | ✓ Live |
-| `data-engineer-reviewer` | Data Engineering | Evaluator (platform/ only) | PR | ✓ Live |
 | `domain-specialist` | Domain Specialist | Evaluator | Plan + PR | ✓ Live |
-| `data-architect` | Data Architecture + Engineering | Builder | Implementation | ✓ Live |
+| `measures-reviewer` | Semantic Modelling | Evaluator (semantic layer only) | PR | ✓ Live |
+| `data-architect` | Data Architecture + Engineering + Semantic Modelling | Builder | Implementation | ✓ Live |
+| `dashboard-dev` | UX / UI Design + Dashboard Development | Builder | Implementation | ✓ Live |
 | `business-analyst` | Business Analysis | Builder | Plan + Implementation | ✓ Live |
 | `cost-estimator` | Cost Estimation | Evaluator | Feasibility | ✓ Live |
 
@@ -193,9 +196,6 @@ Human touch-points are strategic only:
 
 | Agent | Competency | Role | Phase | Priority |
 |-------|-----------|------|-------|----------|
-| `data-architect` | Data Architecture | Builder | Implementation | Medium |
-| `data-engineer-reviewer` | Data Engineering | Evaluator (domain-matched) | PR | Medium |
-| `ui-designer` | UX / UI Design | Builder | Implementation | Low |
 | `content-writer` | Content / Editorial | Builder | Implementation | Low |
 | `content-reviewer` | Content / Editorial | Evaluator | PR | Low |
 | `researcher` | Research | Builder | Implementation | Low |
@@ -223,6 +223,9 @@ Human touch-points are strategic only:
     → code-reviewer
     → visualization-reviewer
     → analytical-validator
+    → data-engineer-reviewer   (only if diff touches platform/)
+    → measures-reviewer        (only if diff touches semantic layer)
+    → domain-specialist        (only if diff touches a domain dashboard)
   Part 0.5: if dashboard changed
     → visual-screenshot-reviewer
   Any BLOCK → builder fixes → re-review (autonomous, no human).
@@ -262,17 +265,17 @@ Does NOT cover: {explicit scope boundary}
 
 ### 6.2 Feasibility gate
 
-Triggered at `/review-ideas` (idea → issue conversion) and `/sprint` (backlog → Todo).
+Triggered at `/review-ideas` (idea → issue conversion), `/sprint` (backlog → Todo), and `/kickoff` (before implementation).
 
-All relevant evaluators run in parallel and return: **FEASIBLE / PARTIAL / BLOCKED**.
+Three evaluators run in parallel and return: **FEASIBLE / PARTIAL / BLOCKED**.
 
 | Evaluator | Checks |
 |-----------|--------|
-| `architecture-critic` | Data model compatibility, schema conflicts |
-| `analytical-validator` | Analytical design validity |
-| `cost-estimator` | Token budget estimate, decomposition recommendation |
-| `domain-specialist` | Domain framing correctness, KPI validity |
-| `data-engineer-reviewer` | Source data availability, ingestion feasibility |
+| `architecture-critic` | Data model compatibility, schema conflicts, layer-contract feasibility |
+| `analytical-validator` | Analytical design validity, aggregation soundness, misleading framing risks |
+| `cost-estimator` | Token budget estimate, scope complexity, decomposition recommendation |
+
+Note: `domain-specialist`, `data-engineer-reviewer`, and `measures-reviewer` are PR-phase reviewers and are not part of the feasibility gate. Their feedback happens later in the pipeline, at `/plan` (domain) and `/review` (diff-scoped reviewers).
 
 **Decision rule:**
 - All FEASIBLE → issue accepted, moves to Backlog
@@ -386,11 +389,11 @@ Developer-facing. Derived from KB. Tells practitioners what to do.
 
 | Standard | File | Derived from KB | Status |
 |----------|------|----------------|--------|
-| Data ingestion | `team/standards/build/ingestion.md` | `knowledge-base/data-engineering/` | Live — not yet KB-traced |
-| Data processing | `team/standards/build/processing.md` | `knowledge-base/data-engineering/` | Live — not yet KB-traced |
-| Data storage | `team/standards/build/storage.md` | `knowledge-base/data-architecture/` | Live — not yet KB-traced |
-| Visualisation design | `team/standards/build/visualisation.md` | `knowledge-base/visualization/` + `ux-perception/` | Live — not yet KB-traced |
-| Measures | `team/standards/build/measures.md` | `knowledge-base/business-analysis/` | Live — not yet KB-traced |
+| Data ingestion | `team/standards/build/ingestion.md` | `knowledge-base/data-engineering/` ✓ | Live — KB complete, header re-trace pending |
+| Data processing | `team/standards/build/processing.md` | `knowledge-base/data-engineering/` ✓ | Live — KB complete, header re-trace pending |
+| Data storage | `team/standards/build/storage.md` | `knowledge-base/data-architecture/` ✓ | Live — KB complete, header re-trace pending |
+| Visualisation design | `team/standards/build/visualisation.md` | `knowledge-base/visualization/` ✓ + `ux-perception/` ✓ | Live — KB complete, header re-trace pending |
+| Measures | `team/standards/build/measures.md` | `knowledge-base/business-analysis/` ✓ | Live — KB complete, header re-trace pending |
 | Linear requirements | `team/standards/build/requirements.md` | — (workflow, not KB-derived) | Live |
 
 ### 8.2 Evaluation standards (how we review)
@@ -399,14 +402,15 @@ Agent-facing. Derived from KB via build standard. Tells evaluator agents what to
 
 | Standard | File | Derived from | Agent that uses it | Status |
 |----------|------|-------------|-------------------|--------|
-| Code review | `team/standards/evaluation/code-review.md` | `knowledge-base/data-engineering/` | `code-reviewer` | Live — not KB-traced |
-| Architecture review | `team/standards/evaluation/architecture-review.md` | `knowledge-base/data-architecture/` | `architecture-critic` | Implicit in agent — needs extraction |
-| Visualization diff | `team/standards/evaluation/visualization-diff.md` | `knowledge-base/visualization/` + `ux-perception/` | `visualization-reviewer` | Live — not KB-traced |
-| Visualization image | `team/standards/evaluation/visualization-image.md` | `knowledge-base/ux-perception/` | `visual-screenshot-reviewer` | Live — not KB-traced |
-| Analytical review | `team/standards/evaluation/analytical-review.md` | `knowledge-base/analytical-methods/` | `analytical-validator` | Implicit in agent — needs extraction |
-| Feasibility criteria | `team/standards/evaluation/feasibility.md` | All KB | `feasibility-panel` (planned) | Not built |
-| Cost estimation rules | `team/standards/evaluation/cost-estimation.md` | `team/lessons-learned.md` | `cost-estimator` (planned) | Not built |
-| Domain review | `team/standards/evaluation/domain-review.md` | `knowledge-base/domains/{domain}/` | `domain-specialist` (planned) | Not built |
+| Code review | `team/standards/evaluation/code-review.md` | `knowledge-base/data-engineering/` ✓ | `code-reviewer` | ✓ Live |
+| Architecture review | `team/standards/evaluation/architecture-review.md` | `knowledge-base/data-architecture/` ✓ | `architecture-critic` | ✓ Live |
+| Analytical review | `team/standards/evaluation/analytical-review.md` | `knowledge-base/analytical-methods/` ✓ | `analytical-validator` | ✓ Live |
+| Data engineering review | `team/standards/evaluation/data-engineering-review.md` | `knowledge-base/data-engineering/` ✓ + `data-architecture/` ✓ | `data-engineer-reviewer` | ✓ Live |
+| Visualization diff | `team/standards/evaluation/visualization-diff.md` | `knowledge-base/visualization/` ✓ + `ux-perception/` ✓ | `visualization-reviewer` | ✓ Live |
+| Visualization image | `team/standards/evaluation/visualization-image.md` | `knowledge-base/ux-perception/` ✓ | `visual-screenshot-reviewer` | ✓ Live |
+| Measures review | `team/standards/evaluation/measures-review.md` | `knowledge-base/business-analysis/` ✓ + `analytical-methods/` ✓ + `build/measures.md` | `measures-reviewer` | ✓ Live |
+| Cost estimation rules | *(heuristics inline in agent)* | `team/lessons-learned.md` | `cost-estimator` | ✓ Live (no standalone file) |
+| Domain review | *(heuristics inline in agent)* | `knowledge-base/domains/{domain}/` | `domain-specialist` | ✓ Live (no standalone file) |
 
 ---
 
@@ -568,25 +572,22 @@ kickoff
 **Platform:** DuckDB warehouse (222 indicators, 18 domains) + 3-source ingestion (Eurostat, NBP, GUS DBW) + dbt (22 curated models) + Kimball dimensional model
 
 **Team infrastructure:**
-- 11 agents live (debug, architecture-critic, code-reviewer, data-engineer-reviewer, visualization-reviewer, visual-screenshot-reviewer, analytical-validator, domain-specialist, data-architect, business-analyst, cost-estimator)
-- 13 skills live (including /feasibility + /standards-review)
+- 13 agents live (debug, architecture-critic, code-reviewer, data-engineer-reviewer, visualization-reviewer, visual-screenshot-reviewer, analytical-validator, domain-specialist, measures-reviewer, data-architect, dashboard-dev, business-analyst, cost-estimator)
+- 14 skills live (including /feasibility + /standards-review)
 - KB: analytical-methods ✓, visualization ✓, ux-perception ✓, data-architecture ✓, data-engineering ✓, business-analysis ✓; public-finance domain draft
-- Standards: 6 build standards live (KB-traceable), 5 evaluation standards live (full traceability — all KBs now complete)
+- Standards: 6 build standards live (KB complete; "Derived from" header re-trace pending), 7 evaluation standards live (code-review, architecture-review, analytical-review, data-engineering-review, visualization-diff, visualization-image, measures-review)
 
 ### 11.2 What is next (priority order)
 
 | # | Item | Type | Status | Blocks |
 |---|------|------|--------|--------|
-| 1 | `data-architect` builder agent | Agent | ✅ Done | Platform ETL/schema implementation |
+| 1 | `data-architect` builder agent | Agent | ✅ Done | Platform ETL/schema/semantic-layer implementation |
 | 2 | `data-engineer-reviewer` evaluator agent | Agent | ✅ Done | Specialist PR review for platform/ changes |
-| 3 | KB-to-standards trace audit | Standards update | 🔜 Next | Re-trace build standards against new KBs; update rules where gaps found |
-| 4 | Content / Editorial KB | Knowledge base | 📋 Planned | Blog editorial standards, data journalism quality |
-| 5 | Research Methods KB | Knowledge base | 📋 Planned | Econometrics, reproducible research standards |
-| 6 | `/feasibility` skill + agents | Skill + agents | ✅ Done | Pre-sprint quality gate |
-| 7 | `cost-estimator` agent | Agent | ✅ Done | Token budget awareness |
-| 8 | Autonomous loop updates | Skill updates | ✅ Done | Reduced human involvement |
-| 9 | `visual-screenshot-reviewer` merged with `visual-design-reviewer` | Agent | ✅ Done | Consolidated into one agent backed by ux-perception KB |
-| 10 | `domain-specialist` agent | Agent | ✅ Done | Domain review quality |
-| 11 | `business-analyst` agent | Agent | ✅ Done | Analytical build quality |
-| 12 | `/standards-review` skill | Skill | ✅ Done | Self-improvement loop |
-| 13 | Extracted evaluation standards | Standards | ✅ Done | Traceability (analytical-review.md, architecture-review.md) |
+| 3 | `dashboard-dev` builder agent | Agent | ✅ Done | Dashboard + visual component implementation |
+| 4 | `measures-reviewer` evaluator agent + standard | Agent + standard | ✅ Done | Semantic layer PR review |
+| 5 | Semantic Modelling competency | Competency map | ✅ Done | Explicit owner for measures/dimensions/metrics |
+| 6 | Build-standard "Derived from" headers | Standards update | 🔜 Next | Header re-trace against complete KBs |
+| 7 | Content / Editorial KB + content-writer/reviewer agents | Knowledge base + agents | 📋 Planned | Blog editorial standards, data journalism quality |
+| 8 | Research Methods KB + researcher/research-reviewer agents | Knowledge base + agents | 📋 Planned | Econometrics, reproducible research standards |
+| 9 | Platform / Ops KB + ops-engineer/ops-reviewer agents | Knowledge base + agents | 📋 Planned | Infra change review quality |
+| 10 | Public-finance domain KB | KB — draft promotion | 🔜 Next | Move from Draft to Complete |

@@ -54,10 +54,16 @@ Spawn all agents **in parallel** using Agent tool calls in the same message. Age
 - Returns P1 / P2 / P3 findings with BLOCK / CONDITIONAL / PASS verdict
 - Only spawn if diff touches `platform/ingestion/`, `platform/processing/`, or `platform/warehouse/`
 
+**Agent F — `measures-reviewer`** *(semantic layer changes only)*
+- Runs `git diff origin/main...HEAD` independently
+- Reads `team/standards/evaluation/measures-review.md`, checks measure definitions, aggregation correctness (stock vs flow, rate summation), `format_type`, unit/scale, Polish labels
+- Returns P1 / P2 / P3 findings with BLOCK / CONDITIONAL / PASS verdict
+- Only spawn if diff touches `products/semantic/`, `platform/processing/dbt/**/semantic_models/*.yml`, or `platform/processing/dbt/**/metrics/*.yml`
+
 Wait for all agents to complete, then map findings to review output:
-- code-reviewer P1 / data-engineer-reviewer P1 / visualization-reviewer HIGH / analytical-validator MISLEADING → **CRITICAL**
-- code-reviewer P2 / data-engineer-reviewer P2 / visualization-reviewer MEDIUM / analytical-validator QUESTIONABLE → **WARNING**
-- code-reviewer P3 / data-engineer-reviewer P3 / visualization-reviewer LOW / analytical-validator NOTED → **SUGGESTION**
+- code-reviewer P1 / data-engineer-reviewer P1 / measures-reviewer P1 / visualization-reviewer HIGH / analytical-validator MISLEADING → **CRITICAL**
+- code-reviewer P2 / data-engineer-reviewer P2 / measures-reviewer P2 / visualization-reviewer MEDIUM / analytical-validator QUESTIONABLE → **WARNING**
+- code-reviewer P3 / data-engineer-reviewer P3 / measures-reviewer P3 / visualization-reviewer LOW / analytical-validator NOTED → **SUGGESTION**
 
 If any agent returns BLOCK → do NOT proceed to Part 0.5. Go to the **Autonomous Fix Loop** below.
 
