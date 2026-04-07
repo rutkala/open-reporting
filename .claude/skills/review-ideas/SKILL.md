@@ -42,11 +42,14 @@ For each **accepted** idea:
 3. If the idea is large, split into a parent issue (epic) + sub-issues
 4. Create the issue(s) in Linear:
    - Label: Feature / Bug / Data / Content / Infra (whichever applies — not Idea)
-   - Set status to **Todo**
+   - Set status to **Backlog** (not Todo — feasibility gate runs before sprint)
    - Assign to a milestone if it clearly belongs to Phase 1 / 2 / 3
    - Link sub-issues to parent
    - Set `relatedTo` the original idea issue ID (creates traceable chain)
-5. Close the original idea: set to **Canceled**, add comment: *"Converted to {new issue ID(s)}"*
+5. Run `/feasibility {new issue ID}` — pass the issue description to all evaluators in parallel
+6. If FEASIBLE or PARTIAL: leave in Backlog, add feasibility report as Linear comment
+7. If BLOCKED: add comment with blocking finding; do not move to Backlog until blocker is resolved
+8. Close the original idea: set to **Canceled**, add comment: *"Converted to {new issue ID(s)}"*
 
 For each **deferred** idea:
 - Leave in Backlog with Idea label, add comment: *"Deferred — revisit in Phase {N}"*

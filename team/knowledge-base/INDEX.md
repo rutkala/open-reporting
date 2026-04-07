@@ -33,37 +33,33 @@ See `team/PLATFORM.md §7` for the full KB map and priority build order.
 
 ## UX / Perception
 
-| File | Covers | Status |
-|------|--------|--------|
-| `ux-perception/` | Visual cortex processing, pre-attentive attributes, cognitive load, eye-tracking patterns, colour perception, WCAG, Gestalt primary sources | **Planned — Priority 1** |
-
-Sources to research: Colin Ware "Information Visualization: Perception for Design", Steven Few "Show Me the Numbers", Alberto Cairo "The Functional Art", Nielsen Norman Group eye-tracking corpus, WCAG 2.2, cognitive load theory (Sweller), pre-attentive processing literature.
+| File | Covers | Read when |
+|------|--------|-----------|
+| [ux-perception/perception.md](ux-perception/perception.md) | Pre-attentive attributes (Treisman), Gestalt laws, cognitive load (Sweller), eye-tracking patterns, colour perception + blindness, WCAG 2.2, working memory (Cowan 4±1) | Before designing any dashboard layout, colour scheme, or visual hierarchy |
 
 ---
 
 ## Data Architecture
 
-| File | Covers | Status |
-|------|--------|--------|
-| `data-architecture/` | Dimensional modelling (Kimball), medallion architecture, schema design principles, layer contracts | **Planned — Priority 2** |
-
-Sources: Kimball "The Data Warehouse Toolkit", Inmon "Building the Data Warehouse", Databricks medallion docs, dbt Labs documentation.
+| File | Covers | Read when |
+|------|--------|-----------|
+| [data-architecture/architecture.md](data-architecture/architecture.md) | Medallion layer contracts, dimensional modelling (Kimball), dbt patterns (staging, mart, ref/source), schema naming, SCD types, DuckDB implications | Before any schema design, new data source, or mart design |
 
 ---
 
 ## Data Engineering
 
-| File | Covers | Status |
-|------|--------|--------|
-| `data-engineering/` | ELT patterns, SQL standards, DuckDB best practices, dbt conventions, data quality patterns | **Planned — Priority 3** |
+| File | Covers | Read when |
+|------|--------|-----------|
+| [data-engineering/engineering.md](data-engineering/engineering.md) | ELT principle, DuckDB patterns (upsert, TRY_CAST, fetched_at), dbt conventions (staging, incremental, tests), Python ETL standards, DAMA quality dimensions, security | Before writing any ingestion script or dbt model |
 
 ---
 
 ## Business Analysis
 
-| File | Covers | Status |
-|------|--------|--------|
-| `business-analysis/` | KPI theory, indicator design, Balanced Scorecard, public sector analytics frameworks | **Planned — Priority 4** |
+| File | Covers | Read when |
+|------|--------|-----------|
+| [business-analysis/kpi-indicator-design.md](business-analysis/kpi-indicator-design.md) | SMART+FABRIC indicator tests, output/outcome/impact levels, leading/lagging/stock/flow types, KPI design patterns, aggregation correctness, Polish structural breaks, EU benchmarking, BSC, insight framing | Before designing KPIs for any dashboard or analytical product |
 
 ---
 
@@ -93,9 +89,9 @@ Domain files are created via `/domain-brief` skill before dashboard work begins 
 |--------|--------|-------|
 | Analytical methods | ✅ Complete | OR-119 |
 | Visualization principles + charts | ✅ Complete | OR-118 |
-| UX / Perception | 📋 Planned — Priority 1 | — |
-| Data Architecture | 📋 Planned — Priority 2 | — |
-| Data Engineering | 📋 Planned — Priority 3 | — |
-| Business Analysis | 📋 Planned — Priority 4 | — |
+| UX / Perception | ✅ Complete | OR-133 |
+| Data Architecture | ✅ Complete | OR-133 |
+| Data Engineering | ✅ Complete | OR-133 |
+| Business Analysis | ✅ Complete | OR-133 |
 | Domains — public finance | ⏳ Draft | OR-120 |
 | Domains — labour market | 📋 Planned | — |

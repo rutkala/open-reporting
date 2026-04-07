@@ -40,9 +40,15 @@ Explain your reasoning briefly — e.g. "OR-78 blocks OR-79 and OR-80, so it sho
 
 Then ask: *"Which issues do you want in this sprint?"*
 
-## Step 4 — Move to Todo
+## Step 4 — Feasibility gate + move to Todo
 
-For each confirmed issue:
+For each confirmed issue, run `/feasibility {issue ID}` before moving to Todo.
+
+- **FEASIBLE** → set status → **Todo**, add comment: *"Feasibility: PASS. Added to sprint [date]."*
+- **PARTIAL** → set status → **Todo** with conditions noted, add comment with the conditional findings
+- **BLOCKED** → do NOT move to Todo; add blocking finding as comment; present to user before proceeding
+
+After feasibility passes:
 - Set status → **Todo**
 - Add comment: *"Added to sprint [date]."*
 
