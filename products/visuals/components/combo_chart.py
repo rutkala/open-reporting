@@ -15,7 +15,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 from products.visuals.lib.theme import (
-    COLORWAY, POSITIVE, NEGATIVE, SUBTEXT, TEXT, BORDER, GRID, ZERO_LINE, FONT_FAMILY,
+    COLORWAY, POSITIVE, NEGATIVE, SLATE_1, SUBTEXT, TEXT, BORDER, GRID, ZERO_LINE, FONT_FAMILY,
 )
 from products.visuals.components import (
     PLOT_H, PLOT_H_TALL, MARGIN_L, MARGIN_R, MARGIN_T, MARGIN_B, _chart,
@@ -56,6 +56,7 @@ def line_clustered_column(title, x, bar_series, line_series, subtitle="", y_meas
         line_series: list of {"name": str, "y": list, "color": str (optional)}
         y_measure:   when provided, sets y-axis title, tickformat and ticksuffix
     """
+    # Both series must share the same scale — caller responsibility to verify before using this variant.
     fig = go.Figure()
     for i, s in enumerate(bar_series):
         fig.add_trace(go.Bar(
@@ -91,6 +92,7 @@ def line_stacked_column(title, x, bar_series, line_series, subtitle="", y_measur
         line_series: list of {"name": str, "y": list, "color": str (optional)}
         y_measure:   when provided, sets y-axis title, tickformat and ticksuffix
     """
+    # Both series must share the same scale — caller responsibility to verify before using this variant.
     fig = go.Figure()
     for i, s in enumerate(bar_series):
         fig.add_trace(go.Bar(
@@ -127,6 +129,7 @@ def line_pct_stacked_column(title, x, bar_series, line_series, subtitle="", y_me
         y_measure:   when provided, sets y-axis title, tickformat and ticksuffix
                      (overrides the default "%" ticksuffix on the normalised axis)
     """
+    # Both series must share the same scale — caller responsibility to verify before using this variant.
     n = len(x)
     totals = [sum(s["y"][i] for s in bar_series if i < len(s["y"])) for i in range(n)]
     norm_series = []
@@ -204,11 +207,24 @@ def combo_subplots(title, x, panels, subtitle=""):
                     showlegend=False,
                 ), row=row_idx, col=1)
             else:
-                fig.add_trace(go.Scatter(
-                    x=x, y=s["y"], name=s["name"], mode="lines",
-                    line=dict(color=POSITIVE if diverging else color, width=2, shape="linear"),
-                    showlegend=False,
-                ), row=row_idx, col=1)
+                # Diverging line panels: a continuous line cannot be split by colour, so the line
+                # itself is rendered in neutral grey and each individual marker is coloured
+                # POSITIVE (green) or NEGATIVE (red) per value. This makes the sign of each
+                # data point pre-attentively visible while keeping the line unambiguous.
+                if diverging:
+                    marker_colors = [POSITIVE if v >= 0 else NEGATIVE for v in s["y"]]
+                    fig.add_trace(go.Scatter(
+                        x=x, y=s["y"], name=s["name"], mode="lines+markers",
+                        line=dict(color=SLATE_1, width=2, shape="linear"),
+                        marker=dict(color=marker_colors, size=7),
+                        showlegend=False,
+                    ), row=row_idx, col=1)
+                else:
+                    fig.add_trace(go.Scatter(
+                        x=x, y=s["y"], name=s["name"], mode="lines",
+                        line=dict(color=color, width=2, shape="linear"),
+                        showlegend=False,
+                    ), row=row_idx, col=1)
 
         fig.update_yaxes(
             title_text=panel.get("title", ""),

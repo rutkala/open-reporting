@@ -418,7 +418,7 @@ app.layout = html.Div(style=S["body"], children=[
             html.H2("Stacked column", id="col-stacked", style=S["section-heading"]),
             html.P("stacked_column — vertical bars stacked, shows total and composition.", style=S["section-desc"]),
             html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
-                stacked_column("Stacked column", subtitle="sample data",
+                stacked_column("Stacked column", subtitle="Sample data 2018–2024",
                     x=_years,
                     series=[
                         m.MEASURES["measure_a"].to_series(_df_by_year["val_a"].tolist()),
@@ -439,7 +439,8 @@ app.layout = html.Div(style=S["body"], children=[
                         m.MEASURES["measure_a"].to_series(_df_by_cat["val_a"].tolist()),
                         m.MEASURES["measure_b"].to_series(_df_by_cat["val_b"].tolist()),
                         m.MEASURES["measure_c"].to_series(_df_by_cat["val_c"].tolist()),
-                    ]),
+                    ],
+                    y_measure=m.MEASURES["measure_a"]),
             ])]),
 
             # ── 4. Clustered + stacked column ─────────────────────────────────
@@ -501,7 +502,7 @@ app.layout = html.Div(style=S["body"], children=[
             html.H2("Line", id="line", style=S["section-heading"]),
             html.P("line — trends over time, one or multiple series. Supports reference line.", style=S["section-desc"]),
             html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
-                line("Line", subtitle="sample data",
+                line("Line", subtitle="Sample data 2018–2024",
                     x=_years,
                     series=[
                         m.MEASURES["measure_a"].to_series(_df_by_year["val_a"].tolist()),
@@ -516,7 +517,7 @@ app.layout = html.Div(style=S["body"], children=[
             html.H2("Clustered area", id="area-clustered", style=S["section-heading"]),
             html.P("area — all series fill from zero, overlapping with transparency. Shows volume.", style=S["section-desc"]),
             html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
-                area("Clustered area", subtitle="sample data",
+                area("Clustered area", subtitle="Sample data 2018–2024",
                     x=_years,
                     series=[
                         m.MEASURES["measure_a"].to_series(_df_by_year["val_a"].tolist()),
@@ -530,7 +531,7 @@ app.layout = html.Div(style=S["body"], children=[
             html.H2("Stacked area", id="area-stacked", style=S["section-heading"]),
             html.P("stacked_area — areas stacked cumulatively, shows total and composition over time.", style=S["section-desc"]),
             html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
-                stacked_area("Stacked area", subtitle="sample data",
+                stacked_area("Stacked area", subtitle="Sample data 2018–2024",
                     x=_years,
                     series=[
                         m.MEASURES["measure_a"].to_series(_df_by_year["val_a"].tolist()),
@@ -545,7 +546,7 @@ app.layout = html.Div(style=S["body"], children=[
             html.H2("100% stacked area", id="area-pct", style=S["section-heading"]),
             html.P("pct_stacked_area — normalised to 100%, composition over time only.", style=S["section-desc"]),
             html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
-                pct_stacked_area("100% stacked area", subtitle="sample data",
+                pct_stacked_area("100% stacked area", subtitle="Sample data 2018–2024",
                     x=_years,
                     series=[
                         m.MEASURES["measure_a"].to_series(_df_by_year["val_a"].tolist()),
@@ -559,7 +560,7 @@ app.layout = html.Div(style=S["body"], children=[
             html.H2("Line + clustered column", id="combo-lc", style=S["section-heading"]),
             html.P("line_clustered_column — line and grouped bars on a shared axis. Same scale only.", style=S["section-desc"]),
             html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
-                line_clustered_column("Line + clustered column", subtitle="sample data — same scale",
+                line_clustered_column("Line + clustered column", subtitle="Sample data 2018–2024 — shared scale",
                     x=_years,
                     bar_series=[m.MEASURES["measure_a"].to_series(_df_by_year["val_a"].tolist())],
                     line_series=[m.MEASURES["measure_b"].to_series(_df_by_year["val_b"].tolist())],
@@ -570,7 +571,7 @@ app.layout = html.Div(style=S["body"], children=[
             html.H2("Line + stacked column", id="combo-ls", style=S["section-heading"]),
             html.P("line_stacked_column — stacked bars show components, line shows aggregate or rate.", style=S["section-desc"]),
             html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
-                line_stacked_column("Line + stacked column", subtitle="sample data",
+                line_stacked_column("Line + stacked column", subtitle="Sample data 2018–2024",
                     x=_years,
                     bar_series=[
                         m.MEASURES["measure_a"].to_series(_df_by_year["val_a"].tolist()),
@@ -585,14 +586,15 @@ app.layout = html.Div(style=S["body"], children=[
             html.H2("Line + 100% stacked column", id="combo-lp", style=S["section-heading"]),
             html.P("line_pct_stacked_column — 100% normalised bars with a rate or % line overlay.", style=S["section-desc"]),
             html.Div(style=S["group"], children=[html.Div(style=S["card"], children=[
-                line_pct_stacked_column("Line + 100% stacked column", subtitle="sample data",
+                line_pct_stacked_column("Line + 100% stacked column", subtitle="Sample data 2018–2024",
                     x=_years,
                     bar_series=[
                         m.MEASURES["measure_a"].to_series(_df_by_year["val_a"].tolist()),
                         m.MEASURES["measure_b"].to_series(_df_by_year["val_b"].tolist()),
                         m.MEASURES["measure_c"].to_series(_df_by_year["val_c"].tolist()),
                     ],
-                    line_series=[m.MEASURES["measure_e"].to_series(_df_by_year["val_e"].tolist())]),
+                    line_series=[m.MEASURES["measure_e"].to_series(_df_by_year["val_e"].tolist())],
+                    y_measure=m.MEASURES["measure_a"]),
             ])]),
 
             # ── 16. Scatter / Bubble ──────────────────────────────────────────

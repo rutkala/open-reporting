@@ -51,21 +51,26 @@ def load() -> pd.DataFrame:
 
     rng = np.random.default_rng(42)
     base = {"Cat. A": 47.2, "Cat. B": 45.8, "Cat. C": 52.3, "Cat. D": 48.1, "Cat. E": 43.6}
+    # Trend multipliers per measure: val_a rises, val_b stays flatter, val_c declines.
+    # This ensures area/line chart series are visually separated and non-overlapping.
+    trend_a = 1.8   # val_a: ~+1.8 units/year on average
+    trend_b = 0.2   # val_b: near-flat
+    trend_c = -1.2  # val_c: declining
 
     rows = []
     for cat in categories:
         v = base[cat]
         for i, year in enumerate(years):
-            v = round(v + rng.normal(0, 0.4), 1)
+            v = round(v + trend_a + rng.normal(0, 0.4), 1)
             rows.append({
                 "dim_category": cat,
                 "dim_year":     year,
                 "dim_period":   quarters[i % 4],
                 "val_a":        round(v, 1),
-                "val_b":        round(v * 1.065 + rng.normal(0, 0.2), 1),
-                "val_c":        round(v * 0.935 + rng.normal(0, 0.2), 1),
-                "val_d":        round(v * 0.15  + rng.normal(0, 0.1), 1),
-                "val_e":        round((v - 48.0) * 0.6 + rng.normal(0, 0.1), 1),
+                "val_b":        round(base[cat] + trend_b * i + rng.normal(0, 0.3), 1),
+                "val_c":        round(base[cat] + trend_c * i + rng.normal(0, 0.3), 1),
+                "val_d":        round(abs(base[cat] * 0.15) + rng.normal(0, 0.1), 1),
+                "val_e":        round((i - 3) * 1.2 + rng.normal(0, 0.2), 1),
             })
 
     return pd.DataFrame(rows)

@@ -12,6 +12,10 @@ from products.visuals.lib.theme import (
 )
 from products.visuals.components import PLOT_H, PLOT_H_TALL, _chart
 
+# ── Map-specific colour constants ─────────────────────────────────────────────
+_MAP_OCEAN_COLOR = "#EEF3F7"   # light blue-grey for ocean/water fill
+_MAP_DIVERGING_MID = "#FFFFFF"  # white midpoint for diverging colour scale
+
 
 def choropleth_map(title, locations, values, subtitle="",
                    scope="europe", location_mode="ISO-3",
@@ -28,7 +32,7 @@ def choropleth_map(title, locations, values, subtitle="",
         hover_labels:  list of label strings for hover (default: location codes)
     """
     if color_scale == "diverging":
-        cscale = [[0, "#C0503A"], [0.5, "#FFFFFF"], [1, "#4A9B6F"]]
+        cscale = [[0, "#C0503A"], [0.5, _MAP_DIVERGING_MID], [1, "#4A9B6F"]]
     else:
         cscale = [[0, TEAL_PALE], [1, TEAL_1]]
 
@@ -54,7 +58,7 @@ def choropleth_map(title, locations, values, subtitle="",
         scope=scope,
         showcoastlines=True, coastlinecolor=BORDER,
         showland=True, landcolor=SLATE_4,
-        showocean=True, oceancolor="#EEF3F7",
+        showocean=True, oceancolor=_MAP_OCEAN_COLOR,
         showframe=False,
         projection_type="natural earth",
     )
@@ -109,7 +113,7 @@ def bubble_map(title, lat, lon, size, labels, subtitle="",
         scope=scope,
         showcoastlines=True, coastlinecolor=BORDER,
         showland=True, landcolor=SLATE_4,
-        showocean=True, oceancolor="#EEF3F7",
+        showocean=True, oceancolor=_MAP_OCEAN_COLOR,
         showframe=False,
         projection_type="natural earth",
     )
