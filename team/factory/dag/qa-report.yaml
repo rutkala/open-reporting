@@ -1,0 +1,31 @@
+name: QA Report
+description: QA Report - test results and evaluation
+
+# Component producer
+workstation: quality-assurance
+
+# Internal steps to produce this component
+steps:
+  - test_case_generation
+  - data_verification
+  - edge_case_testing
+  - structural_break_check
+  - documentation
+  - finalize
+
+# Step dependencies
+dependencies:
+  test_case_generation: []
+  data_verification: [test_case_generation]
+  edge_case_testing: [data_verification]
+  structural_break_check: [edge_case_testing]
+  documentation: [structural_break_check]
+  finalize: [documentation]
+
+# Output format
+produces:
+  - QA Report
+
+# Input requirements
+input:
+  - Dashboard Code

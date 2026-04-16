@@ -1,0 +1,31 @@
+name: Semantic Model
+description: Semantic Model - measures, dimensions, data model
+
+# Component producer
+workstation: data-engineering
+
+# Internal steps to produce this component
+steps:
+  - raw_layer
+  - silver_layer
+  - gold_layer
+  - semantic_layer
+  - test
+  - finalize
+
+# Step dependencies
+dependencies:
+  raw_layer: []
+  silver_layer: [raw_layer]
+  gold_layer: [silver_layer]
+  semantic_layer: [gold_layer]
+  test: [semantic_layer]
+  finalize: [test]
+
+# Output format
+produces:
+  - Semantic Model
+
+# Input requirements
+input:
+  - Architecture Design

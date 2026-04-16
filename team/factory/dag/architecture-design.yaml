@@ -1,0 +1,31 @@
+name: Architecture Design
+description: Architecture Design - data flow, schema, system design
+
+# Component producer
+workstation: architecture
+
+# Internal steps to produce this component
+steps:
+  - analyze_requirements
+  - design_data_flow
+  - define_schema
+  - dependency_mapping
+  - review
+  - finalize
+
+# Step dependencies
+dependencies:
+  analyze_requirements: []
+  design_data_flow: [analyze_requirements]
+  define_schema: [design_data_flow]
+  dependency_mapping: [define_schema]
+  review: [dependency_mapping]
+  finalize: [review]
+
+# Output format
+produces:
+  - Architecture Design
+
+# Input requirements
+input:
+  - Requirements Document
