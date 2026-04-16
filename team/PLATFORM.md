@@ -153,6 +153,7 @@ INFRASTRUCTURE
 
 | Component | Location | Status |
 |-----------|----------|--------|
+| Domain briefs | `products/domain-briefs/` | 1 draft (public-finance) |
 | Visual component library | `products/visuals/components/` | Live |
 | Semantic model | `products/semantic/` | Live (legacy, migration pending) |
 | Dashboards (labour, explorer, finance) | `products/dashboards/` | Live |
@@ -722,6 +723,7 @@ Every document declares:
 │       └── bus_matrix.md        ← Kimball bus matrix (data artefact, stays here)
 │
 ├── products/                    ← Product code
+│   ├── domain-briefs/           ← Domain research outputs — shared components (one per domain)
 │   ├── dashboards/              ← Dash apps
 │   ├── visuals/                 ← Reusable components
 │   ├── research/                ← Research product
@@ -768,9 +770,6 @@ Every document declares:
     │       ├── visualization-diff.md
     │       ├── visualization-image.md
     │       └── analytical-review.md
-    │
-    ├── domain-briefs/           ← Research outputs (what was found → feeds KB)
-    │   └── public-finance.md    ← Links to: knowledge-base/domains/public-finance.md
     │
     └── playbooks/               ← Step-by-step process guides
         ├── dashboard.md

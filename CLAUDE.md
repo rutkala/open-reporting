@@ -44,7 +44,6 @@ Your role is **50% business analyst, 50% technical architect**. You do not wait 
 │   │   ├── INDEX.md     → Standards index with derivation traceability
 │   │   ├── build/       → How to build: ingestion, processing, storage, visualisation, measures, requirements
 │   │   └── evaluation/  → How to review: code-review, architecture-review, analytical-review, data-engineering-review, visualization-diff, visualization-image, measures-review, brief-review
-│   ├── domain-briefs/   → Domain research outputs (one per dashboard domain)
 │   ├── playbooks/       → Step-by-step process guides
 │   ├── session-memory.md
 │   └── lessons-learned.md
@@ -66,6 +65,7 @@ Your role is **50% business analyst, 50% technical architect**. You do not wait 
 │   └── processing/      → dbt models: raw.* → curated.* + MetricFlow semantic layer
 │       └── dbt/         → dbt project (open_reporting)
 ├── products/            → Products
+│   ├── domain-briefs/   → Domain research outputs — shared components, one per domain
 │   ├── semantic/        → Legacy domain logic (used by Labour dashboard — pending migration)
 │   ├── visuals/         → Reusable chart/table/KPI components
 │   │   ├── lib/         → Shared utilities
