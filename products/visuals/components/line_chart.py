@@ -109,7 +109,7 @@ def stacked_area(title, x, series, subtitle="", y_measure=None):
             x=x, y=s["y"], name=s["name"], mode="lines",
             stackgroup="one",
             fillcolor=_rgba(color, 0.6),
-            line=dict(color=color, width=1.5, shape="linear"),
+            line=dict(color=color, width=2, shape="linear"),
         ))
     layout = _plotly_layout(yaxis={"rangemode": "tozero"})
     if y_measure is not None:
