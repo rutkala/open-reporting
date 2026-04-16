@@ -1,76 +1,81 @@
 ---
 name: ux-ui
-description: "Produce a UX/UI design for a dashboard. Defines layout, chart specifications, colour usage, and interaction behaviour. Called from /dashboard Step 5."
+description: "Produce a UX/UI design for a visual product. Defines layout, chart specifications, colour usage, and interaction behaviour."
 user-invocable: false
 ---
 
 # UX/UI Design
 
-Produces a visual design specification that the dashboard code step uses as its blueprint.
-Every visual decision must be made here — the code step does not make design decisions.
+Specifies every visual decision for the product. The code step does not make
+design decisions — they are all made here.
 
-## Inputs
+Applies to: dashboard, portal (any product with a visual interface).
 
-- Requirements document from Step 3
-- Architecture design from Step 4 (component inventory)
+## Input
 
-## Standards and knowledge
-
-- Read `team/standards/build/visualisation.md` — Nordic design system, colour palette, chart rules
-- Read `team/knowledge-base/ux-perception/perception.md` — pre-attentive attributes, Gestalt, WCAG
-- Read `team/knowledge-base/visualization/principles.md` — IBCS, colour semantics, reference lines
-- Read `team/knowledge-base/visualization/ui-principles.md` — layout, grid, dashboard types
-
-## Agent
-
-**dashboard-dev** — designs layout, selects chart types, specifies visual details.
-
-## Mandatory sections
-
-### 1. Layout
-- Number of pages and navigation structure
-- Grid system per page (columns, rows, panel sizes)
-- Header and footer content
-- Sidebar or top-bar filters placement
-
-### 2. Chart Specifications
-For each chart in the component inventory:
-- Chart type and justification (why this type for this data)
-- X-axis: field, label (Polish), format
-- Y-axis: field, label (Polish), format, scale (linear/log)
-- Series: names (Polish), colours (specific palette values)
-- Reference lines if any
-- Title and subtitle (Polish)
-
-### 3. KPI Cards
-For each KPI card:
-- Metric label (Polish)
-- Value format (number format, unit)
-- Comparison: vs previous period? vs benchmark?
-- Colour semantics: when green/red/neutral
-
-### 4. Filters
-For each filter:
-- Label (Polish)
-- Component type (dropdown, multi-select, date range, slider)
-- Scope: applies to one page or all pages
-- Default value
-
-### 5. Colour Usage
-- Which palette values are used where (reference `theme.py` values)
-- Semantic assignments: positive = X, negative = Y, neutral = Z
-- Colour-blind safe: confirm no red/green-only distinctions
-
-### 6. Typography and Spacing
-- Title sizes
-- Label sizes
-- Padding and margin conventions
-
-## Evaluator
-
-No automated evaluator at design stage. The visual-screenshot-reviewer runs in Step 7 (QA)
-against the rendered dashboard.
+- Requirements document
+- Architecture design (component inventory)
 
 ## Output
 
-Save as a markdown file on the feature branch.
+- UX/UI design document (markdown file on feature branch)
+
+## Components
+
+| Role | Agent |
+|------|-------|
+| Author | dashboard-dev |
+
+No automated evaluator at design stage — visual-screenshot-reviewer runs in QA
+against the rendered product.
+
+## Steps
+
+1. Read requirements document and architecture component inventory
+2. Design layout for each page
+3. Specify each chart, KPI card, and filter
+4. Define colour usage and typography
+5. Save design document on feature branch
+
+## Instructions
+
+**Layout**
+- Number of pages and navigation structure
+- Grid per page (columns, rows, panel sizes)
+- Header, footer, sidebar content and placement
+- Filter bar position (top, sidebar, inline)
+
+**Chart specifications** (for each chart in component inventory)
+- Chart type and justification
+- X-axis: field, Polish label, format
+- Y-axis: field, Polish label, format, scale
+- Series: Polish names, specific palette values from `theme.py`
+- Reference lines if any (benchmark, target, zero line)
+- Polish title and subtitle
+
+**KPI cards** (for each card)
+- Polish metric label
+- Value format (number format, unit, decimal places)
+- Comparison: vs previous period, vs benchmark, none
+- Colour logic: when positive/negative/neutral colouring applies
+
+**Filters** (for each filter)
+- Polish label
+- Component type: dropdown, multi-select, date range, slider
+- Scope: applies to current page only, or all pages
+- Default value
+
+**Colour usage**
+- Which palette values are used where (reference `products/visuals/lib/theme.py`)
+- Semantic assignments: positive = X, negative = Y, neutral = Z
+- Confirm no red/green-only distinctions (colour-blind safe)
+
+**Typography and spacing**
+- Title sizes, label sizes, padding conventions
+
+## Standards
+
+- `team/standards/build/visualisation.md`
+- `team/knowledge-base/ux-perception/perception.md`
+- `team/knowledge-base/visualization/principles.md`
+- `team/knowledge-base/visualization/ui-principles.md`

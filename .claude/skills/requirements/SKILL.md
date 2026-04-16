@@ -1,81 +1,78 @@
 ---
 name: requirements
-description: "Produce a requirements document for any product. Defines purpose, audience, deliverables, and acceptance criteria. Called from product orchestrator skills."
+description: "Produce a requirements document for any product. Defines purpose, audience, deliverables, and acceptance criteria."
 user-invocable: false
 ---
 
-# Requirements Document
+# Requirements
 
 Defines what the product must be and do. This document is the contract for the build —
-QA tests against it. Every subsequent step derives its scope from this document.
+QA tests against it and every subsequent step derives its scope from it.
 
-Applies to any product type: dashboard, article, research, social content, portal, blog.
+Applies to: dashboard, article, research, social content, portal, blog.
 
-## Inputs
+## Input
 
 - Initial request (Linear issue or captured intake from product skill Step 1)
-- Domain brief (`products/domain-briefs/{domain}.md`) — provides domain context
-
-## Standards and knowledge
-
-- Read `team/standards/build/requirements.md`
-- For knowledge-intensive products (dashboard, research): also read
-  `team/knowledge-base/business-analysis/kpi-indicator-design.md`
-
-## Agent
-
-**business-analyst** — defines scope, writes the document.
-
-## Mandatory sections
-
-All sections are required. The content of each adapts to the product type.
-
-### 1. Purpose
-One paragraph. What problem does this product solve? What question does it answer?
-What decision or action does it enable?
-
-### 2. Target Audience
-Who will use or consume this product? What is their role and context?
-What is their level of analytical or domain knowledge?
-
-### 3. Deliverables
-What exactly will be produced? Be specific.
-
-*For dashboards:* pages, KPIs, charts, filters
-*For articles:* topic, angle, key claims, format, length
-*For social content:* platform, format, key message, tone
-*For research:* research question, methodology, output format
-
-### 4. Content Requirements
-What must the product contain? List the specific elements.
-
-*For dashboards:* KPI definitions (name, formula, unit, interpretation), chart specifications per page
-*For articles:* key points to cover, data or evidence required, sources
-*For social content:* messaging pillars, visual requirements
-*For research:* hypotheses, data required, analytical methods
-
-### 5. Data Sources
-What data is required to produce this product?
-Which warehouse tables, external sources, or research materials?
-Note any gaps — data needed but not yet available.
-
-### 6. Acceptance Criteria
-Specific, testable statements used in QA.
-Format: "When [condition], the product [expected result]."
-Minimum 3 criteria. Each must be verifiable by a reviewer.
-
-### 7. Out of Scope
-Explicitly list what is NOT included in this version.
-This prevents scope creep during build.
-
-## Evaluator
-
-Spawn **brief-reviewer** with the document as input.
-- BLOCK → fix P1 issues, revise, re-run before proceeding
-- CONDITIONAL → add P2 findings as caveats, proceed
-- PASS → proceed
+- Domain brief (`products/domain-briefs/{domain}.md`)
 
 ## Output
 
-Markdown file saved on the feature branch. Present to PO for approval before
-the next step begins.
+- Requirements document (markdown file on feature branch)
+- Approved by PO before next step begins
+
+## Components
+
+| Role | Agent |
+|------|-------|
+| Author | business-analyst |
+| Reviewer | brief-reviewer |
+
+## Steps
+
+1. Read the domain brief and the initial request
+2. Draft all mandatory sections (see Instructions)
+3. Spawn **brief-reviewer** — fix P1 findings before proceeding; add P2 as caveats
+4. Present to PO and wait for explicit approval
+
+## Instructions
+
+The document must contain all seven sections. None can be omitted.
+
+**1. Purpose**
+One paragraph. What problem does this product solve? What question does it answer?
+What decision or action does it enable?
+
+**2. Target Audience**
+Who will use or consume this product? Their role, context, and analytical background.
+
+**3. Deliverables**
+What exactly will be produced? Be specific to the product type:
+- Dashboard: pages, KPIs, charts, filters
+- Article: topic, angle, key claims, format, length
+- Social content: platform, format, key message, tone
+- Research: research question, methodology, output format
+
+**4. Content Requirements**
+Specific elements the product must contain:
+- Dashboard: KPI definitions (name, formula, unit, interpretation), chart list per page
+- Article: key points, data or evidence required, sources to cite
+- Social content: messaging pillars, visual requirements
+- Research: hypotheses, data needed, analytical methods
+
+**5. Data Sources**
+What data is required? Which warehouse tables, external sources, or research materials?
+Note gaps — data needed but not yet available.
+
+**6. Acceptance Criteria**
+Specific, testable statements used in QA.
+Format: "When [condition], the product [expected result]."
+Minimum 3 criteria. Each must be verifiable by a reviewer without ambiguity.
+
+**7. Out of Scope**
+Explicitly list what is NOT included in this version.
+
+## Standards
+
+- `team/standards/build/requirements.md`
+- `team/knowledge-base/business-analysis/kpi-indicator-design.md` (data-driven products)

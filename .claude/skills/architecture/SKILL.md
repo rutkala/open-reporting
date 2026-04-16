@@ -1,70 +1,77 @@
 ---
 name: architecture
-description: "Produce an architecture design for a dashboard. Defines data model, data flow, dashboard components, and KPI calculation logic. Called from /dashboard Step 4."
+description: "Produce an architecture design for a data product. Defines data model, data flow, component inventory, and KPI calculation logic."
 user-invocable: false
 ---
 
-# Architecture Design
+# Architecture
 
-Produces a system design that specifies how the dashboard will be built — data layer,
-component structure, and calculation logic. This document drives both the data pipeline
-work and the dashboard code in subsequent steps.
+Specifies how the product will be built — data layer, component structure, and calculation
+logic. Drives both the data pipeline work and the code in subsequent steps.
 
-## Inputs
+Applies to: dashboard, portal (any product with a data layer).
 
-- Requirements document from Step 3
-- Domain brief from Step 2
+## Input
 
-## Standards and knowledge
+- Requirements document
+- Domain brief
 
-- Read `team/standards/build/storage.md` for schema naming and data model patterns
-- Read `team/standards/build/measures.md` for KPI calculation conventions
-- Read `team/knowledge-base/data-architecture/architecture.md` for medallion patterns
+## Output
 
-## Agents
+- Architecture design document (markdown file on feature branch)
+- Approved by PO before next step begins
 
-- **data-engineer** — data model, warehouse schema, dbt model structure, KPI calculations
-- **dashboard-dev** — dashboard component inventory, chart-to-data mapping
+## Components
 
-These can run in parallel once requirements are confirmed.
+| Role | Agent |
+|------|-------|
+| Data model + KPI logic | data-engineer |
+| Component inventory | dashboard-dev |
+| Reviewer | architecture-critic |
 
-## Mandatory sections
+data-engineer and dashboard-dev work in parallel once requirements are confirmed.
 
-### 1. Data Model
+## Steps
+
+1. Read requirements document and domain brief
+2. data-engineer: design data model and KPI calculation logic
+3. dashboard-dev: compile complete component inventory
+4. Merge into single architecture design document
+5. Spawn **architecture-critic** — fix P1 findings before proceeding; note P2 as caveats
+6. Present to PO and wait for explicit approval
+
+## Instructions
+
+**Data model**
 - Source tables required (raw schema)
-- Curated tables to be built (schema, grain, key fields)
+- Curated tables to build (schema, grain, key fields)
 - Gold mart if needed: `curated.mart_{domain}` — columns, calculated fields
-- Any new dbt models required
+- New dbt models required (list with purpose)
 
-### 2. Data Flow
-Diagram (text) showing: source → ingestion → raw → curated → gold → dashboard
-
-### 3. KPI Calculation Logic
+**KPI calculation logic**
 For each KPI from the requirements document:
 - SQL expression or dbt metric definition
 - Denominator/numerator if a ratio
 - Aggregation method (sum, avg, last value, YoY delta)
-- Any edge cases (division by zero, null handling)
+- Edge cases (division by zero, null handling, partial periods)
 
-### 4. Component Inventory
-Complete list of every component in the dashboard:
+**Component inventory**
+Complete list of every component:
 - Charts: type, data source, x-axis, y-axis, series, filters applied
 - KPI cards: metric, format, comparison reference
-- Filters: field, type (dropdown/slider/date), scope (page or global)
+- Filters: field, type (dropdown/slider/date range), scope (page or global)
 - Pages: name, purpose, components on it
 
-### 5. Dependencies
+**Data flow**
+Text diagram: source → ingestion → raw → curated → gold → dashboard
+
+**Dependencies**
 - Ingestion jobs that must exist or be created
 - dbt models that must exist or be created
-- Any external data sources not yet in warehouse
+- Any data gaps from requirements that block the build
 
-## Evaluator
+## Standards
 
-Spawn **architecture-critic** with the design document as input.
-- BLOCK → fix P1 issues before proceeding
-- CONDITIONAL → note P2 findings, proceed with caveats
-- PASS → proceed
-
-## Output
-
-Save as a markdown file on the feature branch. Present to PO for approval.
+- `team/standards/build/storage.md`
+- `team/standards/build/measures.md`
+- `team/knowledge-base/data-architecture/architecture.md`

@@ -1,70 +1,92 @@
 ---
 name: qa
-description: "Quality assurance for any completed product. Tests the built product against its requirements document. Called from product orchestrator skills."
+description: "Quality assurance for any completed product. Tests the built product against its requirements document."
 user-invocable: false
 ---
 
-# Quality Assurance
+# QA
 
 Tests the completed product against the requirements document.
-Every acceptance criterion must be verified before release.
-Failures return to the build step for fixes.
+Every acceptance criterion must be verified. Failures return to the build step for fixes.
 
-Applies to any product type: dashboard, article, research, social content, portal, blog.
+Applies to: dashboard, article, research, social content, portal, blog.
 
-## Inputs
+## Input
 
 - Requirements document (acceptance criteria, deliverables, content requirements)
-- Built product (code, written content, visual output — whatever was produced)
-
-## Standards and knowledge
-
-- Read `team/standards/evaluation/analytical-review.md` — for data-driven products
-- Read `team/standards/evaluation/visualization-image.md` — for visual products
-- Read `team/standards/evaluation/content-review.md` — for content products
-- Read `team/standards/evaluation/research-review.md` — for research products
-
-Load only the standards relevant to the product type being reviewed.
-
-## Agents (select relevant ones, run in parallel)
-
-| Agent | When to use |
-|-------|-------------|
-| **analytical-validator** | Dashboards, research — checks KPI correctness, aggregation, statistical claims |
-| **visual-screenshot-reviewer** | Dashboards, portal — checks rendered output against UX/UI spec |
-| **code-reviewer** | Any product with code — final code quality pass |
-| **domain-specialist** | Any product — checks domain correctness, KPI interpretation, benchmarks |
-| **content-reviewer** | Articles, social content — checks accuracy, tone, structure |
-| **research-reviewer** | Research products — checks methodology, claims, reproducibility |
-
-## Test procedure
-
-### 1. Acceptance criteria
-Go through each criterion from the requirements document one by one.
-Mark each: **PASS** / **FAIL** / **NOT TESTABLE** (with reason).
-
-### 2. Deliverables check
-Confirm every deliverable listed in the requirements is present and complete.
-
-### 3. Content requirements check
-Verify each content requirement is met (KPIs defined, key points covered, etc.).
-
-### 4. Edge cases (product-specific)
-*Dashboards:* no data, single value, large numbers, filter interactions
-*Articles:* factual claims verified, sources cited, no unsupported conclusions
-*Social content:* platform format compliance, character limits, image specs
-
-## Outcome
-
-**All PASS → proceed to /release.**
-
-**Any FAIL → return to the build step** with a specific list:
-- What failed
-- What the correct behaviour or content should be
-- Which acceptance criterion it maps to
-
-Re-run QA after fixes. Do not proceed to release until all criteria pass.
+- Built product (code, written content, or other output)
+- Architecture design (for data products — KPI calculation logic)
 
 ## Output
 
-QA report: criteria tested, results (PASS/FAIL), any known limitations or caveats.
+- QA report: criteria tested, results (PASS/FAIL), known limitations
+- PASS → proceeds to `/release`
+- FAIL → returns to build step with specific failure list
+
+## Components
+
+Select agents relevant to the product type. Run in parallel.
+
+| Agent | When to use |
+|-------|-------------|
+| analytical-validator | Dashboards, research — KPI correctness, aggregation, statistical claims |
+| visual-screenshot-reviewer | Dashboards, portal — rendered output vs UX/UI spec |
+| code-reviewer | Any product with code — final quality pass |
+| domain-specialist | Any product — domain correctness, KPI interpretation, benchmarks |
+| content-reviewer | Articles, social content — accuracy, tone, structure |
+| research-reviewer | Research products — methodology, claims, reproducibility |
+
+## Steps
+
+1. Read requirements document in full — note every acceptance criterion
+2. Spawn relevant evaluator agents in parallel
+3. Work through test checklist (see Instructions)
+4. Compile QA report
+5. If any FAIL: return to build step with specific failure list; re-run after fixes
+6. If all PASS: proceed to `/release`
+
+## Instructions
+
+**Acceptance criteria**
+Go through each criterion from the requirements document one by one.
+Mark each: **PASS** / **FAIL** / **NOT TESTABLE** (with reason).
+
+**Deliverables check**
+Confirm every deliverable listed in requirements is present and complete.
+
+**Content requirements check**
+Verify each content requirement is met (KPIs defined, key points covered, etc.).
+
+**Product-specific edge cases**
+
+*Dashboards:*
+- No data for selected filter combination
+- Single data point
+- Large values (number formatting)
+- Filter interactions (page-scoped vs global)
+- KPI values match calculation logic from architecture
+
+*Articles / social content:*
+- All factual claims are verifiable from cited sources
+- No unsupported conclusions
+- Polish is correct (diacritics, formal register)
+
+*Research:*
+- Methodology matches what was specified in requirements
+- Results reproducible from provided data and code
+- Claims proportionate to evidence
+
+**On failure**
+Return to the build step with:
+- Exactly what failed (criterion reference)
+- What was observed vs what was expected
+- What needs to change
+
+## Standards
+
+- `team/standards/evaluation/analytical-review.md` (data products)
+- `team/standards/evaluation/visualization-image.md` (visual products)
+- `team/standards/evaluation/content-review.md` (content products)
+- `team/standards/evaluation/research-review.md` (research products)
+
+Load only the standards relevant to the product type being reviewed.

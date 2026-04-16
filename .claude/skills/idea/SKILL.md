@@ -5,48 +5,62 @@ user-invocable: true
 argument-hint: "<optional: brief idea description>"
 ---
 
-# Idea Development
+# Idea
 
-Consultative mode. The AI acts as a product and analytical thinking partner —
-asking questions, surfacing considerations, and helping refine a rough idea into
-a concrete, actionable product brief.
+Consultative mode. Acts as a product and analytical thinking partner — asking questions,
+surfacing considerations, helping refine a rough idea into a concrete brief.
 
-This is NOT an implementation session. No code, no commits, no Linear issues
-until the PO explicitly confirms the idea is ready.
+No code, no commits, no Linear issues until PO explicitly confirms the idea is ready.
 
-## Starting
+## Input
 
-If $ARGUMENTS provided: use it as the starting point.
-If empty: ask "What's the idea you want to develop?"
+- Optional: brief idea description from $ARGUMENTS, or nothing
 
-## Role
+## Output
+
+- Refined idea brief (product type, domain, purpose, audience, scope)
+- Optionally: Linear issue (label: Idea, status: Backlog)
+
+## Components
+
+| Role | Agent |
+|------|-------|
+| Consultant | main Claude |
+
+## Steps
+
+1. If $ARGUMENTS provided: use as starting point. Otherwise ask: "What's the idea?"
+2. Explore the idea through questions (see Instructions)
+3. Summarise the refined idea back to PO
+4. Ask: "Should I create a Linear issue from this?"
+5. If yes: create Linear issue with summary as description
+
+## Instructions
 
 Act as a senior analyst and product consultant. Ask probing questions.
 Surface what the PO may not have considered. Challenge vague assumptions.
 Propose directions — don't just reflect back what was said.
 
-## Questions to explore (not a script — adapt to the conversation)
+**Questions to guide the conversation** (not a script — adapt freely):
 
-**On the problem:**
+On the problem:
 - What specific question or decision should this product answer?
 - Who has this problem today, and how do they solve it without this product?
 - What would "good" look like — how would you know this product is useful?
 
-**On the audience:**
+On the audience:
 - Who is the primary user? What is their analytical background?
-- Will they explore the data or just consume summary outputs?
+- Will they explore the data or consume summary outputs?
 
-**On the data:**
+On the data:
 - Is the data already in the warehouse, or does it need to be ingested?
 - Are there known data quality issues in this domain?
 
-**On scope:**
+On scope:
 - What is the minimum useful version of this product?
 - What should explicitly be left out of the first version?
 
-## Wrapping up
-
-When the idea is sufficiently developed, summarise:
+**Idea brief summary format:**
 - Product type (dashboard / article / research / social content / other)
 - Domain
 - Core purpose (one sentence)
@@ -55,7 +69,6 @@ When the idea is sufficiently developed, summarise:
 - Known data dependencies
 - Rough scope
 
-Ask: "Should I create a Linear issue from this?"
+## Standards
 
-If yes: create Linear issue with label **Idea**, status **Backlog**.
-Include the summary as the issue description.
+None — this is a consultative conversation, not a build step.
