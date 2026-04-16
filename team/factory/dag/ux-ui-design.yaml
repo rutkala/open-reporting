@@ -1,0 +1,32 @@
+name: UX/UI Design
+description: UX/UI Design - layout, visual mappings, UI components
+
+# Component producer
+workstation: ux-ui-design
+
+# Internal steps to produce this component
+steps:
+  - layout_design
+  - topic_grouping
+  - chart_selection
+  - interaction_flow
+  - review
+  - finalize
+
+# Step dependencies
+dependencies:
+  layout_design: []
+  topic_grouping: [layout_design]
+  chart_selection: [topic_grouping]
+  interaction_flow: [chart_selection]
+  review: [interaction_flow]
+  finalize: [review]
+
+# Output format
+produces:
+  - UX/UI Design
+
+# Input requirements
+input:
+  - Requirements Document
+  - Architecture Design

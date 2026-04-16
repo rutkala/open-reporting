@@ -1,0 +1,35 @@
+name: Requirements Document
+description: Requirements Document - analytical brief with KPIs and benchmarks
+
+# Component producer
+workstation: business-analysis
+
+# Internal steps to produce this component
+steps:
+  - research_domain
+  - audience_identification
+  - define_kpis
+  - define_benchmarks
+  - create_brief
+  - review
+  - finalize
+
+# Step dependencies
+dependencies:
+  research_domain: []
+  audience_identification: [research_domain]
+  define_kpis: [audience_identification]
+  define_benchmarks: [define_kpis]
+  create_brief: [define_kpis, define_benchmarks]
+  review: [create_brief]
+  finalize: [review]
+
+# Output format
+produces:
+  - Requirements Document
+
+# Input requirements
+input:
+  - Product request (what to build)
+  - Target audience
+  - Success criteria

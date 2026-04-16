@@ -1,0 +1,46 @@
+name: dashboard
+description: Produces a deployed analytical dashboard
+
+# BOM - Components needed (Bill of Materials)
+components:
+  - Requirements Document
+  - Architecture Design
+  - UX/UI Design
+  - Semantic Model
+  - Dashboard Code
+  - QA Report
+  - Release Document
+
+# Component DAGs - internal steps for each component
+component_dag:
+  Requirements Document: dag/requirements-document.yaml
+  Architecture Design: dag/architecture-design.yaml
+  UX/UI Design: dag/ux-ui-design.yaml
+  Semantic Model: dag/semantic-model.yaml
+  Dashboard Code: dag/dashboard-code.yaml
+  QA Report: dag/qa-report.yaml
+  Release Document: dag/release-document.yaml
+
+# Orchestrator flow - which workstation produces each component
+producer:
+  Requirements Document: business-analysis
+  Architecture Design: architecture
+  UX/UI Design: ux-ui-design
+  Semantic Model: data-engineering
+  Dashboard Code: full-stack-development
+  QA Report: quality-assurance
+  Release Document: devops
+
+# Dependencies - what each component needs as input
+dependencies:
+  Requirements Document: []
+  Architecture Design: [Requirements Document]
+  UX/UI Design: [Architecture Design]
+  Semantic Model: [Architecture Design]
+  Dashboard Code: [UX/UI Design, Semantic Model]
+  QA Report: [Dashboard Code]
+  Release Document: [QA Report]
+
+# Parallel execution
+parallel:
+  - [UX/UI Design, Semantic Model]

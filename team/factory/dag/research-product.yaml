@@ -1,0 +1,26 @@
+name: research-product
+description: Produces academic research and insights
+
+# BOM - Components needed
+components:
+  - Domain Research
+  - Research Methodology
+  - Analysis Results
+  - Research Review
+  - Release Document
+
+# Orchestrator flow
+producer:
+  Domain Research: business-domain
+  Research Methodology: research
+  Analysis Results: analytics
+  Research Review: quality-assurance
+  Release Document: devops
+
+# Dependencies
+dependencies:
+  Domain Research: []
+  Research Methodology: [Domain Research]
+  Analysis Results: [Research Methodology]
+  Research Review: [Analysis Results]
+  Release Document: [Research Review]
