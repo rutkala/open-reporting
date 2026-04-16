@@ -1,71 +1,81 @@
 ---
 name: requirements
-description: "Produce a requirements document for a dashboard. Defines what to build — KPIs, pages, filters, data sources, acceptance criteria. Called from /dashboard Step 3."
+description: "Produce a requirements document for any product. Defines purpose, audience, deliverables, and acceptance criteria. Called from product orchestrator skills."
 user-invocable: false
 ---
 
 # Requirements Document
 
-Produces a requirements document that defines exactly what the dashboard must contain.
-This document is the contract for the build — QA will test against it in Step 7.
+Defines what the product must be and do. This document is the contract for the build —
+QA tests against it. Every subsequent step derives its scope from this document.
+
+Applies to any product type: dashboard, article, research, social content, portal, blog.
 
 ## Inputs
 
-- Initial request from Step 1 (Linear issue or captured intake)
-- Domain brief from Step 2 (`products/domain-briefs/{domain}.md`)
+- Initial request (Linear issue or captured intake from product skill Step 1)
+- Domain brief (`products/domain-briefs/{domain}.md`) — provides domain context
 
 ## Standards and knowledge
 
-- Read `team/standards/build/requirements.md` before writing
-- Read `team/knowledge-base/business-analysis/kpi-indicator-design.md` for KPI definitions
+- Read `team/standards/build/requirements.md`
+- For knowledge-intensive products (dashboard, research): also read
+  `team/knowledge-base/business-analysis/kpi-indicator-design.md`
 
 ## Agent
 
-**business-analyst** — researches domain context, defines KPIs, writes the document.
+**business-analyst** — defines scope, writes the document.
 
 ## Mandatory sections
 
-The requirements document must contain all of the following. None can be omitted.
+All sections are required. The content of each adapts to the product type.
 
-### 1. Problem Statement
-One paragraph. What question does this dashboard answer? What decision does it support?
+### 1. Purpose
+One paragraph. What problem does this product solve? What question does it answer?
+What decision or action does it enable?
 
 ### 2. Target Audience
-Who will use this dashboard? What is their role? What is their analytical background?
+Who will use or consume this product? What is their role and context?
+What is their level of analytical or domain knowledge?
 
-### 3. KPI Definitions
-For each KPI:
-- Name (Polish label for display)
-- Formula or calculation method
-- Unit and scale
-- Interpretation (what does a high/low value mean?)
-- Source indicator(s) from warehouse
+### 3. Deliverables
+What exactly will be produced? Be specific.
 
-### 4. Pages and Structure
-For each page:
-- Page name and purpose
-- Charts on this page (type, data, axes)
-- KPI cards on this page
-- Filters available
+*For dashboards:* pages, KPIs, charts, filters
+*For articles:* topic, angle, key claims, format, length
+*For social content:* platform, format, key message, tone
+*For research:* research question, methodology, output format
+
+### 4. Content Requirements
+What must the product contain? List the specific elements.
+
+*For dashboards:* KPI definitions (name, formula, unit, interpretation), chart specifications per page
+*For articles:* key points to cover, data or evidence required, sources
+*For social content:* messaging pillars, visual requirements
+*For research:* hypotheses, data required, analytical methods
 
 ### 5. Data Sources
-What data is required? Which warehouse tables or dbt models?
-Note any gaps — data that is needed but not yet ingested.
+What data is required to produce this product?
+Which warehouse tables, external sources, or research materials?
+Note any gaps — data needed but not yet available.
 
 ### 6. Acceptance Criteria
-Specific, testable statements. Each criterion will be checked in QA.
-Format: "When [condition], the dashboard shows [expected result]."
+Specific, testable statements used in QA.
+Format: "When [condition], the product [expected result]."
+Minimum 3 criteria. Each must be verifiable by a reviewer.
 
 ### 7. Out of Scope
 Explicitly list what is NOT included in this version.
+This prevents scope creep during build.
 
 ## Evaluator
 
-After writing, spawn **brief-reviewer** with the document as input.
-- BLOCK → fix P1 issues, rewrite affected sections, re-run evaluator
-- CONDITIONAL → add P2 findings as caveats in the document
+Spawn **brief-reviewer** with the document as input.
+- BLOCK → fix P1 issues, revise, re-run before proceeding
+- CONDITIONAL → add P2 findings as caveats, proceed
 - PASS → proceed
 
 ## Output
 
-Save as a markdown file on the feature branch. Present to PO for approval.
+Markdown file saved on the feature branch. Present to PO for approval before
+the next step begins.

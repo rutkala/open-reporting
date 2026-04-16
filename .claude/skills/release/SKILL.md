@@ -1,18 +1,21 @@
 ---
 name: release
-description: "Produce a release document and deploy a completed dashboard. Final step in /dashboard pipeline."
+description: "Release a completed product. Commits, deploys, documents, and closes the Linear issue. Called from product orchestrator skills after QA passes."
 user-invocable: false
 ---
 
 # Release
 
-Deploys the dashboard and produces a release document. Only runs after QA has passed.
+Final step for any product. Deploys or publishes the product, documents it,
+and closes the issue. Only runs after QA has passed.
+
+Applies to any product type: dashboard, article, research, social content, portal, blog.
 
 ## Inputs
 
-- QA report from Step 7 (pass confirmation, any known caveats)
-- Requirements document from Step 3 (accepted criteria, scope)
-- Built dashboard at `products/dashboards/{domain}/app.py`
+- QA report (pass confirmation, known caveats)
+- Requirements document (what was built, acceptance criteria)
+- Built product (code, content, or other output)
 
 ## Agent
 
@@ -20,35 +23,48 @@ Main Claude — deployment steps and documentation.
 
 ## Steps
 
-### 1. Commit and open PR
-Run `/review` — spawns evaluators, auto-commits, pushes branch, opens PR.
-Present PR URL to PO.
+### 1. Commit and PR (code products only)
+For products with code (dashboards, portal): run `/review` — spawns evaluators,
+auto-commits, pushes branch, opens PR. Present PR URL to PO.
 
-### 2. Merge
-Wait for PO to approve and merge the PR.
+For content products (articles, social): skip this step.
 
-### 3. Deploy
-After merge:
-- Restart the dashboard service if running as systemd unit
-- Verify the dashboard loads at its URL
+### 2. Publish or deploy
+
+*Dashboards / portal:*
+- Merge PR (wait for PO approval)
+- Restart service if running as systemd unit
+- Verify the product loads at its URL
 - Confirm it appears on `portal.open-reporting.dev`
 
-### 4. Release document
-Produce a release document containing:
-- Dashboard name and domain
-- Access URL
-- What was built (summary of pages, KPIs)
-- Data sources and refresh cadence
+*Articles:*
+- Publish to Ghost CMS
+- Confirm it appears at `www.open-reporting.dev`
+
+*Social content:*
+- Schedule or post via configured social publishing tool
+
+*Research:*
+- Commit notebooks and outputs to `products/research/`
+- Merge PR
+
+### 3. Release document
+Produce a brief release document:
+- Product name, type, and domain
+- Access point (URL, channel, or location)
+- What was built (one-paragraph summary)
+- Data sources and refresh cadence (if applicable)
 - Known limitations or caveats (from QA report)
 - Date released
 
-Save release document on the feature branch before merge, or as a comment on the Linear issue.
+Save as a comment on the Linear issue, or as a file if the product has a
+dedicated folder in `products/`.
 
-### 5. Close
+### 4. Close
 - Linear issue → **Done**
-- Update `team/session-memory.md` with what was completed
-- Delete feature branch
+- Update `team/session-memory.md`
+- Delete feature branch (code products)
 
 ## Output
 
-Live dashboard at its URL. Release document saved. Linear issue closed.
+Product live at its access point. Release document saved. Linear issue closed.
