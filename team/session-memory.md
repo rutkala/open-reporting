@@ -1,9 +1,9 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-04-07 -->
+<!-- last-updated: 2026-04-16 -->
 
 ## Current Focus
-Infrastructure build-out complete. All KB + agent pairs done. Backlog now shifts to product work.
+Phase 1 cleanup complete. Repo unblocked. Next: finish pilot_template (Phase 2) then first domain product (Phase 3).
 
 ## MVP Status: COMPLETE (v0.1.0 — 2026-03-28)
 
@@ -24,16 +24,20 @@ Infrastructure build-out complete. All KB + agent pairs done. Backlog now shifts
 - `team/standards/evaluation/` — 12 eval standards (all wired to agents)
 - `team/playbooks/` — 9 playbooks covering all sub-products
 
-## Recently Completed (2026-04-07)
-- OR-138 (PR #53, merged by Claude): Rename data-architect → data-engineer across all 17 references
-- OR-135–137, 139–141 (merged by opencode):
-  - Content/Editorial KB + content-writer + content-reviewer + content-review.md
-  - Research Methods KB + researcher + research-reviewer + research-review.md
-  - Platform/Ops KB + ops-engineer + ops-reviewer + ops-review.md
-  - Data Research KB + data-researcher + data-research-reviewer + data-research-review.md
-  - data-architect builder agent (Design-phase, Data Architecture competency)
-  - article.md + research.md playbooks (sub-products #17, #18)
-- Index gap fix (direct commit): data-research KB and eval standard added to INDEX files
+## Recently Completed (2026-04-16)
+- OR-143 Phase 1 cleanup (PR #59 + #60, merged):
+  - Extracted 5 chart fix files to clean branch, merged independently
+  - Added AGENTS.md (universal token-efficiency rules for Claude Code + OpenCode)
+  - Added docs/SITUATION.md (architectural situation + plan)
+  - Added team/factory/ DAGs + workstation definitions
+  - Added team/standards/build/dashboard-assembly.md
+  - Added products/dashboards/pilot_template/ (P00.1–P19.1 checklists + Dash skeleton)
+  - Discarded 70+ dept-task-dev/test agents, factory-execution.md, workstation-template.md
+  - 23 original agents + 9 playbooks intact
+
+## Previously Completed (2026-04-07)
+- OR-138: Rename data-architect → data-engineer across all 17 references
+- OR-135–141: KB modules, agents, playbooks, eval standards (all complete)
 
 ## Knowledge Base Status (10 modules)
 - Analytical methods: ✅ Complete
