@@ -1,87 +1,82 @@
 ---
 name: document
-description: "Update project documentation after completing implementation. Reviews what was built and updates the relevant docs/ files, README.md, and inline code comments."
+description: >
+  Generic documentation process. Produces any artifact by running brainstorm → collect →
+  analyze → save. Always paired with an artifact skill that defines the output structure.
+  Invoked by /develop as Step 1, or standalone when producing a knowledge base, requirements
+  document, domain brief, or any other artifact from scratch.
+  Triggers when: "document X", "write the requirements", "build a knowledge base for X",
+  "research and document X", or when /develop reaches Step 1.
 user-invocable: true
-argument-hint: "[what was built]"
+argument-hint: "<artifact type> for <topic>"
 ---
 
-# Documentation Update
+# Document
 
-Update documentation to reflect what was just built. Run after `/commit`.
+Produces any artifact by running a four-step process: brainstorm → collect → analyze → save.
 
-## Context
+The artifact skill (e.g. `knowledge-base`, `requirements`, `domain-input`) defines what the
+output looks like. This skill defines how to get there.
 
-What was just built: `$ARGUMENTS`
+---
 
-Recent commit:
-!`git log --oneline -3 2>/dev/null`
+## Input
 
-Changed files:
-!`git diff HEAD~1 --name-only 2>/dev/null`
+| What | Provided by |
+|------|------------|
+| Artifact type | Caller — which artifact to produce (e.g. `knowledge-base`, `requirements`) |
+| Topic / context | Caller — what the artifact covers and any constraints |
 
-## Step 1 — Identify What Needs Updating
+<HARD-GATE>
+Both artifact type and topic must be provided before starting. If either is missing, stop
+and ask. Load the artifact skill first — it defines the output structure, quality criteria,
+and any artifact-specific gates that apply during the write step.
+</HARD-GATE>
 
-Based on what was built, determine which documents are affected:
+---
 
-| What changed | Documents to update |
-|---|---|
-| New data source added | `docs/DATA_SOURCES.md` |
-| New domain or product area | `docs/DOMAINS.md` |
-| Architecture change (new service, new folder) | `docs/ARCHITECTURE.md`, `README.md` |
-| New workflow or process | `docs/WORKFLOW.md` |
-| Project direction or goals changed | `docs/PROJECT.md` |
-| New ingestion script | Inline docstring in the script itself |
-| New dashboard | Inline docstring in the script itself |
+## Output
 
-## Step 2 — Update Documents
+Defined entirely by the artifact skill. This process skill produces no output of its own —
+it drives the steps that produce the artifact.
 
-For each document that needs updating:
-- Add new information in the right section
-- Remove or correct anything that is now outdated
-- Keep language plain — these docs are also used as context in Claude.ai
+---
 
-## Step 3 — Update Inline Docstrings
+## Steps
 
-For any new Python scripts, ensure the module docstring includes:
-```python
-"""
-{What this script does in one sentence}
-Source: {data source name and URL}
-Schema: {DB schema.table it writes to}
-Usage: python3 {path/to/script.py} [--flags]
-"""
-```
+### 1. Brainstorm
+Invoke `/brainstorm` to surface angles, source types, and open questions before collecting anything.
 
-## Step 4 — Present Summary
+- What aspects of this topic matter most for the intended use?
+- What types of sources exist (official docs, academic papers, community patterns, examples)?
+- What gaps or uncertainties need to be resolved?
 
-Tell the user:
-- Which documents were updated and what was added
-- Whether anything in the docs is now outdated and was corrected
-- Whether any documentation gaps remain
+Output: a scoped list of questions and source directions to guide collection.
 
-## Step 5 — Lessons Learned (mandatory after every issue)
+### 2. Collect
+Gather raw material based on the brainstorm output. Collection has two parts — do both:
 
-Reflect on the issue that was just completed. Ask:
-- What went wrong or took longer than expected?
-- What was discovered about the data, tools, or architecture that wasn't known at the start?
-- What would have made this issue go faster or smoother?
-- Did any process steps get skipped, and why?
+**Web research (always required for any topic with external sources):**
+- Search official documentation, authoritative sites, academic sources, community resources
+- Use web search tools to find current, primary sources — do not rely on training knowledge alone
+- For each page fetched: write the full page content as a markdown file to `raw/` — e.g. `raw/dash_callbacks.md`, `raw/ibcs_chart_rules.md`. Write the fetched content itself, not a summary of it.
 
-For each lesson, decide where it belongs and update it immediately:
+**Internal sources (when the topic relates to this codebase):**
+- Read relevant project files, existing reference documents, configuration, code examples
+- For each file read: write a copy or verbatim excerpt to `raw/` — e.g. `raw/semantic_py.md`, `raw/template_app_py.md`
 
-| Type of lesson | Where to write it |
-|---|---|
-| Technical pattern or pitfall (data types, tool quirk, API behaviour) | `team/standards/build/` — relevant standard |
-| Process failure (step skipped, wrong order, wrong gate) | `.claude/skills/` — relevant skill |
-| Architecture decision or constraint | `docs/ARCHITECTURE.md` or inline in relevant script |
-| Tooling or environment fact | `.claude/session-memory.md` Key Technical Facts |
-| Behaviour rule for future sessions | `memory/feedback_*.md` |
+Do not filter or synthesise at this stage — save the source material first, draw no conclusions yet.
 
-Present the lessons and where they were written. If no lessons — explicitly state "No lessons identified." Do not silently skip this step.
+### 3. Analyze
+Invoke `/analyze` to assess collected material before writing.
 
-## Rules
-- **Plain language** — docs are read by both Claude.ai and Claude Code
-- **Don't over-document** — update only what actually changed
-- **No new files** unless genuinely needed — update existing docs first
-- **Keep docs concise** — a good doc is one that gets read
-- **Lessons learned is not optional** — always run Step 5, even for small issues
+- Maps coverage against the artifact structure — which sections are well-supported, which are thin
+- Flags source quality issues and contradictions
+- Identifies gaps: minor ones go into the artifact's Gaps section; major ones trigger another `/collect` pass
+
+### 4. Save
+Invoke `/save` to synthesise collected material into the artifact and write it to disk.
+
+- Follows the artifact skill's structure exactly
+- Cites sources throughout — every factual claim traces back to collected material
+- Respects any artifact-specific gates defined in the artifact skill (e.g. PO approval, reviewer agent)

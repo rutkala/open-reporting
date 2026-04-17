@@ -1,78 +1,80 @@
 ---
 name: requirements
-description: "Produce a requirements document for any product. Defines purpose, audience, deliverables, and acceptance criteria."
+description: "Requirements document artifact. Defines what a requirements document is — the contract for what the product must be and do. Produced by /document and consumed by /design and all product skills."
 user-invocable: false
 ---
 
 # Requirements
 
-Defines what the product must be and do. This document is the contract for the build —
-QA tests against it and every subsequent step derives its scope from it.
+The requirements document defines what the product must be and do. Every subsequent step
+derives its scope from it — design implements what it says, QA tests against it,
+and release confirms it was delivered.
 
-Applies to: dashboard, article, research, social content, portal, blog.
+Produced by: `/document`
+Consumed by: `/design`, `/build`, `/evaluate`, all product skills
 
-## Input
+---
 
-- Initial request (Linear issue or captured intake from product skill Step 1)
-- Domain brief (`products/domain-briefs/{domain}.md`)
+## Location
 
-## Output
+`products/domain-briefs/{domain}/requirements.md`
 
-- Requirements document (markdown file on feature branch)
-- Approved by PO before next step begins
+---
 
-## Components
+## Structure
 
-| Role | Agent |
-|------|-------|
-| Author | business-analyst |
-| Reviewer | brief-reviewer |
-
-## Steps
-
-1. Read the domain brief and the initial request
-2. Draft all mandatory sections (see Instructions)
-3. Spawn **brief-reviewer** — fix P1 findings before proceeding; add P2 as caveats
-4. Present to PO and wait for explicit approval
-
-## Instructions
-
-The document must contain all seven sections. None can be omitted.
+Every requirements document must contain all seven sections. None can be omitted.
 
 **1. Purpose**
-One paragraph. What problem does this product solve? What question does it answer?
-What decision or action does it enable?
+One paragraph: what question or decision this product answers, and why it matters now.
+Grounds the product in a real analytical or user need — not just "a dashboard showing X".
 
-**2. Target Audience**
-Who will use or consume this product? Their role, context, and analytical background.
+**2. Target audience**
+Who will use this product. Their analytical background. What decisions they make with it.
+Determines the level of complexity, annotation needed, and language register.
 
 **3. Deliverables**
-What exactly will be produced? Be specific to the product type:
-- Dashboard: pages, KPIs, charts, filters
+Exact list of what will be produced:
+- Dashboard: URL, pages, KPIs, charts, filters
 - Article: topic, angle, key claims, format, length
-- Social content: platform, format, key message, tone
+- Social content: platform, format, key message
 - Research: research question, methodology, output format
 
-**4. Content Requirements**
-Specific elements the product must contain:
-- Dashboard: KPI definitions (name, formula, unit, interpretation), chart list per page
-- Article: key points, data or evidence required, sources to cite
-- Social content: messaging pillars, visual requirements
-- Research: hypotheses, data needed, analytical methods
+**4. Content requirements**
+What must be in the product:
+- KPIs and metrics (with Polish labels and unit)
+- Key analytical angles (from domain brief)
+- Mandatory comparisons, breakdowns, or time horizons
+- Any specific user interactions (filters, drill-downs, highlights)
 
-**5. Data Sources**
-What data is required? Which warehouse tables, external sources, or research materials?
-Note gaps — data needed but not yet available.
+**5. Data sources**
+For each data source:
+- Name and location (warehouse table or external source)
+- Availability status (exists / needs ingestion)
+- Known quality issues or gaps
 
-**6. Acceptance Criteria**
-Specific, testable statements used in QA.
-Format: "When [condition], the product [expected result]."
-Minimum 3 criteria. Each must be verifiable by a reviewer without ambiguity.
+**6. Acceptance criteria**
+Numbered list. Each criterion must be testable — observable and verifiable without ambiguity.
+Format: "When [condition], the product [shows/does X]."
+Minimum 3 criteria. No vague criteria ("looks good", "is fast").
 
-**7. Out of Scope**
-Explicitly list what is NOT included in this version.
+**7. Out of scope**
+Explicit list of what this version does NOT include.
+Prevents scope creep during build and QA.
+
+---
+
+## Quality criteria
+
+- Every acceptance criterion is independently verifiable
+- No criterion uses vague language ("appropriate", "reasonable", "fast")
+- Data sources have availability status confirmed against the warehouse
+- Out of scope is explicit — does not rely on what is absent to imply exclusion
+
+---
 
 ## Standards
 
 - `team/standards/build/requirements.md`
-- `team/knowledge-base/business-analysis/kpi-indicator-design.md` (data-driven products)
+- `team/knowledge-base/business-analysis/kpi-indicator-design.md`
+- Reviewed by: `brief-reviewer`

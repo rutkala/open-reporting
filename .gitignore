@@ -19,3 +19,7 @@ tools/dalle-gen.ts
 bun.lock
 products/dashboards/finance_test/Test/
 team/knowledge-base/visualization/docs/viz-kb-full/
+
+# npx skills CLI — multi-agent install artifacts (we only use .claude/)
+.agents/
+.qwen/

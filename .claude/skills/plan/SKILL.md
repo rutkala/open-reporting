@@ -94,15 +94,9 @@ The user should only see structurally, analytically, and domain-correct plans.
 
 - Present the plan and ask: *"Does this look right? Shall I proceed?"*
 - If the user suggests changes, update the plan and present again
-- Only start coding after explicit approval
+- Only confirm once approved — execution is the caller's responsibility
 
-## Step 5 — Execute
-
-Once approved:
-1. Follow the plan step by step
-2. If something unexpected is discovered mid-implementation — pause and inform the user
-3. If deviating from the plan — explain why before doing so
-4. After completing — give a plain-language summary of what was built
+**Terminal state:** When the user approves, return control to the caller. `/plan` does not implement — it plans. The caller (`/kickoff`, `/develop`, or inline work) decides what happens next.
 
 ## Rules
 - **Business language first** — the user is the product owner, not a developer

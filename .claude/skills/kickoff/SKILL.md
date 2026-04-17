@@ -69,15 +69,18 @@ Once confirmed:
 - Set issue status → **In Progress**
 - Add comment: *"Kickoff confirmed. Starting [research / planning]."*
 
-## Step 7 — Drive the pipeline
+## Step 7 — Route to the right pipeline
 
-Execute the appropriate next steps in sequence, pausing for user approval at each gate:
+Identify the product type from the Linear issue labels or description, then route:
 
+**Code products (dashboard, portal, mobile):**
+Run `/develop {issue ID}` — this drives the full pipeline:
+document → design → build → test → release
+
+**Platform / data / infra work** (no product orchestrator exists for these yet):
 1. `/research` — if data source or approach is unclear
 2. `/plan` — design the solution, present for approval before any code
-3. **Implement** — create feature branch, write code (use `data-engineer` for `platform/` work, `dashboard-dev` for `products/dashboards/` and `products/visuals/` work)
-4. `/review` — runs all evaluator agents in parallel; auto-commits, pushes, and opens PR when all pass; loops to fix when blocked (no human involvement during review loop)
-5. **Merge** — present PR URL to user; wait for merge approval (only human gate in the pipeline)
-6. `/document` — update affected docs, RELEASE_NOTES.md
-7. **Lessons learned (mandatory)** — after every issue, reflect on what went wrong or could go better. Update standards, skills, or playbooks based on findings. See `/document` Step 5.
-8. **Close** — Linear issue → **Done** (only after PR is merged), delete feature branch
+3. Create feature branch, write code (`data-engineer` for `platform/`, `ops-engineer` for infra)
+4. `/review` — auto-commits, pushes, opens PR when clean; loops to fix when blocked
+5. **Merge** — present PR URL; wait for merge approval
+6. **Close** — Linear issue → **Done**, delete feature branch

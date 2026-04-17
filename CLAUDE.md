@@ -28,7 +28,7 @@ Your role is **50% business analyst, 50% technical architect**. You do not wait 
 ```
 /opt/open-reporting/
 ├── .claude/             → Claude Code config — hooks, skills, agents, settings
-├── team/                → Team knowledge base, standards, playbooks, memory
+├── team/                → Team knowledge base, standards, memory
 │   ├── PLATFORM.md      → Factory blueprint — product portfolio, competency map, agent roster, quality system
 │   ├── knowledge-base/  → Research syntheses (authoritative sources → KB → standards)
 │   │   ├── INDEX.md     → KB index with loading guide and status
@@ -170,7 +170,7 @@ When working in a business or economic domain, research how practitioners in tha
 
 **Self-improvement:**
 - After every issue, research what could have been done better
-- Document findings in `team/lessons-learned.md`, promote patterns to standards and playbooks
+- Document findings in `team/lessons-learned.md`, promote patterns to standards and skills
 - Use web search before every architectural or domain design decision — cite authoritative sources
 
 ## Three-Stage Workflow
@@ -225,33 +225,52 @@ Ideas always start in Backlog with the Idea label. When accepted via `/review-id
 
 ## Skills (Slash Commands)
 
-Four primary skills drive the entire workflow:
+### Entry points
 
 | Skill | Stage | Description |
 |-------|-------|-------------|
 | `/capture-idea` | 1 — Collect | Save idea from chat to Linear (Backlog + Idea label) |
 | `/review-ideas` | 2 — Convert | Review ideas board, run feasibility, convert accepted to proper issues |
 | `/sprint` | 3 — Prioritise | Sprint planning — run feasibility gate, pick issues, move to Todo |
-| `/kickoff [OR-XXX]` | 4 — Implement | Full pipeline: feasibility → plan → branch → code → review → PR → Done |
+| `/kickoff [OR-XXX]` | 4 — Implement | Entry gate: feasibility + confirmation → routes to `/develop` or inline |
 
-Internal sub-steps (called from within `/kickoff`, not invoked directly):
+### Product pipeline (invoked by `/kickoff` for code products)
 
-| Skill | Called from | Description |
-|-------|-------------|-------------|
-| `/feasibility [OR-XXX]` | kickoff, review-ideas, sprint | Multi-agent feasibility gate before any work starts |
-| `/domain-brief` | kickoff (domain tasks) | Business/economic domain research before any design |
-| `/research` | kickoff | Technical approach research before planning |
-| `/plan` | kickoff | Design solution + parallel critics; present to user |
-| `/review` | kickoff | All evaluators in parallel; auto-commit/push/PR when clean |
-| `/commit` | kickoff | Smart conventional commit |
-| `/document` | kickoff (post-merge) | Update docs, RELEASE_NOTES, lessons-learned |
+`/develop` orchestrates these in sequence — each is also invocable standalone:
 
-Utility:
+| Skill | Description |
+|-------|-------------|
+| `/develop` | Full product pipeline: document → design → build → test → release |
+| `/document` | Requirements document — invokes `/domain-brief` if needed |
+| `/design` | Complete design spec (backend + frontend) — invokes `/ux-ui` internally |
+| `/build` | Implements from design doc — no design decisions |
+| `/test` | Tests against acceptance criteria |
+| `/release` | Deploys, documents, closes issue |
+
+### Platform / infra pipeline (invoked by `/kickoff` for non-product work)
+
+| Skill | Description |
+|-------|-------------|
+| `/research` | Technical approach research before planning |
+| `/plan` | Implementation plan — parallel critics; presents to user for approval (plan only, no execute) |
+| `/review` | All evaluators in parallel; auto-commit/push/PR when clean |
+
+### Atomic skills (invoked by orchestrators or standalone)
+
+| Skill | Description |
+|-------|-------------|
+| `/domain-brief` | Business/economic domain research |
+| `/ux-ui` | Frontend visual design (layout, charts, filters) |
+| `/feasibility` | Multi-agent feasibility gate — architecture + analytical + cost |
+| `/commit` | Smart conventional commit |
+
+### Utility
 
 | Skill | Description |
 |-------|-------------|
 | `/status-check` | Diagnostic — git state, services, open items |
 | `/standards-review` | Self-improvement — reads lessons-learned, proposes standards updates |
+| `/idea` | Consultative idea development → Linear issue |
 
 ## Standards
 
@@ -296,16 +315,6 @@ Research syntheses in `team/knowledge-base/` — read on demand during `/domain-
 | `business-analysis/kpi-indicator-design.md` | SMART+FABRIC, stock/flow, aggregation correctness, Polish structural breaks | Before designing any KPI or semantic-layer measure |
 | `analytical-methods/analytical-thinking.md` | 5 analytical moves, insight hierarchy, Polish public data context | Before structuring any analysis |
 | `domains/public-finance.md` | Fiscal KPIs, SGP rules, canonical chart patterns | Before any public finance work |
-
-## Playbooks
-
-Step-by-step process guides in `team/playbooks/`:
-
-| File | Covers |
-|------|--------|
-| `dashboard.md` | Full domain dashboard pipeline: domain research → data sources → ingestion → silver → gold → dashboard → publish |
-
-The dashboard playbook defines the domain dashboard pattern (one epic per domain, full pipeline). Domain research phase is mandatory before any design work.
 
 ## Development Commands
 

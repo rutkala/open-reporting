@@ -30,6 +30,8 @@ Check first:
 
 ## Step 2 — External Research
 
+Invoke `/collect` to gather raw information from official documentation, web sources, and the codebase. `/collect` handles intake without drawing conclusions — synthesis happens in Step 3.
+
 Search for:
 - Official documentation for relevant libraries, APIs, frameworks
 - Known issues, limitations, and gotchas
@@ -37,7 +39,7 @@ Search for:
 
 Prefer official docs over blog posts. Check dates — prefer recent sources (2023+).
 
-Note: If the task involves a **business domain** (Public Finance, Labour, Health, etc.), run `/domain-brief` first to ground the technical research in domain context.
+Note: If the task involves a **business domain** (Public Finance, Labour, Health, etc.), produce a domain brief following the `domain-input` artifact format — see `.claude/skills/domain-input/SKILL.md` for the research steps and output structure.
 
 ---
 
@@ -80,8 +82,8 @@ This note informs `/plan` — it is not a presentation for PO approval. The PO s
 
 ---
 
-## Step 5 — Proceed
+## Step 5 — Share if relevant
 
-After forming the recommendation, move to `/plan`. If the approach is clear and low-risk, proceed directly.
+If research reveals a significant scope change, an unexpected constraint, or a trade-off the PO should be aware of — share it in plain language along with the proposed path forward before the caller proceeds.
 
-If research reveals something worth discussing first — a significant scope change, a trade-off the PO should be aware of, or an unexpected constraint — share it in plain language along with the proposed path forward. The goal is informed conversation, not approval-seeking.
+Otherwise the findings feed directly into `/plan` without requiring PO input.

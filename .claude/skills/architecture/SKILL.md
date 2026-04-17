@@ -1,77 +1,60 @@
 ---
 name: architecture
-description: "Produce an architecture design for a data product. Defines data model, data flow, component inventory, and KPI calculation logic."
+description: "Architecture artifact. Defines what a design document's backend architecture section is — data model, semantic layer, API contracts, and data flow from source to product."
 user-invocable: false
 ---
 
 # Architecture
 
-Specifies how the product will be built — data layer, component structure, and calculation
-logic. Drives both the data pipeline work and the code in subsequent steps.
+The architecture artifact is the backend section of the design document. It specifies
+the complete data layer: warehouse schema, dbt models, semantic layer, API endpoints,
+and data flow. The build step implements this exactly.
 
-Applies to: dashboard, portal (any product with a data layer).
+Produced by: `/design` (backend section)
+Consumed by: `/build` (`data-engineer` agent)
 
-## Input
+---
 
-- Requirements document
-- Domain brief
+## Location
 
-## Output
+Embedded in: `products/domain-briefs/{domain}/design.md` (backend section)
+Or standalone: `products/domain-briefs/{domain}/architecture.md`
 
-- Architecture design document (markdown file on feature branch)
-- Approved by PO before next step begins
+---
 
-## Components
+## Structure
 
-| Role | Agent |
-|------|-------|
-| Data model + KPI logic | data-engineer |
-| Component inventory | dashboard-dev |
-| Reviewer | architecture-critic |
+**Dashboard products (DuckDB + dbt + MetricFlow):**
+1. **Data flow** — source → raw → curated → gold mart → semantic layer → dashboard
+2. **Gold mart schema** — `curated.mart_{domain}`: tables, columns, types, grain
+3. **dbt models** — new models required: name, purpose, source tables, grain
+4. **MetricFlow semantic model** — entities, dimensions, measures
+   - Each measure: name (English), Polish label, aggregation type, SQL, edge cases
+   - Measures on fact tables only
+5. **Data gaps** — indicators required but not yet in warehouse (flag for ingestion)
+6. **Dependencies** — ingestion jobs or models that must exist first
 
-data-engineer and dashboard-dev work in parallel once requirements are confirmed.
+**Portal / mobile products (PostgreSQL + API):**
+1. **Schema** — tables, columns, types, constraints, indexes
+2. **API endpoints** — route, method, request/response shape, auth
+3. **Data flow** — client → API → PostgreSQL
 
-## Steps
+---
 
-1. Read requirements document and domain brief
-2. data-engineer: design data model and KPI calculation logic
-3. dashboard-dev: compile complete component inventory
-4. Merge into single architecture design document
-5. Spawn **architecture-critic** — fix P1 findings before proceeding; note P2 as caveats
-6. Present to PO and wait for explicit approval
+## Quality criteria
 
-## Instructions
+- Every table and column has a clear purpose
+- Grain documented for every fact table
+- No measures on dimension tables
+- All source tables referenced exist in the warehouse
+- Data gaps explicitly flagged — never assumed to exist
 
-**Data model**
-- Source tables required (raw schema)
-- Curated tables to build (schema, grain, key fields)
-- Gold mart if needed: `curated.mart_{domain}` — columns, calculated fields
-- New dbt models required (list with purpose)
-
-**KPI calculation logic**
-For each KPI from the requirements document:
-- SQL expression or dbt metric definition
-- Denominator/numerator if a ratio
-- Aggregation method (sum, avg, last value, YoY delta)
-- Edge cases (division by zero, null handling, partial periods)
-
-**Component inventory**
-Complete list of every component:
-- Charts: type, data source, x-axis, y-axis, series, filters applied
-- KPI cards: metric, format, comparison reference
-- Filters: field, type (dropdown/slider/date range), scope (page or global)
-- Pages: name, purpose, components on it
-
-**Data flow**
-Text diagram: source → ingestion → raw → curated → gold → dashboard
-
-**Dependencies**
-- Ingestion jobs that must exist or be created
-- dbt models that must exist or be created
-- Any data gaps from requirements that block the build
+---
 
 ## Standards
 
 - `team/standards/build/storage.md`
 - `team/standards/build/measures.md`
+- `team/standards/build/processing.md`
 - `team/knowledge-base/data-architecture/architecture.md`
+- Reviewed by: `architecture-critic` agent
