@@ -17,7 +17,7 @@ Run:
 """
 import logging
 
-from dash import Dash, html, callback, Input, Output, State
+from dash import Dash, Input, Output, State, callback, html
 
 import products.visuals.lib.theme as _theme  # noqa: F401 — registers 'teal' Plotly template
 from products.visuals.lib.theme import (
@@ -37,31 +37,33 @@ PORT = TODO_PORT  # e.g. 8050 — each dashboard gets a unique port
 
 app = Dash(
     __name__,
-    requests_pathname_prefix="/TODO_DOMAIN/",
     title="TODO: Dashboard title (Polish) — Open Reporting",
-    index_string="""
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    {%metas%}
-    <title>{%title%}</title>
-    {%favicon%}
-    {%css%}
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>*, *::before, *::after { box-sizing: border-box; }</style>
-</head>
-<body>
-    {%app_entry%}
-    <footer>
-        {%config%}
-        {%scripts%}
-        {%renderer%}
-    </footer>
-</body>
-</html>
-""",
+    suppress_callback_exceptions=True,
+    requests_pathname_prefix="/TODO_DOMAIN/",
+    routes_pathname_prefix="/TODO_DOMAIN/",
+    index_string="""<!DOCTYPE html>
+<html>
+    <head>
+        {%metas%}
+        <title>{%title%}</title>
+        {%favicon%}
+        {%css%}
+        <style>
+            html, body { margin: 0; padding: 0; height: 100vh; }
+            #react-entry-point { height: 100%; }
+            .js-plotly-plot .plotly { width: 100% !important; }
+            .js-plotly-plot .plotly .main-svg { width: 100% !important; }
+        </style>
+    </head>
+    <body>
+        {%app_entry%}
+        <footer>
+            {%config%}
+            {%scripts%}
+            {%renderer%}
+        </footer>
+    </body>
+</html>""",
 )
 
 if __name__ == "__main__":
@@ -69,9 +71,10 @@ if __name__ == "__main__":
 ```
 
 ## Rules
-- `requests_pathname_prefix` must match the nginx route: `/TODO_DOMAIN/`
-- `PORT` is unique per dashboard — check existing ports before assigning
+- Both `requests_pathname_prefix` and `routes_pathname_prefix` must be set to `/TODO_DOMAIN/` — they must match each other and the nginx `location` block
+- `suppress_callback_exceptions=True` — required when callbacks reference components defined dynamically or in other sections
+- `PORT` is unique per dashboard — check existing ports before assigning (template uses 8055)
 - `title` in Polish; the suffix `— Open Reporting` is mandatory
-- `lang="pl"` on `<html>` — all content is Polish
 - Import `_theme` before any chart component — it registers the `teal` Plotly template globally
 - Assets directory is auto-served by Dash from `products/dashboards/TODO_DOMAIN/assets/`
+- The four CSS rules in `index_string` are required for correct Plotly sizing — do not remove them

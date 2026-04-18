@@ -52,7 +52,8 @@ Mental model: **Power BI report layer only.** The semantic model is a separate p
 │   ├── page.md                       ← section block (H2 + desc + KPI row + chart grid)
 │   ├── header.md                     ← dashboard header (title, subtitle, action buttons)
 │   ├── footer.md                     ← source attribution footer (mandatory)
-│   └── grid.md                       ← card + grid patterns (grid-2, grid-3, grid-4, S dict)
+│   ├── styles.md                     ← complete S dict + layout constants (copy verbatim)
+│   └── grid.md                       ← card + grid patterns (grid-2, grid-3, grid-4)
 │
 ├── data/connection.md                ← measures.py + semantic_service.py patterns
 │
@@ -72,7 +73,7 @@ Mental model: **Power BI report layer only.** The semantic model is a separate p
 
 | Task | Files to read |
 |------|--------------|
-| Starting a new dashboard | `settings/app.md`, `layout/page.md`, `layout/header.md`, `layout/footer.md`, `layout/grid.md`, `controls/navigation/sidebar_nav.md`, `data/connection.md` |
+| Starting a new dashboard | `settings/app.md`, `layout/styles.md`, `layout/page.md`, `layout/header.md`, `layout/footer.md`, `controls/navigation/sidebar_nav.md`, `data/connection.md` |
 | Picking chart types | `chart-types.md` first, then the relevant `visuals/` file |
 | Building KPI section | `visuals/cards/kpi_card.md`, `layout/page.md` |
 | Adding a slicer + callback | The matching `controls/slicers/*.md` |
