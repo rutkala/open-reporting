@@ -132,6 +132,9 @@ Load them when implementing, not when designing:
 
 | File | When to read it |
 |------|----------------|
-| `references/components.md` | Before building any chart or UI element in Python/Dash |
-| `references/theme.md` | Before writing any layout or style code |
+| `references/template.md` | Before starting any new dashboard — file structure, patterns, how to copy and adapt |
+| `references/semantic.md` | Before writing measures.py — Dimension and Measure API, format types, examples |
+| `references/components.md` | Before building any chart or UI element — correct function signatures and parameters |
+| `references/chart-types.md` | Before choosing a chart type — decision table and hard rules |
+| `references/theme.md` | Before writing layout or style code — colour tokens, typography, spacing |
 | `knowledge-base/summary.md` | Before designing — dashboard concepts, patterns, best practices |
