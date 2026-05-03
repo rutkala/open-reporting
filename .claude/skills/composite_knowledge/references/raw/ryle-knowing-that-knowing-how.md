@@ -40,7 +40,7 @@ ways to perform tasks. The debate remains open in contemporary epistemology.
   *knowing that* / *knowing how* onto an occupational framework.
 - In our skill model: `knowledge/` holds *knowing that* (propositional, declarative);
   `experience/` holds crystallised *knowing how* (procedural, codified through
-  practice); `artifact/` is the applied output — the skill in Ryle's sense.
+  practice); `assets/` is the applied output — the skill in Ryle's sense.
 - An AI model's training ingests propositional content. Practical abilities ("knowing
   how") are only available to it to the extent they are codified into propositional
   form — which is precisely what our `experience/` folder does.

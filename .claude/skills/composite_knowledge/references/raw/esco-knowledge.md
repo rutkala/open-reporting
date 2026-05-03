@@ -47,6 +47,6 @@ Knowledge concepts are classified using:
   practices tied to a field.
 - The **application-based distinction** from skills/competences is the cornerstone
   of our three-layer model: `knowledge/` (content) / `experience/` (crystallised
-  procedural knowledge) / `artifact/` (the applied output, the skill in use).
+  procedural knowledge) / `assets/` (the applied output, the skill in use).
 - The **essential vs. optional** relation is useful terminology when we later
   link a skill to the specific knowledge required to perform it.

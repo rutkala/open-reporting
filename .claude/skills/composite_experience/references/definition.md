@@ -154,16 +154,16 @@ base and propagate the same mistake into future work.
 
 ---
 
-## 4. How experience relates to knowledge and artifact in our three-layer model
+## 4. How experience relates to knowledge and assets in our three-layer model
 
-The three-layer shape — `knowledge/`, `experience/`, `artifact/` — distributes
+The three-layer shape — `knowledge/`, `experience/`, `assets/` — distributes
 the substance:
 
 | Our layer | Corresponds to |
 |---|---|
 | `knowledge/` | Explicit knowledge (Polanyi); knowing that (Ryle); factual + conceptual (Bloom); DIKW Knowledge |
 | `experience/` | **Externalised tacit knowledge** (Polanyi + Nonaka SECI); crystallised procedural knowledge (Bloom); codified *knowing how* (Ryle); framed experience (Davenport & Prusak) |
-| `artifact/` | The applied output — reusable parts the skill produces; the ESCO *skill* / *competence* layer |
+| `assets/` | The applied resources the skill points to — code modules, themes, fixtures; the ESCO *skill* / *competence* layer |
 
 ### The externalisation move
 
@@ -264,7 +264,7 @@ index, maintained as a small controlled vocabulary per skill.
 - **Field-wide facts or theories** — these are knowledge; they belong in
   `knowledge/`.
 - **Re-usable output parts** (charts, layouts, components) — these are the
-  skill's artefact vocabulary; they belong in `artifact/`.
+  skill's asset vocabulary; they belong in `assets/`.
 - **Unpromoted rationalisations** — an entry that softens failure into success
   corrupts the base and must be rewritten or removed.
 - **Entries missing Kolb stages** — an entry without expectation (CE gap),

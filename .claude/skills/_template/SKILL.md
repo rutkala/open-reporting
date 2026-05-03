@@ -17,9 +17,9 @@ A complex skill carries three buckets alongside its `SKILL.md`:
 - **`experience/`** — lessons captured over time as the skill is used.
   Populated by invoking `/composite_experience <new-skill>` after a real
   surprising or value-conflicted event.
-- **`artifact/`** — passive placeholder for assets the skill needs:
-  images, settings, fixtures, generated outputs. No builder skill —
-  just a folder where assets live.
+- **`assets/`** — passive placeholder for files the skill points to:
+  code modules, themes, logos, settings, fixtures, generated outputs.
+  No builder skill — just a folder where the skill's assets live.
 
 ## How to start a new complex skill
 
@@ -41,7 +41,7 @@ A complex skill carries three buckets alongside its `SKILL.md`:
 6. Over time, as real lessons emerge from using the skill, invoke
    `/composite_experience complex_<new-skill> <event>` to add framed
    entries to `complex_<new-skill>/experience/`.
-7. Add assets to `complex_<new-skill>/artifact/` directly as needed.
+7. Add assets to `complex_<new-skill>/assets/` directly as needed.
 
 ## When NOT to use this template
 
@@ -56,4 +56,4 @@ copy this template for those — just create the single file directly.
 - `_seed.md` — input form for the new skill (filled in step 2 above).
 - `knowledge/` — empty; populated by `composite_knowledge`.
 - `experience/` — empty; appended to over time by `composite_experience`.
-- `artifact/` — empty; populated directly with assets as needed.
+- `assets/` — empty; populated directly with assets as needed.

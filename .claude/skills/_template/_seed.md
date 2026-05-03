@@ -7,7 +7,7 @@
 
 ## What this skill should do
 
-One paragraph: the problem this skill solves, the artifact it produces,
+One paragraph: the problem this skill solves, the output it produces,
 who uses it, what the outcome looks like.
 
 ## Out of scope

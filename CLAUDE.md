@@ -244,7 +244,7 @@ are confirmed.
 |--------|---------------|
 | `basic_` | Atomic action — single `SKILL.md`. Use only when a step is genuinely reused across multiple composites; otherwise inline the step into the composite's workflow prose |
 | `composite_` | Multi-phase orchestrator — single `SKILL.md`. Phases are inlined as workflow prose by default; named as separate `basic_` skills only when a phase is reused across composites |
-| `complex_` | Artifact-producing — `SKILL.md` + `knowledge/` + `experience/` + `artifact/` (built from `_template/`) |
+| `complex_` | Asset-bearing — `SKILL.md` + `knowledge/` + `experience/` + `assets/` (built from `_template/`) |
 | `_` (leading underscore) | Scaffold / framework, not user-invocable |
 
 ### Under review

@@ -142,7 +142,7 @@ ESCO's core distinction:
 - **Competence** = knowledge + skill + autonomy/responsibility in context (EQF)
 
 In our skill framework, `knowledge/` holds the content layer; the skill itself
-(the `SKILL.md` distillation, plus the `artifact/` vocabulary and the rules in
+(the `SKILL.md` distillation, plus the `assets/` vocabulary and the rules in
 `experience/`) is the applied layer.
 
 Sources: `raw/esco-knowledge.md`, `raw/eqf-8-levels.md`.
@@ -151,14 +151,14 @@ Sources: `raw/esco-knowledge.md`, `raw/eqf-8-levels.md`.
 
 ## 4. How knowledge relates to experience in our three-layer model
 
-Our skill folder shape is `knowledge/`, `experience/`, `artifact/`. Mapping to
+Our skill folder shape is `knowledge/`, `experience/`, `assets/`. Mapping to
 the literature:
 
 | Our layer | Corresponds to |
 |---|---|
 | `knowledge/` | Explicit knowledge (Polanyi); knowing that (Ryle); factual + conceptual knowledge (Bloom); DIKW Knowledge level |
 | `experience/` | Externalised tacit knowledge (Polanyi + Nonaka SECI); codified procedural knowledge (Bloom); crystallised knowing how (Ryle) |
-| `artifact/` | The applied output — the skill/competence layer of ESCO; the "practices" bucket of the ESCO definition when codified as reusable parts |
+| `assets/` | The applied resources — code modules, themes, fixtures, and other files the skill points to; the skill/competence layer of ESCO; the "practices" bucket of the ESCO definition when codified as reusable parts |
 
 ### The SECI move (Nonaka & Takeuchi 1995)
 
@@ -236,7 +236,7 @@ Sources: `raw/isced-f-2013-note.md`, `raw/onet-knowledge.md`,
   "never use pie charts with more than 3 categories" is *crystallised tacit*,
   not "knowledge" in the ESCO sense.
 - **The skill's own output components** — visuals, layout, theme, model
-  binding etc. These live in `artifact/`.
+  binding etc. These live in `assets/`.
 - **Raw data or raw information** without synthesis — DIKW puts these *below*
   knowledge. They can sit in `raw/` but the synthesis is what makes the
   bucket actually hold *knowledge*.

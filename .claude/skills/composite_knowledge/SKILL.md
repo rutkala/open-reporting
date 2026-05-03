@@ -38,9 +38,9 @@ When the target is a complex skill, this composite fills the **explicit**
 layer of the three-layer model. Tacit content (rules of thumb, war
 stories, gut calls) is not knowledge in the ESCO sense and routes to
 `<complex_skill>/experience/` via `/composite_experience`. Applied
-output (visuals, settings, fixtures) lives in `<complex_skill>/artifact/`.
+output (visuals, settings, fixtures) lives in `<complex_skill>/assets/`.
 For non-complex-skill targets, only the knowledge layer is produced;
-the experience and artifact layers do not apply.
+the experience and assets layers do not apply.
 
 ## Inputs
 
