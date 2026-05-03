@@ -225,52 +225,34 @@ Ideas always start in Backlog with the Idea label. When accepted via `/composite
 
 ## Skills (Slash Commands)
 
-### Entry points
+The skills system is being rebuilt one skill at a time. Most skills
+have been moved to `.claude/skills_review/` for individual review and
+will return to `.claude/skills/` as their final shape, name, and kind
+are confirmed.
 
-| Skill | Stage | Description |
-|-------|-------|-------------|
-| `/basic_capture_idea` | 1 — Collect | Save idea from chat to Linear (Backlog + Idea label) |
-| `/composite_review_ideas` | 2 — Convert | Review ideas board, run feasibility, convert accepted to proper issues |
-| `/composite_sprint` | 3 — Prioritise | Sprint planning — run feasibility gate, pick issues, move to Todo |
-| `/composite_kickoff [OR-XXX]` | 4 — Implement | Entry gate: feasibility + confirmation → routes to `/composite_develop` or inline |
-
-### Product pipeline (invoked by `/composite_kickoff` for code products)
-
-`/composite_develop` orchestrates these in sequence — each is also invocable standalone:
+### Framework (loaded)
 
 | Skill | Description |
 |-------|-------------|
-| `/composite_develop` | Full product pipeline: document → design → build → test → release |
-| `/composite_document` | Requirements document — invokes `/domain-brief` if needed |
-| `/composite_design` | Complete design spec (backend + frontend) — invokes `/ux-ui` internally |
-| `/composite_build` | Implements from design doc — no design decisions |
-| `/composite_test` | Tests against acceptance criteria |
-| `/composite_release` | Deploys, documents, closes issue |
+| `/composite_knowledge <target>` | Build the `knowledge/` bucket of a complex skill — reads `<target>/_seed.md`, orchestrates collect → analyze → save |
+| `/composite_experience <target> <event>` | Add a framed entry to a complex skill's `experience/` bucket — Expected / Observed / Surprise / Rule, single- vs double-loop |
+| `_template/` | Scaffold for new complex skills (not user-invocable) — `cp -r` to start, fill `_seed.md`, then invoke `/composite_knowledge` |
 
-### Platform / infra pipeline (invoked by `/composite_kickoff` for non-product work)
+### Skill kinds
 
-| Skill | Description |
-|-------|-------------|
-| `/basic_research` | Technical approach research before planning |
-| `/composite_plan` | Implementation plan — parallel critics; presents to user for approval (plan only, no execute) |
-| `/composite_review` | All evaluators in parallel; auto-commit/push/PR when clean |
+| Prefix | Internal shape |
+|--------|---------------|
+| `basic_` | Atomic action — single `SKILL.md`, no references to other skills |
+| `composite_` | Orchestrator — single `SKILL.md` referencing other skills as workflow steps |
+| `complex_` | Artifact-producing — `SKILL.md` + `knowledge/` + `experience/` + `artifact/` (built from `_template/`) |
+| `_` (leading underscore) | Scaffold / framework, not user-invocable |
 
-### Atomic skills (invoked by orchestrators or standalone)
+### Under review
 
-| Skill | Description |
-|-------|-------------|
-| `/domain-brief` | Business/economic domain research |
-| `/ux-ui` | Frontend visual design (layout, charts, filters) |
-| `/composite_feasibility` | Multi-agent feasibility gate — architecture + analytical + cost |
-| `/basic_commit` | Smart conventional commit |
-
-### Utility
-
-| Skill | Description |
-|-------|-------------|
-| `/basic_status_check` | Diagnostic — git state, services, open items |
-| `/composite_standards_review` | Self-improvement — reads lessons-learned, proposes standards updates |
-| `/composite_idea` | Consultative idea development → Linear issue |
+All other skills are quarantined in `.claude/skills_review/` pending
+one-by-one review. They are not loaded as slash commands. As each one
+is reviewed, it is renamed, reshaped, merged, or deleted, and (if
+kept) returned to `.claude/skills/`.
 
 ## Standards
 

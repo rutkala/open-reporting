@@ -1,6 +1,6 @@
 ---
 name: cost-estimator
-description: "Token budget estimator. Reads a Linear issue and lessons-learned history to forecast token cost range, risk level, and whether the issue should be split. Called during /composite_feasibility and /composite_sprint."
+description: "Token budget estimator. Reads a Linear issue and lessons-learned history to forecast token cost range, risk level, and whether the issue should be split. Called during feasibility and sprint planning."
 tools: Read, Bash, Grep
 model: haiku
 permissionMode: plan
@@ -35,7 +35,7 @@ Also apply these heuristics based on project experience:
 | Config or docs only | 15–40k tokens | No agents, no research |
 | Single-file feature, no agents | 25–60k tokens | Basic implementation |
 | Multi-file feature, 3 review agents | 100–250k tokens | Normal OR issue |
-| Feature with web research phase | 200–500k tokens | /basic_research or /domain-brief included |
+| Feature with web research phase | 200–500k tokens | research or domain-brief phase included |
 | KB build (research synthesis) | 150–400k tokens | Deep web research + synthesis |
 | Full domain dashboard (all phases) | 500k–1.5M tokens | Research + 5 phases + review |
 | Bug fix (diagnosed) | 20–80k tokens | Depends on codebase depth |
