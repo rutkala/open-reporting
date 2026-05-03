@@ -7,7 +7,7 @@ been defined — and the sidebar will collapse between `SIDEBAR_W` and
 """
 from dash import Input, Output, State
 
-from dashboard.layout.styles import S, SIDEBAR_COLLAPSED, SIDEBAR_W
+from complex_dashboard.assets.layout.styles import S, SIDEBAR_COLLAPSED, SIDEBAR_W
 
 
 def register_toggle_callback(app):

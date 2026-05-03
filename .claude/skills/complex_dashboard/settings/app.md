@@ -3,13 +3,13 @@
 ## What it is
 The Dash application init — URL prefix, browser tab title, HTML shell, and the
 `teal` Plotly template registration. **Source of truth:**
-`dashboard.settings.app_init` — a real Python module inside this skill.
+`complex_dashboard.assets.settings.app_init` — a real Python module inside this skill.
 Dashboards import `make_app` and never redefine the Dash init inline.
 
 ## Usage in `app.py`
 
 ```python
-from dashboard.settings.app_init import make_app
+from complex_dashboard.assets.settings.app_init import make_app
 
 app = make_app(domain="TODO_DOMAIN", title="TODO: Dashboard title (Polish)",
                module_name=__name__)
@@ -45,9 +45,9 @@ import logging
 
 from dash import html
 
-from dashboard.layout.styles import S, SIDEBAR_W, SIDEBAR_COLLAPSED
-from dashboard.controls.navigation.sidebar_nav import register_toggle_callback
-from dashboard.settings.app_init import make_app
+from complex_dashboard.assets.layout.styles import S, SIDEBAR_W, SIDEBAR_COLLAPSED
+from complex_dashboard.assets.controls.navigation.sidebar_nav import register_toggle_callback
+from complex_dashboard.assets.settings.app_init import make_app
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)

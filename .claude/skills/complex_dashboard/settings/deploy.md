@@ -79,7 +79,7 @@ on the portal landing page.
 ## Rules
 - Service name: `or-TODO_DOMAIN` — must match the `or-*` pattern (NOPASSWD sudo applies to it)
 - Port in systemd and nginx must match `PORT` in `app.py`
-- `PYTHONPATH` must include **both** `/opt/open-reporting` and `/opt/open-reporting/.claude/skills` — the second entry lets the dashboard import `dashboard.layout.styles`, `dashboard.settings.app_init`, etc.
+- `PYTHONPATH` must include **both** `/opt/open-reporting` and `/opt/open-reporting/.claude/skills` — the second entry lets the dashboard import `complex_dashboard.assets.layout.styles`, `complex_dashboard.assets.settings.app_init`, etc.
 - `domain=` argument to `make_app(...)` must match the nginx `location` and `proxy_pass` path
 - After adding nginx route, always reload nginx — config changes are not picked up automatically
 - Register in portal after the service is confirmed running (`systemctl status`)

@@ -2,14 +2,14 @@
 
 ## What it is
 The shared layout style dictionary and sidebar constants for every dashboard.
-**Source of truth:** `dashboard.layout.styles` — a real Python module inside
+**Source of truth:** `complex_dashboard.assets.layout.styles` — a real Python module inside
 this skill. `app.py` imports `S`, `SIDEBAR_W`, and `SIDEBAR_COLLAPSED` directly;
 none of these are redefined inline in a dashboard.
 
 ## Usage in `app.py`
 
 ```python
-from dashboard.layout.styles import S, SIDEBAR_W, SIDEBAR_COLLAPSED
+from complex_dashboard.assets.layout.styles import S, SIDEBAR_W, SIDEBAR_COLLAPSED
 ```
 
 Prerequisite: `/opt/open-reporting/.claude/skills` must be on `PYTHONPATH`.

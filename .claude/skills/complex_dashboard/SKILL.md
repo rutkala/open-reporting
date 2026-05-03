@@ -36,9 +36,10 @@ This skill owns only the **report** half. One semantic model can feed many repor
 ```
 .claude/skills/complex_dashboard/
 ├── SKILL.md                          ← this file — report context + component index
+├── _seed.md                          ← purpose / scope / seed sources for /composite_knowledge
 ├── chart-types.md                    ← when-to-use decision guide (read before picking any chart)
 │
-├── visuals/                          ← chart and KPI components (Visualizations pane)
+├── visuals/                          ← chart and KPI component DOCS (Visualizations pane)
 │   ├── cards/kpi_card.md             ← kpi_standard, kpi_compact, kpi_row
 │   ├── bar/                          ← clustered_column, stacked_column, pct_stacked_column,
 │   │                                    clustered_bar, stacked_bar, pct_stacked_bar,
@@ -54,31 +55,43 @@ This skill owns only the **report** half. One semantic model can feed many repor
 │   └── other/                        ← funnel, treemap, gauge, bullet, ribbon, heatmap_matrix,
 │                                        candlestick, pie_chart
 │
-├── controls/                         ← interactive elements
+├── controls/                         ← interactive element DOCS
 │   ├── slicers/                      ← dropdown_slicer, list_slicer, range_slicer,
 │   │                                    date_range_slicer, tile_slicer
-│   └── navigation/                   ← sidebar_nav.md + sidebar_nav.py (verbatim callback)
+│   └── navigation/sidebar_nav.md     ← sidebar callback contract
 │
-├── layout/                           ← structural scaffolding (the report canvas)
+├── layout/                           ← structural scaffolding DOCS (the report canvas)
 │   ├── page.md                       ← section block (H2 + desc + KPI row + chart grid + grid)
 │   ├── header.md                     ← dashboard header (title, subtitle, action buttons)
 │   ├── footer.md                     ← source attribution footer (mandatory)
-│   └── styles.md + styles.py         ← S dict + layout constants (imported, not copy-pasted)
+│   └── styles.md                     ← S dict + layout constants reference
 │
-├── model/                            ← semantic model binding (the Fields pane equivalent)
+├── model/                            ← semantic model binding DOCS (the Fields pane equivalent)
 │   └── model.md                      ← interface the report expects the model to expose
 │
 ├── settings/
-│   ├── app.md + app_init.py          ← Dash app init (port, URL prefix, title, index_string)
+│   ├── app.md                        ← Dash app init (port, URL prefix, title, index_string)
 │   └── deploy.md                     ← systemd service, nginx route, portal registration
 │
-└── theme/
-    ├── colours.md                    ← colour tokens and palette
-    ├── typography.md                 ← font family, sizes, weights
-    └── icons.md                      ← SVG asset paths and setup
+├── theme/
+│   ├── colours.md                    ← colour tokens and palette
+│   ├── typography.md                 ← font family, sizes, weights
+│   └── icons.md                      ← SVG asset paths and setup
+│
+├── knowledge/                        ← codified knowledge bucket (filled by /composite_knowledge)
+│   ├── summary.md                    ← 7-section knowledge synthesis
+│   └── raw/                          ← surviving authoritative sources
+│
+├── experience/                       ← framed lessons from real use (filled by /composite_experience)
+│
+└── assets/                           ← importable Python modules (the skill's resources)
+    ├── layout/styles.py              ← S dict + SIDEBAR_W + SIDEBAR_COLLAPSED
+    ├── controls/navigation/sidebar_nav.py  ← register_toggle_callback(app)
+    ├── settings/app_init.py          ← make_app(...)
+    └── scripts/smoke_test.py         ← end-to-end smoke check
 ```
 
-The top-level tree mirrors Power BI's conceptual panes: `visuals/` (Visualizations), `controls/` (Slicers + navigation), `layout/` (Canvas), `theme/` (Report theme), `model/` (Fields / Model view), `settings/` (Report properties + Publish).
+The top-level tree mirrors Power BI's conceptual panes: `visuals/` (Visualizations), `controls/` (Slicers + navigation), `layout/` (Canvas), `theme/` (Report theme), `model/` (Fields / Model view), `settings/` (Report properties + Publish). Markdown files at top level are the **component reference** (read on demand). The three framework buckets — `knowledge/`, `experience/`, `assets/` — sit alongside.
 
 ---
 
@@ -101,9 +114,9 @@ The top-level tree mirrors Power BI's conceptual panes: `visuals/` (Visualizatio
 
 ```python
 # Shared report infrastructure — from the skill itself
-from dashboard.layout.styles import S, SIDEBAR_W, SIDEBAR_COLLAPSED
-from dashboard.controls.navigation.sidebar_nav import register_toggle_callback
-from dashboard.settings.app_init import make_app
+from complex_dashboard.assets.layout.styles import S, SIDEBAR_W, SIDEBAR_COLLAPSED
+from complex_dashboard.assets.controls.navigation.sidebar_nav import register_toggle_callback
+from complex_dashboard.assets.settings.app_init import make_app
 
 # Visual components — from products/visuals/components
 from products.visuals.components.kpi_card import kpi_row, kpi_standard, kpi_compact
@@ -129,7 +142,7 @@ from products.visuals.components.slicer import (
 )
 ```
 
-The `dashboard.*` imports require `/opt/open-reporting/.claude/skills` on `PYTHONPATH`. The systemd unit in `settings/deploy.md` sets this; for local runs, export it before launching `app.py`.
+The `complex_dashboard.assets.*` imports require `/opt/open-reporting/.claude/skills` on `PYTHONPATH`. The systemd unit in `settings/deploy.md` sets this; for local runs, export it before launching `app.py`.
 
 ---
 
@@ -229,8 +242,8 @@ Before any dashboard is released:
 - Report = visual layer only — no SQL, no aggregation, no business logic, no measure definitions in `app.py`
 - All data comes from `semantic_service.py` loaders, loaded once at startup
 - The report consumes `MEASURES` / `DIMS` through the interface in `model/model.md` — it never defines them
-- All styles come from `dashboard.layout.styles.S` — no inline hex values, no hardcoded pixel values outside `S`
+- All styles come from `complex_dashboard.assets.layout.styles.S` — no inline hex values, no hardcoded pixel values outside `S`
 - Chart titles state the analytical conclusion in Polish — never the chart type
 - Every chart subtitle attributes the source — `"Źródło: <agency> — dane za <period>"`
 - Footer is mandatory on every dashboard
-- Sidebar collapse callback comes from `dashboard.controls.navigation.sidebar_nav.register_toggle_callback(app)` — never redefined inline
+- Sidebar collapse callback comes from `complex_dashboard.assets.controls.navigation.sidebar_nav.register_toggle_callback(app)` — never redefined inline

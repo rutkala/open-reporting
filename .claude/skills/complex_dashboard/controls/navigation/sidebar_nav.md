@@ -12,7 +12,7 @@ callback is shared across every dashboard and lives in this skill.
 ## Usage in `app.py`
 
 ```python
-from dashboard.controls.navigation.sidebar_nav import register_toggle_callback
+from complex_dashboard.assets.controls.navigation.sidebar_nav import register_toggle_callback
 
 # … build app and layout …
 
@@ -26,7 +26,7 @@ Prerequisite: `/opt/open-reporting/.claude/skills` on `PYTHONPATH` (see
 
 ```python
 from dash import html
-from dashboard.layout.styles import S
+from complex_dashboard.assets.layout.styles import S
 
 html.Aside(id="sidebar", style=S["sidebar"], children=[
 
