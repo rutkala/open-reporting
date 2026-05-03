@@ -17,8 +17,8 @@ Your role is **50% business analyst, 50% technical architect**. You do not wait 
 - Restarting services
 
 **Always pause for PO input — product and direction decisions only:**
-- `/capture-idea` — confirm the idea is correctly captured before saving
-- `/plan` — present the design and wait for go-ahead before implementing
+- `/basic_capture_idea` — confirm the idea is correctly captured before saving
+- `/composite_plan` — present the design and wait for go-ahead before implementing
 - Dropping production data or tables — irreversible data loss
 - Force-pushing to main — overwrites shared history
 - Any action that affects the live public product in a way that cannot be undone
@@ -142,7 +142,7 @@ Shared session memory at `team/session-memory.md` provides continuity across ses
 - Dashboard/visual work → `dashboard-dev`
 - Platform/ETL/schema/semantic-layer work → `data-engineer`
 - Domain KPI research → `business-analyst`
-- All evaluators are spawned automatically by `/plan`, `/review`, `/feasibility` — do not invoke directly
+- All evaluators are spawned automatically by `/composite_plan`, `/composite_review`, `/composite_feasibility` — do not invoke directly
 
 ## Collaboration Model
 
@@ -180,8 +180,8 @@ All work follows three stages. Never skip stages or implement directly from chat
 ```
 Stage 1 — Ideas       Stage 2 — Planning        Stage 3 — Implementation
 ─────────────────     ──────────────────────     ────────────────────────
-Chat discussion   →   /review-ideas          →   /kickoff OR-XXX
-  → /capture-idea       Review, decide              Full pipeline:
+Chat discussion   →   /composite_review_ideas          →   /composite_kickoff OR-XXX
+  → /basic_capture_idea       Review, decide              Full pipeline:
                         Convert to issues           branch → code → PR → merge
 Direct Linear entry
   (Backlog + Idea label)
@@ -189,9 +189,9 @@ Direct Linear entry
 
 **Chat contract (CRITICAL):**
 - Normal chat = explore, advise, explain — no code, no commits, ever
-- Any idea discussed in chat → I capture it with `/capture-idea`, never implement
-- `/kickoff` is the only gate into implementation — and only from a proper OR- issue
-- If user says "implement X" without a Linear issue → redirect to `/capture-idea` first
+- Any idea discussed in chat → I capture it with `/basic_capture_idea`, never implement
+- `/composite_kickoff` is the only gate into implementation — and only from a proper OR- issue
+- If user says "implement X" without a Linear issue → redirect to `/basic_capture_idea` first
 
 ## Linear Setup
 
@@ -219,7 +219,7 @@ Direct Linear entry
 - `In Progress` — being worked on
 - `Done` — complete
 
-Ideas always start in Backlog with the Idea label. When accepted via `/review-ideas`, they become proper issues (label changes, status stays Backlog until pulled into a sprint).
+Ideas always start in Backlog with the Idea label. When accepted via `/composite_review_ideas`, they become proper issues (label changes, status stays Backlog until pulled into a sprint).
 
 **Linear MCP tools available:** `get_issue`, `save_issue`, `list_issues`, `save_comment`, `get_project`, `save_milestone`, `list_issue_statuses`, `list_issue_labels`, `create_issue_label`
 
@@ -229,31 +229,31 @@ Ideas always start in Backlog with the Idea label. When accepted via `/review-id
 
 | Skill | Stage | Description |
 |-------|-------|-------------|
-| `/capture-idea` | 1 — Collect | Save idea from chat to Linear (Backlog + Idea label) |
-| `/review-ideas` | 2 — Convert | Review ideas board, run feasibility, convert accepted to proper issues |
-| `/sprint` | 3 — Prioritise | Sprint planning — run feasibility gate, pick issues, move to Todo |
-| `/kickoff [OR-XXX]` | 4 — Implement | Entry gate: feasibility + confirmation → routes to `/develop` or inline |
+| `/basic_capture_idea` | 1 — Collect | Save idea from chat to Linear (Backlog + Idea label) |
+| `/composite_review_ideas` | 2 — Convert | Review ideas board, run feasibility, convert accepted to proper issues |
+| `/composite_sprint` | 3 — Prioritise | Sprint planning — run feasibility gate, pick issues, move to Todo |
+| `/composite_kickoff [OR-XXX]` | 4 — Implement | Entry gate: feasibility + confirmation → routes to `/composite_develop` or inline |
 
-### Product pipeline (invoked by `/kickoff` for code products)
+### Product pipeline (invoked by `/composite_kickoff` for code products)
 
-`/develop` orchestrates these in sequence — each is also invocable standalone:
-
-| Skill | Description |
-|-------|-------------|
-| `/develop` | Full product pipeline: document → design → build → test → release |
-| `/document` | Requirements document — invokes `/domain-brief` if needed |
-| `/design` | Complete design spec (backend + frontend) — invokes `/ux-ui` internally |
-| `/build` | Implements from design doc — no design decisions |
-| `/test` | Tests against acceptance criteria |
-| `/release` | Deploys, documents, closes issue |
-
-### Platform / infra pipeline (invoked by `/kickoff` for non-product work)
+`/composite_develop` orchestrates these in sequence — each is also invocable standalone:
 
 | Skill | Description |
 |-------|-------------|
-| `/research` | Technical approach research before planning |
-| `/plan` | Implementation plan — parallel critics; presents to user for approval (plan only, no execute) |
-| `/review` | All evaluators in parallel; auto-commit/push/PR when clean |
+| `/composite_develop` | Full product pipeline: document → design → build → test → release |
+| `/composite_document` | Requirements document — invokes `/domain-brief` if needed |
+| `/composite_design` | Complete design spec (backend + frontend) — invokes `/ux-ui` internally |
+| `/composite_build` | Implements from design doc — no design decisions |
+| `/composite_test` | Tests against acceptance criteria |
+| `/composite_release` | Deploys, documents, closes issue |
+
+### Platform / infra pipeline (invoked by `/composite_kickoff` for non-product work)
+
+| Skill | Description |
+|-------|-------------|
+| `/basic_research` | Technical approach research before planning |
+| `/composite_plan` | Implementation plan — parallel critics; presents to user for approval (plan only, no execute) |
+| `/composite_review` | All evaluators in parallel; auto-commit/push/PR when clean |
 
 ### Atomic skills (invoked by orchestrators or standalone)
 
@@ -261,16 +261,16 @@ Ideas always start in Backlog with the Idea label. When accepted via `/review-id
 |-------|-------------|
 | `/domain-brief` | Business/economic domain research |
 | `/ux-ui` | Frontend visual design (layout, charts, filters) |
-| `/feasibility` | Multi-agent feasibility gate — architecture + analytical + cost |
-| `/commit` | Smart conventional commit |
+| `/composite_feasibility` | Multi-agent feasibility gate — architecture + analytical + cost |
+| `/basic_commit` | Smart conventional commit |
 
 ### Utility
 
 | Skill | Description |
 |-------|-------------|
-| `/status-check` | Diagnostic — git state, services, open items |
-| `/standards-review` | Self-improvement — reads lessons-learned, proposes standards updates |
-| `/idea` | Consultative idea development → Linear issue |
+| `/basic_status_check` | Diagnostic — git state, services, open items |
+| `/composite_standards_review` | Self-improvement — reads lessons-learned, proposes standards updates |
+| `/composite_idea` | Consultative idea development → Linear issue |
 
 ## Standards
 
@@ -302,7 +302,7 @@ Two categories in `team/standards/`. See `team/standards/INDEX.md` for the deriv
 
 ## Knowledge Base
 
-Research syntheses in `team/knowledge-base/` — read on demand during `/domain-brief` and `/plan` phases, not auto-loaded every session. See `team/knowledge-base/INDEX.md` for the full module list and loading instructions.
+Research syntheses in `team/knowledge-base/` — read on demand during `/domain-brief` and `/composite_plan` phases, not auto-loaded every session. See `team/knowledge-base/INDEX.md` for the full module list and loading instructions.
 
 | File | Covers | Read when |
 |------|--------|-----------|

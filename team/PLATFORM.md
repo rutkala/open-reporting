@@ -781,7 +781,7 @@ Every document declares:
 | Topic | Authoritative source | Other references |
 |-------|---------------------|-----------------|
 | Three-stage workflow | `CLAUDE.md` | `docs/CONTRIBUTING.md` (human-readable summary, links to CLAUDE.md) |
-| Sprint process | `.claude/skills/sprint/SKILL.md` | `docs/ROADMAP.md` (links to Linear) |
+| Sprint process | `.claude/skills/composite_sprint/SKILL.md` | `docs/ROADMAP.md` (links to Linear) |
 | Issue templates | `team/standards/build/requirements.md` | Referenced from CLAUDE.md |
 | Git conventions | `CLAUDE.md` | `docs/CONTRIBUTING.md` |
 
