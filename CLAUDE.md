@@ -234,7 +234,7 @@ are confirmed.
 
 | Skill | Description |
 |-------|-------------|
-| `/composite_knowledge <target>` | Build the `knowledge/` bucket of a complex skill — reads `<target>/_seed.md`, orchestrates collect → analyze → save |
+| `/composite_knowledge <target>` | Build a structured knowledge document — fills the `knowledge/` bucket of a complex skill (reads `_seed.md`), or works for any target needing a knowledge synthesis. Workflow: scope → tier sources → collect → analyse coverage → synthesise → save |
 | `/composite_experience <target> <event>` | Add a framed entry to a complex skill's `experience/` bucket — Expected / Observed / Surprise / Rule, single- vs double-loop |
 | `_template/` | Scaffold for new complex skills (not user-invocable) — `cp -r` to start, fill `_seed.md`, then invoke `/composite_knowledge` |
 
@@ -242,8 +242,8 @@ are confirmed.
 
 | Prefix | Internal shape |
 |--------|---------------|
-| `basic_` | Atomic action — single `SKILL.md`, no references to other skills |
-| `composite_` | Orchestrator — single `SKILL.md` referencing other skills as workflow steps |
+| `basic_` | Atomic action — single `SKILL.md`. Use only when a step is genuinely reused across multiple composites; otherwise inline the step into the composite's workflow prose |
+| `composite_` | Multi-phase orchestrator — single `SKILL.md`. Phases are inlined as workflow prose by default; named as separate `basic_` skills only when a phase is reused across composites |
 | `complex_` | Artifact-producing — `SKILL.md` + `knowledge/` + `experience/` + `artifact/` (built from `_template/`) |
 | `_` (leading underscore) | Scaffold / framework, not user-invocable |
 

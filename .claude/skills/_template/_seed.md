@@ -26,8 +26,8 @@ during synthesis can be lifted into `experience/` later.
 ## Seed sources *(optional)*
 
 Specific URLs, books, projects, or documents the builder should treat as
-starting points for `/basic_collect` (in addition to whatever it discovers
-itself). Tier them — primary first, secondary below.
+starting points for the collect phase of `/composite_knowledge` (in addition
+to whatever it discovers itself). Tier them — primary first, secondary below.
 
 - *(primary)* https://...
 - *(primary)* https://...

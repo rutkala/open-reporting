@@ -219,9 +219,9 @@ Sources: `raw/isced-f-2013-note.md`, `raw/onet-knowledge.md`,
   about the skill's field (ESCO definition).
 - **Raw sources** in `knowledge/raw/` — PDFs, URL excerpts, book quotes, standards
   documents, reference implementations.
-- **A synthesis document** in `knowledge/` (typically `summary.md` per the
-  `knowledge-base` skill's 7-section format) that distils the raw into a
-  structured body of facts, principles, theories, and practices.
+- **A synthesis document** in `knowledge/` (typically `summary.md` per
+  this skill's 7-section format) that distils the raw into a structured
+  body of facts, principles, theories, and practices.
 - **All four Bloom knowledge types** are welcome: factual, conceptual,
   procedural, metacognitive. But note §6.2 on where procedural knowledge
   actually lives in our model.
@@ -265,7 +265,7 @@ target level in the skill's `SKILL.md` so collection is scoped accordingly.
 ### 6.5 Quality bar for `knowledge/`
 
 - Every factual claim in the synthesis cites a source in `knowledge/raw/`.
-- The synthesis follows the `knowledge-base` artefact's 7-section structure
+- The synthesis follows the 7-section structure defined in this skill
   (Overview, Authoritative sources, Key patterns, Component/API reference,
   Examples, Decisions, Gaps).
 - Tacit-resistance gaps are declared honestly, not smoothed over.
@@ -277,9 +277,10 @@ target level in the skill's `SKILL.md` so collection is scoped accordingly.
 ### 6.6 Source selection criteria
 
 Any candidate source proposed for `knowledge/raw/` must pass this checklist.
-`/basic_collect` applies it up front; `/basic_analyze` re-checks after the fact. A source
-that fails a criterion is either rejected, demoted to "secondary with note",
-or flagged for replacement. Waivers must be recorded with a reason.
+The collect phase applies it up front; the analyse-coverage phase re-checks
+after the fact. A source that fails a criterion is either rejected, demoted
+to "secondary with note", or flagged for replacement. Waivers must be
+recorded with a reason.
 
 Each criterion is stated as a **rule** with the **failure mode** it prevents.
 
@@ -317,9 +318,10 @@ Each criterion is stated as a **rule** with the **failure mode** it prevents.
 
 #### How this integrates with the pipeline
 
-- `/basic_collect` evaluates each candidate against criteria 1–7 (and 8 where
-  publication matters) before writing to `raw/`.
-- `/basic_analyze` re-checks coverage and demotes or removes sources that fail.
+- The collect phase evaluates each candidate against criteria 1–7 (and 8
+  where publication matters) before writing to `raw/`.
+- The analyse-coverage phase re-checks coverage and demotes or removes
+  sources that fail.
 - The final `summary.md` cites each source with a one-line note on which
   criteria it satisfies (or which were waived, with reason).
 
@@ -333,18 +335,15 @@ Each criterion is stated as a **rule** with the **failure mode** it prevents.
    semantic model). This list becomes the skeleton of `summary.md`.
 2. **Identify tiers of authoritative sources** — primary practitioners,
    standards bodies, vendor canon, academic research, case material.
-3. **Inventory what already exists in the project** — `team/knowledge-base/`
-   modules, `team/standards/`, existing skills. Do not duplicate; reference.
-4. **Collect** — raw material into `knowledge/raw/`. The existing `/basic_collect`
-   skill (`.claude/skills/basic_collect/SKILL.md`) handles this without drawing
-   conclusions.
-5. **Analyze** — coverage, source quality, gaps. Existing `/basic_analyze` skill
-   handles this. Return to `/basic_collect` for targeted gaps; proceed when coverage
-   is good enough.
+3. **Inventory what already exists** — other `complex_*` skills'
+   `knowledge/` buckets. Do not duplicate; reference.
+4. **Collect** — raw material into `knowledge/raw/`. The collect phase
+   gathers without drawing conclusions.
+5. **Analyze** — coverage, source quality, gaps. Return to the collect
+   phase for targeted gaps; proceed when coverage is good enough.
 6. **Synthesise** — write `summary.md` following the 7-section structure
-   from the `knowledge-base` skill. Every claim cites a source file in
-   `raw/`. The existing `/composite_knowledge` skill orchestrates the full
-   collect → analyze → save pipeline.
+   defined in this skill's `SKILL.md`. Every claim cites a source file in
+   `raw/`.
 7. **Distil** — pull 3–6 load-bearing rules from `summary.md` up into the
    skill's `SKILL.md`. `SKILL.md` stays scannable; depth stays in `summary.md`.
 8. **Flag gaps** — the last section of `summary.md` lists what was not

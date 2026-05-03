@@ -5,7 +5,7 @@ description: >
   target complex skill. Triggered by a real surprising, unique, or value-conflicted
   event during the target skill's use. Frames the event into Expected / Observed /
   Surprise / Rule, classifies single- vs double-loop, applies the 8-rule quality
-  gate, and saves the entry. Orchestrates `/basic_save`.
+  gate, and saves the entry.
   Triggers when: "capture the lesson from X", "we should remember this", "write an
   experience entry for X".
 user-invocable: true
@@ -51,10 +51,10 @@ experience.
 5. **Run the 8-rule quality gate** — see Quality criteria below. Reject
    entries that fail any of rules 1–7. Rule 8 (promotion path) is
    revisited periodically rather than per-write.
-6. **`/basic_save`** — invoke the basic `save` skill to write
-   `<target>/experience/<YYYY-MM-DD>-<slug>.md`. If a situation-type
-   index file exists at `<target>/experience/index.md`, append the new
-   entry to it; otherwise create one.
+6. **Save the entry** — write `<target>/experience/<YYYY-MM-DD>-<slug>.md`
+   following the entry skeleton below. If a situation-type index file
+   exists at `<target>/experience/index.md`, append the new entry to
+   it; otherwise create one.
 7. **Periodic combination** *(deferred, not per-call)* — when 2–3 entries
    converge on the same rule, the rule is promoted to a standard, a
    skill section, or a check. Source entries are marked *promoted* with

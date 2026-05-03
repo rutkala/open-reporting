@@ -34,9 +34,9 @@ A complex skill carries three buckets alongside its `SKILL.md`:
    `composite_knowledge` builder reads first.
 4. Replace the body of `complex_<new-skill>/SKILL.md` with a minimal
    draft describing what the skill does and the problem it solves.
-5. Invoke `/composite_knowledge complex_<new-skill>` — it reads
-   `_seed.md`, runs `/basic_collect` and `/basic_analyze`, and writes
-   a synthesised knowledge document into
+5. Invoke `/composite_knowledge complex_<new-skill>/knowledge/` — it
+   reads `_seed.md`, runs the collect → analyse → synthesise → save
+   pipeline, and writes the synthesised knowledge document into
    `complex_<new-skill>/knowledge/`.
 6. Over time, as real lessons emerge from using the skill, invoke
    `/composite_experience complex_<new-skill> <event>` to add framed
@@ -45,11 +45,10 @@ A complex skill carries three buckets alongside its `SKILL.md`:
 
 ## When NOT to use this template
 
-A `basic_` skill (one atomic action — `/basic_commit`, `/basic_save`, `/basic_collect`)
-or a `composite_` skill (an orchestrator referencing other skills —
-`/composite_develop`, `/composite_kickoff`, `/composite_knowledge`) is a single `SKILL.md`,
-no buckets. Do not copy this template for those — just create the
-single file directly.
+A `basic_` skill (one atomic action) or a `composite_` skill (a
+multi-phase orchestrator — e.g. `/composite_knowledge`,
+`/composite_experience`) is a single `SKILL.md`, no buckets. Do not
+copy this template for those — just create the single file directly.
 
 ## Files in this scaffold
 
