@@ -18,7 +18,9 @@ from dash import Input, Output, callback, html
 
 # Skill helpers — see SKILL.md "Component imports"
 from complex_dashboard.assets.layout.styles import S, SIDEBAR_COLLAPSED, SIDEBAR_W  # noqa: F401
-from complex_dashboard.assets.controls.navigation.sidebar_nav import register_toggle_callback
+from complex_dashboard.assets.controls.navigation.sidebar_nav import (
+    build_sidebar, register_toggle_callback,
+)
 from complex_dashboard.assets.settings.app_init import make_app
 
 # Theme tokens for inline text styling (header H1 colour, footer text)
@@ -74,38 +76,7 @@ _SECTIONS = [
 app.layout = html.Div(style=S["body"], children=[
 
     # ── Sidebar — see controls/navigation/sidebar_nav.md ──────────────────
-    html.Aside(id="sidebar", style=S["sidebar"], children=[
-
-        html.Div(id="sidebar-logo", style=S["sidebar-logo"], children=[
-            html.A(
-                html.Img(
-                    id="sidebar-logo-img",
-                    src="/TODO_DOMAIN/assets/images/logo.svg",
-                    style=S["logo"],
-                ),
-                href="/",
-            ),
-        ]),
-
-        html.Hr(id="sidebar-divider", style=S["sidebar-divider"]),
-
-        html.Nav(id="sidebar-nav", style=S["sidebar-nav"], children=[
-            html.A(
-                label,
-                href=f"#{anchor}",
-                style=S["nav-item-active"] if i == 0 else S["nav-item"],
-            )
-            for i, (label, anchor) in enumerate(_SECTIONS)
-        ]),
-
-        html.Button(id="btn-toggle", style=S["toggle-btn"], children=[
-            html.Img(
-                id="toggle-icon",
-                src="/TODO_DOMAIN/assets/images/sidebar.svg",
-                style=S["toggle-icon"],
-            ),
-        ]),
-    ]),
+    build_sidebar(domain="TODO_DOMAIN", sections=_SECTIONS),
 
     # ── Main column — header + scrollable content + footer ────────────────
     html.Main(style=S["main"], children=[
