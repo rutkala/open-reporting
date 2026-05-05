@@ -74,4 +74,4 @@ if __name__ == "__main__":
 - Pass `module_name=__name__` so Dash resolves the assets folder relative to the dashboard, not the skill
 - Assets directory is auto-served by Dash from `products/dashboards/TODO_DOMAIN/assets/`
 - Call `register_toggle_callback(app)` after `app.layout` is assigned
-- To change the HTML shell or the `teal` template registration, edit `settings/app_init.py` here — never override in a dashboard
+- To change the HTML shell or the `teal` template registration, edit `assets/settings/app_init.py` (under the skill root) — never override in a dashboard
