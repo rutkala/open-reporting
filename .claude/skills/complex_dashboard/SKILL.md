@@ -15,7 +15,7 @@ user-invocable: true
 
 # Dashboard (Report Layer)
 
-A Dash (Python) single-page application that assembles chart components, KPI cards, slicers, and navigation into a scrollable analytical report. It consumes a semantic model through a narrow interface (see `knowledge/components/model/model.md`) — the report contains **no** SQL, aggregation, measure definitions, or business logic.
+A Dash (Python) single-page application that assembles chart components, KPI cards, slicers, and navigation into a scrollable analytical report. It consumes a semantic model through a narrow interface (see `assets/model/model.md`) — the report contains **no** SQL, aggregation, measure definitions, or business logic.
 
 ## Power BI mental model
 
@@ -27,7 +27,7 @@ Power BI Desktop combines four concerns; after publishing, they separate into tw
 | Analysis Services Tabular + DAX | Semantic model | `semantic-model` skill |
 | Power Query (ETL) | Data source | `data-engineer` / platform skills |
 
-This skill owns only the **report** half. One semantic model can feed many reports; one report binds to exactly one model via the interface documented in `knowledge/components/model/model.md`.
+This skill owns only the **report** half. One semantic model can feed many reports; one report binds to exactly one model via the interface documented in `assets/model/model.md`.
 
 ---
 
@@ -38,62 +38,64 @@ This skill owns only the **report** half. One semantic model can feed many repor
 ├── SKILL.md                          ← this file — report context + component index
 ├── _seed.md                          ← purpose / scope / seed sources for /composite_knowledge
 │
-├── knowledge/                        ← codified knowledge bucket
+├── knowledge/                        ← upstream content learned from external sources
 │   ├── summary.md                    ← 7-section knowledge synthesis (read first for any new dashboard)
-│   ├── raw/                          ← 7 authoritative sources surviving the rubric
-│   └── components/                   ← §4 Component / API reference, externalised by category
-│       │                                (mirrors Power BI's conceptual panes)
-│       ├── chart-types.md            ← when-to-use decision guide (read before picking any chart)
-│       ├── visuals/                  ← chart and KPI component docs (Visualizations pane)
-│       │   ├── cards/kpi_card.md     ← kpi_standard, kpi_compact, kpi_row
-│       │   ├── bar/                  ← clustered_column, stacked_column, pct_stacked_column,
-│       │   │                            clustered_bar, stacked_bar, pct_stacked_bar,
-│       │   │                            clustered_stacked_column, clustered_stacked_bar
-│       │   ├── line/                 ← line, area, stacked_area, pct_stacked_area
-│       │   ├── combo/                ← line_clustered_column, line_stacked_column,
-│       │   │                            line_pct_stacked_column, combo_subplots
-│       │   ├── waterfall/            ← waterfall_contribution, waterfall_variance
-│       │   ├── scatter/scatter_bubble.md
-│       │   ├── distribution/         ← histogram, box_plot
-│       │   ├── maps/                 ← choropleth_map, bubble_map
-│       │   ├── tables/               ← table_basic, table_matrix, data_list
-│       │   └── other/                ← funnel, treemap, gauge, bullet, ribbon, heatmap_matrix,
-│       │                                candlestick, pie_chart
-│       ├── controls/                 ← interactive element docs
-│       │   ├── slicers/              ← dropdown_slicer, list_slicer, range_slicer,
-│       │   │                            date_range_slicer, tile_slicer
-│       │   └── navigation/sidebar_nav.md  ← sidebar callback contract
-│       ├── layout/                   ← structural scaffolding docs (the report canvas)
-│       │   ├── page.md               ← section block (H2 + desc + KPI row + chart grid)
-│       │   ├── header.md             ← dashboard header (title, subtitle, action buttons)
-│       │   ├── footer.md             ← source attribution footer (mandatory)
-│       │   └── styles.md             ← S dict + layout constants reference
-│       ├── model/                    ← semantic model binding docs (Fields pane equivalent)
-│       │   └── model.md              ← interface the report expects the model to expose
-│       ├── settings/
-│       │   ├── app.md                ← Dash app init (port, URL prefix, title, index_string)
-│       │   └── deploy.md             ← systemd service, nginx route, portal registration
-│       └── theme/
-│           ├── colours.md            ← colour tokens and palette
-│           ├── typography.md         ← font family, sizes, weights
-│           └── icons.md              ← SVG asset paths and setup
+│   └── raw/                          ← 7 authoritative sources surviving the rubric
 │
 ├── experience/                       ← framed lessons from real use (filled by /composite_experience)
 │
-└── assets/                           ← importable Python modules (the skill's resources)
-    ├── layout/styles.py              ← S dict + SIDEBAR_W + SIDEBAR_COLLAPSED
-    ├── controls/navigation/sidebar_nav.py  ← register_toggle_callback(app)
-    ├── settings/app_init.py          ← make_app(...)
-    └── scripts/smoke_test.py         ← end-to-end smoke check
+└── assets/                           ← the practitioner's opinionated starter kit:
+    │                                    code modules, themes, charts, settings — co-located by category
+    │                                    (mirrors Power BI's conceptual panes)
+    ├── chart-types.md                ← when-to-use decision guide (read before picking any chart)
+    ├── visuals/                      ← chart and KPI component specs (Visualizations pane)
+    │   ├── cards/kpi_card.md         ← kpi_standard, kpi_compact, kpi_row
+    │   ├── bar/                      ← clustered_column, stacked_column, pct_stacked_column,
+    │   │                                clustered_bar, stacked_bar, pct_stacked_bar,
+    │   │                                clustered_stacked_column, clustered_stacked_bar
+    │   ├── line/                     ← line, area, stacked_area, pct_stacked_area
+    │   ├── combo/                    ← line_clustered_column, line_stacked_column,
+    │   │                                line_pct_stacked_column, combo_subplots
+    │   ├── waterfall/                ← waterfall_contribution, waterfall_variance
+    │   ├── scatter/scatter_bubble.md
+    │   ├── distribution/             ← histogram, box_plot
+    │   ├── maps/                     ← choropleth_map, bubble_map
+    │   ├── tables/                   ← table_basic, table_matrix, data_list
+    │   └── other/                    ← funnel, treemap, gauge, bullet, ribbon, heatmap_matrix,
+    │                                    candlestick, pie_chart
+    ├── controls/                     ← interactive elements
+    │   ├── slicers/                  ← dropdown_slicer, list_slicer, range_slicer,
+    │   │                                date_range_slicer, tile_slicer
+    │   └── navigation/
+    │       ├── sidebar_nav.md        ← sidebar callback contract
+    │       └── sidebar_nav.py        ← register_toggle_callback(app)
+    ├── layout/                       ← structural scaffolding (the report canvas)
+    │   ├── page.md                   ← section block (H2 + desc + KPI row + chart grid)
+    │   ├── header.md                 ← dashboard header (title, subtitle, action buttons)
+    │   ├── footer.md                 ← source attribution footer (mandatory)
+    │   ├── styles.md                 ← S dict + layout constants reference
+    │   └── styles.py                 ← S dict + SIDEBAR_W + SIDEBAR_COLLAPSED
+    ├── model/                        ← semantic model binding (Fields pane equivalent)
+    │   └── model.md                  ← interface the report expects the model to expose
+    ├── settings/
+    │   ├── app.md                    ← Dash app init (port, URL prefix, title, index_string)
+    │   ├── app_init.py               ← make_app(...)
+    │   └── deploy.md                 ← systemd service, nginx route, portal registration
+    ├── theme/
+    │   ├── colours.md                ← colour tokens and palette
+    │   ├── typography.md             ← font family, sizes, weights
+    │   └── icons.md                  ← SVG asset paths and setup
+    └── scripts/
+        └── smoke_test.py             ← end-to-end smoke check
 ```
 
-The skill's three buckets follow the `_template/` contract: `knowledge/` carries explicit, codified content; `experience/` accumulates framed lessons; `assets/` holds importable Python. Component reference docs live under `knowledge/components/`, grouped by Power BI conceptual pane (visuals / controls / layout / model / settings / theme).
+The skill's three buckets follow the `_template/` contract: `knowledge/` carries upstream content learned from articles and research; `experience/` accumulates framed lessons from real projects; `assets/` is the practitioner's opinionated starter kit — code modules co-located with the specs that describe them, grouped by Power BI conceptual pane (visuals / controls / layout / model / settings / theme).
 
 ---
 
 ## Load map — what to read when
 
-All paths below are under `knowledge/components/` unless noted otherwise.
+All paths below are under `assets/` unless noted otherwise.
 
 | Task | Files to read |
 |------|--------------|
@@ -141,7 +143,7 @@ from products.visuals.components.slicer import (
 )
 ```
 
-The `complex_dashboard.assets.*` imports require `/opt/open-reporting/.claude/skills` on `PYTHONPATH`. The systemd unit in `knowledge/components/settings/deploy.md` sets this; for local runs, export it before launching `app.py`.
+The `complex_dashboard.assets.*` imports require `/opt/open-reporting/.claude/skills` on `PYTHONPATH`. The systemd unit in `assets/settings/deploy.md` sets this; for local runs, export it before launching `app.py`.
 
 ---
 
@@ -200,7 +202,7 @@ app.layout = html.Div(style=S["body"], children=[
 | **Analytical** | Why is this happening? What are the trends? | Daily / weekly / quarterly | Analysts, domain experts |
 | **Strategic** | Are we on track toward goals? | Monthly / quarterly | Leadership, stakeholders |
 
-Most Open Reporting dashboards are **analytical**. Tactical and explanatory variants exist in the literature (see `knowledge-base/summary.md` §3) but we do not currently build them.
+Most Open Reporting dashboards are **analytical**. Tactical and explanatory variants exist in the literature (see `knowledge/summary.md` §3) but we do not currently build them.
 
 ---
 
@@ -240,7 +242,7 @@ Before any dashboard is released:
 ## Core rules
 - Report = visual layer only — no SQL, no aggregation, no business logic, no measure definitions in `app.py`
 - All data comes from `semantic_service.py` loaders, loaded once at startup
-- The report consumes `MEASURES` / `DIMS` through the interface in `knowledge/components/model/model.md` — it never defines them
+- The report consumes `MEASURES` / `DIMS` through the interface in `assets/model/model.md` — it never defines them
 - All styles come from `complex_dashboard.assets.layout.styles.S` — no inline hex values, no hardcoded pixel values outside `S`
 - Chart titles state the analytical conclusion in Polish — never the chart type
 - Every chart subtitle attributes the source — `"Źródło: <agency> — dane za <period>"`

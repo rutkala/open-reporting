@@ -81,7 +81,7 @@ html.Div(style=S["grid-4"], children=[
 
 ## Rules
 - Never redefine `S` or the sidebar constants in a dashboard `app.py` — always import
-- To add a new style key, edit `assets/layout/styles.py` (under the skill root); the change propagates to every dashboard on next restart
+- To add a new style key, edit `styles.py` (sibling); the change propagates to every dashboard on next restart
 - Do not add inline style dicts to layout components — add a key to `S` and reference by name
 - `group` and `group-title` are for optional named sub-sections within a section — use only when needed
 - Every chart must be wrapped in `S["card"]` — never render a chart directly into a grid cell
