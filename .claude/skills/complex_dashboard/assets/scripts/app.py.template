@@ -18,13 +18,12 @@ from dash import Input, Output, callback, html
 
 # Skill helpers — see SKILL.md "Component imports"
 from complex_dashboard.assets.layout.styles import S, SIDEBAR_COLLAPSED, SIDEBAR_W  # noqa: F401
+from complex_dashboard.assets.layout.header import build_header
+from complex_dashboard.assets.layout.footer import build_footer
 from complex_dashboard.assets.controls.navigation.sidebar_nav import (
     build_sidebar, register_toggle_callback,
 )
 from complex_dashboard.assets.settings.app_init import make_app
-
-# Theme tokens for inline text styling (header H1 colour, footer text)
-from products.visuals.lib.theme import SUBTEXT, TEXT
 
 # Visual components — pick the ones this dashboard actually uses
 from products.visuals.components.kpi_card import kpi_row, kpi_standard
@@ -82,29 +81,11 @@ app.layout = html.Div(style=S["body"], children=[
     html.Main(style=S["main"], children=[
 
         # Header — see layout/header.md
-        html.Div(id="main-header", style=S["main-header"], children=[
-            html.Div(children=[
-                html.H1(
-                    "TODO: Dashboard title (Polish)",
-                    style={"fontSize": "20px", "fontWeight": 700, "color": TEXT, "margin": 0},
-                ),
-                html.P(
-                    "TODO: Subtitle — domain + date range, e.g. 'Rynek pracy — GUS 2018–2024'",
-                    style={"fontSize": "13px", "color": SUBTEXT, "margin": "4px 0 0"},
-                ),
-            ]),
-            html.Div(style=S["header-actions"], children=[
-                html.Button(
-                    html.Img(src="/TODO_DOMAIN/assets/images/settings.svg", style=S["header-icon"]),
-                    id="btn-settings", style=S["header-btn"],
-                ),
-                html.Button(
-                    html.Img(src="/TODO_DOMAIN/assets/images/user.svg", style=S["header-icon"]),
-                    id="btn-user", style=S["header-btn"],
-                ),
-            ]),
-        ]),
-        html.Hr(style=S["main-divider"]),
+        *build_header(
+            title="TODO: Dashboard title (Polish)",
+            subtitle="TODO: Subtitle — domain + date range, e.g. 'Rynek pracy — GUS 2018–2024'",
+            domain="TODO_DOMAIN",
+        ),
 
         # Scrollable content area — one block per section (see layout/page.md)
         html.Div(style=S["main-content-area"], children=[
@@ -147,15 +128,7 @@ app.layout = html.Div(style=S["body"], children=[
         ]),
 
         # Footer — see layout/footer.md (mandatory)
-        html.Hr(style=S["footer-divider"]),
-        html.Footer(style=S["main-footer"], children=[
-            html.Span("TODO: Dashboard name (Polish)", style=S["footer-text"]),
-            html.A(
-                "open-reporting.dev",
-                href="https://open-reporting.dev",
-                style={**S["footer-text"], "textDecoration": "none"},
-            ),
-        ]),
+        *build_footer(name="TODO: Dashboard name (Polish)"),
     ]),
 ])
 

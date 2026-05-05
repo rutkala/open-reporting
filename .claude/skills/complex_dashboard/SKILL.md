@@ -72,7 +72,9 @@ This skill owns only the **report** half. One semantic model can feed many repor
     ├── layout/                       ← structural scaffolding (the report canvas)
     │   ├── page.md                   ← section block (H2 + desc + KPI row + chart grid)
     │   ├── header.md                 ← dashboard header (title, subtitle, action buttons)
+    │   ├── header.py                 ← build_header(...)
     │   ├── footer.md                 ← source attribution footer (mandatory)
+    │   ├── footer.py                 ← build_footer(...)
     │   ├── styles.md                 ← S dict + layout constants reference
     │   └── styles.py                 ← S dict + SIDEBAR_W + SIDEBAR_COLLAPSED
     ├── model/                        ← semantic model binding (Fields pane equivalent)
