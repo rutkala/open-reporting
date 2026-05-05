@@ -85,6 +85,8 @@ This skill owns only the **report** half. One semantic model can feed many repor
     │   ├── colours.md                ← colour tokens and palette
     │   ├── typography.md             ← font family, sizes, weights
     │   └── icons.md                  ← SVG asset paths and setup
+    ├── static/
+    │   └── images/                   ← canonical SVG icon set: logo, sidebar, settings, user
     └── scripts/
         ├── app.py.template           ← copy-pastable starter app.py (read first when bootstrapping)
         └── smoke_test.py             ← end-to-end smoke check

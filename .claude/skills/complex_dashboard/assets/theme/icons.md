@@ -1,19 +1,34 @@
 # Icons
 
 ## What it is
-SVG icon assets bundled with every dashboard. Served from the dashboard's assets directory
-via Dash's static file server.
+SVG icon assets bundled with every dashboard. The skill ships its own
+canonical icon set under `assets/static/images/` — products copy from
+the skill, not from another product.
 
-## Directory structure
+## Directory structure (in the skill)
+```
+.claude/skills/complex_dashboard/assets/static/
+└── images/
+    ├── logo.svg        ← Open Reporting wordmark (sidebar, collapsed: icon only)
+    ├── sidebar.svg     ← Sidebar toggle button icon
+    ├── settings.svg    ← Header settings button icon
+    └── user.svg        ← Header user button icon
+```
+
+## Directory structure (in the dashboard product, after copy)
 ```
 products/dashboards/TODO_DOMAIN/
 └── assets/
     └── images/
-        ├── logo.svg        ← Open Reporting wordmark (sidebar, collapsed: icon only)
-        ├── sidebar.svg     ← Sidebar toggle button icon
-        ├── settings.svg    ← Header settings button icon
-        └── user.svg        ← Header user button icon
+        ├── logo.svg
+        ├── sidebar.svg
+        ├── settings.svg
+        └── user.svg
 ```
+
+Dash auto-serves from `products/dashboards/TODO_DOMAIN/assets/`, so the
+SVGs must live there at runtime — they cannot be served from the skill
+directory directly.
 
 ## Where each icon is used
 | File | Component | `src` attribute |
@@ -24,9 +39,11 @@ products/dashboards/TODO_DOMAIN/
 | `user.svg` | `btn-user` in header | `/TODO_DOMAIN/assets/images/user.svg` |
 
 ## Setup
-Copy the assets directory from the template dashboard:
+Copy the canonical icon set from the skill:
 ```bash
-cp -r products/dashboards/template/assets products/dashboards/TODO_DOMAIN/assets
+mkdir -p products/dashboards/TODO_DOMAIN/assets/images
+cp .claude/skills/complex_dashboard/assets/static/images/*.svg \
+   products/dashboards/TODO_DOMAIN/assets/images/
 ```
 
 ## src path convention
