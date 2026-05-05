@@ -86,6 +86,7 @@ This skill owns only the **report** half. One semantic model can feed many repor
     │   ├── typography.md             ← font family, sizes, weights
     │   └── icons.md                  ← SVG asset paths and setup
     └── scripts/
+        ├── app.py.template           ← copy-pastable starter app.py (read first when bootstrapping)
         └── smoke_test.py             ← end-to-end smoke check
 ```
 
@@ -99,7 +100,8 @@ All paths below are under `assets/` unless noted otherwise.
 
 | Task | Files to read |
 |------|--------------|
-| Starting a new dashboard | `settings/app.md`, `layout/styles.md`, `layout/page.md`, `layout/header.md`, `layout/footer.md`, `controls/navigation/sidebar_nav.md`, `model/model.md` |
+| Bootstrapping a new dashboard | `scripts/app.py.template` — copy to `products/dashboards/<domain>/app.py` and fill in `TODO_*` placeholders |
+| Understanding what the scaffold does | `settings/app.md`, `layout/styles.md`, `layout/page.md`, `layout/header.md`, `layout/footer.md`, `controls/navigation/sidebar_nav.md`, `model/model.md` |
 | Understanding the semantic model binding | `model/model.md` (then jump to the `semantic-model` skill if you need to add measures) |
 | Picking chart types | `chart-types.md` first, then the relevant `visuals/` file |
 | Building KPI section | `visuals/cards/kpi_card.md`, `layout/page.md` |
