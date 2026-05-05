@@ -93,6 +93,8 @@ This skill owns only the **report** half. One semantic model can feed many repor
     │   └── images/                   ← canonical SVG icon set: logo, sidebar, settings, user
     └── scripts/
         ├── app.py.template           ← copy-pastable starter app.py (read first when bootstrapping)
+        ├── example_app.py            ← runnable end-to-end example (port 8060, /example/)
+        ├── walkthrough.md            ← narrated tour of example_app.py
         └── smoke_test.py             ← end-to-end smoke check
 ```
 
@@ -106,6 +108,7 @@ All paths below are under `assets/` unless noted otherwise.
 
 | Task | Files to read |
 |------|--------------|
+| Seeing the helpers compose end-to-end | `scripts/walkthrough.md` + run `scripts/example_app.py` (port 8060) |
 | Bootstrapping a new dashboard | `scripts/app.py.template` — copy to `products/dashboards/<domain>/app.py` and fill in `TODO_*` placeholders |
 | Understanding what the scaffold does | `settings/app.md`, `layout/styles.md`, `layout/page.md`, `layout/header.md`, `layout/footer.md`, `controls/navigation/sidebar_nav.md`, `model/model.md` |
 | Understanding the semantic model binding | `model/model.md` (then jump to the `semantic-model` skill if you need to add measures) |

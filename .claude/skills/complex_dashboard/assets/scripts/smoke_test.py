@@ -6,10 +6,16 @@ Starts the dashboard, waits for it to be ready, makes one HTTP request,
 reports pass or fail, then shuts down cleanly.
 
 Usage:
-    PYTHONPATH=/opt/open-reporting \
+    PYTHONPATH=/opt/open-reporting:/opt/open-reporting/.claude/skills \
     DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb \
-    python3 .claude/skills_review/complex_dashboard/scripts/smoke_test.py \
-        products/dashboards/{domain}/app.py {port}
+    python3 .claude/skills/complex_dashboard/assets/scripts/smoke_test.py \
+        products/dashboards/{domain}/app.py {port} [{path}]
+
+Arguments:
+    app_path  — path to the dashboard's app.py
+    port      — port the app listens on
+    path      — optional URL path (default "/"). For dashboards built on
+                this skill, pass "/{domain}/" to match make_app(domain=...).
 
 Exit codes:
     0 — dashboard started and responded HTTP 200
@@ -26,12 +32,15 @@ import urllib.error
 
 def main():
     if len(sys.argv) < 3:
-        print("Usage: smoke_test.py <app_path> <port>")
+        print("Usage: smoke_test.py <app_path> <port> [<path>]")
         sys.exit(1)
 
     app_path = sys.argv[1]
     port = int(sys.argv[2])
-    url = f"http://localhost:{port}/"
+    path = sys.argv[3] if len(sys.argv) > 3 else "/"
+    if not path.startswith("/"):
+        path = "/" + path
+    url = f"http://localhost:{port}{path}"
 
     env = os.environ.copy()
     env.setdefault("PYTHONPATH", "/opt/open-reporting")
