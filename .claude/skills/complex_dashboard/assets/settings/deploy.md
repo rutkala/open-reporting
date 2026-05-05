@@ -12,22 +12,32 @@ File path: `infra/systemd/or-TODO_DOMAIN.service`
 
 ```ini
 [Unit]
-Description=Open Reporting — TODO_DOMAIN dashboard
+Description=Open Reporting — TODO_DOMAIN dashboard (/TODO_DOMAIN/)
 After=network.target
 
 [Service]
-Type=simple
-User=radek
 WorkingDirectory=/opt/open-reporting
 Environment=PYTHONPATH=/opt/open-reporting:/opt/open-reporting/.claude/skills
 Environment=DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb
+EnvironmentFile=/opt/open-reporting/.env
 ExecStart=/usr/bin/python3 products/dashboards/TODO_DOMAIN/app.py
-Restart=always
+Restart=on-failure
 RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
 ```
+
+Matches the shape of the running units — `infra/systemd/or-template.service`,
+`or-labour.service`, `or-explorer.service`, `or-finance.service`. Notes:
+
+- No `Type=` — `simple` is the systemd default
+- No `User=` — units run as root (matches the existing fleet)
+- `Restart=on-failure`, not `always` — manual `systemctl stop` should not be reverted
+- `EnvironmentFile=/opt/open-reporting/.env` — picks up DB credentials and Ghost tokens
+- `PYTHONPATH` includes `/opt/open-reporting/.claude/skills` so the dashboard can
+  import `complex_dashboard.assets.*` helpers (the existing fleet predates the skill
+  and omits this entry; new dashboards built on the skill require it)
 
 Deploy:
 ```bash
@@ -76,6 +86,33 @@ on the portal landing page.
 
 ---
 
+## 4. Local dev launcher (optional)
+
+For iteration during development, drop a `start.sh` next to the dashboard:
+
+```bash
+#!/bin/bash
+cd /opt/open-reporting
+pkill -f "TODO_DOMAIN/app.py" 2>/dev/null
+sleep 1
+PYTHONPATH=/opt/open-reporting:/opt/open-reporting/.claude/skills \
+DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb \
+python3 products/dashboards/TODO_DOMAIN/app.py > /tmp/TODO_DOMAIN-dashboard.log 2>&1 &
+disown
+echo "Dashboard started, PID: $!"
+```
+
+```bash
+chmod +x products/dashboards/TODO_DOMAIN/start.sh
+products/dashboards/TODO_DOMAIN/start.sh
+tail -f /tmp/TODO_DOMAIN-dashboard.log
+```
+
+Mirrors `products/dashboards/template/start.sh`. Use only for local
+iteration — production runs through systemd.
+
+---
+
 ## Rules
 - Service name: `or-TODO_DOMAIN` — must match the `or-*` pattern (NOPASSWD sudo applies to it)
 - Port in systemd and nginx must match `PORT` in `app.py`
@@ -83,3 +120,4 @@ on the portal landing page.
 - `domain=` argument to `make_app(...)` must match the nginx `location` and `proxy_pass` path
 - After adding nginx route, always reload nginx — config changes are not picked up automatically
 - Register in portal after the service is confirmed running (`systemctl status`)
+- `EnvironmentFile=/opt/open-reporting/.env` — required for any unit that touches PostgreSQL or Ghost
