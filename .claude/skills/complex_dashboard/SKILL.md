@@ -77,7 +77,8 @@ This skill owns only the **report** half. One semantic model can feed many repor
     │   └── styles.py                 ← S dict + SIDEBAR_W + SIDEBAR_COLLAPSED
     ├── model/                        ← semantic model binding (Fields pane equivalent)
     │   ├── model.md                  ← interface the report expects the model to expose
-    │   └── semantic_service_template.py  ← copy-pastable loader pattern
+    │   ├── semantic_service_template.py  ← copy-pastable loader pattern
+    │   └── measures_template.py      ← copy-pastable DIMS / MEASURES registry
     ├── settings/
     │   ├── app.md                    ← Dash app init (port, URL prefix, title, index_string)
     │   ├── app_init.py               ← make_app(...)

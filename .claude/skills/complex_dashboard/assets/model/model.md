@@ -36,10 +36,16 @@ The report imports loader functions from `semantic_service.py`. Each loader retu
 | `load_*(...)` | `-> pandas.DataFrame` | One loader per chart or section |
 | `load_scalars()` | `-> dict` | Single values for KPI cards |
 
-**Starter template:** `semantic_service_template.py` (sibling) — copy to
-`products/dashboards/TODO_DOMAIN/semantic_service.py` and replace the
-query bodies with real warehouse SQL. For breadth (17 loaders covering
-every chart family) see `products/dashboards/template/data.py`.
+**Starter templates** (siblings):
+- `semantic_service_template.py` — loader pattern; copy to
+  `products/dashboards/TODO_DOMAIN/semantic_service.py` and fill in
+  warehouse SQL.
+- `measures_template.py` — `DIMS` / `MEASURES` registry; copy to
+  `products/dashboards/TODO_DOMAIN/measures.py` and replace with the
+  domain's dimensions and indicators.
+
+For breadth see the live template:
+`products/dashboards/template/{data.py, measures.py}`.
 
 ---
 
