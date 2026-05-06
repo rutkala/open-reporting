@@ -2,12 +2,12 @@
 
 ## What it is
 SVG icon assets bundled with every dashboard. The skill ships its own
-canonical icon set under `assets/static/images/` — products copy from
+canonical icon set under `assets/report/static_resources/images/` — products copy from
 the skill, not from another product.
 
 ## Directory structure (in the skill)
 ```
-.claude/skills/complex_dashboard/assets/static/
+.claude/skills/complex_dashboard/assets/report/static_resources/
 └── images/
     ├── logo.svg        ← Open Reporting wordmark (sidebar, collapsed: icon only)
     ├── sidebar.svg     ← Sidebar toggle button icon
@@ -42,7 +42,7 @@ directory directly.
 Copy the canonical icon set from the skill:
 ```bash
 mkdir -p products/dashboards/TODO_DOMAIN/assets/images
-cp .claude/skills/complex_dashboard/assets/static/images/*.svg \
+cp .claude/skills/complex_dashboard/assets/report/static_resources/images/*.svg \
    products/dashboards/TODO_DOMAIN/assets/images/
 ```
 

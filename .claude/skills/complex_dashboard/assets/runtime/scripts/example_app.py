@@ -6,17 +6,17 @@ dashboard.
 Two sections, one KPI row, two charts (line + clustered column).
 Uses synthetic data — no warehouse access. Demonstrates:
 
-- ``make_app(...)``                                        → settings/app.md
-- ``S`` dict + grids + cards                               → layout/styles.md
-- ``build_sidebar`` / ``build_header`` / ``build_footer``  → layout/, controls/
-- ``register_toggle_callback``                             → controls/navigation/
-- ``Dimension`` / ``Measure`` / ``DIMS`` / ``MEASURES``    → model/measures_template.py
+- ``make_app(...)``                                        → report/definition/app.md
+- ``S`` dict + grids + cards                               → report/layout/styles.md
+- ``build_sidebar`` / ``build_header`` / ``build_footer``  → report/layout/, report/controls/
+- ``register_toggle_callback``                             → report/controls/navigation/
+- ``Dimension`` / ``Measure`` / ``DIMS`` / ``MEASURES``    → report/report_extensions/measures_template.py
 - ``kpi_row``, ``kpi_standard``, ``line``, ``clustered_column``
                                                            → products/visuals/components/
 
 Run:
     PYTHONPATH=/opt/open-reporting:/opt/open-reporting/.claude/skills \\
-    python3 .claude/skills/complex_dashboard/assets/scripts/example_app.py
+    python3 .claude/skills/complex_dashboard/assets/runtime/scripts/example_app.py
 
 Then open http://localhost:8060/example/
 """
@@ -29,13 +29,13 @@ from products.visuals.components.line_chart import line
 from products.visuals.lib.semantic import Dimension, Measure
 from products.visuals.lib.theme import POSITIVE
 
-from complex_dashboard.assets.controls.navigation.sidebar_nav import (
+from complex_dashboard.assets.report.controls.navigation.sidebar_nav import (
     build_sidebar, register_toggle_callback,
 )
-from complex_dashboard.assets.layout.footer import build_footer
-from complex_dashboard.assets.layout.header import build_header
-from complex_dashboard.assets.layout.styles import S
-from complex_dashboard.assets.settings.app_init import make_app
+from complex_dashboard.assets.report.layout.footer import build_footer
+from complex_dashboard.assets.report.layout.header import build_header
+from complex_dashboard.assets.report.layout.styles import S
+from complex_dashboard.assets.runtime.settings.app_init import make_app
 
 
 # ── Synthetic data ──────────────────────────────────────────────────────────

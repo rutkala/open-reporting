@@ -17,13 +17,13 @@ import logging
 from dash import Input, Output, callback, html
 
 # Skill helpers — see SKILL.md "Component imports"
-from complex_dashboard.assets.layout.styles import S, SIDEBAR_COLLAPSED, SIDEBAR_W  # noqa: F401
-from complex_dashboard.assets.layout.header import build_header
-from complex_dashboard.assets.layout.footer import build_footer
-from complex_dashboard.assets.controls.navigation.sidebar_nav import (
+from complex_dashboard.assets.report.layout.styles import S, SIDEBAR_COLLAPSED, SIDEBAR_W  # noqa: F401
+from complex_dashboard.assets.report.layout.header import build_header
+from complex_dashboard.assets.report.layout.footer import build_footer
+from complex_dashboard.assets.report.controls.navigation.sidebar_nav import (
     build_sidebar, register_toggle_callback,
 )
-from complex_dashboard.assets.settings.app_init import make_app
+from complex_dashboard.assets.runtime.settings.app_init import make_app
 
 # Visual components — pick the ones this dashboard actually uses
 from products.visuals.components.kpi_card import kpi_row, kpi_standard
@@ -139,7 +139,7 @@ register_toggle_callback(app)
 
 # Example chart callback — uncomment and adapt. Pattern: a slicer's value
 # filters an already-loaded DataFrame and the chart is re-rendered. Never
-# call loaders or re-aggregate inside a callback (see model/model.md).
+# call loaders or re-aggregate inside a callback (see semantic_model/definition/model.md).
 #
 # @callback(
 #     Output("section-1-chart-a", "children"),

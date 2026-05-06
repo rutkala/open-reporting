@@ -2,18 +2,18 @@
 
 ## What it is
 The shared layout style dictionary and sidebar constants for every dashboard.
-**Source of truth:** `complex_dashboard.assets.layout.styles` — a real Python module inside
+**Source of truth:** `complex_dashboard.assets.report.layout.styles` — a real Python module inside
 this skill. `app.py` imports `S`, `SIDEBAR_W`, and `SIDEBAR_COLLAPSED` directly;
 none of these are redefined inline in a dashboard.
 
 ## Usage in `app.py`
 
 ```python
-from complex_dashboard.assets.layout.styles import S, SIDEBAR_W, SIDEBAR_COLLAPSED
+from complex_dashboard.assets.report.layout.styles import S, SIDEBAR_W, SIDEBAR_COLLAPSED
 ```
 
 Prerequisite: `/opt/open-reporting/.claude/skills` must be on `PYTHONPATH`.
-Set in `settings/deploy.md` systemd unit; for local runs, `export PYTHONPATH=...`
+Set in `runtime/settings/deploy.md` systemd unit; for local runs, `export PYTHONPATH=...`
 before launching `app.py`.
 
 ## What the module exposes
@@ -28,7 +28,7 @@ before launching `app.py`.
 All colour tokens (`BG_PAGE`, `BG_SURFACE`, `BORDER`, `TEXT`, `SUBTEXT`, `FONT_FAMILY`)
 are imported by the module from `products.visuals.lib.theme`. The dashboard does
 not re-import them for styling purposes (theme tokens are still needed for chart
-components and inline text styles — see `theme/colours.md`).
+components and inline text styles — see `report/static_resources/themes/colours.md`).
 
 ## Key catalogue
 

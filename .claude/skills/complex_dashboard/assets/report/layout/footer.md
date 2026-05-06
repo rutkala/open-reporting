@@ -8,7 +8,7 @@ on every dashboard — omitting it breaks the branding contract.
 ## Usage in `app.py`
 
 ```python
-from complex_dashboard.assets.layout.footer import build_footer
+from complex_dashboard.assets.report.layout.footer import build_footer
 
 html.Main(style=S["main"], children=[
     *build_header(...),

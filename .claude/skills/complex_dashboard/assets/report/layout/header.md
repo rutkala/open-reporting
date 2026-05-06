@@ -7,7 +7,7 @@ or domain), and action buttons (settings, user). Separated from the content area
 ## Usage in `app.py`
 
 ```python
-from complex_dashboard.assets.layout.header import build_header
+from complex_dashboard.assets.report.layout.header import build_header
 
 html.Main(style=S["main"], children=[
     *build_header(

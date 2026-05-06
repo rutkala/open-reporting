@@ -11,7 +11,7 @@ toggle behaviour) is identical across dashboards and ships from this skill.
 ## Usage in `app.py`
 
 ```python
-from complex_dashboard.assets.controls.navigation.sidebar_nav import (
+from complex_dashboard.assets.report.controls.navigation.sidebar_nav import (
     build_sidebar, register_toggle_callback,
 )
 
@@ -29,7 +29,7 @@ register_toggle_callback(app)   # call once, after app.layout is set
 ```
 
 Prerequisite: `/opt/open-reporting/.claude/skills` on `PYTHONPATH` (see
-`settings/deploy.md` and `layout/styles.md`).
+`runtime/settings/deploy.md` and `report/layout/styles.md`).
 
 ## What `build_sidebar` does
 
@@ -52,7 +52,7 @@ following the structure documented below; keep the five IDs.
 
 ```python
 from dash import html
-from complex_dashboard.assets.layout.styles import S
+from complex_dashboard.assets.report.layout.styles import S
 
 html.Aside(id="sidebar", style=S["sidebar"], children=[
     html.Div(id="sidebar-logo", style=S["sidebar-logo"], children=[ ... ]),

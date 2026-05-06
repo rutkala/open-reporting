@@ -8,7 +8,7 @@ helpers compose into a runnable Dash app. Sibling file:
 
 ```bash
 PYTHONPATH=/opt/open-reporting:/opt/open-reporting/.claude/skills \
-python3 .claude/skills/complex_dashboard/assets/scripts/example_app.py
+python3 .claude/skills/complex_dashboard/assets/runtime/scripts/example_app.py
 ```
 
 Then open `http://localhost:8060/example/`.
@@ -19,8 +19,8 @@ The skill's smoke test verifies the app starts and serves HTTP 200:
 
 ```bash
 PYTHONPATH=/opt/open-reporting:/opt/open-reporting/.claude/skills \
-python3 .claude/skills/complex_dashboard/assets/scripts/smoke_test.py \
-    .claude/skills/complex_dashboard/assets/scripts/example_app.py 8060 /example/
+python3 .claude/skills/complex_dashboard/assets/runtime/scripts/smoke_test.py \
+    .claude/skills/complex_dashboard/assets/runtime/scripts/example_app.py 8060 /example/
 ```
 
 `smoke_test.py` takes an optional URL path as its third argument —
@@ -48,12 +48,12 @@ The example skips the things every domain dashboard adds on top:
 
 - **Warehouse loaders** — uses an inline synthetic `pd.DataFrame`
   instead of `semantic_service.py` calling DuckDB. See
-  `assets/model/semantic_service_template.py` for the real pattern.
+  `assets/semantic_model/definition/data_sources/semantic_service_template.py` for the real pattern.
 - **Multiple measures with comparisons** — single-card KPI rows; real
   dashboards use 3–5 cards with `reference_value` + `reference_label`.
 - **Slicers and filtering callbacks** — the example only registers
   the shared sidebar-collapse callback. See
-  `assets/controls/slicers/*.md` for the slicer + filter pattern.
+  `assets/report/controls/slicers/*.md` for the slicer + filter pattern.
 - **Polish structural break annotations** — when the real series has
   one (e.g. GUS methodology change in 2023), add a reference line and
   caption.

@@ -9,7 +9,7 @@ asset paths.
 """
 from dash import html
 
-from complex_dashboard.assets.layout.styles import S
+from complex_dashboard.assets.report.layout.styles import S
 from products.visuals.lib.theme import SUBTEXT, TEXT
 
 
