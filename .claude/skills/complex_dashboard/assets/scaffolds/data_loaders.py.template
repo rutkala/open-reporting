@@ -19,8 +19,8 @@ Once these columns are correct, ``MEASURES["unemployment"].to_series(df["val_une
 and ``DIMS["year"].values(df)`` work without any further wiring.
 
 For the loader interface contract see ``specs/data/data_loaders.md``.
-For breadth (17 loaders covering every chart family) see
-``products/dashboards/template/data.py``.
+For breadth (20 loaders covering every chart family) see
+``.claude/skills/complex_dashboard/assets/example/data_loaders.py``.
 """
 import pandas as pd
 

@@ -1,8 +1,14 @@
 # Walkthrough — `example/app.py`
 
-A working mini-dashboard that proves the `complex_dashboard` skill
-helpers compose into a runnable Dash app. Sibling files:
+A working showroom dashboard — every chart family + slicer wired
+through the skill's runtime helpers. The factory that builds it,
+[`example/showroom.py`](example/showroom.py), is also called from
+[`products/dashboards/template/app.py`](../../../../products/dashboards/template/app.py),
+so the same showroom is served on both `/example/` and `/template/`.
+
+Sibling files:
 [`example/app.py`](example/app.py),
+[`example/showroom.py`](example/showroom.py),
 [`example/data_loaders.py`](example/data_loaders.py),
 [`example/measures.py`](example/measures.py).
 
@@ -33,8 +39,9 @@ mounts the app under `/{domain}/`, not `/`.
 
 ## Multi-page variant
 
-The same example also ships in multi-page form (Dash Pages framework,
-`use_pages=True`). Run it on a separate port to compare side by side:
+The same skill helpers also ship a multi-page form (Dash Pages
+framework, `use_pages=True`). Run it on a separate port to compare
+side by side:
 
 ```bash
 PYTHONPATH=/opt/open-reporting:/opt/open-reporting/.claude/skills \
@@ -48,30 +55,30 @@ Then open `http://localhost:8061/example/` for the overview page or
 
 | Skill component | Where it appears |
 |---|---|
-| `make_app(...)` | `example/app.py` — app init |
-| `S` (styles dict) | `example/app.py` — `S["card"]`, `S["section-heading"]`, … |
-| `build_page_layout(...)` | `example/app.py` — replaces ~30 lines of nested `html.Div`/`html.Main` boilerplate |
+| `build_showroom_app(...)` | `example/app.py` — single call returns a fully wired Dash app |
+| `make_app(..., assets_folder=...)` | `example/showroom.py` — pins the SVG-icon dir at `example/assets/` so callers anywhere on disk see the same icons |
+| `S` (styles dict) | `example/showroom.py` — `S["card"]`, `S["section-heading"]`, `S["group"]` |
+| `build_page_layout(...)` | `example/showroom.py` — replaces ~30 lines of nested `html.Div`/`html.Main` boilerplate |
 | `build_sidebar(...)` / `build_header(...)` / `build_footer(...)` | wrapped by `build_page_layout` |
-| `register_toggle_callback(app)` | `example/app.py` — wires the sidebar collapse |
+| `register_toggle_callback(app)` | `example/showroom.py` — wires the sidebar collapse |
 | `register_healthcheck(app)` | `example/app.py` — exposes `/example/health` |
-| `Dimension` / `Measure` | `example/measures.py` — `DIMS` / `MEASURES` registries |
-| `load_*(...)` interface | `example/data_loaders.py` — `load_by_year`, `load_by_region`, `load_scalars` |
-| `kpi_row` + `kpi_standard` | `example/app.py` — KPI section above each chart |
-| `line(...)`, `clustered_column(...)` | `example/app.py` — chart components from `products/visuals/components/` |
+| `Dimension` / `Measure` | `example/measures.py` — `DIMS` / `MEASURES` registries (10 measures, 7 dims) |
+| `load_*(...)` interface | `example/data_loaders.py` — 20 synthetic loaders, real interface shape |
+| `kpi_row` + `kpi_standard` + `kpi_compact` | `example/showroom.py` — KPI section variants |
+| Every chart family | `example/showroom.py` — bar, line, area, combo, scatter, pie, treemap, funnel, waterfall, distribution, gauge, table, heatmap, map, ribbon, candlestick |
+| Every slicer | `example/showroom.py` — dropdown, list, range, date, tile |
 | Chart `subtitle="Źródło: …"` | per-chart source attribution rule |
 
 ## What it does *not* demonstrate
 
-The example skips the things every domain dashboard adds on top:
+The showroom skips the things every domain dashboard adds on top:
 
 - **Warehouse loaders** — uses synthetic `pd.DataFrame`s in
   `example/data_loaders.py` instead of DuckDB queries. See
   `scaffolds/data_loaders.py.template` for the real pattern.
-- **Multiple measures with comparisons** — single-card KPI rows; real
-  dashboards use 3–5 cards with `reference_value` + `reference_label`.
-- **Slicers and filtering callbacks** — only the shared
-  sidebar-collapse callback is registered. See
-  `specs/controls/slicers/*.md` for the slicer + filter pattern.
+- **Slicer-driven callbacks** — only the shared sidebar-collapse
+  callback is registered. Slicers are rendered as static examples;
+  see `specs/controls/slicers/*.md` for the filter-callback pattern.
 - **Polish structural break annotations** — when the real series has
   one (e.g. GUS methodology change in 2023), add a reference line and
   caption.
@@ -84,4 +91,7 @@ The example skips the things every domain dashboard adds on top:
 - **Regression check** — after any change to the skill helpers, run
   the smoke test. If the example breaks, the change is wrong.
 - **Reference for new dashboards** — copy patterns from here, not from
-  `template/app.py` (which predates the skill).
+  the deployed `template/app.py` (which is now a 5-line wrapper around
+  `build_showroom_app(...)`). To start a real domain dashboard, copy
+  the directory shape and replace `build_showroom_app(...)` with your
+  own page assembly.

@@ -85,14 +85,14 @@ documented in `assets/specs/data/data_loaders.md`.
     │   ├── theme/{colours, typography, icons}.md
     │   └── deploy/{app_init, deploy, observability}.md
     │
-    ├── example/             ← runnable demo
-    │   ├── app.py           ← single-page (port 8060)
-    │   ├── app_multipage.py ← multi-page (port 8061)
-    │   ├── pages/{overview, regional}.py
-    │   ├── data_loaders.py, measures.py
-    │   └── smoke_test.py
-    │
-    └── static/              ← canonical SVG icons (logo, sidebar, settings, user)
+    └── example/             ← runnable demo + canonical SVG icons
+        ├── showroom.py      ← build_showroom_app(domain) — 41 sections, all chart families + slicers
+        ├── app.py           ← single-page wrapper (port 8060)
+        ├── app_multipage.py ← multi-page wrapper (port 8061)
+        ├── pages/{overview, regional}.py
+        ├── data_loaders.py, measures.py
+        ├── smoke_test.py
+        └── assets/images/   ← canonical SVG icons (logo, sidebar, settings, user)
 ```
 
 The skill's three buckets follow the `_template/` contract:

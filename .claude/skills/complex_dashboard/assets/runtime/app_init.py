@@ -61,6 +61,7 @@ def make_app(
     module_name: str = __name__,
     use_pages: bool = False,
     pages_folder: str | None = None,
+    assets_folder: str | None = None,
 ) -> Dash:
     """Build a Dash app with the standard URL prefix, title, and CSS shell.
 
@@ -83,6 +84,12 @@ def make_app(
         Override the auto-discovery directory. Absolute path or path
         relative to the dashboard's ``app.py``. Only meaningful with
         ``use_pages=True``.
+    assets_folder
+        Override the directory Dash auto-serves under ``/{domain}/assets/``.
+        Pass an absolute path when the calling ``app.py`` and the asset
+        files (SVG icons, favicon, custom CSS) live in different
+        directories — for example when a thin domain wrapper composes
+        a layout shipped by the skill.
     """
     prefix = f"/{domain}/"
     kwargs: dict = dict(
@@ -92,6 +99,8 @@ def make_app(
         routes_pathname_prefix=prefix,
         index_string=_index_template(domain if use_pages else None),
     )
+    if assets_folder:
+        kwargs["assets_folder"] = assets_folder
     if use_pages:
         kwargs["use_pages"] = True
         if pages_folder:

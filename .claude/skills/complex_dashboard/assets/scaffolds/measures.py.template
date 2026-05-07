@@ -17,8 +17,8 @@ The report consumes ``DIMS["x"]`` and ``MEASURES["y"]`` through the
 interface in ``specs/data/data_loaders.md`` — never instantiates
 ``Measure`` or ``Dimension`` itself.
 
-For breadth (15+ measures, geo / OHLC / derived measures) see
-``products/dashboards/template/measures.py``.
+For breadth (10+ measures across geo / OHLC / derived families) see
+``.claude/skills/complex_dashboard/assets/example/measures.py``.
 """
 from complex_dashboard.assets.semantic import Dimension, Measure
 
