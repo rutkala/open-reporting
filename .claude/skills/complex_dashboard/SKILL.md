@@ -15,7 +15,7 @@ user-invocable: true
 
 # Dashboard (Report Layer)
 
-A Dash (Python) single-page application that assembles chart components, KPI cards, slicers, and navigation into a scrollable analytical report. It consumes a semantic model through a narrow interface (see `assets/semantic_model/definition/model.md`) — the report contains **no** SQL, aggregation, measure definitions, or business logic.
+A Dash (Python) single-page application that assembles chart components, KPI cards, slicers, and navigation into a scrollable analytical report. It consumes a semantic model through a narrow interface (see `assets/data/data_loaders.md`) — the report contains **no** SQL, aggregation, measure definitions, or business logic.
 
 ## Power BI mental model
 
@@ -27,7 +27,7 @@ Power BI Desktop combines four concerns; after publishing, they separate into tw
 | Analysis Services Tabular + DAX | Semantic model | `semantic-model` skill |
 | Power Query (ETL) | Data source | `data-engineer` / platform skills |
 
-This skill owns only the **report** half. One semantic model can feed many reports; one report binds to exactly one model via the interface documented in `assets/semantic_model/definition/model.md`.
+This skill owns only the **report** half. One semantic model can feed many reports; one report binds to exactly one model via the interface documented in `assets/data/data_loaders.md`.
 
 ---
 
@@ -44,16 +44,21 @@ This skill owns only the **report** half. One semantic model can feed many repor
 │
 ├── experience/                       ← framed lessons from real use (filled by /composite_experience)
 │
-└── assets/                           ← the practitioner's opinionated starter kit, structured
-    │                                    to mirror a Power BI .pbip project: report/ is the
-    │                                    visual layer, semantic_model/ is the data model, and
-    │                                    runtime/ is the skill-only operational glue.
+└── assets/                           ← the practitioner's opinionated starter kit, grouped
+    │                                    by Plotly-vocabulary concerns: pages/ is the visual
+    │                                    layer, data/ is the loader + measures binding, and
+    │                                    deploy/ is operational glue.
     │
-    ├── report/                       ← what the user sees (Power BI .Report/ analogue)
+    ├── README.md                     ← shape rationale + Power BI analogy paragraph
+    ├── app.py.template               ← copy-pastable starter app.py (read first when bootstrapping)
+    ├── example_app.py                ← runnable end-to-end example (port 8060, /example/)
+    ├── walkthrough.md                ← narrated tour of example_app.py
+    ├── smoke_test.py                 ← end-to-end smoke check
+    │
+    ├── pages/                        ← what the user sees
     │   ├── chart_types.md            ← when-to-use decision guide (read before picking any chart)
-    │   ├── definition/
-    │   │   └── app.md                ← Dash app init (port, URL prefix, title, index_string)
-    │   ├── visuals/                  ← chart and KPI component specs (Visualizations pane)
+    │   ├── page_layout.md            ← section block (H2 + desc + KPI row + chart grid)
+    │   ├── visuals/                  ← chart and KPI component specs
     │   │   ├── cards/kpi_card.md     ← kpi_standard, kpi_compact, kpi_row
     │   │   ├── bar/                  ← clustered_column, stacked_column, pct_stacked_column,
     │   │   │                            clustered_bar, stacked_bar, pct_stacked_bar,
@@ -74,41 +79,32 @@ This skill owns only the **report** half. One semantic model can feed many repor
     │   │   └── navigation/
     │   │       ├── sidebar_nav.md    ← sidebar callback contract
     │   │       └── sidebar_nav.py    ← register_toggle_callback(app)
-    │   ├── layout/                   ← structural scaffolding (the report canvas)
-    │   │   ├── page.md               ← section block (H2 + desc + KPI row + chart grid)
-    │   │   ├── header.md             ← dashboard header (title, subtitle, action buttons)
-    │   │   ├── header.py             ← build_header(...)
-    │   │   ├── footer.md             ← source attribution footer (mandatory)
-    │   │   ├── footer.py             ← build_footer(...)
-    │   │   ├── styles.md             ← S dict + layout constants reference
-    │   │   └── styles.py             ← S dict + SIDEBAR_W + SIDEBAR_COLLAPSED
-    │   ├── report_extensions/        ← report-level measures (PBIP reportExtensions.json)
-    │   │   └── measures_template.py  ← copy-pastable DIMS / MEASURES registry
-    │   └── static_resources/         ← PBIP StaticResources/RegisteredResources/ analogue
-    │       ├── images/               ← canonical SVG icon set: logo, sidebar, settings, user
-    │       └── themes/
-    │           ├── colours.md        ← colour tokens and palette
-    │           ├── typography.md     ← font family, sizes, weights
-    │           └── icons.md          ← SVG asset paths and setup
+    │   └── layout/                   ← structural scaffolding (the report canvas)
+    │       ├── header.md, header.py  ← build_header(...)
+    │       ├── footer.md, footer.py  ← build_footer(...)
+    │       └── styles.md, styles.py  ← S dict + SIDEBAR_W + SIDEBAR_COLLAPSED
     │
-    ├── semantic_model/               ← what the report queries (Power BI .SemanticModel/ analogue)
-    │   └── definition/
-    │       ├── model.md              ← interface the report expects the model to expose
-    │       └── data_sources/
-    │           └── semantic_service_template.py  ← copy-pastable loader pattern
+    ├── components/                   ← placeholder for dashboard-local components
     │
-    └── runtime/                      ← skill-only — no PBIP analogue, operational concerns
-        ├── settings/
-        │   ├── app_init.py           ← make_app(...)
-        │   └── deploy.md             ← systemd service, nginx route, portal registration
-        └── scripts/
-            ├── app.py.template       ← copy-pastable starter app.py (read first when bootstrapping)
-            ├── example_app.py        ← runnable end-to-end example (port 8060, /example/)
-            ├── walkthrough.md        ← narrated tour of example_app.py
-            └── smoke_test.py         ← end-to-end smoke check
+    ├── data/                         ← what the report queries
+    │   ├── data_loaders.md           ← interface the report expects loaders to expose
+    │   ├── data_loaders_template.py  ← copy-pastable loader pattern
+    │   └── measures_template.py      ← copy-pastable DIMS / MEASURES registry
+    │
+    ├── theme/                        ← visual tokens
+    │   ├── colours.md                ← colour tokens and palette
+    │   ├── typography.md             ← font family, sizes, weights
+    │   └── icons.md                  ← SVG asset paths and setup
+    │
+    ├── images/                       ← canonical SVG icon set: logo, sidebar, settings, user
+    │
+    └── deploy/                       ← operational glue
+        ├── app.md                    ← Dash app init (port, URL prefix, title, index_string)
+        ├── app_init.py               ← make_app(...)
+        └── deploy.md                 ← systemd service, nginx route, portal registration
 ```
 
-The skill's three buckets follow the `_template/` contract: `knowledge/` carries upstream content learned from articles and research; `experience/` accumulates framed lessons from real projects; `assets/` is the practitioner's opinionated starter kit — structured as a Power BI `.pbip` project (`report/` for the visual layer, `semantic_model/` for the data model, `runtime/` for skill-only operational glue).
+The skill's three buckets follow the `_template/` contract: `knowledge/` carries upstream content learned from articles and research; `experience/` accumulates framed lessons from real projects; `assets/` is the practitioner's opinionated starter kit — grouped using Plotly-vocabulary names (`pages/` for the visual layer, `data/` for the loader binding, `deploy/` for operational concerns) so it stays recognisable to any Dash developer. The Power BI analogy is preserved as documentation in `assets/README.md`, not as folder names.
 
 ---
 
@@ -118,16 +114,16 @@ All paths below are under `assets/` unless noted otherwise.
 
 | Task | Files to read |
 |------|--------------|
-| Seeing the helpers compose end-to-end | `runtime/scripts/walkthrough.md` + run `runtime/scripts/example_app.py` (port 8060) |
-| Bootstrapping a new dashboard | `runtime/scripts/app.py.template` — copy to `products/dashboards/<domain>/app.py` and fill in `TODO_*` placeholders |
-| Understanding what the scaffold does | `report/definition/app.md`, `report/layout/styles.md`, `report/layout/page.md`, `report/layout/header.md`, `report/layout/footer.md`, `report/controls/navigation/sidebar_nav.md`, `semantic_model/definition/model.md` |
-| Understanding the semantic model binding | `semantic_model/definition/model.md` (then jump to the `semantic-model` skill if you need to add measures) |
-| Picking chart types | `report/chart_types.md` first, then the relevant `report/visuals/` file |
-| Building KPI section | `report/visuals/cards/kpi_card.md`, `report/layout/page.md` |
-| Adding a slicer + callback | The matching `report/controls/slicers/*.md` |
-| Deploying | `runtime/settings/deploy.md` |
-| Colours or fonts | `report/static_resources/themes/colours.md`, `report/static_resources/themes/typography.md` |
-| Icon paths | `report/static_resources/themes/icons.md` |
+| Seeing the helpers compose end-to-end | `walkthrough.md` + run `example_app.py` (port 8060) |
+| Bootstrapping a new dashboard | `app.py.template` — copy to `products/dashboards/<domain>/app.py` and fill in `TODO_*` placeholders |
+| Understanding what the scaffold does | `deploy/app.md`, `pages/layout/styles.md`, `pages/page_layout.md`, `pages/layout/header.md`, `pages/layout/footer.md`, `pages/controls/navigation/sidebar_nav.md`, `data/data_loaders.md` |
+| Understanding the data binding | `data/data_loaders.md` (then jump to the `semantic-model` skill if you need to add measures) |
+| Picking chart types | `pages/chart_types.md` first, then the relevant `pages/visuals/` file |
+| Building KPI section | `pages/visuals/cards/kpi_card.md`, `pages/page_layout.md` |
+| Adding a slicer + callback | The matching `pages/controls/slicers/*.md` |
+| Deploying | `deploy/deploy.md` |
+| Colours or fonts | `theme/colours.md`, `theme/typography.md` |
+| Icon paths | `theme/icons.md` |
 | Background, patterns, gaps | `knowledge/summary.md` (the 7-section synthesis with §1–§7) |
 
 ---
@@ -136,9 +132,9 @@ All paths below are under `assets/` unless noted otherwise.
 
 ```python
 # Shared report infrastructure — from the skill itself
-from complex_dashboard.assets.report.layout.styles import S, SIDEBAR_W, SIDEBAR_COLLAPSED
-from complex_dashboard.assets.report.controls.navigation.sidebar_nav import register_toggle_callback
-from complex_dashboard.assets.runtime.settings.app_init import make_app
+from complex_dashboard.assets.pages.layout.styles import S, SIDEBAR_W, SIDEBAR_COLLAPSED
+from complex_dashboard.assets.pages.controls.navigation.sidebar_nav import register_toggle_callback
+from complex_dashboard.assets.deploy.app_init import make_app
 
 # Visual components — from products/visuals/components
 from products.visuals.components.kpi_card import kpi_row, kpi_standard, kpi_compact
@@ -164,17 +160,17 @@ from products.visuals.components.slicer import (
 )
 ```
 
-The `complex_dashboard.assets.*` imports require `/opt/open-reporting/.claude/skills` on `PYTHONPATH`. The systemd unit in `assets/runtime/settings/deploy.md` sets this; for local runs, export it before launching `app.py`.
+The `complex_dashboard.assets.*` imports require `/opt/open-reporting/.claude/skills` on `PYTHONPATH`. The systemd unit in `assets/deploy/deploy.md` sets this; for local runs, export it before launching `app.py`.
 
 ---
 
 ## app.py file structure (top to bottom)
 
 ```
-1. imports                     — Dash, skill modules, components, measures, semantic_service
+1. imports                     — Dash, skill modules, components, measures, data_loaders
 2. PORT constant
-3. app = make_app(...)         — see report/definition/app.md
-4. data loaders                — call semantic_service functions, store in module-level _df_* vars
+3. app = make_app(...)         — see deploy/app.md
+4. data loaders                — call data_loaders functions, store in module-level _df_* vars
 5. dimension value shortcuts   — _TODO_values = m.DIMS["key"].values(_df_*)
 6. app.layout                  — sidebar + main (header + content area + footer)
 7. callbacks                   — one @callback per interactive chart
@@ -189,24 +185,24 @@ The layout is a two-column flex — the sidebar on the left, the scrollable main
 ```python
 app.layout = html.Div(style=S["body"], children=[
 
-    # ── Sidebar — see report/controls/navigation/sidebar_nav.md ──────────────
+    # ── Sidebar — see pages/controls/navigation/sidebar_nav.md ────────────────
     html.Aside(id="sidebar", style=S["sidebar"], children=[ ... ]),
 
     # ── Main column — header + scrollable content + footer ────────────────────
     html.Main(style=S["main"], children=[
 
-        # Header — see report/layout/header.md
+        # Header — see pages/layout/header.md
         html.Div(id="main-header", style=S["main-header"], children=[ ... ]),
         html.Hr(style=S["main-divider"]),
 
-        # Scrollable content area — one block per section (see report/layout/page.md)
+        # Scrollable content area — one block per section (see pages/page_layout.md)
         html.Div(style=S["main-content-area"], children=[
             # Section 1: H2 + description + KPI row + chart grid
             # Section 2: H2 + description + KPI row + chart grid
             # ...
         ]),
 
-        # Footer — see report/layout/footer.md (mandatory)
+        # Footer — see pages/layout/footer.md (mandatory)
         html.Hr(style=S["footer-divider"]),
         html.Footer(style=S["main-footer"], children=[ ... ]),
     ]),
@@ -255,17 +251,17 @@ Before any dashboard is released:
 - [ ] All filters are necessary — no filter included that the audience will not use
 - [ ] Footer with source attribution is present
 - [ ] Every chart wrapped in `S["card"]`; every section H2 `id` matches sidebar nav `href`
-- [ ] No SQL, aggregation, or `groupby` in `app.py` — all data comes from `semantic_service.py` loaders
+- [ ] No SQL, aggregation, or `groupby` in `app.py` — all data comes from `data_loaders.py` loaders
 - [ ] No `Measure` or `Dimension` instantiation in the report — only consumption
 
 ---
 
 ## Core rules
 - Report = visual layer only — no SQL, no aggregation, no business logic, no measure definitions in `app.py`
-- All data comes from `semantic_service.py` loaders, loaded once at startup
-- The report consumes `MEASURES` / `DIMS` through the interface in `assets/semantic_model/definition/model.md` — it never defines them
-- All styles come from `complex_dashboard.assets.report.layout.styles.S` — no inline hex values, no hardcoded pixel values outside `S`
+- All data comes from `data_loaders.py` loaders, loaded once at startup
+- The report consumes `MEASURES` / `DIMS` through the interface in `assets/data/data_loaders.md` — it never defines them
+- All styles come from `complex_dashboard.assets.pages.layout.styles.S` — no inline hex values, no hardcoded pixel values outside `S`
 - Chart titles state the analytical conclusion in Polish — never the chart type
 - Every chart subtitle attributes the source — `"Źródło: <agency> — dane za <period>"`
 - Footer is mandatory on every dashboard
-- Sidebar collapse callback comes from `complex_dashboard.assets.report.controls.navigation.sidebar_nav.register_toggle_callback(app)` — never redefined inline
+- Sidebar collapse callback comes from `complex_dashboard.assets.pages.controls.navigation.sidebar_nav.register_toggle_callback(app)` — never redefined inline
