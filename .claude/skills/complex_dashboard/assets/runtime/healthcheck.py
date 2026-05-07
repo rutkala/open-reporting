@@ -5,9 +5,10 @@ probe on the underlying Flask server. systemd, nginx, and uptime
 monitors call it to confirm the dashboard process is up — no auth,
 no DB query, just "the WSGI app is responsive".
 
-A more elaborate readiness probe (DuckDB ping, downstream API check)
-can be added per-dashboard; this helper deliberately does the trivial
-thing so it stays on every dashboard by default.
+The route is registered under the dashboard's URL prefix (e.g.
+``/labour/health``) so it lives at the same prefix as everything
+else the reverse proxy serves for the domain, and so Dash's Pages
+framework does not intercept it.
 """
 from __future__ import annotations
 
@@ -15,10 +16,10 @@ from flask import jsonify
 
 
 def register_healthcheck(app, path: str = "/health") -> None:
-    """Register a JSON ``GET {path}`` route on the Dash app's Flask server.
+    """Register a JSON ``GET {prefix}{path}`` route on the Dash app.
 
-    Returns ``{"status": "ok"}`` with HTTP 200. Idempotent — registering
-    the same path twice raises ``AssertionError`` from Flask, so call
+    Returns ``{"status": "ok"}`` with HTTP 200. Idempotent — the same
+    path can only be registered once on a given Flask server, so call
     once at app init.
 
     Parameters
@@ -26,13 +27,17 @@ def register_healthcheck(app, path: str = "/health") -> None:
     app
         Dash app instance returned by ``make_app(...)``.
     path
-        URL path under the dashboard's URL prefix. Default ``"/health"``;
-        with ``url_base_pathname="/labour/"`` the full path becomes
-        ``/labour/health``.
+        URL path appended to the dashboard's URL prefix. Default
+        ``"/health"``; with ``url_base_pathname="/labour/"`` the full
+        path becomes ``/labour/health``.
     """
-    server = app.server
-    endpoint = f"open_reporting_healthcheck_{path.strip('/').replace('/', '_') or 'root'}"
+    prefix = (app.config.get("routes_pathname_prefix") or "/").rstrip("/")
+    full_path = f"{prefix}{path}"
+    endpoint = (
+        f"open_reporting_healthcheck_"
+        f"{full_path.strip('/').replace('/', '_') or 'root'}"
+    )
 
-    @server.route(path, endpoint=endpoint)
+    @app.server.route(full_path, endpoint=endpoint)
     def _healthcheck():
         return jsonify({"status": "ok"})

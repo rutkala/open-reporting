@@ -2,21 +2,33 @@
 
 Two helpers:
 
-- `build_sidebar(domain, sections, active_index=0)` — returns the
-  full `html.Aside(...)` tree. Section list is the only dashboard-
-  specific input; everything else is identical across dashboards.
-- `register_toggle_callback(app)` — registers the collapse callback
-  that swaps the sidebar between `SIDEBAR_W` and `SIDEBAR_COLLAPSED`
-  when the toggle button is clicked. Call once after `app.layout`
-  is assigned.
+- ``build_sidebar(domain, sections=None, *, from_page_registry=False, active_index=0)``
+  returns the full ``html.Aside(...)`` tree. Single-page apps pass
+  ``sections=[(label, anchor_id), ...]`` and the nav renders anchor
+  links. Multi-page apps pass ``from_page_registry=True`` and the nav
+  is generated from ``dash.page_registry`` (sorted by the ``order``
+  kwarg given to ``dash.register_page``).
+- ``register_toggle_callback(app)`` registers the collapse callback
+  that swaps the sidebar between ``SIDEBAR_W`` and ``SIDEBAR_COLLAPSED``
+  when the toggle button is clicked. Call once after ``app.layout`` is
+  assigned.
 """
+from __future__ import annotations
+
+import dash
 from dash import Input, Output, State, html
 
 from complex_dashboard.assets.runtime.styles import S, SIDEBAR_COLLAPSED, SIDEBAR_W
 
 
-def build_sidebar(domain: str, sections: list[tuple[str, str]], *, active_index: int = 0):
-    """Return the standard sidebar `html.Aside(...)` tree.
+def build_sidebar(
+    domain: str,
+    sections: list[tuple[str, str]] | None = None,
+    *,
+    from_page_registry: bool = False,
+    active_index: int = 0,
+):
+    """Return the standard sidebar ``html.Aside(...)`` tree.
 
     Parameters
     ----------
@@ -24,16 +36,41 @@ def build_sidebar(domain: str, sections: list[tuple[str, str]], *, active_index:
         URL prefix segment, e.g. ``"labour"``. Used to build asset
         ``src`` paths — must match ``make_app(domain=...)``.
     sections
-        Ordered list of ``(label, anchor_id)`` pairs. ``anchor_id``
-        must match the ``id=`` of the corresponding section ``html.H2``.
+        Ordered ``(label, anchor_id)`` pairs. ``anchor_id`` must match
+        the ``id=`` of the corresponding section ``html.H2``. Required
+        unless ``from_page_registry=True``.
+    from_page_registry
+        Render the nav from ``dash.page_registry`` instead of from
+        ``sections``. Use for ``make_app(..., use_pages=True)`` apps.
+        Page entries are sorted by the ``order`` kwarg and link to
+        ``page["relative_path"]`` so the URL prefix is preserved.
     active_index
         Which link gets ``nav-item-active`` styling. Defaults to 0
-        (first section). Anchor scrolling does the rest — no JS.
+        (first link). For ``from_page_registry=True`` apps this is
+        only the initial styling — Dash's Pages framework handles
+        active-link state at runtime via the URL.
 
     The element IDs (``sidebar``, ``sidebar-logo``, ``sidebar-logo-img``,
     ``sidebar-nav``, ``btn-toggle``) are fixed because the toggle
     callback wires them by name.
     """
+    if from_page_registry:
+        nav_links = _nav_from_page_registry(active_index)
+    else:
+        if sections is None:
+            raise ValueError(
+                "build_sidebar requires either sections=[...] or "
+                "from_page_registry=True"
+            )
+        nav_links = [
+            html.A(
+                label,
+                href=f"#{anchor}",
+                style=S["nav-item-active"] if i == active_index else S["nav-item"],
+            )
+            for i, (label, anchor) in enumerate(sections)
+        ]
+
     return html.Aside(id="sidebar", style=S["sidebar"], children=[
         html.Div(id="sidebar-logo", style=S["sidebar-logo"], children=[
             html.A(
@@ -46,14 +83,7 @@ def build_sidebar(domain: str, sections: list[tuple[str, str]], *, active_index:
             ),
         ]),
         html.Hr(id="sidebar-divider", style=S["sidebar-divider"]),
-        html.Nav(id="sidebar-nav", style=S["sidebar-nav"], children=[
-            html.A(
-                label,
-                href=f"#{anchor}",
-                style=S["nav-item-active"] if i == active_index else S["nav-item"],
-            )
-            for i, (label, anchor) in enumerate(sections)
-        ]),
+        html.Nav(id="sidebar-nav", style=S["sidebar-nav"], children=nav_links),
         html.Button(id="btn-toggle", style=S["toggle-btn"], children=[
             html.Img(
                 id="toggle-icon",
@@ -62,6 +92,21 @@ def build_sidebar(domain: str, sections: list[tuple[str, str]], *, active_index:
             ),
         ]),
     ])
+
+
+def _nav_from_page_registry(active_index: int) -> list:
+    pages = sorted(
+        dash.page_registry.values(),
+        key=lambda p: (p.get("order", 1_000), p["name"]),
+    )
+    return [
+        html.A(
+            page["name"],
+            href=page["relative_path"],
+            style=S["nav-item-active"] if i == active_index else S["nav-item"],
+        )
+        for i, page in enumerate(pages)
+    ]
 
 
 def register_toggle_callback(app):

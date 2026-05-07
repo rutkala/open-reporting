@@ -1,0 +1,87 @@
+#!/usr/bin/env python3
+"""
+TODO_DOMAIN dashboard — Open Reporting (multi-page variant)
+
+Copy this file to ``products/dashboards/TODO_DOMAIN/app.py`` and
+replace every ``TODO_*`` placeholder. Use this template instead of
+``app.py.template`` when the dashboard has more than one analytical
+page that deserves its own URL (``/`` overview, ``/regional``, …).
+
+Multi-page apps require a ``pages/`` package next to ``app.py`` —
+copy from ``scaffolds/pages/`` and add one ``register_page(...)`` per
+page.
+
+Run locally:
+    PYTHONPATH=/opt/open-reporting:/opt/open-reporting/.claude/skills \\
+    DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb \\
+    python3 products/dashboards/TODO_DOMAIN/app.py
+"""
+# ─── 1. imports ───────────────────────────────────────────────────────────
+import dash
+from dash import html, page_container
+
+# Skill helpers
+from complex_dashboard.assets.runtime import (
+    S,  # noqa: F401  — re-used by page modules
+    build_header, build_footer,
+    build_sidebar, register_toggle_callback,
+    register_healthcheck,
+    configure_logging, get_logger,
+    make_app,
+)
+
+
+# ─── 2. PORT constant ─────────────────────────────────────────────────────
+PORT = TODO_PORT
+
+
+# ─── 3. App init (multi-page) ─────────────────────────────────────────────
+configure_logging()
+log = get_logger(__name__)
+
+app = make_app(
+    domain="TODO_DOMAIN",
+    title="TODO: Dashboard title (Polish)",
+    module_name=__name__,
+    use_pages=True,
+)
+register_healthcheck(app)
+
+
+# ─── 4. Layout ────────────────────────────────────────────────────────────
+# In multi-page mode the sidebar reads from dash.page_registry, so each
+# page's ``register_page(name=..., order=...)`` controls the nav. The
+# main column hosts ``page_container`` instead of a hand-built section
+# tree.
+app.layout = html.Div(style=S["body"], children=[
+
+    build_sidebar(domain="TODO_DOMAIN", from_page_registry=True),
+
+    html.Main(style=S["main"], children=[
+        *build_header(
+            title="TODO: Dashboard title (Polish)",
+            subtitle="TODO: Subtitle — domain + date range",
+            domain="TODO_DOMAIN",
+        ),
+
+        html.Div(style=S["main-content-area"], children=[
+            page_container,
+        ]),
+
+        *build_footer(
+            name="TODO: Dashboard name (Polish)",
+            source="TODO: e.g. 'GUS BDL', 'Eurostat'",
+            updated="TODO: e.g. 'luty 2026', '2018–2024'",
+        ),
+    ]),
+])
+
+
+# ─── 5. Callbacks ─────────────────────────────────────────────────────────
+register_toggle_callback(app)
+
+
+# ─── 6. Entry point ───────────────────────────────────────────────────────
+if __name__ == "__main__":
+    log.info("starting %s on port %d", __name__, PORT)
+    app.run(host="0.0.0.0", port=PORT, debug=False)
