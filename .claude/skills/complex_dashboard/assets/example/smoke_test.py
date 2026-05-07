@@ -8,7 +8,7 @@ reports pass or fail, then shuts down cleanly.
 Usage:
     PYTHONPATH=/opt/open-reporting:/opt/open-reporting/.claude/skills \
     DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb \
-    python3 .claude/skills/complex_dashboard/assets/smoke_test.py \
+    python3 .claude/skills/complex_dashboard/assets/example/smoke_test.py \
         products/dashboards/{domain}/app.py {port} [{path}]
 
 Arguments:
