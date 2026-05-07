@@ -19,8 +19,8 @@ charts. Use `kpi_standard` for primary KPIs, `kpi_compact` for secondary/dense r
 
 ## Import
 ```python
-from products.visuals.components.kpi_card import kpi_row, kpi_standard, kpi_compact
-from products.visuals.lib.theme import POSITIVE, NEGATIVE, SUBTEXT
+from complex_dashboard.assets.components.kpi_card import kpi_row, kpi_standard, kpi_compact
+from complex_dashboard.assets.theme import POSITIVE, NEGATIVE, SUBTEXT
 ```
 
 ## Template — standard row (primary KPIs)

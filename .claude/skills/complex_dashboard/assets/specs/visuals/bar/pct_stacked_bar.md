@@ -13,7 +13,7 @@ no absolute values. Best for survey results, demographic splits, budget allocati
 
 ## Import
 ```python
-from products.visuals.components.bar_chart import pct_stacked_bar
+from complex_dashboard.assets.components.bar_chart import pct_stacked_bar
 ```
 
 ## Template

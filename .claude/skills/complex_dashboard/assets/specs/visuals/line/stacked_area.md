@@ -15,7 +15,7 @@ reverse order (use Stacked Column for discrete periods instead).
 
 ## Import
 ```python
-from products.visuals.components.line_chart import stacked_area
+from complex_dashboard.assets.components.line_chart import stacked_area
 ```
 
 ## Template

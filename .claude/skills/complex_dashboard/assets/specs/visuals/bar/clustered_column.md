@@ -14,7 +14,7 @@ more than 6 series (group remainder as "Pozostałe").
 
 ## Import
 ```python
-from products.visuals.components.bar_chart import clustered_column
+from complex_dashboard.assets.components.bar_chart import clustered_column
 ```
 
 ## Template

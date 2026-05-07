@@ -10,10 +10,10 @@ from dash import html
 import pandas as pd
 
 from complex_dashboard.assets.runtime import S
-from products.visuals.components.kpi_card import kpi_row, kpi_standard
-from products.visuals.components.line_chart import line
-from products.visuals.lib.semantic import Dimension, Measure
-from products.visuals.lib.theme import POSITIVE
+from complex_dashboard.assets.components.kpi_card import kpi_row, kpi_standard
+from complex_dashboard.assets.components.line_chart import line
+from complex_dashboard.assets.semantic import Dimension, Measure
+from complex_dashboard.assets.theme import POSITIVE
 
 
 dash.register_page(

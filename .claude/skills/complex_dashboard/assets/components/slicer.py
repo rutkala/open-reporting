@@ -13,7 +13,7 @@ Slicers are UI controls — connect them to callbacks in the host app.
 """
 from dash import dcc, html
 
-from products.visuals.lib.theme import (
+from complex_dashboard.assets.theme import (
     BG_SURFACE, BORDER, SUBTEXT, TEXT, FONT_FAMILY,
     TEAL_1, AZURE_PALE,
 )

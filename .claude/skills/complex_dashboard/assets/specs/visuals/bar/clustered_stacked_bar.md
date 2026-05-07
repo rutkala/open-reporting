@@ -15,7 +15,7 @@ composition are analytically necessary.
 
 ## Import
 ```python
-from products.visuals.components.bar_chart import clustered_stacked_bar
+from complex_dashboard.assets.components.bar_chart import clustered_stacked_bar
 ```
 
 ## Template

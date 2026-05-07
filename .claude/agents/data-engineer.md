@@ -94,7 +94,7 @@ After implementing:
 ```bash
 # Test DuckDB connection and basic query
 PYTHONPATH=/opt/open-reporting python3 -c "
-from products.visuals.lib.db import query
+from complex_dashboard.assets.data.db import query
 print(query('SELECT 1 AS ok'))
 "
 

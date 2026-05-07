@@ -14,7 +14,7 @@ administrative boundaries. E.g. unemployment rate by voivodeship, GDP per capita
 
 ## Import
 ```python
-from products.visuals.components.map_chart import choropleth_map
+from complex_dashboard.assets.components.map_chart import choropleth_map
 ```
 
 ## Template

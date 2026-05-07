@@ -24,7 +24,7 @@ Domain example:
         ),
     }
 """
-from products.visuals.lib.semantic import Dimension, Measure
+from complex_dashboard.assets.semantic import Dimension, Measure
 
 # ── Dimensions ────────────────────────────────────────────────────────────────
 

@@ -14,10 +14,10 @@ y_measure (optional Measure):
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-from products.visuals.lib.theme import (
+from complex_dashboard.assets.theme import (
     COLORWAY, POSITIVE, NEGATIVE, SLATE_1, SUBTEXT, TEXT, BORDER, GRID, ZERO_LINE, FONT_FAMILY,
 )
-from products.visuals.components import (
+from complex_dashboard.assets.components import (
     PLOT_H, PLOT_H_TALL, MARGIN_L, MARGIN_R, MARGIN_T, MARGIN_B, _chart,
 )
 

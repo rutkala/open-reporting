@@ -16,7 +16,7 @@ regional pattern (use Choropleth Map).
 
 ## Import
 ```python
-from products.visuals.components.map_chart import bubble_map
+from complex_dashboard.assets.components.map_chart import bubble_map
 ```
 
 ## Template

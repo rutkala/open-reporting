@@ -14,7 +14,7 @@ regional rankings by employment rate over years.
 
 ## Import
 ```python
-from products.visuals.components.special_chart import ribbon
+from complex_dashboard.assets.components.special_chart import ribbon
 ```
 
 ## Template

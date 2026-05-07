@@ -13,7 +13,7 @@ E.g. wage distribution by sector, regional unemployment spread by year.
 
 ## Import
 ```python
-from products.visuals.components.distribution_chart import box_plot
+from complex_dashboard.assets.components.distribution_chart import box_plot
 ```
 
 ## Template

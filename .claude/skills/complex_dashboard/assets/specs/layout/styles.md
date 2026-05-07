@@ -26,7 +26,7 @@ before launching `app.py`.
 | `GAP`, `RADIUS` | str | Page edge gap + sidebar border radius |
 
 All colour tokens (`BG_PAGE`, `BG_SURFACE`, `BORDER`, `TEXT`, `SUBTEXT`, `FONT_FAMILY`)
-are imported by the module from `products.visuals.lib.theme`. The dashboard does
+are imported by the module from `complex_dashboard.assets.theme`. The dashboard does
 not re-import them for styling purposes (theme tokens are still needed for chart
 components and inline text styles — see `theme/colours.md`).
 

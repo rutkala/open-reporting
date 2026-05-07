@@ -14,7 +14,7 @@ space is limited. Most common slicer type for dimension filters (year, region, s
 
 ## Import
 ```python
-from products.visuals.components.slicer import dropdown_slicer
+from complex_dashboard.assets.components.slicer import dropdown_slicer
 ```
 
 ## Template

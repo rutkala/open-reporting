@@ -15,7 +15,7 @@ range (value threshold, year range as numbers, age bracket).
 
 ## Import
 ```python
-from products.visuals.components.slicer import range_slicer
+from complex_dashboard.assets.components.slicer import range_slicer
 ```
 
 ## Template

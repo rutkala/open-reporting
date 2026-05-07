@@ -14,7 +14,7 @@ irrelevant or misleading and only proportions matter.
 
 ## Import
 ```python
-from products.visuals.components.bar_chart import pct_stacked_column
+from complex_dashboard.assets.components.bar_chart import pct_stacked_column
 ```
 
 ## Template

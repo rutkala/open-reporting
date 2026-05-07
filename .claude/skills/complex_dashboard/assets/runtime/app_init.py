@@ -12,7 +12,7 @@ from pathlib import Path
 
 from dash import Dash
 
-import products.visuals.lib.theme as _theme  # noqa: F401 — registers 'teal' Plotly template
+import complex_dashboard.assets.theme as _theme  # noqa: F401 — registers 'teal' Plotly template
 
 
 def _index_template(domain: str | None = None) -> str:

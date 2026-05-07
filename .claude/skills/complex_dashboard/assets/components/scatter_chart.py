@@ -15,11 +15,11 @@ import math
 import plotly.graph_objects as go
 import numpy as np
 
-from products.visuals.lib.theme import (
+from complex_dashboard.assets.theme import (
     COLORWAY, AZURE_1, SLATE_1, SUBTEXT, TEXT, BORDER, GRID, ZERO_LINE,
 )
-from products.visuals.components import PLOT_H, MARGIN_L, MARGIN_R, MARGIN_T, MARGIN_B, _chart
-from products.visuals.lib.theme import FONT_FAMILY
+from complex_dashboard.assets.components import PLOT_H, MARGIN_L, MARGIN_R, MARGIN_T, MARGIN_B, _chart
+from complex_dashboard.assets.theme import FONT_FAMILY
 
 
 def _base_layout(**kw):

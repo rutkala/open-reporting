@@ -19,7 +19,7 @@ E.g. "GDP per capita vs employment rate by country" (scatter) or
 
 ## Import
 ```python
-from products.visuals.components.scatter_chart import scatter_bubble
+from complex_dashboard.assets.components.scatter_chart import scatter_bubble
 ```
 
 ## Template

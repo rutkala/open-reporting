@@ -14,11 +14,11 @@ y_measure (optional Measure):
 """
 import plotly.graph_objects as go
 
-from products.visuals.lib.theme import (
+from complex_dashboard.assets.theme import (
     POSITIVE, NEGATIVE, SLATE_1, SUBTEXT, TEXT, BORDER, GRID, ZERO_LINE,
 )
-from products.visuals.components import PLOT_H, MARGIN_L, MARGIN_R, MARGIN_T, MARGIN_B, _chart
-from products.visuals.lib.theme import FONT_FAMILY
+from complex_dashboard.assets.components import PLOT_H, MARGIN_L, MARGIN_R, MARGIN_T, MARGIN_B, _chart
+from complex_dashboard.assets.theme import FONT_FAMILY
 
 
 def _wf_layout():

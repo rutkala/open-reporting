@@ -13,7 +13,7 @@ Use when absolute totals are irrelevant and only the changing proportions matter
 
 ## Import
 ```python
-from products.visuals.components.line_chart import pct_stacked_area
+from complex_dashboard.assets.components.line_chart import pct_stacked_area
 ```
 
 ## Template

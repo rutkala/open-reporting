@@ -12,13 +12,13 @@ Rules applied:
 """
 import plotly.graph_objects as go
 
-from products.visuals.lib.theme import (
+from complex_dashboard.assets.theme import (
     AZURE_1, AZURE_PALE, BORDER, BG_SURFACE, GRID,
     POSITIVE, NEGATIVE, SLATE_4,
     SUBTEXT, TEXT,
 )
-from products.visuals.components import PLOT_H, MARGIN_L, MARGIN_R, MARGIN_T, MARGIN_B, _chart
-from products.visuals.lib.theme import FONT_FAMILY
+from complex_dashboard.assets.components import PLOT_H, MARGIN_L, MARGIN_R, MARGIN_T, MARGIN_B, _chart
+from complex_dashboard.assets.theme import FONT_FAMILY
 
 
 def _table_height(rows: int) -> int:
@@ -202,7 +202,7 @@ def data_list(title, items, subtitle=""):
                or list of plain strings
     """
     from dash import html
-    from products.visuals.lib.theme import BG_SURFACE, BORDER, SUBTEXT, TEXT, FONT_FAMILY
+    from complex_dashboard.assets.theme import BG_SURFACE, BORDER, SUBTEXT, TEXT, FONT_FAMILY
 
     def _row(item, i):
         label = item["label"] if isinstance(item, dict) else item

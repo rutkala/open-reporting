@@ -14,12 +14,12 @@ y_measure (optional Measure) on gauge and bullet:
 """
 import plotly.graph_objects as go
 
-from products.visuals.lib.theme import (
+from complex_dashboard.assets.theme import (
     COLORWAY, AZURE_1, AZURE_PALE, POSITIVE, NEGATIVE, WARNING,
     BORDER, GRID, SLATE_1, SLATE_4, SUBTEXT, TEXT, ZERO_LINE, FONT_FAMILY,
     TEAL_1, TEAL_PALE, BG_SURFACE,
 )
-from products.visuals.components import (
+from complex_dashboard.assets.components import (
     PLOT_H, PLOT_H_TALL, MARGIN_L, MARGIN_R, MARGIN_T, MARGIN_B, _chart,
 )
 

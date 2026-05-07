@@ -15,7 +15,7 @@ as a default composition chart — Bar is almost always better.
 
 ## Import
 ```python
-from products.visuals.components.pie_chart import pie_chart
+from complex_dashboard.assets.components.pie_chart import pie_chart
 ```
 
 ## Template

@@ -12,8 +12,8 @@ import os
 import plotly.graph_objects as go
 from dash import Dash, dcc, html, Input, Output, callback
 
-import products.visuals.lib.theme as _theme  # noqa: F401 — registers nordic template
-from products.visuals.lib.theme import AZURE_1, AZURE_3, BG_PAGE, BG_SURFACE, BORDER, COLORWAY, SUBTEXT, TEXT
+import complex_dashboard.assets.theme as _theme  # noqa: F401 — registers nordic template
+from complex_dashboard.assets.theme import AZURE_1, AZURE_3, BG_PAGE, BG_SURFACE, BORDER, COLORWAY, SUBTEXT, TEXT
 from products import semantic
 from products.semantic.models import Measure
 

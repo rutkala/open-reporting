@@ -15,7 +15,7 @@ comparisons with country/voivodeship names.
 
 ## Import
 ```python
-from products.visuals.components.bar_chart import clustered_bar
+from complex_dashboard.assets.components.bar_chart import clustered_bar
 ```
 
 ## Template

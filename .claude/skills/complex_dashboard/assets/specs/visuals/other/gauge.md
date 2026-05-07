@@ -16,7 +16,7 @@ a range is the message (not just the value). Use sparingly — prefer Bullet cha
 
 ## Import
 ```python
-from products.visuals.components.special_chart import gauge
+from complex_dashboard.assets.components.special_chart import gauge
 ```
 
 ## Template

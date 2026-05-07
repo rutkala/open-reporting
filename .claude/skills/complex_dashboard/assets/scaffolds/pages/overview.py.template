@@ -11,7 +11,7 @@ import dash
 from dash import html
 
 from complex_dashboard.assets.runtime import S
-from products.visuals.components.kpi_card import kpi_row, kpi_standard
+from complex_dashboard.assets.components.kpi_card import kpi_row, kpi_standard
 
 import products.dashboards.TODO_DOMAIN.measures as m
 import products.dashboards.TODO_DOMAIN.data_loaders as _data

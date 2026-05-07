@@ -15,7 +15,7 @@ series where volume comparison is the message.
 
 ## Import
 ```python
-from products.visuals.components.line_chart import area
+from complex_dashboard.assets.components.line_chart import area
 ```
 
 ## Template

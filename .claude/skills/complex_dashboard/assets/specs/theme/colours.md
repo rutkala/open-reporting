@@ -5,8 +5,8 @@
 and expose all tokens.
 
 ```python
-import products.visuals.lib.theme as _theme  # noqa: F401 — activates template
-from products.visuals.lib.theme import (
+import complex_dashboard.assets.theme as _theme  # noqa: F401 — activates template
+from complex_dashboard.assets.theme import (
     BG_PAGE, BG_SURFACE, BORDER,
     COLORWAY, GRID, MUTED, NEGATIVE, POSITIVE,
     SUBTEXT, TEXT, WARNING, ZERO_LINE,

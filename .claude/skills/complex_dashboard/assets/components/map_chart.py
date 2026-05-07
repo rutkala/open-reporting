@@ -7,10 +7,10 @@ bubble_map     — sized bubbles at geographic points
 """
 import plotly.graph_objects as go
 
-from products.visuals.lib.theme import (
+from complex_dashboard.assets.theme import (
     AZURE_1, TEAL_1, TEAL_PALE, BORDER, SUBTEXT, TEXT, FONT_FAMILY, SLATE_4,
 )
-from products.visuals.components import PLOT_H, PLOT_H_TALL, _chart
+from complex_dashboard.assets.components import PLOT_H, PLOT_H_TALL, _chart
 
 # ── Map-specific colour constants ─────────────────────────────────────────────
 _MAP_OCEAN_COLOR = "#EEF3F7"   # light blue-grey for ocean/water fill

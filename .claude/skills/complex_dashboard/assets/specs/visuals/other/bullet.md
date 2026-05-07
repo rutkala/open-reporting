@@ -15,7 +15,7 @@ More precise, less chart junk. E.g. actual revenue vs budget, actual deficit vs 
 
 ## Import
 ```python
-from products.visuals.components.special_chart import bullet
+from complex_dashboard.assets.components.special_chart import bullet
 ```
 
 ## Template

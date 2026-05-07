@@ -149,25 +149,25 @@ from complex_dashboard.assets.runtime import (
 )
 
 # Visual components — pick only the ones the dashboard actually uses
-from products.visuals.components.kpi_card import kpi_row, kpi_standard, kpi_compact
-from products.visuals.components.bar_chart import (
+from complex_dashboard.assets.components.kpi_card import kpi_row, kpi_standard, kpi_compact
+from complex_dashboard.assets.components.bar_chart import (
     clustered_column, stacked_column, pct_stacked_column,
     clustered_bar, stacked_bar, pct_stacked_bar,
     clustered_stacked_column, clustered_stacked_bar,
 )
-from products.visuals.components.line_chart import line, area, stacked_area, pct_stacked_area
-from products.visuals.components.combo_chart import (
+from complex_dashboard.assets.components.line_chart import line, area, stacked_area, pct_stacked_area
+from complex_dashboard.assets.components.combo_chart import (
     line_clustered_column, line_stacked_column, line_pct_stacked_column, combo_subplots,
 )
-from products.visuals.components.waterfall_chart import waterfall_contribution, waterfall_variance
-from products.visuals.components.scatter_chart import scatter_bubble
-from products.visuals.components.distribution_chart import histogram, box_plot
-from products.visuals.components.special_chart import funnel, treemap, gauge, bullet, ribbon, heatmap_matrix
-from products.visuals.components.map_chart import choropleth_map, bubble_map
-from products.visuals.components.financial_chart import candlestick
-from products.visuals.components.table_chart import table_basic, table_matrix, data_list
-from products.visuals.components.pie_chart import pie_chart
-from products.visuals.components.slicer import (
+from complex_dashboard.assets.components.waterfall_chart import waterfall_contribution, waterfall_variance
+from complex_dashboard.assets.components.scatter_chart import scatter_bubble
+from complex_dashboard.assets.components.distribution_chart import histogram, box_plot
+from complex_dashboard.assets.components.special_chart import funnel, treemap, gauge, bullet, ribbon, heatmap_matrix
+from complex_dashboard.assets.components.map_chart import choropleth_map, bubble_map
+from complex_dashboard.assets.components.financial_chart import candlestick
+from complex_dashboard.assets.components.table_chart import table_basic, table_matrix, data_list
+from complex_dashboard.assets.components.pie_chart import pie_chart
+from complex_dashboard.assets.components.slicer import (
     dropdown_slicer, list_slicer, range_slicer, date_range_slicer, tile_slicer,
 )
 ```

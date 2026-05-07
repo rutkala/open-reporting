@@ -10,8 +10,8 @@ from dash import html
 import pandas as pd
 
 from complex_dashboard.assets.runtime import S
-from products.visuals.components.bar_chart import clustered_column
-from products.visuals.lib.semantic import Dimension, Measure
+from complex_dashboard.assets.components.bar_chart import clustered_column
+from complex_dashboard.assets.semantic import Dimension, Measure
 
 
 dash.register_page(

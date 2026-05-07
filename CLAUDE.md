@@ -322,7 +322,7 @@ cd platform/processing/dbt && DUCKDB_PATH=/opt/open-reporting/data/warehouse.duc
 
 # DuckDB direct query test
 PYTHONPATH=/opt/open-reporting python3 -c "
-from products.visuals.lib.db import query
+from complex_dashboard.assets.data.db import query
 print(query('SELECT 42 AS answer'))
 "
 ```

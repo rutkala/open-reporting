@@ -8,8 +8,8 @@ Nordic design system. All colour and layout values come from
 ## Import
 
 ```python
-import products.visuals.lib.theme as _theme  # registers 'nordic' Plotly template
-from products.visuals.lib.theme import (
+import complex_dashboard.assets.theme as _theme  # registers 'nordic' Plotly template
+from complex_dashboard.assets.theme import (
     BG_PAGE, BG_SURFACE, BORDER,
     TEXT, SUBTEXT, MUTED,
     POSITIVE, NEGATIVE, WARNING,

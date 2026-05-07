@@ -24,7 +24,7 @@ For breadth (17 loaders covering every chart family) see
 """
 import pandas as pd
 
-from products.visuals.lib.db import query
+from complex_dashboard.assets.data.db import query
 
 
 # ── Aggregated loaders — one per chart or section ───────────────────────────

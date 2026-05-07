@@ -16,7 +16,7 @@ E.g. correlation between economic indicators, seasonality pattern (month × year
 
 ## Import
 ```python
-from products.visuals.components.special_chart import heatmap_matrix
+from complex_dashboard.assets.components.special_chart import heatmap_matrix
 ```
 
 ## Template

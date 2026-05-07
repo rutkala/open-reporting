@@ -14,7 +14,7 @@ import pytest
 
 import products.dashboards.TODO_DOMAIN.data_loaders as _data
 import products.dashboards.TODO_DOMAIN.measures as m
-from products.visuals.lib.semantic import Dimension, Measure
+from complex_dashboard.assets.semantic import Dimension, Measure
 
 
 # ── Registry shape ──────────────────────────────────────────────────────────

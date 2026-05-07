@@ -20,12 +20,12 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from dash import Dash, html, dcc
 
-import products.visuals.lib.theme as _theme  # noqa: F401
-from products.visuals.lib.theme import (
+import complex_dashboard.assets.theme as _theme  # noqa: F401
+from complex_dashboard.assets.theme import (
     AZURE_1, AZURE_3, BG_PAGE, BG_SURFACE, BORDER,
     COLORWAY, NEGATIVE, POSITIVE, SUBTEXT, TEXT, WARNING,
 )
-from products.visuals.lib.db import query
+from complex_dashboard.assets.data.db import query
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)

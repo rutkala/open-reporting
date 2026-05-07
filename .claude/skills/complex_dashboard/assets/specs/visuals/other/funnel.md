@@ -13,7 +13,7 @@ E.g. job applications → interviews → offers → hires; budget → commitment
 
 ## Import
 ```python
-from products.visuals.components.special_chart import funnel
+from complex_dashboard.assets.components.special_chart import funnel
 ```
 
 ## Template

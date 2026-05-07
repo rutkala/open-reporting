@@ -12,9 +12,9 @@ from datetime import date
 import plotly.graph_objects as go
 from plotly.io import to_html
 
-import products.visuals.lib.theme as theme  # noqa: F401 — registers 'nordic' template
-from products.visuals.lib.db import query
-from products.visuals.lib.theme import (
+import complex_dashboard.assets.theme as theme  # noqa: F401 — registers 'nordic' template
+from complex_dashboard.assets.data.db import query
+from complex_dashboard.assets.theme import (
     AZURE_1, AZURE_3, BG_PAGE, BG_SURFACE, BORDER, COLORWAY,
     SUBTEXT, TEXT,
 )

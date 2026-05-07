@@ -14,7 +14,7 @@ and you need both total and segment breakdown.
 
 ## Import
 ```python
-from products.visuals.components.bar_chart import stacked_bar
+from complex_dashboard.assets.components.bar_chart import stacked_bar
 ```
 
 ## Template

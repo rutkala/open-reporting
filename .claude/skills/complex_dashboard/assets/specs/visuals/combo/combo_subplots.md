@@ -19,7 +19,7 @@ Use instead of dual-axis whenever the scales differ. Dual-axis is banned
 
 ## Import
 ```python
-from products.visuals.components.combo_chart import combo_subplots
+from complex_dashboard.assets.components.combo_chart import combo_subplots
 ```
 
 ## Template

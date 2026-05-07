@@ -15,7 +15,7 @@ E.g. employment by sector (stacked bars) + total employment index (line) over ti
 
 ## Import
 ```python
-from products.visuals.components.combo_chart import line_stacked_column
+from complex_dashboard.assets.components.combo_chart import line_stacked_column
 ```
 
 ## Template

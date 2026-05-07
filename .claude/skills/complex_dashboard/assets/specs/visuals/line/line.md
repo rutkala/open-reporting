@@ -16,7 +16,7 @@ when volume/accumulation is the message (use Area).
 
 ## Import
 ```python
-from products.visuals.components.line_chart import line
+from complex_dashboard.assets.components.line_chart import line
 ```
 
 ## Template

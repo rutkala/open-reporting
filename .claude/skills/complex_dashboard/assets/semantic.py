@@ -32,7 +32,7 @@ import pandas as pd
 
 # Imported here to avoid repeating the import inside apply_to_* methods.
 # theme.py has no dependency on semantic.py — no circular import risk.
-from products.visuals.lib.theme import SUBTEXT as _SUBTEXT
+from complex_dashboard.assets.theme import SUBTEXT as _SUBTEXT
 
 
 # ── Dimension ─────────────────────────────────────────────────────────────────

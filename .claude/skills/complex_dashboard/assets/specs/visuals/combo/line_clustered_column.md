@@ -15,7 +15,7 @@ Two measures on the same scale — one shown as bars (volume/discrete), one as a
 
 ## Import
 ```python
-from products.visuals.components.combo_chart import line_clustered_column
+from complex_dashboard.assets.components.combo_chart import line_clustered_column
 ```
 
 ## Template

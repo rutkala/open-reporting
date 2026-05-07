@@ -17,10 +17,10 @@ y_measure (optional Measure):
 """
 import plotly.graph_objects as go
 
-from products.visuals.lib.theme import (
+from complex_dashboard.assets.theme import (
     COLORWAY, POSITIVE, NEGATIVE, SLATE_1, SUBTEXT, TEXT, BORDER, GRID, ZERO_LINE, AZURE_1,
 )
-from products.visuals.components import PLOT_H, _plotly_layout, _chart
+from complex_dashboard.assets.components import PLOT_H, _plotly_layout, _chart
 
 
 # ── Internal helpers ──────────────────────────────────────────────────────────

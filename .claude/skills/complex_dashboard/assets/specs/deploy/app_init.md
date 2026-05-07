@@ -22,7 +22,7 @@ systemd unit (see `deploy.md`) and in local dev before launching `app.py`.
 
 | Responsibility | Behaviour |
 |---|---|
-| Import `products.visuals.lib.theme` | Registers the `teal` Plotly template globally — do this once per process |
+| Import `complex_dashboard.assets.theme` | Registers the `teal` Plotly template globally — do this once per process |
 | Set `requests_pathname_prefix` | `/TODO_DOMAIN/` — matches the nginx `location` block |
 | Set `routes_pathname_prefix` | Same prefix — the two must match |
 | Set `suppress_callback_exceptions=True` | Required when callbacks reference components in other sections |

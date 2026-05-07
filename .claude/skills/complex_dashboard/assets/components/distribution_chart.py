@@ -13,10 +13,10 @@ y_measure (optional Measure):
 """
 import plotly.graph_objects as go
 
-from products.visuals.lib.theme import (
+from complex_dashboard.assets.theme import (
     COLORWAY, AZURE_1, AZURE_PALE, BORDER, GRID, SUBTEXT, TEXT, ZERO_LINE, FONT_FAMILY,
 )
-from products.visuals.components import PLOT_H, MARGIN_L, MARGIN_R, MARGIN_T, MARGIN_B, _chart
+from complex_dashboard.assets.components import PLOT_H, MARGIN_L, MARGIN_R, MARGIN_T, MARGIN_B, _chart
 
 
 def _rgba(hex_color: str, alpha: float = 0.25) -> str:

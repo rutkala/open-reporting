@@ -14,8 +14,8 @@ import pandas as pd
 import plotly.graph_objects as go
 from dash import ALL, Dash, Input, Output, State, callback, ctx, dash_table, dcc, html, no_update
 
-import products.visuals.lib.theme as _theme  # noqa: F401 — registers nordic template
-from products.visuals.lib.theme import (
+import complex_dashboard.assets.theme as _theme  # noqa: F401 — registers nordic template
+from complex_dashboard.assets.theme import (
     AZURE_1, AZURE_3, BG_PAGE, BG_SURFACE, BORDER,
     COLORWAY, SUBTEXT, TEXT, WARNING,
 )

@@ -7,7 +7,7 @@ exactly what gets replaced when adopting the skill.
 Display metadata only — no aggregation, no warehouse access. The
 companion ``data_loaders.py`` provides the actual frames.
 """
-from products.visuals.lib.semantic import Dimension, Measure
+from complex_dashboard.assets.semantic import Dimension, Measure
 
 
 DIMS = {

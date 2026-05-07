@@ -16,7 +16,7 @@ most to GDP growth?". Use when the parts → total story is the main message.
 
 ## Import
 ```python
-from products.visuals.components.waterfall_chart import waterfall_contribution
+from complex_dashboard.assets.components.waterfall_chart import waterfall_contribution
 ```
 
 ## Data structure

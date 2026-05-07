@@ -1,8 +1,8 @@
 """Pie / donut chart — part-to-whole."""
 import plotly.graph_objects as go
 
-from products.visuals.lib.theme import COLORWAY
-from products.visuals.components import _plotly_layout, _chart
+from complex_dashboard.assets.theme import COLORWAY
+from complex_dashboard.assets.components import _plotly_layout, _chart
 
 
 def pie_chart(title, labels, values, subtitle="", donut=True):

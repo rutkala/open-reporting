@@ -15,7 +15,7 @@ placed inline above charts.
 
 ## Import
 ```python
-from products.visuals.components.slicer import tile_slicer
+from complex_dashboard.assets.components.slicer import tile_slicer
 ```
 
 ## Template

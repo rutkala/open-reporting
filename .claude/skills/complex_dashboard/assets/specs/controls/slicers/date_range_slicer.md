@@ -14,7 +14,7 @@ calendar precision. Use for dashboards with daily/monthly granularity.
 
 ## Import
 ```python
-from products.visuals.components.slicer import date_range_slicer
+from complex_dashboard.assets.components.slicer import date_range_slicer
 ```
 
 ## Template

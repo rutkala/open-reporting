@@ -1,7 +1,7 @@
 """KPI card variants."""
 from dash import html
 
-from products.visuals.lib.theme import BG_SURFACE, BORDER, NEGATIVE, POSITIVE, SUBTEXT, TEXT
+from complex_dashboard.assets.theme import BG_SURFACE, BORDER, NEGATIVE, POSITIVE, SUBTEXT, TEXT
 
 
 def kpi_row(cards: list, min_width: str = "180px", gap: str = "16px") -> html.Div:

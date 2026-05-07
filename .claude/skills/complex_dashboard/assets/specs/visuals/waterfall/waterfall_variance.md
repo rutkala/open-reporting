@@ -15,7 +15,7 @@ Use when the start → changes → end story is the main message.
 
 ## Import
 ```python
-from products.visuals.components.waterfall_chart import waterfall_variance
+from complex_dashboard.assets.components.waterfall_chart import waterfall_variance
 ```
 
 ## Data structure

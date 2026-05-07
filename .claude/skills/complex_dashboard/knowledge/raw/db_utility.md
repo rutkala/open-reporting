@@ -8,6 +8,6 @@ DuckDB query utility. Single function: `query(sql, params) -> pd.DataFrame`.
 - Opens and closes connection per call (no pooling)
 
 ```python
-from products.visuals.lib.db import query
+from complex_dashboard.assets.data.db import query
 df = query("SELECT * FROM curated.mart_labour WHERE year = ?", (2023,))
 ```

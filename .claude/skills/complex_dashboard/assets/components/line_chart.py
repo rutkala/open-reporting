@@ -13,8 +13,8 @@ y_measure (optional Measure):
 """
 import plotly.graph_objects as go
 
-from products.visuals.lib.theme import COLORWAY, SLATE_1, SUBTEXT
-from products.visuals.components import PLOT_H, _plotly_layout, _chart
+from complex_dashboard.assets.theme import COLORWAY, SLATE_1, SUBTEXT
+from complex_dashboard.assets.components import PLOT_H, _plotly_layout, _chart
 
 
 def _rgba(hex_color: str, alpha: float) -> str:

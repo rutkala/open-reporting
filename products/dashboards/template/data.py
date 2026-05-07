@@ -12,7 +12,7 @@ semantic_service.py functions that execute SQL against the warehouse.
 measures.py and app.py stay unchanged.
 
 Domain example:
-    from products.visuals.lib.db import query
+    from complex_dashboard.assets.data.db import query
 
     def load_by_year() -> pd.DataFrame:
         return query(\"\"\"

@@ -18,7 +18,7 @@ E.g. bond yield ranges, commodity price ranges by month.
 
 ## Import
 ```python
-from products.visuals.components.financial_chart import candlestick
+from complex_dashboard.assets.components.financial_chart import candlestick
 ```
 
 ## Template

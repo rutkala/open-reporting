@@ -11,12 +11,12 @@ This standard defines the mandatory technical and visual requirements for a comp
     - `static/`: Assets and CSS.
 
 ## 2. Data Implementation
-- **No Sample Data**: `data.py` must not contain hardcoded sample DataFrames. All data must be fetched via `products.visuals.lib.db.query` from the warehouse.
+- **No Sample Data**: `data.py` must not contain hardcoded sample DataFrames. All data must be fetched via `complex_dashboard.assets.data.db.query` from the warehouse.
 - **Optimized Loading**: Data loaders must be pre-aggregated. The dashboard should not perform heavy aggregations in the `app.py` runtime.
 - **Correct Measures**: All values must be passed through the `Measure` objects in `measures.py` to ensure correct formatting (currency, %, decimals).
 
 ## 3. Visual Execution
-- **Library Usage**: All charts must be called from `products.visuals.components/`. Custom Plotly code is forbidden within `app.py`.
+- **Library Usage**: All charts must be called from `complex_dashboard.assets.components/`. Custom Plotly code is forbidden within `app.py`.
 - **Theme Compliance**:
     - Backgrounds must use `BG_PAGE` and `BG_SURFACE`.
     - Cards must have the specified shadow and `border-radius: 6px`.

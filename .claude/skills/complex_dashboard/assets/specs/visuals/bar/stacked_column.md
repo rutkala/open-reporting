@@ -14,7 +14,7 @@ when composition share matters more than absolute (use 100% Stacked Column).
 
 ## Import
 ```python
-from products.visuals.components.bar_chart import stacked_column
+from complex_dashboard.assets.components.bar_chart import stacked_column
 ```
 
 ## Template

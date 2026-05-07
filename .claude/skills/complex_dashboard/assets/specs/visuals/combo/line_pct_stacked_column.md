@@ -15,7 +15,7 @@ same 0–100 scale. E.g. employment share by sector (bars) + activity rate % (li
 
 ## Import
 ```python
-from products.visuals.components.combo_chart import line_pct_stacked_column
+from complex_dashboard.assets.components.combo_chart import line_pct_stacked_column
 ```
 
 ## Template

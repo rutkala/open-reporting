@@ -25,10 +25,10 @@ from complex_dashboard.assets.runtime import (
 )
 
 # Visual components — pick the ones this dashboard actually uses
-from products.visuals.components.kpi_card import kpi_row, kpi_standard
-# from products.visuals.components.bar_chart import clustered_column, stacked_column
-# from products.visuals.components.line_chart import line, area
-# from products.visuals.components.slicer import dropdown_slicer
+from complex_dashboard.assets.components.kpi_card import kpi_row, kpi_standard
+# from complex_dashboard.assets.components.bar_chart import clustered_column, stacked_column
+# from complex_dashboard.assets.components.line_chart import line, area
+# from complex_dashboard.assets.components.slicer import dropdown_slicer
 
 # Domain data layer — DIMS, MEASURES, and load_* loaders (see specs/data/data_loaders.md)
 import products.dashboards.TODO_DOMAIN.measures as m  # noqa: F401

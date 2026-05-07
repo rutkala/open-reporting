@@ -133,7 +133,7 @@ kill $DASH_PID
 
 # For chart components — import test
 PYTHONPATH=/opt/open-reporting python3 -c "
-from products.visuals.components.{component} import build
+from complex_dashboard.assets.components.{component} import build
 print('import ok')
 "
 ```

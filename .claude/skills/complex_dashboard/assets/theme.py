@@ -2,7 +2,7 @@
 Open Reporting visual theme — Teal/Azure/Slate palette derived from the project logo.
 
 Import this module to activate the 'teal' Plotly template globally:
-    import products.visuals.lib.theme as _theme  # noqa: F401
+    import complex_dashboard.assets.theme as _theme  # noqa: F401
 """
 import plotly.graph_objects as go
 import plotly.io as pio

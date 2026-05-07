@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 WorkingDirectory=/opt/open-reporting
-Environment=PYTHONPATH=/opt/open-reporting
+Environment=PYTHONPATH=/opt/open-reporting:/opt/open-reporting/.claude/skills
 Environment=DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb
 EnvironmentFile=/opt/open-reporting/.env
 ExecStart=/usr/bin/python3 products/dashboards/finance_test/app.py

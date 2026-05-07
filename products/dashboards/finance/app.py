@@ -16,12 +16,12 @@ import pandas as pd
 import plotly.graph_objects as go
 from dash import Dash, Input, Output, callback, dcc, html, dash_table
 
-import products.visuals.lib.theme as _theme  # noqa: F401 — registers nordic template
-from products.visuals.lib.theme import (
+import complex_dashboard.assets.theme as _theme  # noqa: F401 — registers nordic template
+from complex_dashboard.assets.theme import (
     AZURE_1, AZURE_3, BG_PAGE, BG_SURFACE, BORDER,
     COLORWAY, NEGATIVE, POSITIVE, SUBTEXT, TEXT, WARNING,
 )
-from products.visuals.lib.db import query
+from complex_dashboard.assets.data.db import query
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)

@@ -16,7 +16,7 @@ or indicators by country × year.
 
 ## Import
 ```python
-from products.visuals.components.table_chart import table_matrix
+from complex_dashboard.assets.components.table_chart import table_matrix
 ```
 
 ## Template

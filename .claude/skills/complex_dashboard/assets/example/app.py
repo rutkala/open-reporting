@@ -29,10 +29,10 @@ from complex_dashboard.assets.runtime import (
     register_healthcheck,
     make_app,
 )
-from products.visuals.components.bar_chart import clustered_column
-from products.visuals.components.kpi_card import kpi_row, kpi_standard
-from products.visuals.components.line_chart import line
-from products.visuals.lib.theme import POSITIVE
+from complex_dashboard.assets.components.bar_chart import clustered_column
+from complex_dashboard.assets.components.kpi_card import kpi_row, kpi_standard
+from complex_dashboard.assets.components.line_chart import line
+from complex_dashboard.assets.theme import POSITIVE
 
 from complex_dashboard.assets.example.data_loaders import (
     load_by_region, load_by_year, load_scalars,

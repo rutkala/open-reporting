@@ -19,8 +19,8 @@ All chart functions are KB-grounded:
 from dash import dcc, html
 import plotly.graph_objects as go
 
-import products.visuals.lib.theme as _theme  # noqa: F401 — registers 'teal' template
-from products.visuals.lib.theme import (
+import complex_dashboard.assets.theme as _theme  # noqa: F401 — registers 'teal' template
+from complex_dashboard.assets.theme import (
     BG_SURFACE, BORDER, COLORWAY, GRID,
     NEGATIVE, POSITIVE, SUBTEXT, TEXT, ZERO_LINE,
     FONT_FAMILY,

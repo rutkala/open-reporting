@@ -3,9 +3,9 @@
 The `S` dict and layout constants here are the single source of truth. All
 dashboards import `S`, `SIDEBAR_W`, and `SIDEBAR_COLLAPSED` directly — they
 are never redefined inline in `app.py`. Colour tokens come from
-`products.visuals.lib.theme`.
+`complex_dashboard.assets.theme`.
 """
-from products.visuals.lib.theme import (
+from complex_dashboard.assets.theme import (
     BG_PAGE,
     BG_SURFACE,
     BORDER,

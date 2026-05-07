@@ -15,7 +15,7 @@ see all available options simultaneously and select one or many.
 
 ## Import
 ```python
-from products.visuals.components.slicer import list_slicer
+from complex_dashboard.assets.components.slicer import list_slicer
 ```
 
 ## Template

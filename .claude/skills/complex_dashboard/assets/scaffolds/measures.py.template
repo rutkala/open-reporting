@@ -20,7 +20,7 @@ interface in ``specs/data/data_loaders.md`` — never instantiates
 For breadth (15+ measures, geo / OHLC / derived measures) see
 ``products/dashboards/template/measures.py``.
 """
-from products.visuals.lib.semantic import Dimension, Measure
+from complex_dashboard.assets.semantic import Dimension, Measure
 
 
 # ── Dimensions ───────────────────────────────────────────────────────────────

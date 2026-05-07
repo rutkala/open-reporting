@@ -15,7 +15,7 @@ primary visual — always pair with a chart.
 
 ## Import
 ```python
-from products.visuals.components.table_chart import table_basic
+from complex_dashboard.assets.components.table_chart import table_basic
 ```
 
 ## Template

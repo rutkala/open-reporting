@@ -14,7 +14,7 @@ across value ranges. E.g. distribution of wages, age distribution, loan sizes.
 
 ## Import
 ```python
-from products.visuals.components.distribution_chart import histogram
+from complex_dashboard.assets.components.distribution_chart import histogram
 ```
 
 ## Template

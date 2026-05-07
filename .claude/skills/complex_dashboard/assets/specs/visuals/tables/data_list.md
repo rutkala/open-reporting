@@ -13,7 +13,7 @@ E.g. top 10 voivodeships by employment, top companies by revenue.
 
 ## Import
 ```python
-from products.visuals.components.table_chart import data_list
+from complex_dashboard.assets.components.table_chart import data_list
 ```
 
 ## Template

@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 WorkingDirectory=/opt/open-reporting
-Environment=PYTHONPATH=/opt/open-reporting
+Environment=PYTHONPATH=/opt/open-reporting:/opt/open-reporting/.claude/skills
 EnvironmentFile=/opt/open-reporting/.env
 ExecStart=/usr/bin/python3 products/dashboards/labour/app.py
 Restart=on-failure

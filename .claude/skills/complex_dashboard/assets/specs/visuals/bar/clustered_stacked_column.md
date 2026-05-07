@@ -15,7 +15,7 @@ comparison AND the internal composition are analytically meaningful.
 
 ## Import
 ```python
-from products.visuals.components.bar_chart import clustered_stacked_column
+from complex_dashboard.assets.components.bar_chart import clustered_stacked_column
 ```
 
 ## Template

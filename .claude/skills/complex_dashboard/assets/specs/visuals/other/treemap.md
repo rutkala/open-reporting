@@ -14,7 +14,7 @@ E.g. GDP composition by sector → sub-sector; budget by ministry → department
 
 ## Import
 ```python
-from products.visuals.components.special_chart import treemap
+from complex_dashboard.assets.components.special_chart import treemap
 ```
 
 ## Data structure
