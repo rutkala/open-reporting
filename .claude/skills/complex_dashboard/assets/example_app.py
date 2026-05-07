@@ -6,11 +6,11 @@ dashboard.
 Two sections, one KPI row, two charts (line + clustered column).
 Uses synthetic data — no warehouse access. Demonstrates:
 
-- ``make_app(...)``                                        → deploy/app.md
-- ``S`` dict + grids + cards                               → pages/layout/styles.md
-- ``build_sidebar`` / ``build_header`` / ``build_footer``  → pages/layout/, pages/controls/
-- ``register_toggle_callback``                             → pages/controls/navigation/
-- ``Dimension`` / ``Measure`` / ``DIMS`` / ``MEASURES``    → data/measures_template.py
+- ``make_app(...)``                                        → specs/deploy/app_init.md
+- ``S`` dict + grids + cards                               → specs/layout/styles.md
+- ``build_sidebar`` / ``build_header`` / ``build_footer``  → specs/layout/, specs/controls/
+- ``register_toggle_callback``                             → specs/controls/navigation/
+- ``Dimension`` / ``Measure`` / ``DIMS`` / ``MEASURES``    → scaffolds/measures.py.template
 - ``kpi_row``, ``kpi_standard``, ``line``, ``clustered_column``
                                                            → products/visuals/components/
 
@@ -29,13 +29,12 @@ from products.visuals.components.line_chart import line
 from products.visuals.lib.semantic import Dimension, Measure
 from products.visuals.lib.theme import POSITIVE
 
-from complex_dashboard.assets.pages.controls.navigation.sidebar_nav import (
+from complex_dashboard.assets.runtime import (
+    S,
+    build_footer, build_header,
     build_sidebar, register_toggle_callback,
+    make_app,
 )
-from complex_dashboard.assets.pages.layout.footer import build_footer
-from complex_dashboard.assets.pages.layout.header import build_header
-from complex_dashboard.assets.pages.layout.styles import S
-from complex_dashboard.assets.deploy.app_init import make_app
 
 
 # ── Synthetic data ──────────────────────────────────────────────────────────

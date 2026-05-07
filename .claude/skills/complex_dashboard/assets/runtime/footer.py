@@ -6,7 +6,7 @@ the dashboard name in Polish, right slot links to open-reporting.dev.
 """
 from dash import html
 
-from complex_dashboard.assets.pages.layout.styles import S
+from complex_dashboard.assets.runtime.styles import S
 
 
 def build_footer(

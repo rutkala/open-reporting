@@ -12,7 +12,7 @@ Two helpers:
 """
 from dash import Input, Output, State, html
 
-from complex_dashboard.assets.pages.layout.styles import S, SIDEBAR_COLLAPSED, SIDEBAR_W
+from complex_dashboard.assets.runtime.styles import S, SIDEBAR_COLLAPSED, SIDEBAR_W
 
 
 def build_sidebar(domain: str, sections: list[tuple[str, str]], *, active_index: int = 0):

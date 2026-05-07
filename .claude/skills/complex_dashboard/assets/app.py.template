@@ -17,13 +17,12 @@ import logging
 from dash import Input, Output, callback, html
 
 # Skill helpers — see SKILL.md "Component imports"
-from complex_dashboard.assets.pages.layout.styles import S, SIDEBAR_COLLAPSED, SIDEBAR_W  # noqa: F401
-from complex_dashboard.assets.pages.layout.header import build_header
-from complex_dashboard.assets.pages.layout.footer import build_footer
-from complex_dashboard.assets.pages.controls.navigation.sidebar_nav import (
+from complex_dashboard.assets.runtime import (
+    S, SIDEBAR_COLLAPSED, SIDEBAR_W,  # noqa: F401
+    build_header, build_footer,
     build_sidebar, register_toggle_callback,
+    make_app,
 )
-from complex_dashboard.assets.deploy.app_init import make_app
 
 # Visual components — pick the ones this dashboard actually uses
 from products.visuals.components.kpi_card import kpi_row, kpi_standard
@@ -31,7 +30,7 @@ from products.visuals.components.kpi_card import kpi_row, kpi_standard
 # from products.visuals.components.line_chart import line, area
 # from products.visuals.components.slicer import dropdown_slicer
 
-# Domain data layer — DIMS, MEASURES, and load_* loaders (see data/data_loaders.md)
+# Domain data layer — DIMS, MEASURES, and load_* loaders (see specs/data/data_loaders.md)
 import products.dashboards.TODO_DOMAIN.measures as m  # noqa: F401
 import products.dashboards.TODO_DOMAIN.data_loaders as _data  # noqa: F401
 
@@ -74,20 +73,20 @@ _SECTIONS = [
 
 app.layout = html.Div(style=S["body"], children=[
 
-    # ── Sidebar — see pages/controls/navigation/sidebar_nav.md ────────────
+    # ── Sidebar — see specs/controls/navigation/sidebar_nav.md ────────────
     build_sidebar(domain="TODO_DOMAIN", sections=_SECTIONS),
 
     # ── Main column — header + scrollable content + footer ────────────────
     html.Main(style=S["main"], children=[
 
-        # Header — see pages/layout/header.md
+        # Header — see specs/layout/header.md
         *build_header(
             title="TODO: Dashboard title (Polish)",
             subtitle="TODO: Subtitle — domain + date range, e.g. 'Rynek pracy — GUS 2018–2024'",
             domain="TODO_DOMAIN",
         ),
 
-        # Scrollable content area — one block per section (see pages/page_layout.md)
+        # Scrollable content area — one block per section (see specs/page_layout.md)
         html.Div(style=S["main-content-area"], children=[
 
             # ── Section 1 ────────────────────────────────────────────────
@@ -127,7 +126,7 @@ app.layout = html.Div(style=S["body"], children=[
             ]),
         ]),
 
-        # Footer — see pages/layout/footer.md (mandatory)
+        # Footer — see specs/layout/footer.md (mandatory)
         *build_footer(name="TODO: Dashboard name (Polish)"),
     ]),
 ])
@@ -139,7 +138,7 @@ register_toggle_callback(app)
 
 # Example chart callback — uncomment and adapt. Pattern: a slicer's value
 # filters an already-loaded DataFrame and the chart is re-rendered. Never
-# call loaders or re-aggregate inside a callback (see data/data_loaders.md).
+# call loaders or re-aggregate inside a callback (see specs/data/data_loaders.md).
 #
 # @callback(
 #     Output("section-1-chart-a", "children"),
