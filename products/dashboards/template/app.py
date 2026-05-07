@@ -3,26 +3,37 @@
 Open Reporting — Template Dashboard
 Developer reference: every chart component variant displayed with sample data.
 
+Maintained showroom of the ``complex_dashboard`` skill — the page shell
+(sidebar + header + footer + toggle) is rendered by the skill's
+``runtime`` helpers, so any change to the skill is reflected here
+automatically.
+
 Copy this directory, rename, and customise for your domain.
 
 Run:
-    PYTHONPATH=/opt/open-reporting \
+    PYTHONPATH=/opt/open-reporting:/opt/open-reporting/.claude/skills \
     DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb \
     python3 products/dashboards/template/app.py
 """
 import logging
 
-from dash import Dash, Input, Output, State, callback, html
+from dash import html
 
 import products.visuals.lib.theme as _theme  # noqa: F401 — registers 'teal' template
 from products.visuals.lib.theme import (
     BG_PAGE, BG_SURFACE, BORDER,
     COLORWAY, GRID, MUTED, NEGATIVE, POSITIVE,
     SUBTEXT, TEXT, WARNING, ZERO_LINE,
-    FONT_FAMILY,
     TEAL_1, TEAL_2, TEAL_3, TEAL_4, TEAL_PALE,
     AZURE_1, AZURE_2, AZURE_3, AZURE_4, AZURE_PALE,
     SLATE_1, SLATE_2, SLATE_3, SLATE_4,
+)
+
+from complex_dashboard.assets.runtime import (
+    S,
+    build_page_layout,
+    make_app,
+    register_toggle_callback,
 )
 
 # ── Chart components ──────────────────────────────────────────────────────────
@@ -106,227 +117,58 @@ def _color_swatch(name: str, color: str) -> html.Div:
 
 # ── App ───────────────────────────────────────────────────────────────────────
 
-app = Dash(
-    __name__,
-    title="Template — Open Reporting",
-    suppress_callback_exceptions=True,
-    requests_pathname_prefix="/template/",
-    routes_pathname_prefix="/template/",
-    index_string="""<!DOCTYPE html>
-<html>
-    <head>
-        {%metas%}
-        <title>{%title%}</title>
-        {%favicon%}
-        {%css%}
-        <style>
-            html, body { margin: 0; padding: 0; height: 100vh; }
-            #react-entry-point { height: 100%; }
-            .js-plotly-plot .plotly { width: 100% !important; }
-            .js-plotly-plot .plotly .main-svg { width: 100% !important; }
-        </style>
-    </head>
-    <body>
-        {%app_entry%}
-        <footer>
-            {%config%}
-            {%scripts%}
-            {%renderer%}
-        </footer>
-    </body>
-</html>""",
-)
+app = make_app(domain="template", title="Template", module_name=__name__)
 
-# ── Styles ────────────────────────────────────────────────────────────────────
+# ── Sidebar nav ───────────────────────────────────────────────────────────────
+# (label, anchor_id) — anchor_id=None renders a non-clickable section separator.
 
-SIDEBAR_W         = "240px"
-SIDEBAR_COLLAPSED = "44px"
-GAP    = "4px"
-RADIUS = "10px"
+_SECTIONS: list[tuple[str, str | None]] = [
+    ("KPI card",                    "kpi"),
+    ("Clustered column",            "col-clustered"),
+    ("Stacked column",              "col-stacked"),
+    ("100% stacked column",         "col-pct"),
+    ("Clustered+stacked column",    "col-cs"),
+    ("Clustered bar",               "bar-clustered"),
+    ("Stacked bar",                 "bar-stacked"),
+    ("100% stacked bar",            "bar-pct"),
+    ("Clustered+stacked bar",       "bar-cs"),
+    ("Line",                        "line"),
+    ("Clustered area",              "area-clustered"),
+    ("Stacked area",                "area-stacked"),
+    ("100% stacked area",           "area-pct"),
+    ("Line + clustered column",     "combo-lc"),
+    ("Line + stacked column",       "combo-ls"),
+    ("Line + 100% stacked column",  "combo-lp"),
+    ("Scatter / Bubble",            "scatter"),
+    ("Pie / Donut",                 "pie"),
+    ("Treemap",                     "treemap"),
+    ("Funnel",                      "funnel"),
+    ("Waterfall — contribution",    "waterfall-contribution"),
+    ("Waterfall — variance",        "waterfall-variance"),
+    ("Histogram",                   "histogram"),
+    ("Box plot",                    "boxplot"),
+    ("Gauge",                       "gauge"),
+    ("Bullet",                      "bullet"),
+    ("Table",                       "table"),
+    ("Matrix / Pivot",              "matrix"),
+    ("Data list",                   "datalist"),
+    ("Heatmap",                     "heatmap"),
+    ("Choropleth map",              "choropleth"),
+    ("Bubble map",                  "bubblemap"),
+    ("Ribbon",                      "ribbon"),
+    ("Candlestick",                 "candlestick"),
+    ("— UI / Filters —",            None),
+    ("Dropdown slicer",             "slicer-dropdown"),
+    ("List slicer",                 "slicer-list"),
+    ("Range slicer",                "slicer-range"),
+    ("Date range slicer",           "slicer-date"),
+    ("Tile slicer",                 "slicer-tile"),
+    ("Colour palette",              "palette"),
+]
 
-S = {
-    "body": {
-        "fontFamily": FONT_FAMILY,
-        "background": BG_PAGE, "color": TEXT,
-        "height": "100vh", "display": "flex", "margin": 0,
-        "padding": f"{GAP} 0 {GAP} {GAP}",
-        "boxSizing": "border-box",
-        "overflow": "hidden",
-    },
-    "sidebar": {
-        "width": SIDEBAR_W, "flexShrink": 0,
-        "background": BG_SURFACE,
-        "borderRadius": RADIUS,
-        "boxShadow": "0 2px 8px rgba(0,0,0,0.06), 0 0 1px rgba(0,0,0,0.08)",
-        "display": "flex", "flexDirection": "column",
-        "height": f"calc(100vh - {GAP} * 2)",
-        "overflow": "hidden",
-        "transition": "width 0.25s ease",
-        "position": "relative",
-    },
-    "sidebar-logo": {
-        "padding": "20px 20px 16px",
-        "whiteSpace": "nowrap", "overflow": "hidden",
-        "height": "68px", "boxSizing": "border-box",
-        "display": "flex", "alignItems": "center",
-    },
-    "sidebar-divider": {"margin": "0 16px", "border": "none", "borderTop": f"1px solid {BORDER}"},
-    "logo": {"height": "32px", "width": "auto"},
-    "sidebar-nav": {"flex": 1, "padding": "16px 0", "overflowY": "auto", "whiteSpace": "nowrap", "overflow": "hidden"},
-    "nav-item": {
-        "display": "block", "padding": "8px 20px",
-        "fontSize": "13px", "color": SUBTEXT, "textDecoration": "none", "cursor": "pointer",
-    },
-    "nav-item-active": {
-        "display": "block", "padding": "8px 20px",
-        "fontSize": "13px", "color": TEXT, "textDecoration": "none",
-        "borderLeft": f"3px solid {TEXT}", "backgroundColor": f"{BORDER}40", "cursor": "pointer",
-    },
-    "toggle-btn": {
-        "position": "absolute", "top": "28px", "right": "10px",
-        "width": "24px", "height": "24px",
-        "background": "none", "border": "none", "cursor": "pointer", "padding": 0,
-        "display": "flex", "alignItems": "center", "justifyContent": "center", "zIndex": 100,
-    },
-    "toggle-icon": {"width": "20px", "height": "20px", "opacity": 0.5},
-    "main": {
-        "flex": 1, "minWidth": 0,
-        "overflowY": "auto", "overflowX": "hidden",
-        "height": f"calc(100vh - {GAP} * 2)",
-        "boxSizing": "border-box",
-        "display": "flex", "flexDirection": "column",
-    },
-    "main-header": {
-        "padding": "0 32px", "flexShrink": 0,
-        "display": "flex", "alignItems": "center", "justifyContent": "space-between",
-        "height": "68px",
-    },
-    "header-actions": {"display": "flex", "alignItems": "center", "gap": "8px"},
-    "header-btn": {
-        "width": "32px", "height": "32px",
-        "background": "none", "border": f"1px solid {BORDER}", "borderRadius": "6px",
-        "cursor": "pointer", "display": "flex", "alignItems": "center", "justifyContent": "center",
-        "color": SUBTEXT, "padding": 0,
-    },
-    "header-icon": {"width": "16px", "height": "16px"},
-    "main-divider": {"margin": "0 32px", "border": "none", "borderTop": f"1px solid {BORDER}"},
-    "footer-divider": {"margin": "0 32px", "border": "none", "borderTop": f"1px solid {BORDER}"},
-    "main-footer": {
-        "padding": "0 32px", "flexShrink": 0,
-        "display": "flex", "alignItems": "center", "justifyContent": "space-between",
-        "height": "48px",
-    },
-    "footer-text": {"fontSize": "12px", "color": SUBTEXT},
-    "main-content-area": {
-        "flex": 1, "padding": "28px 32px 32px",
-        "overflowY": "auto", "width": "100%", "boxSizing": "border-box",
-    },
-    "section-heading": {
-        "fontSize": "18px", "fontWeight": "700", "color": TEXT,
-        "marginBottom": "6px", "marginTop": "48px",
-    },
-    "section-desc": {"fontSize": "13px", "color": SUBTEXT, "marginBottom": "24px"},
-    "group": {"marginBottom": "28px", "width": "100%"},
-    "group-title": {"fontSize": "13px", "fontWeight": 600, "color": SUBTEXT, "marginBottom": "12px"},
-    "grid-2": {"display": "grid", "gridTemplateColumns": "1fr 1fr", "gap": "20px", "alignItems": "start"},
-    "grid-3": {"display": "grid", "gridTemplateColumns": "1fr 1fr 1fr", "gap": "20px", "alignItems": "start"},
-    "grid-4": {"display": "grid", "gridTemplateColumns": "repeat(4, 1fr)", "gap": "16px", "alignItems": "start"},
-    "grid-auto": {
-        "display": "grid", "gridTemplateColumns": "repeat(auto-fit, minmax(180px, 1fr))",
-        "gap": "16px", "maxWidth": "100%",
-    },
-    "card": {
-        "background": BG_SURFACE, "border": f"1px solid {BORDER}",
-        "borderRadius": "8px", "padding": "16px", "overflow": "hidden", "minWidth": 0,
-    },
-}
+# ── Page content (chart sections) ─────────────────────────────────────────────
 
-# ── Layout ────────────────────────────────────────────────────────────────────
-
-app.layout = html.Div(style=S["body"], children=[
-
-    # ── Sidebar ───────────────────────────────────────────────────────────────
-    html.Aside(id="sidebar", style=S["sidebar"], children=[
-        html.Div(id="sidebar-logo", style=S["sidebar-logo"], children=[
-            html.A(html.Img(id="sidebar-logo-img",
-                            src="/template/assets/images/logo.svg", style=S["logo"]),
-                   href="/"),
-        ]),
-        html.Hr(id="sidebar-divider", style=S["sidebar-divider"]),
-        html.Nav(id="sidebar-nav", style=S["sidebar-nav"], children=[
-            html.A("KPI card", href="#kpi", style=S["nav-item-active"]),
-            html.A("Clustered column", href="#col-clustered", style=S["nav-item"]),
-            html.A("Stacked column", href="#col-stacked", style=S["nav-item"]),
-            html.A("100% stacked column", href="#col-pct", style=S["nav-item"]),
-            html.A("Clustered+stacked column", href="#col-cs", style=S["nav-item"]),
-            html.A("Clustered bar", href="#bar-clustered", style=S["nav-item"]),
-            html.A("Stacked bar", href="#bar-stacked", style=S["nav-item"]),
-            html.A("100% stacked bar", href="#bar-pct", style=S["nav-item"]),
-            html.A("Clustered+stacked bar", href="#bar-cs", style=S["nav-item"]),
-            html.A("Line", href="#line", style=S["nav-item"]),
-            html.A("Clustered area", href="#area-clustered", style=S["nav-item"]),
-            html.A("Stacked area", href="#area-stacked", style=S["nav-item"]),
-            html.A("100% stacked area", href="#area-pct", style=S["nav-item"]),
-            html.A("Line + clustered column", href="#combo-lc", style=S["nav-item"]),
-            html.A("Line + stacked column", href="#combo-ls", style=S["nav-item"]),
-            html.A("Line + 100% stacked column", href="#combo-lp", style=S["nav-item"]),
-            html.A("Scatter / Bubble", href="#scatter", style=S["nav-item"]),
-            html.A("Pie / Donut", href="#pie", style=S["nav-item"]),
-            html.A("Treemap", href="#treemap", style=S["nav-item"]),
-            html.A("Funnel", href="#funnel", style=S["nav-item"]),
-            html.A("Waterfall — contribution", href="#waterfall-contribution", style=S["nav-item"]),
-            html.A("Waterfall — variance", href="#waterfall-variance", style=S["nav-item"]),
-            html.A("Histogram", href="#histogram", style=S["nav-item"]),
-            html.A("Box plot", href="#boxplot", style=S["nav-item"]),
-            html.A("Gauge", href="#gauge", style=S["nav-item"]),
-            html.A("Bullet", href="#bullet", style=S["nav-item"]),
-            html.A("Table", href="#table", style=S["nav-item"]),
-            html.A("Matrix / Pivot", href="#matrix", style=S["nav-item"]),
-            html.A("Data list", href="#datalist", style=S["nav-item"]),
-            html.A("Heatmap", href="#heatmap", style=S["nav-item"]),
-            html.A("Choropleth map", href="#choropleth", style=S["nav-item"]),
-            html.A("Bubble map", href="#bubblemap", style=S["nav-item"]),
-            html.A("Ribbon", href="#ribbon", style=S["nav-item"]),
-            html.A("Candlestick", href="#candlestick", style=S["nav-item"]),
-            html.A("— UI / Filters —", href="#slicers",
-                   style={**S["nav-item"], "color": SUBTEXT, "fontSize": "11px",
-                          "marginTop": "8px", "pointerEvents": "none"}),
-            html.A("Dropdown slicer", href="#slicer-dropdown", style=S["nav-item"]),
-            html.A("List slicer", href="#slicer-list", style=S["nav-item"]),
-            html.A("Range slicer", href="#slicer-range", style=S["nav-item"]),
-            html.A("Date range slicer", href="#slicer-date", style=S["nav-item"]),
-            html.A("Tile slicer", href="#slicer-tile", style=S["nav-item"]),
-            html.A("Colour palette", href="#palette", style=S["nav-item"]),
-        ]),
-        html.Button(id="btn-toggle", style=S["toggle-btn"], children=[
-            html.Img(id="toggle-icon", src="/template/assets/images/sidebar.svg",
-                     style=S["toggle-icon"]),
-        ]),
-    ]),
-
-    # ── Main ─────────────────────────────────────────────────────────────────
-    html.Main(id="main-content", style=S["main"], children=[
-
-        html.Div(id="main-header", style=S["main-header"], children=[
-            html.Div(children=[
-                html.H1("Visual components — reference",
-                        style={"fontSize": "20px", "fontWeight": 700, "color": TEXT, "margin": 0}),
-                html.P("One example per chart family — sample data",
-                       style={"fontSize": "13px", "color": SUBTEXT, "margin": "4px 0 0"}),
-            ]),
-            html.Div(style=S["header-actions"], children=[
-                html.Button(html.Img(src="/template/assets/images/settings.svg",
-                                     style=S["header-icon"]),
-                            id="btn-settings", style=S["header-btn"]),
-                html.Button(html.Img(src="/template/assets/images/user.svg",
-                                     style=S["header-icon"]),
-                            id="btn-user", style=S["header-btn"]),
-            ]),
-        ]),
-
-        html.Hr(style=S["main-divider"]),
-
-        html.Div(id="main-content-area", style=S["main-content-area"], children=[
+_content = [
 
             # ── KPI card ─────────────────────────────────────────────────────
             html.H2("KPI card", id="kpi", style={**S["section-heading"], "marginTop": 0}),
@@ -860,41 +702,22 @@ app.layout = html.Div(style=S["body"], children=[
                     ("COLORWAY — order",       [(f"[{i}]", c) for i, c in enumerate(COLORWAY)]),
                 ]
             ],
-        ]),
+]
 
-        html.Hr(style=S["footer-divider"]),
+# ── Page assembly ─────────────────────────────────────────────────────────────
 
-        html.Footer(style=S["main-footer"], children=[
-            html.Span("Open Reporting — visual components template", style=S["footer-text"]),
-            html.A("open-reporting.dev", href="https://open-reporting.dev",
-                   style={**S["footer-text"], "textDecoration": "none"}),
-        ]),
-    ]),
-])
-
-# ── Sidebar toggle callback ───────────────────────────────────────────────────
-
-@callback(
-    Output("sidebar", "style"),
-    Output("btn-toggle", "style"),
-    Output("sidebar-logo", "style"),
-    Output("sidebar-nav", "style"),
-    Output("sidebar-logo-img", "style"),
-    Input("btn-toggle", "n_clicks"),
-    State("sidebar", "style"),
-    prevent_initial_call=True,
+app.layout = build_page_layout(
+    domain="template",
+    title="Visual components — reference",
+    subtitle="One example per chart family — sample data",
+    sections=_SECTIONS,
+    content=_content,
+    footer_name="Open Reporting — visual components template",
+    footer_source="dane przykładowe",
+    footer_updated="referencja komponentów",
 )
-def toggle_sidebar(n_clicks, sidebar_style):
-    is_expanded = sidebar_style.get("width", SIDEBAR_W) == SIDEBAR_W
 
-    btn_open   = {**S["toggle-btn"], "right": "10px", "transform": "none"}
-    btn_closed = {**S["toggle-btn"], "right": "50%", "transform": "translateX(50%)"}
-
-    if is_expanded:
-        return ({**sidebar_style, "width": SIDEBAR_COLLAPSED},
-                btn_closed, {"display": "none"}, {"display": "none"}, {"display": "none"})
-    else:
-        return (S["sidebar"], btn_open, S["sidebar-logo"], S["sidebar-nav"], S["logo"])
+register_toggle_callback(app)
 
 # ── Entry point ───────────────────────────────────────────────────────────────
 

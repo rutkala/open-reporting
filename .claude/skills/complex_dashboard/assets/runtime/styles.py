@@ -63,6 +63,11 @@ S = {
         "fontSize": "13px", "color": TEXT, "textDecoration": "none",
         "borderLeft": f"3px solid {TEXT}", "backgroundColor": f"{BORDER}40", "cursor": "pointer",
     },
+    "nav-item-section-label": {
+        "display": "block", "padding": "8px 20px",
+        "fontSize": "11px", "color": SUBTEXT, "textDecoration": "none",
+        "marginTop": "8px", "pointerEvents": "none",
+    },
     "toggle-btn": {
         "position": "absolute", "top": "28px", "right": "10px",
         "width": "24px", "height": "24px",
