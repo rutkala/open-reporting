@@ -1,17 +1,21 @@
-# Walkthrough — `example_app.py`
+# Walkthrough — `example/app.py`
 
 A working mini-dashboard that proves the `complex_dashboard` skill
-helpers compose into a runnable Dash app. Sibling file:
-[`example_app.py`](example_app.py).
+helpers compose into a runnable Dash app. Sibling files:
+[`example/app.py`](example/app.py),
+[`example/data_loaders.py`](example/data_loaders.py),
+[`example/measures.py`](example/measures.py).
 
 ## Run it
 
 ```bash
 PYTHONPATH=/opt/open-reporting:/opt/open-reporting/.claude/skills \
-python3 .claude/skills/complex_dashboard/assets/example_app.py
+python3 .claude/skills/complex_dashboard/assets/example/app.py
 ```
 
-Then open `http://localhost:8060/example/`.
+Then open `http://localhost:8060/example/`. The healthcheck is at
+`http://localhost:8060/example/health` and returns
+`{"status":"ok"}`.
 
 ## Smoke-test it
 
@@ -19,41 +23,55 @@ The skill's smoke test verifies the app starts and serves HTTP 200:
 
 ```bash
 PYTHONPATH=/opt/open-reporting:/opt/open-reporting/.claude/skills \
-python3 .claude/skills/complex_dashboard/assets/smoke_test.py \
-    .claude/skills/complex_dashboard/assets/example_app.py 8060 /example/
+python3 .claude/skills/complex_dashboard/assets/example/smoke_test.py \
+    .claude/skills/complex_dashboard/assets/example/app.py 8060 /example/
 ```
 
 `smoke_test.py` takes an optional URL path as its third argument —
 required for dashboards built on this skill, because `make_app(domain=...)`
 mounts the app under `/{domain}/`, not `/`.
 
+## Multi-page variant
+
+The same example also ships in multi-page form (Dash Pages framework,
+`use_pages=True`). Run it on a separate port to compare side by side:
+
+```bash
+PYTHONPATH=/opt/open-reporting:/opt/open-reporting/.claude/skills \
+python3 .claude/skills/complex_dashboard/assets/example/app_multipage.py
+```
+
+Then open `http://localhost:8061/example/` for the overview page or
+`http://localhost:8061/example/regional` for the regional page.
+
 ## What it demonstrates
 
-| Skill component | Where it appears in `example_app.py` |
+| Skill component | Where it appears |
 |---|---|
-| `make_app(...)` | App init — line ~57 |
-| `S` (styles dict) | Layout — `S["body"]`, `S["main"]`, `S["card"]`, `S["section-heading"]`, … |
-| `build_sidebar(...)` | Layout — replaces ~30 lines of `html.Aside` boilerplate |
-| `build_header(...)` | Layout — replaces ~25 lines of header markup |
-| `build_footer(...)` | Layout — replaces ~9 lines of footer markup |
-| `register_toggle_callback(app)` | Callbacks — wires the sidebar collapse |
-| `Dimension` / `Measure` | `DIMS` and `MEASURES` registries |
-| `kpi_row` + `kpi_standard` | KPI section above each chart |
-| `line(...)`, `clustered_column(...)` | Chart components from `products/visuals/components/` |
-| Chart `subtitle="Źródło: …"` | Per-chart source attribution rule |
+| `make_app(...)` | `example/app.py` — app init |
+| `S` (styles dict) | `example/app.py` — `S["card"]`, `S["section-heading"]`, … |
+| `build_page_layout(...)` | `example/app.py` — replaces ~30 lines of nested `html.Div`/`html.Main` boilerplate |
+| `build_sidebar(...)` / `build_header(...)` / `build_footer(...)` | wrapped by `build_page_layout` |
+| `register_toggle_callback(app)` | `example/app.py` — wires the sidebar collapse |
+| `register_healthcheck(app)` | `example/app.py` — exposes `/example/health` |
+| `Dimension` / `Measure` | `example/measures.py` — `DIMS` / `MEASURES` registries |
+| `load_*(...)` interface | `example/data_loaders.py` — `load_by_year`, `load_by_region`, `load_scalars` |
+| `kpi_row` + `kpi_standard` | `example/app.py` — KPI section above each chart |
+| `line(...)`, `clustered_column(...)` | `example/app.py` — chart components from `products/visuals/components/` |
+| Chart `subtitle="Źródło: …"` | per-chart source attribution rule |
 
 ## What it does *not* demonstrate
 
 The example skips the things every domain dashboard adds on top:
 
-- **Warehouse loaders** — uses an inline synthetic `pd.DataFrame`
-  instead of `data_loaders.py` calling DuckDB. See
-  `assets/data/data_loaders_template.py` for the real pattern.
+- **Warehouse loaders** — uses synthetic `pd.DataFrame`s in
+  `example/data_loaders.py` instead of DuckDB queries. See
+  `scaffolds/data_loaders.py.template` for the real pattern.
 - **Multiple measures with comparisons** — single-card KPI rows; real
   dashboards use 3–5 cards with `reference_value` + `reference_label`.
-- **Slicers and filtering callbacks** — the example only registers
-  the shared sidebar-collapse callback. See
-  `assets/pages/controls/slicers/*.md` for the slicer + filter pattern.
+- **Slicers and filtering callbacks** — only the shared
+  sidebar-collapse callback is registered. See
+  `specs/controls/slicers/*.md` for the slicer + filter pattern.
 - **Polish structural break annotations** — when the real series has
   one (e.g. GUS methodology change in 2023), add a reference line and
   caption.
