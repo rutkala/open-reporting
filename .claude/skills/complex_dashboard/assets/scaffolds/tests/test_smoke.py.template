@@ -1,0 +1,44 @@
+"""TODO_DOMAIN dashboard — smoke tests.
+
+Copy to ``products/dashboards/TODO_DOMAIN/tests/test_smoke.py`` and
+strip the ``.template`` suffix.
+
+Catches the cheap class of regressions: import errors, layout
+``None``, missing healthcheck, broken page registry. Runs in seconds,
+no browser, no DuckDB connection beyond what ``app.py`` already opens
+at import time.
+"""
+
+
+def test_app_imports(app):
+    """The Dash app builds — no exception at module load."""
+    assert app is not None
+    assert app.layout is not None, "app.layout is None — was it ever assigned?"
+
+
+def test_root_page_renders(client):
+    """``GET /`` returns 200 and serves the Dash index HTML."""
+    response = client.get("/")
+    assert response.status_code == 200
+    assert b"<!DOCTYPE html>" in response.data or b"<html" in response.data
+
+
+def test_healthcheck(client):
+    """``GET /health`` returns 200 ``{"status": "ok"}``."""
+    response = client.get("/health")
+    assert response.status_code == 200
+    assert response.get_json() == {"status": "ok"}
+
+
+def test_page_registry_populated(app):
+    """For multi-page apps, page_registry has at least the overview page.
+
+    Delete this test on single-page dashboards.
+    """
+    import dash
+
+    if not getattr(app, "use_pages", False):
+        return
+    assert dash.page_registry, "use_pages=True but no pages registered"
+    assert any(p["path"] == "/" for p in dash.page_registry.values()), \
+        "no page registered at path='/'"

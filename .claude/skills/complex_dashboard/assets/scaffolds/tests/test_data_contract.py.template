@@ -1,0 +1,53 @@
+"""TODO_DOMAIN dashboard — data contract tests.
+
+Copy to ``products/dashboards/TODO_DOMAIN/tests/test_data_contract.py``
+and strip the ``.template`` suffix.
+
+Checks that the data layer keeps its contract with the report layer:
+``DIMS`` and ``MEASURES`` are well-formed, every ``load_*`` function
+returns the columns the report expects, and KPI scalars match the
+``MEASURES`` registry. These tests need read access to the warehouse —
+skip them in CI environments where DuckDB is unavailable.
+"""
+import pandas as pd
+import pytest
+
+import products.dashboards.TODO_DOMAIN.data_loaders as _data
+import products.dashboards.TODO_DOMAIN.measures as m
+from products.visuals.lib.semantic import Dimension, Measure
+
+
+# ── Registry shape ──────────────────────────────────────────────────────────
+
+def test_dims_are_dimension_instances():
+    assert m.DIMS, "DIMS registry is empty"
+    for key, dim in m.DIMS.items():
+        assert isinstance(dim, Dimension), f"DIMS[{key!r}] is not a Dimension"
+        assert dim.column.startswith("dim_"), \
+            f"DIMS[{key!r}].column should start with 'dim_'"
+
+
+def test_measures_are_measure_instances():
+    assert m.MEASURES, "MEASURES registry is empty"
+    for key, meas in m.MEASURES.items():
+        assert isinstance(meas, Measure), f"MEASURES[{key!r}] is not a Measure"
+        assert meas.column.startswith("val_"), \
+            f"MEASURES[{key!r}].column should start with 'val_'"
+        assert meas.label, f"MEASURES[{key!r}].label is empty (Polish required)"
+
+
+# ── Loader column contract ──────────────────────────────────────────────────
+
+def test_load_by_year_columns():
+    df = _data.load_by_year()
+    assert isinstance(df, pd.DataFrame)
+    assert "dim_year" in df.columns, "load_by_year must expose dim_year"
+    assert len(df) > 0, "load_by_year returned an empty frame"
+
+
+def test_load_scalars_keys_match_measures():
+    """Every key in load_scalars() must have a matching MEASURES entry."""
+    scalars = _data.load_scalars()
+    assert isinstance(scalars, dict)
+    unknown = set(scalars) - set(m.MEASURES)
+    assert not unknown, f"load_scalars() has keys not in MEASURES: {unknown}"

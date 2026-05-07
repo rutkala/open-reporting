@@ -1,0 +1,52 @@
+"""TODO_DOMAIN dashboard — overview (landing) page.
+
+Multi-page apps only. Copy to
+``products/dashboards/TODO_DOMAIN/pages/overview.py``, strip the
+``.template`` suffix, and replace every ``TODO_*`` placeholder.
+
+Registered at the dashboard root path (``/``). Carries the
+headline KPIs and the at-a-glance chart that opens the story.
+"""
+import dash
+from dash import html
+
+from complex_dashboard.assets.runtime import S
+from products.visuals.components.kpi_card import kpi_row, kpi_standard
+
+import products.dashboards.TODO_DOMAIN.measures as m
+import products.dashboards.TODO_DOMAIN.data_loaders as _data
+
+dash.register_page(
+    __name__,
+    path="/",
+    name="Przegląd",
+    title="TODO_DOMAIN — przegląd",
+    order=0,
+)
+
+
+_scalars = _data.load_scalars()
+
+
+def layout():
+    return html.Div([
+        html.H2(
+            "TODO: Przegląd — pytanie analityczne",
+            id="overview",
+            style={**S["section-heading"], "marginTop": 0},
+        ),
+        html.P(
+            "TODO: Jedno zdanie wprowadzające czytelnika do tematu.",
+            style=S["section-desc"],
+        ),
+        kpi_row([
+            kpi_standard(
+                label=m.MEASURES["TODO_KPI_1"].label,
+                value=m.MEASURES["TODO_KPI_1"].kpi_value(_scalars["TODO_KPI_1"]),
+                unit=m.MEASURES["TODO_KPI_1"].plotly_ticksuffix,
+            ),
+        ]),
+        html.Div(style=S["card"], children=[
+            # TODO: headline chart for the dashboard
+        ]),
+    ])

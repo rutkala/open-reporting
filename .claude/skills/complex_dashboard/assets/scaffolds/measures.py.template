@@ -14,8 +14,8 @@ Column-naming convention (matches ``data_loaders_template.py``):
 - ``Measure(name, label, column, …)`` — column is ``val_<name>``
 
 The report consumes ``DIMS["x"]`` and ``MEASURES["y"]`` through the
-interface in ``data_loaders.md`` — never instantiates ``Measure`` or
-``Dimension`` itself.
+interface in ``specs/data/data_loaders.md`` — never instantiates
+``Measure`` or ``Dimension`` itself.
 
 For breadth (15+ measures, geo / OHLC / derived measures) see
 ``products/dashboards/template/measures.py``.

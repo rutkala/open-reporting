@@ -1,0 +1,30 @@
+"""TODO_DOMAIN dashboard — pytest fixtures.
+
+Copy to ``products/dashboards/TODO_DOMAIN/tests/conftest.py`` and
+strip the ``.template`` suffix.
+
+Provides three fixtures:
+
+- ``app`` — the Dash instance, imported once per session.
+- ``client`` — a Flask test client for HTTP assertions
+  (smoke checks, ``/health``, basic page render).
+- ``dash_duo`` — comes from ``dash[testing]`` for browser-driven
+  end-to-end tests; install with ``pip install -r requirements-dev.txt``.
+
+Run with ``pytest -q`` from the dashboard directory.
+"""
+import pytest
+
+import products.dashboards.TODO_DOMAIN.app as dashboard_app
+
+
+@pytest.fixture(scope="session")
+def app():
+    """The Dash app under test."""
+    return dashboard_app.app
+
+
+@pytest.fixture()
+def client(app):
+    """Flask test client — for HTTP-level assertions without a browser."""
+    return app.server.test_client()

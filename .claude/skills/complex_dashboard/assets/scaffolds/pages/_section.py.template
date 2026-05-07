@@ -1,0 +1,41 @@
+"""TODO_DOMAIN dashboard — TODO_PAGE_NAME page.
+
+Multi-page apps only. Copy to
+``products/dashboards/TODO_DOMAIN/pages/TODO_PAGE_SLUG.py``, strip the
+``.template`` suffix, and replace every ``TODO_*`` placeholder.
+
+Use one of these per analytical theme that deserves its own URL.
+Single-page dashboards keep all themes in one ``app.py`` instead.
+"""
+import dash
+from dash import html
+
+from complex_dashboard.assets.runtime import S
+
+import products.dashboards.TODO_DOMAIN.measures as m  # noqa: F401
+import products.dashboards.TODO_DOMAIN.data_loaders as _data  # noqa: F401
+
+dash.register_page(
+    __name__,
+    path="/TODO_PAGE_SLUG",
+    name="TODO: Etykieta w nawigacji",
+    title="TODO_DOMAIN — TODO: tytuł strony",
+    order=1,  # Position in dash.page_registry — overview is 0
+)
+
+
+def layout():
+    return html.Div([
+        html.H2(
+            "TODO: Tytuł sekcji — pytanie analityczne",
+            id="TODO_PAGE_SLUG",
+            style={**S["section-heading"], "marginTop": 0},
+        ),
+        html.P(
+            "TODO: Jedno zdanie opisujące, na co odpowiada ta strona.",
+            style=S["section-desc"],
+        ),
+        html.Div(style=S["card"], children=[
+            # TODO: chart or table
+        ]),
+    ])
