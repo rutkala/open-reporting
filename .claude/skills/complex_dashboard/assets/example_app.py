@@ -143,7 +143,11 @@ app.layout = html.Div(style=S["body"], children=[
             ]),
         ]),
 
-        *build_footer(name="Przykład — complex_dashboard"),
+        *build_footer(
+            name="Przykład — complex_dashboard",
+            source="dane syntetyczne",
+            updated="2018–2024",
+        ),
     ]),
 ])
 

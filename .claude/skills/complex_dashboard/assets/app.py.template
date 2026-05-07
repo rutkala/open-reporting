@@ -127,7 +127,12 @@ app.layout = html.Div(style=S["body"], children=[
         ]),
 
         # Footer — see specs/layout/footer.md (mandatory)
-        *build_footer(name="TODO: Dashboard name (Polish)"),
+        # source and updated are REQUIRED — build_footer raises TypeError otherwise.
+        *build_footer(
+            name="TODO: Dashboard name (Polish)",
+            source="TODO: e.g. 'GUS BDL', 'Ministerstwo Finansów', 'Eurostat'",
+            updated="TODO: e.g. 'luty 2026', '2018–2024'",
+        ),
     ]),
 ])
 
