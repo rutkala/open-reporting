@@ -520,7 +520,7 @@ model conforming the source to the 33-column shared schema.
 **RULE BLOCK-06** — A circular dependency is proposed (component A imports B, B imports A;
 or a dashboard imports from `platform/ingestion/` or `platform/processing/`).
 → Violates module boundary. The shared library between platform and products is
-  `products/visuals/lib/` only.
+  the `complex_dashboard` skill (`.claude/skills/complex_dashboard/assets/`) only.
 
 **RULE BLOCK-07** — A new column is added to `all_indicators.sql` that does not exist in
 all existing `stg_*.sql` staging models.
@@ -557,7 +557,7 @@ without updating all other staging models.
 **RULE COND-06** — A dashboard component imports functions directly from `platform/ingestion/`
 or `platform/processing/`.
 → Tight coupling: a product artefact depends on a platform artefact outside the shared library.
-→ Shared surface is `products/visuals/lib/` only.
+→ Shared surface is the `complex_dashboard` skill (`.claude/skills/complex_dashboard/assets/`) only.
 
 **RULE COND-07** — A mart model uses `INNER JOIN` to a dimension seed without checking that
 all `detail_id` values are present in the seed.
@@ -630,7 +630,7 @@ Quick lookup for common architectural questions.
 | Should I use integer surrogate keys? | No — composite natural keys | §2.4, §8.2 |
 | Can I use SELECT * from all_indicators? | No | BLOCK-08 |
 | Should staging models use incremental? | No — use table | §4.5 |
-| What is the shared library between platform and products? | `products/visuals/lib/` only | BLOCK-06 |
+| What is the shared library between platform and products? | `complex_dashboard` skill (`.claude/skills/complex_dashboard/assets/`) only | BLOCK-06 |
 | Where do derived metrics (YoY) live? | Gold mart if universal; dashboard if local | §1.2 |
 | How do I add a new data source? | raw → stg_* → all_indicators union | §4.1, BLOCK-04 |
 | What if a source doesn't have a dimension? | `null::varchar as dim_{name}` | NOTE-06 |

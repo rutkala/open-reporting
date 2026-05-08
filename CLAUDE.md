@@ -67,12 +67,7 @@ Your role is **50% business analyst, 50% technical architect**. You do not wait 
 ├── products/            → Products
 │   ├── domain-briefs/   → Domain research outputs — shared components, one per domain
 │   ├── semantic/        → Legacy domain logic (used by Labour dashboard — pending migration)
-│   ├── visuals/         → Reusable chart/table/KPI components
-│   │   ├── lib/         → Shared utilities
-│   │   │   ├── db.py    → DuckDB direct queries (filters, lookups)
-│   │   │   └── theme.py → Nordic Plotly theme
-│   │   └── labour/      → Labour-domain chart components
-│   ├── dashboards/      → Dash apps (assemble visuals + call lib/)
+│   ├── dashboards/      → Dash apps — import theme/components/db from the complex_dashboard skill
 │   │   ├── labour/      → app.py (Dash), static.py (HTML)
 │   │   └── explorer/    → app.py (Dash)
 │   ├── research/        → Academic research (econometrics, economic models)
@@ -119,7 +114,7 @@ Shared session memory at `team/session-memory.md` provides continuity across ses
 |-------|-------|------|-------------|
 | `debug` | All directories | Read-only (plan) | Debugging, tracing, diagnostics |
 | `data-engineer` | `platform/` | Full dev | Ingestion scripts, dbt models, schema DDL, warehouse queries, semantic layer (MetricFlow) |
-| `dashboard-dev` | `products/dashboards/`, `products/visuals/` | Full dev | Dash apps, Plotly components, KPI cards, layout — reads ux-perception + visualization KBs |
+| `dashboard-dev` | `products/dashboards/`, `complex_dashboard` skill | Full dev | Dash apps, Plotly components, KPI cards, layout — reads ux-perception + visualization KBs |
 | `business-analyst` | Domain research | Read + Web | KPI design, indicator selection, analytical briefs |
 
 **Evaluator agents** (review output independently — invoked by skills, not directly):

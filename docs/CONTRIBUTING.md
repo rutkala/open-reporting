@@ -161,7 +161,7 @@ Paste this into every PR and check off before requesting review:
 - [ ] Seeds use --full-refresh when schema changes
 
 ### Visualisation PRs (products/)
-- [ ] Nordic theme imported from products/visuals/lib/theme.py
+- [ ] Nordic theme imported from complex_dashboard.assets.theme
 - [ ] No hardcoded colours
 - [ ] All chart labels in Polish
 - [ ] Source attribution visible

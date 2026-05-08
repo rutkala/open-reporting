@@ -92,5 +92,5 @@ Every chart must have a title. No untitled charts.
 | Billions | mld | `1,2 mld` |
 | Currency | zł | `123,45 zł` |
 
-Use `Measure` objects from `products/visuals/lib/` for consistent formatting —
+Use `Measure` objects from `complex_dashboard.assets.semantic` for consistent formatting —
 do not write format strings manually.

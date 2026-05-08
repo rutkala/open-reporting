@@ -1,7 +1,7 @@
 # Visualisation Standard
 
 **Derived from:** `team/knowledge-base/visualization/principles.md` ✓ + `team/knowledge-base/visualization/ui-principles.md` ✓ + `team/knowledge-base/visualization/charts/*.md` ✓ + `team/knowledge-base/ux-perception/perception.md` ✓ (IBCS SUCCESS, Gestalt, pre-attentive attributes, Cowan 4±1 working memory, WCAG 2.2, eye-tracking patterns, chart-type selection)
-**Used by builders:** `dashboard-dev` (building dashboards in `products/dashboards/` and components in `products/visuals/`)
+**Used by builders:** `dashboard-dev` (building dashboards in `products/dashboards/` and components in `.claude/skills/complex_dashboard/assets/components/`)
 **Evaluated by:** `visualization-reviewer` (diff-phase), `visual-screenshot-reviewer` (image-phase)
 **Does NOT cover:** number formatting (see `measures.md`), KPI selection theory (see `business-analysis` KB), domain-specific framing (see `domains/{domain}.md` KB)
 

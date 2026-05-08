@@ -154,7 +154,7 @@ INFRASTRUCTURE
 | Component | Location | Status |
 |-----------|----------|--------|
 | Domain briefs | `products/domain-briefs/` | 1 draft (public-finance) |
-| Visual component library | `products/visuals/components/` | Live |
+| Visual component library | `.claude/skills/complex_dashboard/assets/components/` | Live |
 | Semantic model | `products/semantic/` | Live (legacy, migration pending) |
 | Dashboards (labour, explorer, finance) | `products/dashboards/` | Live |
 | Blog (Ghost CMS) | Docker / Ghost | Live |

@@ -19,7 +19,7 @@ These are non-negotiable. A single P1 finding must be resolved before the PR can
 - **No `.env` in diff** — `.env` must never appear in a staged commit. `.env.example` is fine.
 
 ### Architecture — layer violations
-- **No raw schema queries from dashboard/app layer** — `products/dashboards/` and `products/visuals/` must not contain SQL that references `raw.*` tables directly. Raw queries belong in `platform/ingestion/` or `platform/processing/`.
+- **No raw schema queries from dashboard/app layer** — `products/dashboards/` and `.claude/skills/complex_dashboard/assets/` must not contain SQL that references `raw.*` tables directly. Raw queries belong in `platform/ingestion/` or `platform/processing/`.
 - **No curated/mart logic in ingestion scripts** — `platform/ingestion/` must land data only. Transformation belongs in `platform/processing/` (dbt models).
 
 ### Error handling
@@ -42,7 +42,7 @@ Fix before merging where practical. If not fixed, explain why in the PR descript
 - **`load_dotenv(override=True)` in scripts that need env vars** — must appear before any `os.getenv()` calls.
 
 ### Python conventions
-- **No Polish strings in component library or template code** — `products/visuals/` and `products/dashboards/template/` are English-only. Polish strings belong in domain dashboard files only (user-facing content).
+- **No Polish strings in component library or template code** — `.claude/skills/complex_dashboard/assets/` and `products/dashboards/template/` are English-only. Polish strings belong in domain dashboard files only (user-facing content).
 - **Line length ≤ 100 characters** — flag lines that exceed this. Docstrings and comments included.
 - **Type hints on new function signatures** — every new function must have parameter and return type annotations. Existing functions without hints are not flagged unless they are being modified.
 - **`#!/usr/bin/env python3` shebang on new scripts** — required on any new file in `platform/ingestion/` or `platform/processing/` that is meant to be run directly.

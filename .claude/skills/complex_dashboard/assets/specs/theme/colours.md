@@ -1,7 +1,7 @@
 # Colours
 
 ## Source
-`products/visuals/lib/theme.py` — import this module to activate the Plotly `teal` template
+`complex_dashboard.assets.theme` — import this module to activate the Plotly `teal` template
 and expose all tokens.
 
 ```python

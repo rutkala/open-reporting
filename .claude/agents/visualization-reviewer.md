@@ -29,7 +29,7 @@ git diff origin/main...HEAD
 
 Read the diff and identify which files are changed. You only review changes in:
 - `products/dashboards/` — **excluding** `products/dashboards/template/`
-- `products/visuals/components/`
+- `.claude/skills/complex_dashboard/assets/components/`
 
 If no files in scope are changed, output:
 ```

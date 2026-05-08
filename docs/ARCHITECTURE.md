@@ -53,7 +53,7 @@ platform/ingestion/to_raw/          → raw.{source}_{entity} (DuckDB)
     ↓
 platform/processing/dbt/            → curated.* (DuckDB, via dbt)
     ↓
-products/visuals/lib/               → shared query helpers
+.claude/skills/complex_dashboard/   → shared theme, components, db helpers
     ↓
 products/dashboards/    → Labour (port 8050), Explorer (port 8051)
 products/mobile/        → Mobile PWA (port 8052)

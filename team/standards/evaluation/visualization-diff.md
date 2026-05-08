@@ -15,7 +15,7 @@ KB source: `team/knowledge-base/visualization/principles.md` and `team/knowledge
 
 This agent reviews changes in:
 - `products/dashboards/` — domain dashboards (Labour, Finance, Explorer, etc.)
-- `products/visuals/components/` — chart component library
+- `.claude/skills/complex_dashboard/assets/components/` — chart component library
 
 It does NOT flag:
 - `products/dashboards/template/` — developer reference scaffold, not user-facing

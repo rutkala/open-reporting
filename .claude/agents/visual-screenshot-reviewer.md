@@ -32,8 +32,9 @@ Map changed files to dashboards using this routing table:
 | `products/dashboards/labour/` | labour |
 | `products/dashboards/explorer/` | explorer |
 | `products/dashboards/finance/` | finance |
-| `products/visuals/components/` | labour, explorer, finance |
-| `products/visuals/lib/` | labour, explorer, finance |
+| `.claude/skills/complex_dashboard/assets/components/` | labour, explorer, finance |
+| `.claude/skills/complex_dashboard/assets/theme.py` | labour, explorer, finance |
+| `.claude/skills/complex_dashboard/assets/data/db.py` | labour, explorer, finance |
 
 Exclude: `products/dashboards/template/`, `products/dashboards/generate.py`, `products/dashboards/finance_test/`
 
