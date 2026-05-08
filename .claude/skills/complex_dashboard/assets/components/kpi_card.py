@@ -43,6 +43,18 @@ def kpi_row(cards: list, min_width: str = "180px", gap: str = "16px") -> html.Di
     )
 
 
+def _badge_span(badge: tuple[str, str], font_size: str = "11px") -> html.Span:
+    """Compliance / status pill rendered next to the KPI value."""
+    text, color = badge
+    return html.Span(text, style={
+        "fontSize": font_size, "fontWeight": "600",
+        "color": color, "background": f"{color}18",
+        "border": f"1px solid {color}40",
+        "borderRadius": "4px", "padding": "2px 6px",
+        "marginLeft": "4px",
+    })
+
+
 def kpi_standard(
     label: str,
     value: str,
@@ -52,6 +64,8 @@ def kpi_standard(
     reference_label: str = "",
     trend: str = "",
     trend_color: str = "",
+    badge: tuple[str, str] | None = None,
+    value_color: str = "",
 ) -> html.Div:
     """
     Standard KPI card — label, large callout value, optional unit, subtitle,
@@ -70,6 +84,10 @@ def kpi_standard(
                          (e.g. "Target", "Prior year", "EU avg")
         trend:           optional trend text (e.g. "▲ +0.8")
         trend_color:     colour for trend text; use POSITIVE/NEGATIVE from theme
+        badge:           optional (text, color) compliance pill rendered next
+                         to the value — e.g. ("✓ SGP", POSITIVE) or
+                         ("✗ Maastricht", NEGATIVE)
+        value_color:     override colour of the value text (default: theme TEXT)
     """
     if unit == "%":
         display_value = f"{value}%"
@@ -89,14 +107,17 @@ def kpi_standard(
             "fontStyle": "italic",
         }))
 
+    value_row = [
+        html.Span(display_value, style={
+            "fontSize": "24px", "fontWeight": "700", "color": value_color or TEXT,
+        }),
+        html.Span(unit, style={"fontSize": "12px", "color": SUBTEXT}) if unit else None,
+    ]
+    if badge:
+        value_row.append(_badge_span(badge))
     children.append(html.Div(
-        style={"display": "flex", "alignItems": "baseline", "gap": "6px", "marginBottom": "4px"},
-        children=[
-            html.Span(display_value, style={
-                "fontSize": "24px", "fontWeight": "700", "color": TEXT,
-            }),
-            html.Span(unit, style={"fontSize": "12px", "color": SUBTEXT}) if unit else None,
-        ],
+        style={"display": "flex", "alignItems": "center", "gap": "6px", "marginBottom": "4px"},
+        children=value_row,
     ))
 
     if reference_value:
@@ -138,10 +159,12 @@ def kpi_compact(
     reference_label: str = "",
     trend: str = "",
     trend_color: str = "",
+    badge: tuple[str, str] | None = None,
+    value_color: str = "",
 ) -> html.Div:
     """
     Compact KPI card — smaller font, tighter padding, for dense rows.
-    Same API as kpi_standard.
+    Same API as kpi_standard, including optional badge and value_color.
     """
     if unit == "%":
         display_value = f"{value}%"
@@ -161,14 +184,17 @@ def kpi_compact(
             "fontStyle": "italic",
         }))
 
+    value_row = [
+        html.Span(display_value, style={
+            "fontSize": "18px", "fontWeight": "700", "color": value_color or TEXT,
+        }),
+        html.Span(unit, style={"fontSize": "11px", "color": SUBTEXT}) if unit else None,
+    ]
+    if badge:
+        value_row.append(_badge_span(badge, font_size="10px"))
     children.append(html.Div(
-        style={"display": "flex", "alignItems": "baseline", "gap": "4px", "marginBottom": "2px"},
-        children=[
-            html.Span(display_value, style={
-                "fontSize": "18px", "fontWeight": "700", "color": TEXT,
-            }),
-            html.Span(unit, style={"fontSize": "11px", "color": SUBTEXT}) if unit else None,
-        ],
+        style={"display": "flex", "alignItems": "center", "gap": "4px", "marginBottom": "2px"},
+        children=value_row,
     ))
 
     if reference_value:

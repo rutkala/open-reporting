@@ -232,6 +232,31 @@ def _build_content() -> list:
                 ),
             ], min_width="140px", gap="12px"),
         ]),
+        html.Div(style=S["group"], children=[
+            kpi_row([
+                kpi_standard(
+                    label=m.MEASURES["measure_a"].label,
+                    value=m.MEASURES["measure_a"].kpi_value(scalars["measure_a"]),
+                    unit=m.MEASURES["measure_a"].plotly_ticksuffix,
+                    badge=("✓ Target", POSITIVE),
+                    value_color=POSITIVE,
+                ),
+                kpi_standard(
+                    label=m.MEASURES["measure_b"].label,
+                    value=m.MEASURES["measure_b"].kpi_value(scalars["measure_b"]),
+                    unit=m.MEASURES["measure_b"].plotly_ticksuffix,
+                    badge=("✗ Limit", NEGATIVE),
+                    value_color=NEGATIVE,
+                ),
+                kpi_standard(
+                    label=m.MEASURES["measure_c"].label,
+                    value=m.MEASURES["measure_c"].kpi_value(scalars["measure_c"]),
+                    unit=m.MEASURES["measure_c"].plotly_ticksuffix,
+                    badge=("Watch", WARNING),
+                    value_color=WARNING,
+                ),
+            ]),
+        ]),
 
         # ── 1. Clustered column ───────────────────────────────────────────
         html.H2("Clustered column", id="col-clustered", style=S["section-heading"]),
