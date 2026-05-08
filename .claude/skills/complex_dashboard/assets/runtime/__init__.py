@@ -24,6 +24,11 @@ from complex_dashboard.assets.runtime.log import (
     require_env,
 )
 from complex_dashboard.assets.runtime.page_shell import build_page_layout
+from complex_dashboard.assets.runtime.semantic import (
+    SemanticResult,
+    semantic_query,
+    semantic_query_history,
+)
 from complex_dashboard.assets.runtime.sidebar_nav import (
     build_sidebar,
     register_toggle_callback,
@@ -47,6 +52,9 @@ __all__ = [
     "get_logger",
     "require_env",
     "register_healthcheck",
+    "semantic_query",
+    "semantic_query_history",
+    "SemanticResult",
     "S",
     "SIDEBAR_W",
     "SIDEBAR_COLLAPSED",
