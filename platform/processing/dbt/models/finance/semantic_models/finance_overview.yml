@@ -1,0 +1,90 @@
+version: 2
+
+# MetricFlow semantic model for the finance dashboard Overview KPI row.
+#
+# Single source: curated.int_finance_overview (wide, one column per measure).
+# Three metrics expose the latest annual value of each KPI to the visual layer
+# without leaking SQL or column names into chart code.
+#
+# Display + threshold metadata travels in `config.meta` and is read by
+# complex_dashboard.assets.runtime.semantic.semantic_query() at render time.
+
+semantic_models:
+  - name: finance_overview
+    description: Annual Overview KPIs for Polish public finance.
+    model: ref('int_finance_overview')
+    defaults:
+      agg_time_dimension: period
+
+    entities:
+      - name: geo
+        type: primary
+        expr: geo
+
+    dimensions:
+      - name: period
+        type: time
+        expr: period_date
+        type_params:
+          time_granularity: year
+
+    measures:
+      - name: fiscal_balance_pct_gdp
+        description: Government net lending/borrowing as % of GDP, latest year.
+        agg: average
+        expr: fiscal_balance_pct_gdp
+      - name: public_debt_pct_gdp
+        description: Consolidated general government gross debt as % of GDP, latest year.
+        agg: average
+        expr: public_debt_pct_gdp
+      - name: govt_revenue_pln_mn
+        description: General government total revenue, PLN million, latest year.
+        agg: average
+        expr: govt_revenue_pln_mn
+
+metrics:
+  - name: fiscal_balance
+    label: Saldo finansów publicznych
+    type: simple
+    type_params:
+      measure: fiscal_balance_pct_gdp
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: "% PKB"
+          scale: 1
+        thresholds:
+          sgp_deficit: -3.0
+        source_label: "Eurostat ESA 2010, sektor rządowy"
+        ascending_is_good: true
+
+  - name: public_debt
+    label: Dług publiczny
+    type: simple
+    type_params:
+      measure: public_debt_pct_gdp
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: "% PKB"
+          scale: 1
+        thresholds:
+          maastricht_debt: 60.0
+        source_label: "Kryterium z Maastricht: 60% PKB"
+        ascending_is_good: false
+
+  - name: govt_revenue
+    label: Dochody sektora finansów publ.
+    type: simple
+    type_params:
+      measure: govt_revenue_pln_mn
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: "mld zł"
+          scale: 0.001
+        source_label: "Dochody ogółem, sektor S13"
+        ascending_is_good: true
