@@ -11,17 +11,22 @@ Run:
 """
 import logging
 import os
+from pathlib import Path
 
 import pandas as pd
 import plotly.graph_objects as go
-from dash import Dash, Input, Output, callback, dcc, html, dash_table
+from dash import Input, Output, dcc, html, dash_table
 
 import complex_dashboard.assets.theme as _theme  # noqa: F401 — registers nordic template
 from complex_dashboard.assets.theme import (
-    AZURE_1, AZURE_3, BG_PAGE, BG_SURFACE, BORDER,
+    AZURE_1, AZURE_3, BG_SURFACE, BORDER,
     COLORWAY, NEGATIVE, POSITIVE, SUBTEXT, TEXT, WARNING,
 )
 from complex_dashboard.assets.data.db import query
+from complex_dashboard.assets.runtime import (
+    S, build_page_layout, make_app, register_healthcheck, register_toggle_callback,
+)
+from complex_dashboard.assets.components.kpi_card import kpi_row, kpi_standard
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
@@ -142,54 +147,6 @@ def _ref_line(fig: go.Figure, y: float, label: str, color: str = NEGATIVE,
     return fig
 
 
-def _card(label: str, value_str: str, rank_str: str, color: str = TEXT,
-          badge: tuple[str, str] | None = None,
-          trend: tuple[str, str] | None = None) -> html.Div:
-    """KPI card component.
-
-    badge: (text, color) — e.g. ("✓ SGP", POSITIVE) or ("✗ SGP", NEGATIVE)
-    trend: (arrow+delta, color) — e.g. ("▲ +1,2 pp", NEGATIVE)
-    """
-    children = [
-        html.Div(label, style={"color": SUBTEXT, "fontSize": "13px", "marginBottom": "6px"}),
-    ]
-    # Value row with optional badge
-    value_row = [
-        html.Span(value_str, style={"color": color, "fontSize": "26px", "fontWeight": "700"}),
-    ]
-    if badge:
-        badge_text, badge_color = badge
-        value_row.append(html.Span(
-            badge_text,
-            style={
-                "fontSize": "11px", "fontWeight": "600",
-                "color": badge_color, "background": f"{badge_color}18",
-                "border": f"1px solid {badge_color}40",
-                "borderRadius": "4px", "padding": "2px 6px",
-                "marginLeft": "8px", "verticalAlign": "middle",
-            },
-        ))
-    children.append(html.Div(value_row, style={"display": "flex", "alignItems": "center"}))
-    if trend:
-        trend_text, trend_color = trend
-        children.append(html.Div(
-            trend_text,
-            style={"color": trend_color, "fontSize": "12px", "marginTop": "3px", "fontWeight": "500"},
-        ))
-    children.append(html.Div(rank_str, style={"color": SUBTEXT, "fontSize": "12px", "marginTop": "4px"}))
-    return html.Div(
-        style={
-            "background": BG_SURFACE,
-            "border": f"1px solid {BORDER}",
-            "borderRadius": "8px",
-            "padding": "20px 24px",
-            "flex": "1",
-            "minWidth": "200px",
-        },
-        children=children,
-    )
-
-
 def _chart_wrapper(fig: go.Figure, h: int = 420) -> dcc.Graph:
     return dcc.Graph(figure=fig, config={"displayModeBar": False},
                      style={"height": f"{h}px"})
@@ -224,11 +181,9 @@ def _build_overview_kpis() -> html.Div:
     fiscal_color = NEGATIVE if (fiscal_val or 0) < -3 else (WARNING if (fiscal_val or 0) < 0 else POSITIVE)
     debt_color   = NEGATIVE if (debt_val or 0) > 60 else TEXT
 
-    # SGP compliance badges
     fiscal_sgp = ("✓ SGP", POSITIVE) if (fiscal_val or 0) >= -3 else ("✗ SGP", NEGATIVE)
     debt_sgp   = ("✓ SGP", POSITIVE) if (debt_val or 0) <= 60 else ("✗ SGP", NEGATIVE)
 
-    # YoY trends (higher fiscal balance = better; lower debt = better)
     fiscal_trend  = _yoy_trend(_pl_eurostat, "pub.fiscal_balance_gdp", ascending_is_good=True)
     debt_trend    = _yoy_trend(_pl_eurostat, "pub.public_debt_gdp",    ascending_is_good=False)
     revenue_trend = _yoy_trend(_pl_dbw,      "pub.govt_revenue",       ascending_is_good=True)
@@ -238,33 +193,37 @@ def _build_overview_kpis() -> html.Div:
             return "—"
         return f"{val / 1000:,.1f} mld zł".replace(",", "\u00a0").replace(".", ",")
 
-    return html.Div(
-        style={"display": "flex", "gap": "16px", "flexWrap": "wrap", "marginBottom": "24px"},
-        children=[
-            _card(
-                "Saldo finansów publicznych",
-                f"{fiscal_val:.1f}% PKB" if fiscal_val is not None else "—",
-                f"Eurostat ESA 2010, sektor rządowy ({fiscal_yr})",
-                color=fiscal_color,
-                badge=fiscal_sgp,
-                trend=fiscal_trend,
+    return html.Div(style={"marginBottom": "24px"}, children=[
+        kpi_row([
+            kpi_standard(
+                label="Saldo finansów publicznych",
+                value=f"{fiscal_val:.1f}" if fiscal_val is not None else "—",
+                unit="% PKB" if fiscal_val is not None else "",
+                subtitle=f"Eurostat ESA 2010, sektor rządowy ({fiscal_yr})" if fiscal_yr else "",
+                badge=fiscal_sgp if fiscal_val is not None else None,
+                value_color=fiscal_color,
+                trend=fiscal_trend[0] if fiscal_trend else "",
+                trend_color=fiscal_trend[1] if fiscal_trend else "",
             ),
-            _card(
-                "Dług publiczny",
-                f"{debt_val:.1f}% PKB" if debt_val is not None else "—",
-                f"Kryterium z Maastricht: 60% PKB ({debt_yr})",
-                color=debt_color,
-                badge=debt_sgp,
-                trend=debt_trend,
+            kpi_standard(
+                label="Dług publiczny",
+                value=f"{debt_val:.1f}" if debt_val is not None else "—",
+                unit="% PKB" if debt_val is not None else "",
+                subtitle=f"Kryterium z Maastricht: 60% PKB ({debt_yr})" if debt_yr else "",
+                badge=debt_sgp if debt_val is not None else None,
+                value_color=debt_color,
+                trend=debt_trend[0] if debt_trend else "",
+                trend_color=debt_trend[1] if debt_trend else "",
             ),
-            _card(
-                "Dochody sektora finansów publ.",
-                _fmt_mld(revenue_val),
-                f"Dochody ogółem, sektor S13 ({revenue_yr})",
-                trend=revenue_trend,
+            kpi_standard(
+                label="Dochody sektora finansów publ.",
+                value=_fmt_mld(revenue_val),
+                subtitle=f"Dochody ogółem, sektor S13 ({revenue_yr})" if revenue_yr else "",
+                trend=revenue_trend[0] if revenue_trend else "",
+                trend_color=revenue_trend[1] if revenue_trend else "",
             ),
-        ],
-    )
+        ]),
+    ])
 
 
 def _build_budget_combo_chart() -> go.Figure:
@@ -1022,102 +981,68 @@ def _layout_tab7() -> html.Div:
     ])
 
 
-# ── App layout ─────────────────────────────────────────────────────────────────
+# ── Sidebar nav ───────────────────────────────────────────────────────────────
 
-_TAB_STYLE = {
-    "padding": "10px 20px",
-    "color": SUBTEXT,
-    "borderBottom": f"2px solid {BORDER}",
-    "fontFamily": "Inter, 'Segoe UI', system-ui, sans-serif",
-}
-_TAB_SELECTED_STYLE = {
-    **_TAB_STYLE,
-    "color": AZURE_1,
-    "borderBottom": f"2px solid {AZURE_1}",
-    "fontWeight": "600",
-}
+FINANCE_SECTIONS: list[tuple[str, str | None]] = [
+    ("Przegląd",              "przeglad"),
+    ("Porównanie UE",         "ue"),
+    ("Dochody i wydatki",     "rev-exp"),
+    ("Funkcje COFOG",         "cofog"),
+    ("Prognozy MFW",          "imf"),
+    ("Explorer",              "explorer"),
+    ("Porównanie źródeł",     "zrodla"),
+]
 
 
-def _build_layout() -> html.Div:
-    return html.Div(
-        style={"backgroundColor": BG_PAGE, "minHeight": "100vh",
-               "fontFamily": "Inter, 'Segoe UI', system-ui, sans-serif"},
-        children=[
-            # Header
-            html.Div(
-                style={"backgroundColor": BG_SURFACE, "borderBottom": f"1px solid {BORDER}",
-                       "padding": "16px 32px"},
-                children=[
-                    html.H1("Finanse publiczne", style={"color": TEXT, "margin": 0,
-                                                        "fontSize": "22px", "fontWeight": "700"}),
-                    html.Span("Open Reporting · Źródło: Eurostat, MFW",
-                              style={"color": SUBTEXT, "fontSize": "12px"}),
-                ],
-            ),
-            # Tabs
-            html.Div(
-                style={"padding": "24px 32px"},
-                children=[
-                    dcc.Tabs(
-                        id="main-tabs",
-                        value="tab-overview",
-                        style={"marginBottom": "24px"},
-                        children=[
-                            dcc.Tab(label="Przegląd",            value="tab-overview",
-                                    style=_TAB_STYLE, selected_style=_TAB_SELECTED_STYLE),
-                            dcc.Tab(label="Porównanie UE",        value="tab-eu",
-                                    style=_TAB_STYLE, selected_style=_TAB_SELECTED_STYLE),
-                            dcc.Tab(label="Dochody i Wydatki",    value="tab-rev-exp",
-                                    style=_TAB_STYLE, selected_style=_TAB_SELECTED_STYLE),
-                            dcc.Tab(label="Funkcje COFOG",        value="tab-cofog",
-                                    style=_TAB_STYLE, selected_style=_TAB_SELECTED_STYLE),
-                            dcc.Tab(label="Prognozy MFW",         value="tab-imf",
-                                    style=_TAB_STYLE, selected_style=_TAB_SELECTED_STYLE),
-                            dcc.Tab(label="Explorer",             value="tab-explorer",
-                                    style=_TAB_STYLE, selected_style=_TAB_SELECTED_STYLE),
-                            dcc.Tab(label="Porównanie źródeł",    value="tab-sources",
-                                    style=_TAB_STYLE, selected_style=_TAB_SELECTED_STYLE),
-                        ],
-                    ),
-                    html.Div(id="tab-content"),
-                ],
-            ),
-        ],
-    )
+def _section(label: str, anchor: str, body: html.Div) -> list:
+    """One sidebar-anchored section: H2 heading + body."""
+    return [
+        html.H2(label, id=anchor, style=S["section-heading"]),
+        html.Div(style=S["group"], children=[body]),
+    ]
+
+
+def _build_content() -> list:
+    return [
+        *_section("Przegląd",          "przeglad", _layout_tab1()),
+        *_section("Porównanie UE",     "ue",       _layout_tab2()),
+        *_section("Dochody i wydatki", "rev-exp",  _layout_tab3()),
+        *_section("Funkcje COFOG",     "cofog",    _layout_tab4()),
+        *_section("Prognozy MFW",      "imf",      _layout_tab5()),
+        *_section("Explorer",          "explorer", _layout_tab6()),
+        *_section("Porównanie źródeł", "zrodla",   _layout_tab7()),
+    ]
 
 
 # ── App instantiation ──────────────────────────────────────────────────────────
 
-app = Dash(
-    __name__,
-    title="Finanse publiczne — Open Reporting",
-    suppress_callback_exceptions=True,
-    requests_pathname_prefix="/finance/",
-    routes_pathname_prefix="/finance/",
+app = make_app(
+    domain="finance",
+    title="Finanse publiczne",
+    module_name=__name__,
+    assets_folder=str((
+        Path(__file__).resolve().parents[3]
+        / ".claude/skills/complex_dashboard/assets/example/assets"
+    ).resolve()),
 )
-app.layout = _build_layout()
+
+app.layout = build_page_layout(
+    domain="finance",
+    title="Finanse publiczne",
+    subtitle="Saldo, dług, wydatki COFOG, prognozy MFW",
+    sections=FINANCE_SECTIONS,
+    content=_build_content(),
+    footer_name="Open Reporting — finanse publiczne",
+    footer_source="Eurostat ESA 2010, MFW WEO, GUS DBW HVD",
+    footer_updated="2024",
+)
+
+register_toggle_callback(app)
+register_healthcheck(app)
 server = app.server  # expose for production WSGI
 
 
 # ── Callbacks ─────────────────────────────────────────────────────────────────
-
-@app.callback(Output("tab-content", "children"), Input("main-tabs", "value"))
-def render_tab(tab: str):
-    if tab == "tab-overview":
-        return _layout_tab1()
-    if tab == "tab-eu":
-        return _layout_tab2()
-    if tab == "tab-rev-exp":
-        return _layout_tab3()
-    if tab == "tab-cofog":
-        return _layout_tab4()
-    if tab == "tab-imf":
-        return _layout_tab5()
-    if tab == "tab-explorer":
-        return _layout_tab6()
-    if tab == "tab-sources":
-        return _layout_tab7()
-    return html.Div("Nieznana zakładka")
 
 
 @app.callback(
