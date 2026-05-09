@@ -107,13 +107,20 @@
 - Loaded 756,626 observations across 85 variables, 82 cross-sections, years 1995–2026
 - Raw tables: `raw.dbw_observations`, `raw.dbw_positions`
 
+### Semantic-layer measures (MetricFlow) pilot (2026-05-09) — OR-144
+- **Implementation of MetricFlow semantic-layer pilot** for the Finance dashboard.
+- Introduced `semantic_query` helper in `.claude/skills/complex_dashboard/assets/runtime/` to wrap `mf query` CLI.
+- Enables domain dashboards to query metrics by name (e.g., `fiscal_balance`) without knowing underlying source tables or SQL logic.
+- Added semantic models and wide intermediate models in `platform/processing/dbt/models/finance/` to support MetricFlow.
+- Refactored Finance Overview KPI cards to use semantic layer, removing raw SQL/pandas logic from the dashboard code.
+- Improved maintainability: metric metadata (labels, formats, thresholds) now lives in dbt semantic models, not in dashboard code.
+
 ### Documentation & project hygiene (2026-03-28)
-- Expanded `docs/DOMAINS.md` to full 18-domain catalogue with Eurostat themes, GUS equivalents, and subcategories
-- Archived all three Linear documents (Domain Taxonomy, Tech Stack & Environment, Data Catalog) — GitHub is now single source of truth for all documentation
-- Updated Linear project description (mobile live, Instagram-only social, Polish-first language)
-- Rewrote `docs/ARCHITECTURE.md` to reflect current stack (DuckDB/PostgreSQL roles, systemd services, URL structure)
-- Rewrote `README.md` with correct product list, live URLs, doc index
-- Added `docs/MVP.md`, `docs/ROADMAP.md`, `docs/CONTRIBUTING.md`, `docs/RELEASE_NOTES.md`
-- Added `docs/CONTRIBUTING.md` defining post-MVP agile workflow (Linear → feature branch → PR → review → merge)
-- Added `.claude/playbooks/social.md` for Instagram publishing flow
-- Added `.claude/lessons-learned.md` for continuous process improvement
+111: - Expanded `docs/DOMAINS.md` to full 18-domain catalogue with Eurostat themes, GUS equivalents, and subcategories
+112: - Archived all three Linear documents (Domain Taxonomy, Tech Stack & Environment, Data Catalog) — GitHub is now single source of truth for all documentation
+113: - Updated Linear project description (mobile live, Instagram-only social, Polish-first language)
+114: - Rewrote `docs/ARCHITECTURE.md` to reflect current stack (DuckDB/PostgreSQL roles, systemd services, URL structure)
+115: - Rewrote `README.md` with correct product list, live URLs, doc index
+116: - Added `docs/MVP.md`, `docs/ROADMAP.md`, `docs/CONTRIBUTING.md`, `docs/RELEASE_NOTES.md`
+117: - Added `.claude/playbooks/social.md` for Instagram publishing flow
+118: - Added `.claude/lessons-learned.md` for continuous process improvement

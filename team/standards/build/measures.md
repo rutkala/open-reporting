@@ -111,12 +111,27 @@ fig.update_layout(
 ```
 
 ### Table Column
-
-```python
-dash_table.DataTable(
-    columns=[
-        {"name": "Rok", "id": "year"},
-        {"name": "PKB (mld zł)", "id": "gdp"},
-    ],
-)
-```
+115: 
+116: ```python
+117: dash_table.DataTable(
+118:     columns=[
+119:         {"name": "Rok", "id": "year"},
+120:         {"name": "PKB (mld zł)", "id": "gdp"},
+121:     ],
+122: )
+123: ```
+124: 
+125: ### Semantic-layer measures (MetricFlow)
+126: 
+127: Measures defined in `platform/processing/dbt/**/semantic_models/*.yml` are accessed via the `semantic_query` helper.
+128: 
+129: ```python
+130: from complex_dashboard.assets.runtime import semantic_query
+131: 
+132: r = semantic_query("fiscal_balance", filter={"geo": "PL"})
+133: # Accessing formatted display values
+134: label = r.label             # "Saldo finansów publicznych"
+135: value = r.value             # -6.5
+136: formatted = r.formatted     # "-6,5 % PKB"
+137: source = r.meta["source_label"]
+138: ```

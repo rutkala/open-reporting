@@ -1,18 +1,14 @@
 # Lessons Learned
 
-A running log of process improvements, recurring mistakes, and things that worked well. Reviewed at the start of `/kickoff` for relevant context.
-
-## Format
-
-```
-### YYYY-MM-DD — Short title
-**What happened:** What went wrong or what insight emerged.
-**Root cause:** Why it happened.
-**Process change:** What rule or step was added/changed as a result.
-**Applies to:** Which issue types or phases this affects.
-```
-
 ---
+
+## 2026-05-09 — Dashboard refactor to semantic layer (OR-144)
+
+**What happened:** Completed Commit 5 (refactor dashboard to use semantic layer).
+**Root cause:** Previously, the dashboard was querying raw SQL/pandas, creating tight coupling between the dashboard code and the underlying data schema.
+**Process change:** Use the `semantic_query` helper and its `SemanticResult` object to decouple domain dashboards from the data mart's shape. This ensures changes to the mart don't break the dashboard as long as the semantic model is updated.
+**Applies to:** All domain dashboard implementations and the semantic layer pilot.
+
 
 ## 2026-03-28 — MVP line drawn at commit 736ab606
 
