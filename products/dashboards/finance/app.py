@@ -154,17 +154,17 @@ def _chart_wrapper(fig: go.Figure, h: int = 420) -> dcc.Graph:
 
 # ── Tab 1: Overview (GUS DBW-style) ──────────────────────────────────────────
 
-def _yoy_trend(df: pd.DataFrame, detail_id: str, ascending_is_good: bool = True
-               ) -> tuple[str, str] | None:
-    """Compute YoY change arrow + delta string and colour for a KPI card."""
-    sub = df[df["detail_id"] == detail_id].dropna(subset=["value"]).sort_values("period_year")
-    if len(sub) < 2:
+def _yoy_trend_via_semantic(metric: str, geo: str, ascending_is_good: bool) -> tuple[str, str] | None:
+    """Compute YoY change using semantic layer history."""
+    history = semantic_query_history(metric, filter={"geo": geo}, n=2)
+    if len(history) < 2:
         return None
-    cur = float(sub.iloc[-1]["value"])
-    prev = float(sub.iloc[-2]["value"])
-    delta = cur - prev
+    cur, prev = history[0], history[1]
+    if cur.value is None or prev.value is None:
+        return None
+    delta = cur.value - prev.value
     if abs(delta) < 0.05:
-        return f"→ bez zmian", SUBTEXT
+        return "→ bez zmian", SUBTEXT
     arrow = "▲" if delta > 0 else "▼"
     sign = "+" if delta > 0 else ""
     text = f"{arrow} {sign}{delta:.1f} pp r/r"
@@ -173,57 +173,48 @@ def _yoy_trend(df: pd.DataFrame, detail_id: str, ascending_is_good: bool = True
     return text, color
 
 
+def _sgp_badge(value: float | None, threshold: float, ascending_is_good: bool) -> tuple[str, str] | None:
+    if value is None:
+        return None
+    is_good = (value >= threshold) if ascending_is_good else (value <= threshold)
+    return ("✓ SGP", POSITIVE) if is_good else ("✗ SGP", NEGATIVE)
+
+
+def _kpi_value_color(value: float | None, threshold: float, ascending_is_good: bool) -> str:
+    if value is None:
+        return TEXT
+    if ascending_is_good:
+        if value < threshold: return NEGATIVE
+        if value < 0: return WARNING
+        return POSITIVE
+    else:
+        if value > threshold: return NEGATIVE
+        return TEXT
+
+
 def _build_overview_kpis() -> html.Div:
-    fiscal_val, fiscal_yr   = _latest(_pl_eurostat, "pub.fiscal_balance_gdp")
-    debt_val,   debt_yr     = _latest(_pl_eurostat, "pub.public_debt_gdp")
-    revenue_val, revenue_yr = _latest(_pl_dbw,      "pub.govt_revenue")
-
-    fiscal_color = NEGATIVE if (fiscal_val or 0) < -3 else (WARNING if (fiscal_val or 0) < 0 else POSITIVE)
-    debt_color   = NEGATIVE if (debt_val or 0) > 60 else TEXT
-
-    fiscal_sgp = ("✓ SGP", POSITIVE) if (fiscal_val or 0) >= -3 else ("✗ SGP", NEGATIVE)
-    debt_sgp   = ("✓ SGP", POSITIVE) if (debt_val or 0) <= 60 else ("✗ SGP", NEGATIVE)
-
-    fiscal_trend  = _yoy_trend(_pl_eurostat, "pub.fiscal_balance_gdp", ascending_is_good=True)
-    debt_trend    = _yoy_trend(_pl_eurostat, "pub.public_debt_gdp",    ascending_is_good=False)
-    revenue_trend = _yoy_trend(_pl_dbw,      "pub.govt_revenue",       ascending_is_good=True)
-
-    def _fmt_mld(val: float | None) -> str:
-        if val is None:
-            return "—"
-        return f"{val / 1000:,.1f} mld zł".replace(",", "\u00a0").replace(".", ",")
-
-    return html.Div(style={"marginBottom": "24px"}, children=[
-        kpi_row([
-            kpi_standard(
-                label="Saldo finansów publicznych",
-                value=f"{fiscal_val:.1f}" if fiscal_val is not None else "—",
-                unit="% PKB" if fiscal_val is not None else "",
-                subtitle=f"Eurostat ESA 2010, sektor rządowy ({fiscal_yr})" if fiscal_yr else "",
-                badge=fiscal_sgp if fiscal_val is not None else None,
-                value_color=fiscal_color,
-                trend=fiscal_trend[0] if fiscal_trend else "",
-                trend_color=fiscal_trend[1] if fiscal_trend else "",
-            ),
-            kpi_standard(
-                label="Dług publiczny",
-                value=f"{debt_val:.1f}" if debt_val is not None else "—",
-                unit="% PKB" if debt_val is not None else "",
-                subtitle=f"Kryterium z Maastricht: 60% PKB ({debt_yr})" if debt_yr else "",
-                badge=debt_sgp if debt_val is not None else None,
-                value_color=debt_color,
-                trend=debt_trend[0] if debt_trend else "",
-                trend_color=debt_trend[1] if debt_trend else "",
-            ),
-            kpi_standard(
-                label="Dochody sektora finansów publ.",
-                value=_fmt_mld(revenue_val),
-                subtitle=f"Dochody ogółem, sektor S13 ({revenue_yr})" if revenue_yr else "",
-                trend=revenue_trend[0] if revenue_trend else "",
-                trend_color=revenue_trend[1] if revenue_trend else "",
-            ),
-        ]),
-    ])
+    cards = []
+    for metric_name in ("fiscal_balance", "public_debt", "govt_revenue"):
+        r = semantic_query(metric_name, filter={"geo": "PL"}, latest=True)
+        
+        thresholds = r.meta.get("thresholds", {})
+        threshold = next(iter(thresholds.values()), None) if thresholds else None
+        
+        badge = _sgp_badge(r.value, threshold, r.meta["ascending_is_good"]) if threshold else None
+        value_color = _kpi_value_color(r.value, threshold, r.meta["ascending_is_good"]) if threshold else ""
+        
+        trend = _yoy_trend_via_semantic(metric_name, "PL", r.meta["ascending_is_good"])
+        
+        cards.append(kpi_standard(
+            label=r.label,
+            value=r.formatted.split()[0],
+            unit=" ".join(r.formatted.split()[1:]) if " " in r.formatted else "",
+            subtitle=f"{r.meta['source_label']} ({r.period})" if r.period else "",
+            badge=badge, value_color=value_color,
+            trend=trend[0] if trend else "",
+            trend_color=trend[1] if trend else "",
+        ))
+    return html.Div(style={"marginBottom": "24px"}, children=[kpi_row(cards)])
 
 
 def _build_budget_combo_chart() -> go.Figure:
