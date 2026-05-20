@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-reporting.dev/schemas/dashboard.schema.json",
+  "title": "or-dashboards dashboard.yml",
+  "description": "Root config for an or-dashboards project. Only `domain` and `port` are required; other keys inherit kit defaults.",
+  "type": "object",
+  "required": ["domain", "port"],
+  "additionalProperties": true,
+  "properties": {
+    "domain": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]*$",
+      "description": "URL prefix and systemd unit name. Lowercase, alphanumeric + dash/underscore."
+    },
+    "port": {
+      "type": "integer",
+      "minimum": 1024,
+      "maximum": 65535,
+      "description": "TCP port the Dash server binds to. Must be unique across dashboards on the same host."
+    },
+    "title": {
+      "type": "string",
+      "description": "User-facing title (Polish). Shown in the browser tab and chrome."
+    },
+    "subtitle": {
+      "type": "string",
+      "description": "Optional subtitle (Polish). Future: shown under the title."
+    },
+    "footer": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Footer attribution config. Future: source, updated, link."
+    }
+  }
+}

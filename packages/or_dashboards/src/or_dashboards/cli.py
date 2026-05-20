@@ -139,52 +139,83 @@ def cmd_run(args: argparse.Namespace) -> int:
 # ── validate ───────────────────────────────────────────────────────────────────
 
 def cmd_validate(args: argparse.Namespace) -> int:
-    """Light-touch schema checks. Real jsonschema validation lands later."""
+    """Schema-check every YAML in the project tree against the packaged JSON Schemas."""
     import yaml
+    from jsonschema import Draft202012Validator
 
+    from or_dashboards.schemas import load_schema
     from or_dashboards.visuals import VISUAL_REGISTRY
 
     project_root = Path(args.path).resolve()
     _assert_project(project_root)
     errors: list[str] = []
 
-    config = yaml.safe_load((project_root / "dashboard.yml").read_text()) or {}
-    for required in ("domain", "port"):
-        if required not in config:
-            errors.append(f"dashboard.yml missing required key: {required}")
+    def _check(path: Path, schema: dict, rel: str) -> dict | None:
+        """Load + schema-validate one YAML file. Returns parsed dict on success."""
+        if not path.exists():
+            errors.append(f"{rel}: file missing")
+            return None
+        try:
+            data = yaml.safe_load(path.read_text()) or {}
+        except yaml.YAMLError as e:
+            errors.append(f"{rel}: invalid YAML — {e}")
+            return None
+        validator = Draft202012Validator(schema)
+        for err in sorted(validator.iter_errors(data), key=lambda e: list(e.absolute_path)):
+            loc = ".".join(str(p) for p in err.absolute_path) or "<root>"
+            errors.append(f"{rel}: at `{loc}` — {err.message}")
+        return data
 
+    # 1. dashboard.yml
+    _check(project_root / "dashboard.yml", load_schema("dashboard"), "dashboard.yml")
+
+    # 2. pages/pages.yml
     pages_dir = project_root / "pages"
-    pages_meta_path = pages_dir / "pages.yml"
-    if not pages_meta_path.exists():
-        errors.append("pages/pages.yml missing")
-    else:
-        pages_meta = yaml.safe_load(pages_meta_path.read_text()) or {}
+    pages_meta = _check(pages_dir / "pages.yml", load_schema("pages"), "pages/pages.yml")
+
+    if pages_meta is not None:
+        page_schema    = load_schema("page")
+        visuals_schema = load_schema("visuals")
+        visual_schema  = load_schema("visual")
+
         for page_name in pages_meta.get("order", []) or []:
             page_dir = pages_dir / page_name
-            if not (page_dir / "page.yml").exists():
-                errors.append(f"pages/{page_name}/page.yml missing (referenced in pages.yml order)")
-                continue
+            rel = f"pages/{page_name}"
+
+            # 3. pages/<name>/page.yml
+            _check(page_dir / "page.yml", page_schema, f"{rel}/page.yml")
+
             visuals_dir = page_dir / "visuals"
-            visuals_meta_path = visuals_dir / "visuals.yml"
-            if not visuals_meta_path.exists():
-                continue  # empty page is valid
-            visuals_meta = yaml.safe_load(visuals_meta_path.read_text()) or {}
-            visual_names = _extract_visual_names(visuals_meta)
-            for visual_name in visual_names:
-                visual_path = visuals_dir / f"{visual_name}.yml"
-                if not visual_path.exists():
-                    errors.append(f"pages/{page_name}/visuals/{visual_name}.yml missing")
+            if not (visuals_dir / "visuals.yml").exists():
+                continue  # empty page = no visuals.yml = valid
+
+            # 4. pages/<name>/visuals/visuals.yml
+            visuals_meta = _check(visuals_dir / "visuals.yml", visuals_schema, f"{rel}/visuals/visuals.yml")
+            if visuals_meta is None:
+                continue
+
+            # 5. each pages/<name>/visuals/<visual>.yml
+            for visual_name in _extract_visual_names(visuals_meta):
+                vpath = visuals_dir / f"{visual_name}.yml"
+                vrel  = f"{rel}/visuals/{visual_name}.yml"
+                if not vpath.exists():
+                    errors.append(f"{vrel}: file missing (referenced in visuals.yml)")
                     continue
-                spec = yaml.safe_load(visual_path.read_text()) or {}
-                vtype = spec.get("type")
-                if vtype is None:
-                    errors.append(f"pages/{page_name}/visuals/{visual_name}.yml missing 'type'")
-                elif vtype not in VISUAL_REGISTRY:
-                    available = ", ".join(sorted(VISUAL_REGISTRY)) or "<none registered>"
-                    errors.append(
-                        f"pages/{page_name}/visuals/{visual_name}.yml: unknown visual type "
-                        f"{vtype!r}. Available: {available}"
-                    )
+                spec = _check(vpath, visual_schema, vrel)
+                # Enum check against the live VISUAL_REGISTRY (not encoded in schema
+                # so newly registered visuals work without schema edits).
+                if spec is not None:
+                    vtype = spec.get("type")
+                    if vtype is not None and vtype not in VISUAL_REGISTRY:
+                        available = ", ".join(sorted(VISUAL_REGISTRY)) or "<none>"
+                        errors.append(
+                            f"{vrel}: at `type` — unknown visual {vtype!r}. Available: {available}"
+                        )
+
+    # 6. Optional project-level theme.yaml override (every key is optional, no schema yet)
+    # 7. Optional project-level layout.yaml override (every key is optional, no schema yet)
+    # Both files are deep-merged onto the package defaults, so a stray key just gets ignored.
+    # Tightening to a real schema is a follow-up.
 
     if errors:
         print(f"{len(errors)} validation error(s):", file=sys.stderr)

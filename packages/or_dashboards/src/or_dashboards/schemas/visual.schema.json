@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-reporting.dev/schemas/visual.schema.json",
+  "title": "or-dashboards pages/<name>/visuals/<visual>.yml",
+  "description": "One visual binding. `type` selects which factory in VISUAL_REGISTRY renders it; `metric` is the semantic-layer measure to bind to. Other keys are visual-specific overrides.",
+  "type": "object",
+  "required": ["type", "metric"],
+  "additionalProperties": true,
+  "properties": {
+    "type": {
+      "type": "string",
+      "description": "Visual type — must be a key in VISUAL_REGISTRY. The allowed set is enforced at validate time from the live registry, not from this schema."
+    },
+    "metric": {
+      "type": "string",
+      "description": "MetricFlow metric name."
+    },
+    "filter": {
+      "type": "object",
+      "description": "Filter passed to semantic_query. Keys are entity / dimension names; values are the filter value.",
+      "additionalProperties": {
+        "oneOf": [
+          { "type": "string" },
+          { "type": "number" },
+          { "type": "boolean" }
+        ]
+      }
+    }
+  }
+}

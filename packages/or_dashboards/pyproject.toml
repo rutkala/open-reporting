@@ -29,6 +29,7 @@ dependencies = [
     "pyyaml>=6.0",
     "pandas>=2.0",
     "dbt-metricflow>=0.12",
+    "jsonschema>=4.0",
 ]
 
 [project.optional-dependencies]
@@ -42,7 +43,7 @@ dev = [
 or-dashboard = "or_dashboards.cli:main"
 
 [tool.setuptools.package-data]
-or_dashboards = ["theme/*.yaml", "layout/*.yaml"]
+or_dashboards = ["theme/*.yaml", "layout/*.yaml", "schemas/*.json"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
