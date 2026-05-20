@@ -31,6 +31,18 @@ DEFAULTS = {
     "years": LINE_CHART_HISTORY_YEARS,
 }
 
+SCHEMA = {
+    "type": "object",
+    "additionalProperties": False,
+    "required": ["type", "metric"],
+    "properties": {
+        "type":   {"const": "line_chart"},
+        "metric": {"type": "string"},
+        "filter": {"type": "object"},
+        "years":  {"type": "integer", "minimum": 1, "maximum": 100},
+    },
+}
+
 _CARD_STYLE = {
     "background":   BG_SURFACE,
     "borderRadius": CARD_RADIUS,

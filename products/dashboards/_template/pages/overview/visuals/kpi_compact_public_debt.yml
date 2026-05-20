@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://open-reporting.dev/schemas/visual.schema.json
 # Compact KPI for public debt — illustrates the compact variant
 # (inline label + value, smaller footprint than kpi_standard).
 

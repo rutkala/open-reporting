@@ -37,6 +37,18 @@ DEFAULTS = {
     "show_period": True,
 }
 
+SCHEMA = {
+    "type": "object",
+    "additionalProperties": False,
+    "required": ["type", "metric"],
+    "properties": {
+        "type":        {"const": "kpi_standard"},
+        "metric":      {"type": "string"},
+        "filter":      {"type": "object"},
+        "show_period": {"type": "boolean"},
+    },
+}
+
 _CARD_STYLE = {
     "background":   BG_SURFACE,
     "borderRadius": CARD_RADIUS,

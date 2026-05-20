@@ -27,6 +27,17 @@ from or_dashboards.theme import (
     TEXT,
 )
 
+SCHEMA = {
+    "type": "object",
+    "additionalProperties": False,
+    "required": ["type", "metric"],
+    "properties": {
+        "type":   {"const": "kpi_compact"},
+        "metric": {"type": "string"},
+        "filter": {"type": "object"},
+    },
+}
+
 _CARD_STYLE = {
     "background":   BG_SURFACE,
     "borderRadius": CARD_RADIUS,

@@ -79,6 +79,7 @@ def cmd_init(args: argparse.Namespace) -> int:
     )
 
     (root / "dashboard.yml").write_text(
+        "# yaml-language-server: $schema=https://open-reporting.dev/schemas/dashboard.schema.json\n"
         "# Open Reporting dashboard root config.\n"
         "# Only `domain` and `port` are required; other keys inherit kit defaults.\n"
         "\n"
@@ -88,6 +89,7 @@ def cmd_init(args: argparse.Namespace) -> int:
     )
 
     (root / "pages" / "pages.yml").write_text(
+        "# yaml-language-server: $schema=https://open-reporting.dev/schemas/pages.schema.json\n"
         "# Page order — list pages in the order they appear in the sidebar.\n"
         "# Each entry must match a sibling folder containing `page.yml`.\n"
         "\n"
@@ -144,7 +146,7 @@ def cmd_validate(args: argparse.Namespace) -> int:
     from jsonschema import Draft202012Validator
 
     from or_dashboards.schemas import load_schema
-    from or_dashboards.visuals import VISUAL_REGISTRY
+    from or_dashboards.visuals import VISUAL_REGISTRY, VISUAL_SCHEMAS
 
     project_root = Path(args.path).resolve()
     _assert_project(project_root)
@@ -211,6 +213,13 @@ def cmd_validate(args: argparse.Namespace) -> int:
                         errors.append(
                             f"{vrel}: at `type` — unknown visual {vtype!r}. Available: {available}"
                         )
+                    elif vtype in VISUAL_SCHEMAS:
+                        # Per-visual schema check — catches typos in visual-specific
+                        # options (e.g. `show_perido` instead of `show_period`).
+                        per_visual = Draft202012Validator(VISUAL_SCHEMAS[vtype])
+                        for err in sorted(per_visual.iter_errors(spec), key=lambda e: list(e.absolute_path)):
+                            loc = ".".join(str(p) for p in err.absolute_path) or "<root>"
+                            errors.append(f"{vrel}: at `{loc}` — {err.message}")
 
     # 6. Optional project-level theme.yaml override (every key is optional, no schema yet)
     # 7. Optional project-level layout.yaml override (every key is optional, no schema yet)

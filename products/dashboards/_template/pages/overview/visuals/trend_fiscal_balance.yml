@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://open-reporting.dev/schemas/visual.schema.json
 # Line chart — fiscal balance over the last N years (default: 20).
 
 type:   line_chart

@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://open-reporting.dev/schemas/page.schema.json
 # Page-level config for the overview page.
 # Only `title` and `anchor` are required.
 
