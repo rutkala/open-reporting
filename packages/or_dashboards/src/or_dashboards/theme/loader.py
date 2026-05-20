@@ -136,6 +136,19 @@ LINE_CHART_LINE_WIDTH    = _VISUALS["line_chart"]["line_width"]
 LINE_CHART_MARKER_SIZE   = _VISUALS["line_chart"]["marker_size"]
 LINE_CHART_HISTORY_YEARS = _VISUALS["line_chart"]["history_years"]
 
+AREA_CHART_HEIGHT        = _VISUALS["area_chart"]["height"]
+AREA_CHART_LINE_WIDTH    = _VISUALS["area_chart"]["line_width"]
+AREA_CHART_OPACITY       = _VISUALS["area_chart"]["opacity"]
+AREA_CHART_HISTORY_YEARS = _VISUALS["area_chart"]["history_years"]
+
+BAR_CHART_HEIGHT        = _VISUALS["bar_chart"]["height"]
+BAR_CHART_BARGAP        = _VISUALS["bar_chart"]["bargap"]
+BAR_CHART_HISTORY_YEARS = _VISUALS["bar_chart"]["history_years"]
+
+TABLE_ROW_HEIGHT = _VISUALS["table"]["row_height"]
+TABLE_FONT_SIZE  = _VISUALS["table"]["font_size"]
+TABLE_ROW_LIMIT  = _VISUALS["table"]["row_limit"]
+
 # ── Plotly template (side effect: registers globally on import) ────────
 _axis = dict(
     gridcolor=GRID,

@@ -96,3 +96,19 @@ visuals:
     line_width:    2
     marker_size:   5
     history_years: 20
+
+  area_chart:
+    height:        "300px"
+    line_width:    2
+    opacity:       0.35
+    history_years: 20
+
+  bar_chart:
+    height:        "300px"
+    bargap:        0.2
+    history_years: 20
+
+  table:
+    row_height:  "32px"
+    font_size:   "13px"
+    row_limit:   12

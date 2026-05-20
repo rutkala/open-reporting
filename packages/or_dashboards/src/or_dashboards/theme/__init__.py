@@ -43,6 +43,13 @@ from or_dashboards.theme.loader import (
     # Visual-specific defaults — line_chart
     LINE_CHART_HEIGHT, LINE_CHART_LINE_WIDTH, LINE_CHART_MARKER_SIZE,
     LINE_CHART_HISTORY_YEARS,
+    # Visual-specific defaults — area_chart
+    AREA_CHART_HEIGHT, AREA_CHART_LINE_WIDTH, AREA_CHART_OPACITY,
+    AREA_CHART_HISTORY_YEARS,
+    # Visual-specific defaults — bar_chart
+    BAR_CHART_HEIGHT, BAR_CHART_BARGAP, BAR_CHART_HISTORY_YEARS,
+    # Visual-specific defaults — table
+    TABLE_ROW_HEIGHT, TABLE_FONT_SIZE, TABLE_ROW_LIMIT,
 )
 
 __all__ = [
@@ -71,4 +78,11 @@ __all__ = [
     # Visual-specific defaults — line_chart
     "LINE_CHART_HEIGHT", "LINE_CHART_LINE_WIDTH", "LINE_CHART_MARKER_SIZE",
     "LINE_CHART_HISTORY_YEARS",
+    # Visual-specific defaults — area_chart
+    "AREA_CHART_HEIGHT", "AREA_CHART_LINE_WIDTH", "AREA_CHART_OPACITY",
+    "AREA_CHART_HISTORY_YEARS",
+    # Visual-specific defaults — bar_chart
+    "BAR_CHART_HEIGHT", "BAR_CHART_BARGAP", "BAR_CHART_HISTORY_YEARS",
+    # Visual-specific defaults — table
+    "TABLE_ROW_HEIGHT", "TABLE_FONT_SIZE", "TABLE_ROW_LIMIT",
 ]
