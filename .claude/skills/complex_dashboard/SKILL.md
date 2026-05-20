@@ -2,7 +2,7 @@
 name: complex_dashboard
 description: >
   Dashboard report-layer skill. Open Reporting dashboards are now built
-  declaratively with the `or-dashboards` Python package — author writes
+  declaratively with the `dbr` Python package — author writes
   YAML, the engine renders a Dash app. Theme, layout, and visual library
   ship with the package. Load this skill when building, modifying, or
   reviewing a dashboard. For metrics and aggregation rules, load the
@@ -13,7 +13,7 @@ description: >
 user-invocable: true
 ---
 
-# Dashboard (Report Layer) — `or-dashboards`
+# Dashboard (Report Layer) — `dbr`
 
 A small BI framework alongside Power BI / Lightdash / Rill Data.
 **Authors write YAML; the engine renders Dash.** Theme, chrome (sidebar,
@@ -25,7 +25,7 @@ no SQL, no DAX, no callbacks for static dashboards.
 
 | Power BI | Open Reporting | This skill |
 |---|---|---|
-| Visualization pane (visuals, layout, theme) | `or-dashboards` report layer | **here** |
+| Visualization pane (visuals, layout, theme) | `dbr` report layer | **here** |
 | Tabular model + DAX measures | dbt + MetricFlow semantic layer | `semantic-model` skill |
 | Power Query (ETL) | dbt models | `data-engineer` skill |
 | `theme.json` | `theme.yaml` (in the package; per-project override optional) | here |
@@ -61,7 +61,7 @@ inline validation against the packaged JSON Schemas.
 ## Override layering — `theme.json` style
 
 ```
-1. Package defaults     ← ships with or-dashboards, immutable
+1. Package defaults     ← ships with dbr, immutable
 2. Project overrides    ← optional <project>/theme.yaml + <project>/layout.yaml,
                           deep-merged on top of defaults
 3. Per-visual options   ← inside each pages/.../visuals/<name>.yml
@@ -74,16 +74,16 @@ defaults apply.
 ## CLI workflow
 
 ```bash
-or-dashboard init <name>          # scaffold a new project at ./<name>/
-or-dashboard validate <path>      # schema-check every YAML in the project tree
-or-dashboard compile <path>       # print resolved layout tree as JSON (debug)
-or-dashboard run <path>           # start the Dash server
+dbr init <name>          # scaffold a new project at ./<name>/
+dbr validate <path>      # schema-check every YAML in the project tree
+dbr compile <path>       # print resolved layout tree as JSON (debug)
+dbr run <path>           # start the Dash server
 ```
 
-systemd units run `or-dashboard run /opt/.../<dashboard>` instead of
+systemd units run `dbr run /opt/.../<dashboard>` instead of
 `python3 app.py`. Local development can use either.
 
-**Validation is your friend.** Run `or-dashboard validate <path>`
+**Validation is your friend.** Run `dbr validate <path>`
 before every commit — it catches:
 - Missing required fields (`'metric' is a required property`)
 - Wrong types (`'eight-thousand' is not of type 'integer'`)
@@ -109,7 +109,7 @@ semantic layer.
 Minimal visual YAML:
 
 ```yaml
-# yaml-language-server: $schema=https://open-reporting.dev/schemas/visual.schema.json
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
 type:   kpi_standard
 metric: fiscal_balance
 filter:
@@ -149,10 +149,10 @@ Bare strings (`items: [a, b, c]`) get auto-equal widths.
 |---|---|
 | A new visual on a page | one YAML file under `pages/<page>/visuals/`, one line in `visuals.yml` |
 | A new page | a folder under `pages/`, an entry in `pages.yml` |
-| A new dashboard | `or-dashboard init <name>`, fill in metric bindings |
+| A new dashboard | `dbr init <name>`, fill in metric bindings |
 | Override the brand for this dashboard | drop `<project>/theme.yaml` with the keys to change |
 | Define a new metric | MetricFlow YAML — that's a `semantic-model` skill task, NOT here |
-| Add a new visual TYPE to the library | `packages/or_dashboards/src/or_dashboards/visuals/<name>.py` + register in `VISUAL_REGISTRY` + add `SCHEMA` constant + add tokens to `theme.yaml` |
+| Add a new visual TYPE to the library | `packages/dbr/src/dbr/visuals/<name>.py` + register in `VISUAL_REGISTRY` + add `SCHEMA` constant + add tokens to `theme.yaml` |
 
 ## Core rules
 
@@ -165,18 +165,18 @@ Bare strings (`items: [a, b, c]`) get auto-equal widths.
 - **Theme is locked to the brand.** Per-project overrides exist but are
   rare — they're for one-off variants (mobile, accent colour). Most
   dashboards inherit defaults entirely.
-- **Validate before committing.** `or-dashboard validate <path>` catches
+- **Validate before committing.** `dbr validate <path>` catches
   schema, type, and reference errors before they hit production.
 
 ## Reference paths
 
 | What | Where |
 |---|---|
-| The installed engine | `/opt/open-reporting/packages/or_dashboards/src/or_dashboards/` |
-| JSON Schemas | `or_dashboards/schemas/*.schema.json` |
-| Theme defaults | `or_dashboards/theme/theme.yaml` |
-| Layout defaults | `or_dashboards/layout/layout.yaml` |
-| Visual factories | `or_dashboards/visuals/*.py` |
+| The installed engine | `/opt/open-reporting/packages/dbr/src/dbr/` |
+| JSON Schemas | `dbr/schemas/*.schema.json` |
+| Theme defaults | `dbr/theme/theme.yaml` |
+| Layout defaults | `dbr/layout/layout.yaml` |
+| Visual factories | `dbr/visuals/*.py` |
 | Working example dashboard | `products/dashboards/_template/` |
 | Legacy Python kit (reference only) | `.claude/skills/complex_dashboard/assets_legacy/` |
 | Visualisation principles (IBCS, Gestalt, colour) | `team/knowledge-base/visualization/` |

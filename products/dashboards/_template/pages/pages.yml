@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://open-reporting.dev/schemas/pages.schema.json
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/pages.schema.json
 # Page order — list pages in the order they should appear in the sidebar.
 # Each entry must match a sibling folder containing `page.yml`.
 

@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-reporting.dev/dbr/schemas/visuals.schema.json",
+  "title": "dbr pages/<name>/visuals/visuals.yml",
+  "description": "Visual layout for a page. Supports either a flat `order` (one column) or explicit `rows` (multi-column). Exactly one of the two must be present.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "order": {
+      "type": "array",
+      "description": "Short shape: one column, items stacked vertically. Each entry must match a sibling `<name>.yml`.",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_-]*$"
+      }
+    },
+    "rows": {
+      "type": "array",
+      "description": "Explicit shape: each row is a flex container, each item is a visual with optional width.",
+      "items": { "$ref": "#/$defs/row" }
+    }
+  },
+  "oneOf": [
+    { "required": ["order"], "not": { "required": ["rows"] } },
+    { "required": ["rows"],  "not": { "required": ["order"] } }
+  ],
+  "$defs": {
+    "row": {
+      "type": "object",
+      "required": ["items"],
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/item" }
+        }
+      }
+    },
+    "item": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]*$",
+          "description": "Bare visual name — gets auto-equal width within the row."
+        },
+        {
+          "type": "object",
+          "required": ["visual"],
+          "additionalProperties": false,
+          "properties": {
+            "visual": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_-]*$"
+            },
+            "width": {
+              "type": "string",
+              "pattern": "^[0-9]+(%|px|fr)$",
+              "description": "CSS width — percentage or pixels. Default: auto-equal share of the row."
+            }
+          }
+        }
+      ]
+    }
+  }
+}

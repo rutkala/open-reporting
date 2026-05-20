@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-reporting.dev/dbr/schemas/page.schema.json",
+  "title": "dbr pages/<name>/page.yml",
+  "description": "Per-page config — title shown in the sidebar + H2 heading, and the anchor id linked to from the sidebar.",
+  "type": "object",
+  "required": ["title", "anchor"],
+  "additionalProperties": true,
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "User-facing page title (Polish). Shown in the sidebar and as the H2 heading on the page."
+    },
+    "anchor": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]*$",
+      "description": "URL fragment / H2 element id. Sidebar links scroll to `#anchor`."
+    },
+    "filters": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Future: page-level filters applied to every visual on this page."
+    }
+  }
+}
