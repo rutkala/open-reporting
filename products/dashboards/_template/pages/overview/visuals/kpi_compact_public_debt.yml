@@ -1,0 +1,7 @@
+# Compact KPI for public debt — illustrates the compact variant
+# (inline label + value, smaller footprint than kpi_standard).
+
+type:   kpi_compact
+metric: public_debt
+filter:
+  geo: PL

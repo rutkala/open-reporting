@@ -3,11 +3,13 @@ Description=Open Reporting — Template dashboard (/template/)
 After=network.target
 
 [Service]
+User=radek
+Group=radek
 WorkingDirectory=/opt/open-reporting
-Environment=PYTHONPATH=/opt/open-reporting:/opt/open-reporting/.claude/skills
 Environment=DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb
+Environment=PATH=/home/radek/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 EnvironmentFile=/opt/open-reporting/.env
-ExecStart=/usr/bin/python3 products/dashboards/template/app.py
+ExecStart=/home/radek/.local/bin/or-dashboard run /opt/open-reporting/products/dashboards/_template
 Restart=on-failure
 RestartSec=5
 

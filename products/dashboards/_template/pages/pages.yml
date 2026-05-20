@@ -1,0 +1,5 @@
+# Page order — list pages in the order they should appear in the sidebar.
+# Each entry must match a sibling folder containing `page.yml`.
+
+order:
+  - overview

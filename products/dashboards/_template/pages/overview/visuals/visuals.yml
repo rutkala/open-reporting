@@ -1,0 +1,22 @@
+# Visual layout for the Przegląd page.
+#
+# Two shapes are supported:
+#
+#   Short (one column, vertical stack):
+#     order:
+#       - kpi_fiscal_balance
+#       - trend_fiscal_balance
+#
+#   Explicit (multi-column rows — recommended for KPI rows):
+#     rows:
+#       - items:
+#           - { visual: kpi_a, width: "33%" }
+#           - { visual: kpi_b, width: "33%" }
+#       - items: [trend_chart]            # bare string = auto-equal width
+
+rows:
+  - items:
+      - { visual: kpi_fiscal_balance,     width: "33%" }
+      - { visual: kpi_compact_public_debt, width: "33%" }
+  - items:
+      - { visual: trend_fiscal_balance,   width: "100%" }

@@ -1,0 +1,7 @@
+# One KPI card bound to the fiscal_balance metric for Poland.
+# `type` and `metric` are required; everything else inherits defaults.
+
+type:   kpi_standard
+metric: fiscal_balance
+filter:
+  geo: PL

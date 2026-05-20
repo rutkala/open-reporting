@@ -1,0 +1,8 @@
+# Line chart — fiscal balance over the last N years (default: 20).
+
+type:   line_chart
+metric: fiscal_balance
+filter:
+  geo: PL
+# Optional: override the default history depth
+# years: 10
