@@ -1,0 +1,98 @@
+# Open Reporting brand theme — single source of truth for visual identity.
+#
+# Edit values here; layout + visuals pick them up automatically on next
+# dashboard start. No Python file needs to change to refresh the brand.
+
+colors:
+  # ── Logo-derived core ──────────────────────────────────────────
+  teal_primary:  "#55A1AA"
+  azure_primary: "#4A7FB5"
+  charcoal:      "#2D3339"
+
+  # ── Teal family (green-leaning) ────────────────────────────────
+  teal_1:    "#4A9B8F"
+  teal_2:    "#55A1AA"
+  teal_3:    "#6BB5A8"
+  teal_4:    "#8BC4C7"
+  teal_pale: "#D7F3F0"
+
+  # ── Azure family (blue-leaning) ────────────────────────────────
+  azure_1:    "#4A7FB5"
+  azure_2:    "#6B9FD4"
+  azure_3:    "#8BB5E0"
+  azure_4:    "#A8C8E8"
+  azure_pale: "#D6E4F4"
+
+  # ── Slate family (neutral greys) ───────────────────────────────
+  slate_1: "#6B8090"
+  slate_2: "#8FA4B4"
+  slate_3: "#B0C4D0"
+  slate_4: "#C8D8E2"
+
+  # ── Backgrounds / surfaces / text ──────────────────────────────
+  bg_page:    "#F5F7F8"
+  bg_surface: "#FFFFFF"
+  border:     "#D8E0E6"
+  grid:       "#E6ECF0"
+  zero_line:  "#C5D0D8"
+  text:       "#2D3339"
+  subtext:    "#6B7A85"
+  muted:      "#95A5B0"
+
+  # ── Semantic ───────────────────────────────────────────────────
+  positive: "#4A9B6F"
+  negative: "#C0503A"
+  warning:  "#D4874A"
+
+typography:
+  font_family:            "Inter, 'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif"
+  size_body:              "13px"
+  size_section_heading:   "18px"
+  weight_section_heading: 700
+
+spacing:
+  page_gap:           "8px"      # gap between sidebar and main canvas
+  page_padding:       "8px"      # outer padding of the page wrapper
+  main_padding:       "24px"     # inner padding of the main canvas
+  sidebar_width:      "240px"
+  sidebar_padding:    "20px 0"
+  nav_link_padding:   "8px 20px"
+  section_top_gap:    "48px"     # margin above each section heading
+  section_bottom_gap: "6px"      # margin below each section heading
+  row_gap:            "16px"     # gap between items in a visual row (and between rows)
+
+effects:
+  card_radius: "10px"
+  card_shadow: "0 2px 8px rgba(0,0,0,0.06), 0 0 1px rgba(0,0,0,0.08)"
+
+chart:
+  # Colourway resolved at load time against the colour names above.
+  colorway: [azure_1, slate_1, teal_1, azure_2, slate_2, teal_2, azure_3, slate_3]
+  template_name:    teal
+  template_default: "simple_white+teal"
+
+visuals:
+  # Per-visual default styling tokens. Power BI parallel: theme.json's
+  # `visualStyles` block. Layout/structure live here; individual dashboards
+  # never see these — visual factories read them via the theme loader.
+  kpi:
+    padding:           "20px"
+    label_size:        "13px"
+    value_size:        "32px"
+    value_weight:      700
+    period_size:       "11px"
+    label_bottom_gap:  "8px"
+    period_top_gap:    "8px"
+
+  kpi_compact:
+    padding:         "12px 16px"
+    label_size:      "12px"
+    value_size:      "18px"
+    value_weight:    600
+    label_value_gap: "12px"
+
+  line_chart:
+    height:        "300px"
+    line_width:    2
+    marker_size:   5
+    history_years: 20

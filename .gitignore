@@ -5,6 +5,7 @@
 /package-lock.json
 __pycache__/
 *.pyc
+*.egg-info/
 platform/processing/dbt/logs/
 platform/ingestion/to_raw/.dlt/secrets.toml
 infra/nginx/certs/
