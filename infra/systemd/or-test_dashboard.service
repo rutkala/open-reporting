@@ -1,5 +1,5 @@
 [Unit]
-Description=Open Reporting — Template dashboard (/template/)
+Description=Open Reporting — test_dashboard dashboard (/test_dashboard/)
 After=network.target
 
 [Service]
@@ -9,7 +9,7 @@ WorkingDirectory=/opt/open-reporting
 Environment=DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb
 Environment=PATH=/home/radek/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 EnvironmentFile=/opt/open-reporting/.env
-ExecStart=/home/radek/.local/bin/dbr serve /opt/open-reporting/products/dashboards/_template
+ExecStart=/home/radek/.local/bin/dbr serve /opt/open-reporting/products/dashboards/test_dashboard
 Restart=on-failure
 RestartSec=5
 

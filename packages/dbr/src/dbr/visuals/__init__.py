@@ -1,54 +1,55 @@
-"""`visuals` block — the pre-configured visualization library.
+"""`visuals` block — the encoding-based visualization library.
 
-Each visual is a factory in its own file. The block exposes two registries:
+Each visual is a factory in its own file with an encoding-based signature:
+
+    factory(*, encoding: dict, filter: dict | None = None, options: dict | None = None)
+
+The block exposes two registries:
 
   VISUAL_REGISTRY  — type name → factory function (used by the compiler)
   VISUAL_SCHEMAS   — type name → JSON Schema (used by `dbr validate`)
 
-To register a new visual:
+Eight visuals registered today, modelled on Power BI's standard library:
 
-1. Add ``visuals/<name>.py`` with:
-   - a factory function with signature ``(metric, *, filter=None, **overrides)``
-   - a ``SCHEMA`` dict describing the visual's full YAML shape
-2. Import both below and add to the two registries.
-
-Each factory takes ``metric`` (mandatory data binding), ``filter`` (optional
-dict, default ``None``), and any number of behaviour overrides via
-``**kwargs``. The factory reads its own defaults internally — the YAML
-only declares opt-in overrides.
+  card     — Power BI Card + KPI (consolidated via options.threshold)
+  column   — vertical bars (category x, metric y)
+  bar      — horizontal bars (metric x, category y)
+  line     — line chart (time series or category)
+  area     — filled area (single or stacked)
+  pie      — pie / donut (donut = options.hole_size > 0)
+  scatter  — scatter / bubble (bubble = size encoding channel)
+  table    — multi-row + multi-column tabular display
 """
-from dbr.visuals.area_chart   import area_chart,   SCHEMA as _AREA_CHART_SCHEMA
-from dbr.visuals.bar_chart    import bar_chart,    SCHEMA as _BAR_CHART_SCHEMA
-from dbr.visuals.kpi_compact  import kpi_compact,  SCHEMA as _KPI_COMPACT_SCHEMA
-from dbr.visuals.kpi_standard import kpi_standard, SCHEMA as _KPI_STANDARD_SCHEMA
-from dbr.visuals.line_chart   import line_chart,   SCHEMA as _LINE_CHART_SCHEMA
-from dbr.visuals.table        import table,        SCHEMA as _TABLE_SCHEMA
+from dbr.visuals.area     import area,     SCHEMA as _AREA_SCHEMA
+from dbr.visuals.bar      import bar,      SCHEMA as _BAR_SCHEMA
+from dbr.visuals.card     import card,     SCHEMA as _CARD_SCHEMA
+from dbr.visuals.column   import column,   SCHEMA as _COLUMN_SCHEMA
+from dbr.visuals.line     import line,     SCHEMA as _LINE_SCHEMA
+from dbr.visuals.pie      import pie,      SCHEMA as _PIE_SCHEMA
+from dbr.visuals.scatter  import scatter,  SCHEMA as _SCATTER_SCHEMA
+from dbr.visuals.table    import table,    SCHEMA as _TABLE_SCHEMA
 
 VISUAL_REGISTRY: dict = {
-    "kpi_standard": kpi_standard,
-    "kpi_compact":  kpi_compact,
-    "line_chart":   line_chart,
-    "area_chart":   area_chart,
-    "bar_chart":    bar_chart,
-    "table":        table,
+    "card":    card,
+    "column":  column,
+    "bar":     bar,
+    "line":    line,
+    "area":    area,
+    "pie":     pie,
+    "scatter": scatter,
+    "table":   table,
 }
 
 VISUAL_SCHEMAS: dict = {
-    "kpi_standard": _KPI_STANDARD_SCHEMA,
-    "kpi_compact":  _KPI_COMPACT_SCHEMA,
-    "line_chart":   _LINE_CHART_SCHEMA,
-    "area_chart":   _AREA_CHART_SCHEMA,
-    "bar_chart":    _BAR_CHART_SCHEMA,
-    "table":        _TABLE_SCHEMA,
+    "card":    _CARD_SCHEMA,
+    "column":  _COLUMN_SCHEMA,
+    "bar":     _BAR_SCHEMA,
+    "line":    _LINE_SCHEMA,
+    "area":    _AREA_SCHEMA,
+    "pie":     _PIE_SCHEMA,
+    "scatter": _SCATTER_SCHEMA,
+    "table":   _TABLE_SCHEMA,
 }
 
-__all__ = [
-    "VISUAL_REGISTRY",
-    "VISUAL_SCHEMAS",
-    "kpi_standard",
-    "kpi_compact",
-    "line_chart",
-    "area_chart",
-    "bar_chart",
-    "table",
-]
+__all__ = ["VISUAL_REGISTRY", "VISUAL_SCHEMAS",
+           "area", "bar", "card", "column", "line", "pie", "scatter", "table"]

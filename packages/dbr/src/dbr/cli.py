@@ -30,9 +30,13 @@ def main(argv: list[str] | None = None) -> int:
     p_init = sub.add_parser("init", help="Scaffold a new dashboard project")
     p_init.add_argument("name", help="Project name (also used as URL prefix / domain)")
 
-    p_run = sub.add_parser("run", help="Start the Dash server")
+    p_run = sub.add_parser("run", help="Deploy (systemd + nginx) and (re)start the dashboard service")
     p_run.add_argument("path", nargs="?", default=".",
                        help="Path to the dashboard project (default: .)")
+
+    p_serve = sub.add_parser("serve", help="Run the Dash server in the foreground (used by systemd; rarely called directly)")
+    p_serve.add_argument("path", nargs="?", default=".",
+                         help="Path to the dashboard project (default: .)")
 
     p_validate = sub.add_parser("validate", help="Schema-check YAMLs without starting the server")
     p_validate.add_argument("path", nargs="?", default=".",
@@ -47,6 +51,7 @@ def main(argv: list[str] | None = None) -> int:
     dispatch = {
         "init":     cmd_init,
         "run":      cmd_run,
+        "serve":    cmd_serve,
         "validate": cmd_validate,
         "compile":  cmd_compile,
     }
@@ -124,6 +129,62 @@ def cmd_init(args: argparse.Namespace) -> int:
 # ── run ────────────────────────────────────────────────────────────────────────
 
 def cmd_run(args: argparse.Namespace) -> int:
+    """Deploy a dashboard end-to-end: write infra files, sudo cp, restart service, reload nginx."""
+    import subprocess
+    import yaml
+
+    project_root = Path(args.path).resolve()
+    _assert_project(project_root)
+
+    config = yaml.safe_load((project_root / "dashboard.yml").read_text()) or {}
+    domain = config.get("domain")
+    port = config.get("port")
+    if not domain or not port:
+        print("Error: dashboard.yml must define `domain` and `port`", file=sys.stderr)
+        return 1
+
+    print(f"→ Deploying {domain} on port {port}")
+
+    # 1. Write the systemd unit at infra/systemd/or-<domain>.service
+    repo_root = _find_repo_root(project_root)
+    unit_path = repo_root / "infra" / "systemd" / f"or-{domain}.service"
+    unit_path.parent.mkdir(parents=True, exist_ok=True)
+    unit_path.write_text(_render_systemd_unit(domain, project_root))
+    print(f"  ✓ wrote {unit_path.relative_to(repo_root)}")
+
+    # 2. Install + (re)start the systemd unit
+    _run(["sudo", "-n", "/usr/bin/cp", str(unit_path), "/etc/systemd/system/"])
+    _run(["sudo", "-n", "/usr/bin/systemctl", "daemon-reload"])
+    _run(["sudo", "-n", "/usr/bin/systemctl", "enable", f"or-{domain}.service"], allow_fail=True)
+    _run(["sudo", "-n", "/usr/bin/systemctl", "restart", f"or-{domain}.service"])
+    print(f"  ✓ systemd: or-{domain}.service restarted")
+
+    # 3. Write the nginx route block at infra/nginx/conf.d/dbr-routes/<domain>.conf
+    nginx_path = repo_root / "infra" / "nginx" / "conf.d" / "dbr-routes" / f"{domain}.conf"
+    nginx_path.parent.mkdir(parents=True, exist_ok=True)
+    nginx_path.write_text(_render_nginx_block(domain, port))
+    print(f"  ✓ wrote {nginx_path.relative_to(repo_root)}")
+
+    # 4. Validate + reload nginx
+    test = subprocess.run(
+        ["docker", "compose", "-f", str(repo_root / "docker-compose.yml"), "exec", "-T", "nginx", "nginx", "-t"],
+        capture_output=True, text=True,
+    )
+    if test.returncode != 0:
+        print(f"Error: nginx config invalid after writing route:\n{test.stderr}", file=sys.stderr)
+        return 1
+    _run(["docker", "compose", "-f", str(repo_root / "docker-compose.yml"), "exec", "-T", "nginx", "nginx", "-s", "reload"])
+    print(f"  ✓ nginx reloaded")
+
+    print()
+    print(f"  → https://portal.open-reporting.dev/{domain}/")
+    print(f"  → http://localhost:{port}/{domain}/")
+    print(f"  → Logs: sudo journalctl -u or-{domain}.service -f")
+    return 0
+
+
+def cmd_serve(args: argparse.Namespace) -> int:
+    """Run the Dash server in the foreground. Used by systemd's ExecStart."""
     import os
 
     project_root = Path(args.path).resolve()
@@ -136,6 +197,65 @@ def cmd_run(args: argparse.Namespace) -> int:
     from dbr.compiler import run_dashboard
     run_dashboard(project_root)
     return 0  # never reached — app.run blocks
+
+
+# ── deploy helpers ─────────────────────────────────────────────────────────────
+
+def _render_systemd_unit(domain: str, project_root: Path) -> str:
+    """Generate the systemd unit file content for a dashboard."""
+    return f"""[Unit]
+Description=Open Reporting — {domain} dashboard (/{domain}/)
+After=network.target
+
+[Service]
+User=radek
+Group=radek
+WorkingDirectory=/opt/open-reporting
+Environment=DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb
+Environment=PATH=/home/radek/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+EnvironmentFile=/opt/open-reporting/.env
+ExecStart=/home/radek/.local/bin/dbr serve {project_root}
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+"""
+
+
+def _render_nginx_block(domain: str, port: int) -> str:
+    """Generate the nginx `location` block for a dashboard route."""
+    return f"""# dbr-managed — re-written by `dbr run`. Manual edits will be lost.
+location /{domain}/ {{
+    proxy_pass http://172.18.0.1:{port};
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+}}
+"""
+
+
+def _find_repo_root(start: Path) -> Path:
+    """Walk up from `start` until a directory containing `.git` is found."""
+    cur = start.resolve()
+    while cur != cur.parent:
+        if (cur / ".git").exists():
+            return cur
+        cur = cur.parent
+    raise RuntimeError(f"No .git found above {start}")
+
+
+def _run(cmd: list[str], *, allow_fail: bool = False) -> None:
+    """Run a subprocess; raise on non-zero unless allow_fail is set."""
+    import subprocess
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode != 0 and not allow_fail:
+        print(f"Error running: {' '.join(cmd)}", file=sys.stderr)
+        if result.stderr:
+            print(result.stderr, file=sys.stderr)
+        sys.exit(result.returncode)
 
 
 # ── validate ───────────────────────────────────────────────────────────────────

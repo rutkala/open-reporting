@@ -1,8 +1,11 @@
 # yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
-# One KPI card bound to the fiscal_balance metric for Poland.
-# `type` and `metric` are required; everything else inherits defaults.
+# Card showing the latest fiscal_balance value for Poland.
 
-type:   kpi_standard
-metric: fiscal_balance
+type: card
+encoding:
+  value: { metric: fiscal_balance }
 filter:
   geo: PL
+options:
+  threshold:
+    rule: sgp_deficit

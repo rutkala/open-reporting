@@ -1,6 +1,4 @@
 # yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
-# Compact card showing public_debt — illustrates the inline variant.
-
 type: card
 encoding:
   value: { metric: public_debt }

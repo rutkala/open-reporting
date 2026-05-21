@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Two KPIs side-by-side, then a line chart full-width below.
+
+rows:
+  - items:
+      - { visual: kpi_balance, width: "50%" }
+      - { visual: kpi_debt,    width: "50%" }
+  - items:
+      - { visual: trend,       width: "100%" }

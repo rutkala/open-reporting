@@ -1,10 +1,9 @@
 # yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
-# Compact card showing public_debt — illustrates the inline variant.
-
 type: card
 encoding:
-  value: { metric: public_debt }
+  value: { metric: fiscal_balance }
 filter:
   geo: PL
 options:
-  compact: true
+  threshold:
+    rule: sgp_deficit

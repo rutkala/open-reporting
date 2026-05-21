@@ -1,6 +1,4 @@
 # yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
-# Line chart — fiscal balance over time for Poland.
-
 type: line
 encoding:
   x: { dimension: period, granularity: year }

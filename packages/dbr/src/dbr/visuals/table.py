@@ -1,117 +1,108 @@
-"""Table — last N periods of a metric, one row per period.
+"""table — Tabular display with rows and columns.
 
-Uses ``semantic_query_history`` and renders an HTML table. The metric's
-unit and label come from the semantic-layer metadata; values use the
-Polish-formatted ``value_str`` (NBSP thousands, comma decimal).
+Mandatory encoding:
+  rows:    [ { dimension: <name> }, ... ]   — one or more dimensions (row keys)
+  columns: [ { metric:    <name> }, ... ]   — one or more metrics (data columns)
 
-YAML usage:
-
-    type:   table
-    metric: fiscal_balance
-    filter:
-      geo: PL
-    # Optional behaviour overrides:
-    # rows: 5            # how many periods to show (default: TABLE_ROW_LIMIT)
+Optional:
+  options.row_limit:  cap row count (default from theme)
 """
 from dash import html
+import pandas as pd
 
-from dbr.semantic import semantic_query_history
+from dbr.semantic import semantic_query_data
 from dbr.theme import (
-    BG_SURFACE,
-    BORDER,
-    CARD_RADIUS,
-    CARD_SHADOW,
-    SUBTEXT,
-    TABLE_FONT_SIZE,
-    TABLE_ROW_HEIGHT,
-    TABLE_ROW_LIMIT,
-    TEXT,
+    BG_SURFACE, BORDER, CARD_RADIUS, CARD_SHADOW,
+    SUBTEXT, TABLE_FONT_SIZE, TABLE_ROW_HEIGHT, TABLE_ROW_LIMIT, TEXT,
 )
-
-DEFAULTS = {
-    "rows": TABLE_ROW_LIMIT,
-}
+from dbr.visuals._encoding import (
+    dimension_column_name, parse_encoding,
+)
 
 SCHEMA = {
     "type": "object",
     "additionalProperties": False,
-    "required": ["type", "metric"],
+    "required": ["type", "encoding"],
     "properties": {
-        "type":   {"const": "table"},
-        "metric": {"type": "string"},
-        "filter": {"type": "object"},
-        "rows":   {"type": "integer", "minimum": 1, "maximum": 200},
+        "type": {"const": "table"},
+        "encoding": {
+            "type": "object",
+            "required": ["rows", "columns"],
+            "additionalProperties": False,
+            "properties": {
+                "rows":    {"type": "array", "minItems": 1, "items": {"type": "object"}},
+                "columns": {"type": "array", "minItems": 1, "items": {"type": "object"}},
+            },
+        },
+        "filter":  {"type": "object"},
+        "options": {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "row_limit": {"type": "integer", "minimum": 1, "maximum": 1000},
+            },
+        },
     },
 }
 
 _CARD_STYLE = {
-    "background":   BG_SURFACE,
-    "borderRadius": CARD_RADIUS,
-    "boxShadow":    CARD_SHADOW,
-    "padding":      "16px",
-    "height":       "100%",
-    "boxSizing":    "border-box",
-    "fontSize":     TABLE_FONT_SIZE,
+    "background": BG_SURFACE, "borderRadius": CARD_RADIUS, "boxShadow": CARD_SHADOW,
+    "padding": "16px", "height": "100%", "boxSizing": "border-box",
+    "fontSize": TABLE_FONT_SIZE,
 }
-
-_TITLE_STYLE = {
-    "fontSize":     "16px",
-    "fontWeight":   600,
-    "color":        TEXT,
-    "marginBottom": "12px",
-}
-
-_TABLE_STYLE = {
-    "width": "100%",
-    "borderCollapse": "collapse",
-}
-
-_TH_STYLE = {
-    "textAlign":   "left",
-    "padding":     "6px 8px",
+_TH = {
+    "textAlign": "left", "padding": "6px 8px",
     "borderBottom": f"1px solid {BORDER}",
-    "color":       SUBTEXT,
-    "fontWeight":  500,
+    "color": SUBTEXT, "fontWeight": 500,
 }
-
-_TD_STYLE = {
-    "padding":     "6px 8px",
-    "borderBottom": f"1px solid {BORDER}",
-    "color":       TEXT,
-    "height":      TABLE_ROW_HEIGHT,
+_TD = {
+    "padding": "6px 8px", "borderBottom": f"1px solid {BORDER}",
+    "color": TEXT, "height": TABLE_ROW_HEIGHT,
 }
 
 
-def table(metric: str, *, filter: dict | None = None, **overrides) -> html.Div:
-    """Render ``metric`` as an HTML table — one row per period."""
-    cfg = {**DEFAULTS, **overrides}
-    history = semantic_query_history(metric, filter=filter, n=cfg["rows"])
+def table(*, encoding: dict, filter: dict | None = None, options: dict | None = None) -> html.Div:
+    enc = parse_encoding(encoding)
+    opts = options or {}
+    limit = opts.get("row_limit", TABLE_ROW_LIMIT)
 
-    if not history:
+    if not enc.rows or not all(c.dimension for c in enc.rows):
+        raise ValueError("table: encoding.rows must be a list of dimensions")
+    if not enc.columns or not all(c.metric for c in enc.columns):
+        raise ValueError("table: encoding.columns must be a list of metrics")
+
+    group_by = [dimension_column_name(c) for c in enc.rows]
+    metrics  = [c.metric for c in enc.columns]
+
+    df = None
+    for m in metrics:
+        sub = semantic_query_data(m, group_by=group_by, filter=filter, order=group_by[0])
+        if sub.empty:
+            continue
+        df = sub if df is None else df.merge(sub, on=group_by, how="outer")
+    if df is None or df.empty:
         return html.Div("No data", style=_CARD_STYLE)
 
-    label = history[0].label
-    unit  = history[0].unit_str or "Wartość"
-
+    df = df.head(limit)
+    header = group_by + metrics
     return html.Div(
         style=_CARD_STYLE,
-        children=[
-            html.Div(label, style=_TITLE_STYLE),
-            html.Table(
-                style=_TABLE_STYLE,
-                children=[
-                    html.Thead(html.Tr([
-                        html.Th("Rok", style=_TH_STYLE),
-                        html.Th(unit,  style={**_TH_STYLE, "textAlign": "right"}),
-                    ])),
-                    html.Tbody([
-                        html.Tr([
-                            html.Td(str(r.period), style=_TD_STYLE),
-                            html.Td(r.value_str,   style={**_TD_STYLE, "textAlign": "right"}),
-                        ])
-                        for r in history
-                    ]),
-                ],
-            ),
-        ],
+        children=html.Table(
+            style={"width": "100%", "borderCollapse": "collapse"},
+            children=[
+                html.Thead(html.Tr([html.Th(h, style=_TH) for h in header])),
+                html.Tbody([
+                    html.Tr([html.Td(_fmt(row[h]), style=_TD) for h in header])
+                    for _, row in df.iterrows()
+                ]),
+            ],
+        ),
     )
+
+
+def _fmt(v) -> str:
+    if pd.isna(v):
+        return "—"
+    if isinstance(v, float):
+        return f"{v:.2f}".replace(".", ",")
+    return str(v)

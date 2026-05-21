@@ -79,6 +79,71 @@ def semantic_query_history(
     return [_build_result(metric, row) for row in rows]
 
 
+def semantic_query_data(
+    metric: str,
+    *,
+    group_by: list[str] | None = None,
+    filter: dict[str, object] | None = None,
+    limit: int | None = None,
+    order: str | None = None,
+) -> "pd.DataFrame":
+    """Generic semantic query — returns a DataFrame keyed by group-by dimensions.
+
+    Used by encoding-based visuals. `group_by` is a list of MetricFlow dimension
+    refs (e.g. ``["metric_time__year"]``, ``["geo"]``, or both). `filter` is a
+    dict of entity/dimension → value (scalars or lists).
+
+    Returns an empty DataFrame on query failure.
+    """
+    cmd = ["mf", "query", "--metrics", metric]
+    for dim in group_by or []:
+        cmd += ["--group-by", dim]
+    if filter:
+        clauses = []
+        for k, v in filter.items():
+            ref = _filter_ref(k)
+            if isinstance(v, (list, tuple)):
+                quoted = ", ".join(f"'{x}'" for x in v)
+                clauses.append(f"{ref} IN ({quoted})")
+            else:
+                clauses.append(f"{ref}='{v}'")
+        cmd += ["--where", " AND ".join(clauses)]
+    if order:
+        cmd += ["--order", order]
+    if limit:
+        cmd += ["--limit", str(limit)]
+
+    with tempfile.NamedTemporaryFile(suffix=".csv", delete=False, mode="w") as tmp:
+        csv_path = tmp.name
+    cmd += ["--csv", csv_path]
+
+    try:
+        subprocess.run(
+            cmd, cwd=str(DBT_PROJECT_ROOT), check=True,
+            capture_output=True, text=True, env=_mf_env(),
+        )
+        return pd.read_csv(csv_path)
+    except subprocess.CalledProcessError as e:
+        log.error("mf query failed for %s: %s", metric, e.stderr)
+        return pd.DataFrame()
+    finally:
+        Path(csv_path).unlink(missing_ok=True)
+
+
+def _filter_ref(key: str) -> str:
+    """Return the MetricFlow ref expression for a filter key.
+
+    Entities and dimensions use different syntax. Our `finance_overview`
+    semantic model declares `geo` as a primary entity and `period` as a
+    time dimension — for now we hard-code that distinction; later this
+    can be resolved by inspecting the parsed semantic_model YAML.
+    """
+    _ENTITY_KEYS = {"geo"}
+    if key in _ENTITY_KEYS:
+        return f"{{{{ Entity('{key}') }}}}"
+    return f"{{{{ Dimension('{key}') }}}}"
+
+
 def _run_mf_query(
     metric: str,
     *,
