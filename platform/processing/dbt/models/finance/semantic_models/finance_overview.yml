@@ -2,7 +2,7 @@ version: 2
 
 # MetricFlow semantic model for the finance dashboard Overview KPI row.
 #
-# Single source: curated.int_finance_overview (wide, one column per measure).
+# Single source: curated.fact_finance_overview (wide, one column per measure).
 # Three metrics expose the latest annual value of each KPI to the visual layer
 # without leaking SQL or column names into chart code.
 #
@@ -12,16 +12,38 @@ version: 2
 semantic_models:
   - name: finance_overview
     description: Annual Overview KPIs for Polish public finance.
-    model: ref('int_finance_overview')
+    model: ref('fact_finance_overview')
+
+    # ── Star-schema convention ────────────────────────────────────────────
+    # A fact table declares measures + foreign keys. For visuals, ALL
+    # categorical and time slicing comes from dim_* tables joined via the
+    # foreign entities below — never from the fact directly.
+    #
+    # The `period` time dimension below is MANDATED by MetricFlow's data
+    # model (every measure must have an aggregation time dimension). It is
+    # for the engine's internal use (cumulative metrics, metric_time
+    # resolution). Dashboard YAMLs MUST NOT reference `dimension: period`
+    # — use `date_key__cal_year` / `date_key__cal_year_quarter` / etc.
+    # from dim_calendar instead.
+
     defaults:
       agg_time_dimension: period
 
+    # The fact's grain is a composite of (geo, period_year). There's no
+    # single natural primary key, so declare a synthetic primary entity
+    # to satisfy MetricFlow's requirement when dimensions are present.
+    primary_entity: finance_overview_row
+
     entities:
-      - name: geo
-        type: primary
+      - name: geo                       # foreign key joins to dim_geo
+        type: foreign
         expr: geo
+      - name: date_key                  # foreign key joins to dim_calendar
+        type: foreign
+        expr: period_date
 
     dimensions:
+      # INTERNAL — MetricFlow requirement; do not reference in dashboard YAMLs.
       - name: period
         type: time
         expr: period_date

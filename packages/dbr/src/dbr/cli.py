@@ -131,6 +131,7 @@ def cmd_init(args: argparse.Namespace) -> int:
 def cmd_run(args: argparse.Namespace) -> int:
     """Deploy a dashboard end-to-end: write infra files, sudo cp, restart service, reload nginx."""
     import subprocess
+    import time
     import yaml
 
     project_root = Path(args.path).resolve()
@@ -157,7 +158,36 @@ def cmd_run(args: argparse.Namespace) -> int:
     _run(["sudo", "-n", "/usr/bin/systemctl", "daemon-reload"])
     _run(["sudo", "-n", "/usr/bin/systemctl", "enable", f"or-{domain}.service"], allow_fail=True)
     _run(["sudo", "-n", "/usr/bin/systemctl", "restart", f"or-{domain}.service"])
-    print(f"  ✓ systemd: or-{domain}.service restarted")
+    print(f"  ✓ systemd: or-{domain}.service restarted — waiting for health check")
+
+    # 2b. Health check: dashboards take ~25-40s to start (mf subprocesses
+    #     for each visual). Poll for the port to be listening; if not after
+    #     a budget, dump the service status and fail.
+    import socket
+    deadline = time.time() + 60
+    while time.time() < deadline:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.settimeout(0.5)
+            try:
+                if s.connect_ex(("127.0.0.1", int(port))) == 0:
+                    break
+            except OSError:
+                pass
+        time.sleep(1)
+    else:
+        # Port never opened — dump systemctl status (no journal access without sudo)
+        status = subprocess.run(
+            ["/usr/bin/systemctl", "status", f"or-{domain}.service", "--no-pager", "-n", "30"],
+            capture_output=True, text=True,
+        )
+        print(f"Error: port {port} did not open within 60s — service may be in a crash loop",
+              file=sys.stderr)
+        print("─" * 60, file=sys.stderr)
+        print(status.stdout, file=sys.stderr)
+        print("─" * 60, file=sys.stderr)
+        print(f"Inspect logs:  sudo journalctl -u or-{domain}.service -n 50", file=sys.stderr)
+        return 1
+    print(f"  ✓ health check: port {port} is listening")
 
     # 3. Write the nginx route block at infra/nginx/conf.d/dbr-routes/<domain>.conf
     nginx_path = repo_root / "infra" / "nginx" / "conf.d" / "dbr-routes" / f"{domain}.conf"

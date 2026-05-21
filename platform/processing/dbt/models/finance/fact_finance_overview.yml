@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: int_finance_overview
+  - name: fact_finance_overview
     description: >
       Wide intermediate model for the finance dashboard Overview KPI row.
       Pivots curated.mart_finance from long to wide so MetricFlow can map

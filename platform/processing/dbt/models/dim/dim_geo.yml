@@ -1,0 +1,51 @@
+version: 2
+
+# dim_geo — shared geography dimension table.
+#
+# Star-schema convention: any fact table with a `geo` column (Eurostat
+# 2-letter code) joins to this dim via the `geo` entity. Dashboards can
+# then slice by Polish/English country names, EU membership, or continent.
+
+models:
+  - name: dim_geo
+    description: Country dimension with Polish/English names, EU membership, continent.
+    columns:
+      - name: geo
+        description: Eurostat 2-letter country code (e.g. "PL", "DE"). Primary key.
+        tests: [not_null, unique]
+      - name: name_pl
+        description: Polish country name (e.g. "Polska", "Niemcy").
+        tests: [not_null]
+      - name: name_en
+        description: English country name (e.g. "Poland", "Germany").
+        tests: [not_null]
+      - name: eu_member
+        description: TRUE if a current EU member state.
+        tests: [not_null]
+      - name: continent
+        description: Broad region label — "Europe", "Americas", "Asia", etc.
+        tests: [not_null]
+
+semantic_models:
+  - name: dim_geo
+    description: Country dimension for cross-fact joins on the `geo` entity.
+    model: ref('dim_geo')
+
+    entities:
+      - name: geo
+        type: primary
+        expr: geo
+
+    dimensions:
+      - name: country_name_pl
+        type: categorical
+        expr: name_pl
+      - name: country_name_en
+        type: categorical
+        expr: name_en
+      - name: eu_member
+        type: categorical
+        expr: eu_member
+      - name: continent
+        type: categorical
+        expr: continent

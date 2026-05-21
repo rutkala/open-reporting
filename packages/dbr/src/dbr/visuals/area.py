@@ -18,6 +18,7 @@ from dbr.theme import (
     BG_SURFACE, CARD_RADIUS, CARD_SHADOW,
 )
 from dbr.visuals._encoding import (
+    postprocess_time_columns,
     dimension_column_name, group_by_from_channels, parse_encoding,
 )
 
@@ -71,6 +72,7 @@ def area(*, encoding: dict, filter: dict | None = None, options: dict | None = N
     df = semantic_query_data(metric, group_by=group_by, filter=filter, order=x_col)
     if df.empty:
         return html.Div("No data", style=_CARD_STYLE)
+    df = postprocess_time_columns(df, enc)
 
     opacity = opts.get("opacity", AREA_CHART_OPACITY)
     stack = opts.get("stack", True if enc.color else False)

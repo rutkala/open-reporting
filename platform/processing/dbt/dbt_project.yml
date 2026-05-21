@@ -24,7 +24,7 @@ seeds:
   open_reporting:
     dim_domain_detail:
       +schema: curated
-    dim_geo:
+    seed_geo_nuts:
       +schema: curated
     dim_source:
       +schema: curated

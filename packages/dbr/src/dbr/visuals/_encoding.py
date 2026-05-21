@@ -119,3 +119,57 @@ def metric_from_channels(*channels: Channel | None) -> str:
 def dimension_column_name(ch: Channel) -> str:
     """Return the column name to expect in the result DataFrame for a dimension channel."""
     return ch.mf_group_by()                                  # mf returns rows keyed by this name
+
+
+def postprocess_time_columns(df, encoding: Encoding):
+    """Convert MetricFlow time-dimension columns (full timestamps) to clean
+    granularity-appropriate values.
+
+    MetricFlow returns time-grouped columns as ``YYYY-MM-DD HH:MM:SS`` strings
+    (the start of each bucket). For yearly data, that's 1995-01-01, 1996-01-01,
+    ... — Plotly then renders the x-axis with month/day ticks between points.
+
+    This helper converts those columns to:
+      - year       → int (e.g. 1995)
+      - quarter    → 'YYYY-Q1' / 'YYYY-Q2' / ...
+      - month      → 'YYYY-MM'
+      - day        → 'YYYY-MM-DD'
+
+    Plotly then treats the axis as discrete and labels each bucket exactly.
+    """
+    import pandas as pd
+    for ch in (encoding.x, encoding.y, encoding.color, encoding.value, encoding.category):
+        if ch is None or not ch.dimension or not ch.granularity:
+            continue
+        col = ch.mf_group_by()
+        if col not in df.columns:
+            continue
+        ts = pd.to_datetime(df[col])
+        if ch.granularity == "year":
+            df[col] = ts.dt.year
+        elif ch.granularity == "quarter":
+            df[col] = ts.dt.to_period("Q").astype(str)
+        elif ch.granularity == "month":
+            df[col] = ts.dt.strftime("%Y-%m")
+        elif ch.granularity == "day":
+            df[col] = ts.dt.strftime("%Y-%m-%d")
+    # Same treatment for table.rows (list of channels)
+    for ch_list in (encoding.rows, encoding.columns):
+        if not ch_list:
+            continue
+        for ch in ch_list:
+            if not ch.dimension or not ch.granularity:
+                continue
+            col = ch.mf_group_by()
+            if col not in df.columns:
+                continue
+            ts = pd.to_datetime(df[col])
+            if ch.granularity == "year":
+                df[col] = ts.dt.year
+            elif ch.granularity == "quarter":
+                df[col] = ts.dt.to_period("Q").astype(str)
+            elif ch.granularity == "month":
+                df[col] = ts.dt.strftime("%Y-%m")
+            elif ch.granularity == "day":
+                df[col] = ts.dt.strftime("%Y-%m-%d")
+    return df

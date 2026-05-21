@@ -4,5 +4,5 @@ encoding:
   value: { metric: public_debt }
 filter:
   geo: PL
-options:
-  compact: true
+#options:
+#  compact: true

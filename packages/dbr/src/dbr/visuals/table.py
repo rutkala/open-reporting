@@ -16,6 +16,7 @@ from dbr.theme import (
     SUBTEXT, TABLE_FONT_SIZE, TABLE_ROW_HEIGHT, TABLE_ROW_LIMIT, TEXT,
 )
 from dbr.visuals._encoding import (
+    postprocess_time_columns,
     dimension_column_name, parse_encoding,
 )
 
@@ -82,6 +83,7 @@ def table(*, encoding: dict, filter: dict | None = None, options: dict | None = 
         df = sub if df is None else df.merge(sub, on=group_by, how="outer")
     if df is None or df.empty:
         return html.Div("No data", style=_CARD_STYLE)
+    df = postprocess_time_columns(df, enc)
 
     df = df.head(limit)
     header = group_by + metrics

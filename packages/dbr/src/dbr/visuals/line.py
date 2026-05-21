@@ -18,6 +18,7 @@ from dbr.theme import (
     LINE_CHART_HEIGHT, LINE_CHART_LINE_WIDTH, LINE_CHART_MARKER_SIZE,
 )
 from dbr.visuals._encoding import (
+    postprocess_time_columns,
     dimension_column_name, group_by_from_channels, parse_encoding,
 )
 
@@ -74,6 +75,7 @@ def line(*, encoding: dict, filter: dict | None = None, options: dict | None = N
     )
     if df.empty:
         return html.Div("No data", style=_CARD_STYLE)
+    df = postprocess_time_columns(df, enc)
 
     show_markers = opts.get("markers", True)
     mode = "lines+markers" if show_markers else "lines"

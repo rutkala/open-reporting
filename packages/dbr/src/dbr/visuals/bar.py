@@ -17,6 +17,7 @@ from dbr.theme import (
     CARD_RADIUS, CARD_SHADOW,
 )
 from dbr.visuals._encoding import (
+    postprocess_time_columns,
     dimension_column_name, group_by_from_channels, parse_encoding,
 )
 
@@ -69,6 +70,7 @@ def bar(*, encoding: dict, filter: dict | None = None, options: dict | None = No
     df = semantic_query_data(metric, group_by=group_by, filter=filter, order=y_col)
     if df.empty:
         return html.Div("No data", style=_CARD_STYLE)
+    df = postprocess_time_columns(df, enc)
 
     fig = go.Figure()
     if enc.color:
