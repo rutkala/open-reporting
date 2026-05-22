@@ -57,7 +57,7 @@ These are your scientific grounding. Do not invent findings beyond what these KB
 For each affected dashboard, run the screenshot utility:
 
 ```bash
-PYTHONPATH=/opt/open-reporting python3 /opt/open-reporting/tools/screenshot.py <dashboard>
+screenshot <dashboard>
 ```
 
 Where `<dashboard>` is one of: `labour`, `explorer`, `finance`.

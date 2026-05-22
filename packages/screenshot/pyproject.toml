@@ -1,0 +1,19 @@
+[project]
+name = "screenshot"
+version = "0.1.0"
+description = "Dashboard screenshot CLI for Open Reporting visual review"
+requires-python = ">=3.10"
+dependencies = [
+  "playwright>=1.40",
+  "requests>=2.28",
+]
+
+[project.scripts]
+screenshot = "screenshot.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]

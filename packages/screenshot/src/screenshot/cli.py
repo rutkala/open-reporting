@@ -3,7 +3,7 @@
 Screenshot utility for dashboard visual review.
 
 Usage:
-    python3 tools/screenshot.py <dashboard> [--port PORT] [--output PATH]
+    screenshot <dashboard> [--port PORT] [--output PATH]
 
 Arguments:
     dashboard   One of: labour, explorer, finance
@@ -13,6 +13,8 @@ Arguments:
 Starts the dashboard from current branch code on a temporary port,
 waits for it to be ready, takes a full-page screenshot, then stops it.
 Prints the output PNG path to stdout on success.
+
+Installed as a CLI command via `pip install -e packages/screenshot`.
 """
 
 import argparse
