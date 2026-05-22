@@ -17,9 +17,11 @@ Multi-metric `y` (list) and multi-series `color` are mutually exclusive
 from dash import dcc, html
 import plotly.graph_objects as go
 
+import pandas as pd
+
 from dbr.semantic import metric_label, semantic_query_data
 from dbr.theme import (
-    BG_SURFACE, CARD_RADIUS, CARD_SHADOW,
+    BG_SURFACE, CARD_RADIUS, CARD_SHADOW, COLORWAY,
     LINE_CHART_HEIGHT, LINE_CHART_LINE_WIDTH, LINE_CHART_MARKER_SIZE,
 )
 from dbr.visuals._encoding import (
@@ -63,6 +65,16 @@ SCHEMA = {
                         },
                     },
                 },
+                "dash_when": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["dimension", "value"],
+                    "properties": {
+                        "dimension":      {"type": "string"},
+                        "value":          {},
+                        "label_suffix":   {"type": "string"},
+                    },
+                },
             },
         },
     },
@@ -89,7 +101,10 @@ def line(*, encoding: dict, filter: dict | None = None, options: dict | None = N
             "(both produce multiple series). Use one or the other."
         )
 
-    group_by = group_by_from_channels(enc.x, enc.color)
+    dash_when = opts.get("dash_when")
+    extra_group = [dash_when["dimension"]] if dash_when else []
+
+    group_by = group_by_from_channels(enc.x, enc.color) + extra_group
     x_col = dimension_column_name(enc.x)
 
     df = semantic_query_data(
@@ -100,6 +115,8 @@ def line(*, encoding: dict, filter: dict | None = None, options: dict | None = N
     if df.empty:
         return html.Div("No data", style=_CARD_STYLE)
     df = postprocess_time_columns(df, enc)
+    if dash_when:
+        df = df.sort_values(x_col)
 
     show_markers = opts.get("markers", True)
     mode = "lines+markers" if show_markers else "lines"
@@ -114,6 +131,8 @@ def line(*, encoding: dict, filter: dict | None = None, options: dict | None = N
                 line=dict(width=LINE_CHART_LINE_WIDTH),
                 marker=dict(size=LINE_CHART_MARKER_SIZE),
             ))
+    elif dash_when:
+        _add_dashed_traces(fig, df, x_col, metrics, dash_when, mode)
     elif len(metrics) > 1:
         for m in metrics:
             fig.add_trace(go.Scatter(
@@ -138,3 +157,63 @@ def line(*, encoding: dict, filter: dict | None = None, options: dict | None = N
 
 def df_series_count(_color_channel) -> int:
     return 4
+
+
+def _add_dashed_traces(fig, df, x_col, metrics, dash_when, mode):
+    """Split each metric into solid (non-matching) + dashed (matching) traces.
+
+    Used for IMF-style history/projection charts: rows where the
+    ``dash_when.dimension`` equals ``dash_when.value`` are drawn dashed,
+    everything else solid. A bridge point (the last solid row) is
+    prepended to the dashed series so the line appears continuous across
+    the transition. Both segments share a color from the theme colorway;
+    the dashed trace is hidden from the legend when there is only one
+    metric, and labelled with ``label_suffix`` (default "(prognoza)")
+    otherwise.
+    """
+    dim = dash_when["dimension"]
+    target = dash_when["value"]
+    suffix = dash_when.get("label_suffix", "(prognoza)")
+    single_metric = len(metrics) == 1
+
+    # Resolve target (often a Python bool/str) against the actual column dtype.
+    # The mf CSV may render booleans as strings ("True"/"False"); accept both.
+    target_norm = str(target).lower()
+
+    def is_dashed(series):
+        return series.astype(str).str.lower() == target_norm
+
+    for i, m in enumerate(metrics):
+        color = COLORWAY[i % len(COLORWAY)]
+        label = metric_label(m)
+        sub = df[[x_col, dim, m]].dropna(subset=[m])
+        if sub.empty:
+            continue
+        dashed_mask = is_dashed(sub[dim])
+        solid = sub[~dashed_mask]
+        dashed = sub[dashed_mask]
+        # Bridge point: prepend last solid row to dashed so the line is continuous.
+        if not solid.empty and not dashed.empty:
+            bridge = solid.iloc[[-1]]
+            dashed = pd.concat([bridge, dashed])
+
+        if not solid.empty:
+            fig.add_trace(go.Scatter(
+                x=solid[x_col], y=solid[m], mode=mode, name=label,
+                line=dict(width=LINE_CHART_LINE_WIDTH, color=color),
+                marker=dict(size=LINE_CHART_MARKER_SIZE),
+                legendgroup=m,
+            ))
+        if not dashed.empty:
+            # Hide the dashed trace from the legend — the dash style itself
+            # signals "projected" and a second entry per metric would double
+            # the legend size. The hover tooltip keeps the suffix so users
+            # can confirm which segment they are reading.
+            fig.add_trace(go.Scatter(
+                x=dashed[x_col], y=dashed[m], mode=mode,
+                name=f"{label} {suffix}",
+                line=dict(width=LINE_CHART_LINE_WIDTH, color=color, dash="dash"),
+                marker=dict(size=LINE_CHART_MARKER_SIZE),
+                legendgroup=m,
+                showlegend=False,
+            ))
