@@ -5,8 +5,7 @@
 **Does NOT cover:** SQL aggregation correctness in queries outside the semantic layer (see `evaluation/analytical-review.md`), general code quality (see `evaluation/code-review.md`), layer violations (see `evaluation/architecture-review.md`)
 
 Rules applied by the `measures-reviewer` agent on PR diffs touching the semantic layer:
-- `products/semantic/` (legacy)
-- `products/warehouse/**/semantic_models/*.yml` (MetricFlow)
+- `products/warehouse/models/semantic/*.yml` (MetricFlow)
 - `products/warehouse/**/metrics/*.yml` (MetricFlow)
 
 These rules are ADDITIVE to `code-review.md`. Both agents run in parallel. Do not duplicate findings.
