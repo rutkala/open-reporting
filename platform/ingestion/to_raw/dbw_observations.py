@@ -26,7 +26,7 @@ log = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
 LANDING_DIR = os.path.join(
-    os.environ.get("REPO_ROOT", "/opt/open-reporting"),
+    os.path.dirname(os.path.abspath(__file__)),
     "data/landing/dbw_hvd"
 )
 
@@ -47,8 +47,8 @@ def load_observations(conn: duckdb.DuckDBPyConnection) -> int:
 
     conn.execute("DROP TABLE IF EXISTS raw.dbw_observations")
     ddl_path = os.path.join(
-        os.environ.get("REPO_ROOT", "/opt/open-reporting"),
-        "platform/warehouse/raw/dbw_observations.sql"
+        os.path.dirname(os.path.abspath(__file__)),
+        "dbw_observations.sql"
     )
     with open(ddl_path) as f:
         ddl = f.read()

@@ -91,7 +91,7 @@ def _db() -> duckdb.DuckDBPyConnection:
 def ensure_table(conn: duckdb.DuckDBPyConnection) -> None:
     ddl_path = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
-        "../../warehouse/raw/imf_weo.sql",
+        "imf_weo.sql",
     )
     with open(ddl_path) as f:
         conn.execute(f.read())

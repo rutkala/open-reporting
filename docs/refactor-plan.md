@@ -116,15 +116,50 @@ Why: `package.json` declares one dep (`openai`) from an early experiment never u
 
 Verify: `grep -rln "openai\|node_modules" /opt/open-reporting --include="*.py"` returns nothing important (Ghost CMS uses node internally but it's in its Docker image, not the host).
 
-### 1b. Stale warehouse DDL
+### 1b. Stale warehouse DDL — careful, two files are actually used
+
+**Discovered during execution:** two DDL files in `platform/warehouse/raw/` are loaded at runtime by ingestion scripts, NOT stale:
+
+| DDL file | Used by | Action |
+|---|---|---|
+| `platform/warehouse/raw/dbw_observations.sql` | `platform/ingestion/to_raw/dbw_observations.py:48-53` (ensure_table) | **Co-locate** with its script |
+| `platform/warehouse/raw/imf_weo.sql` | `platform/ingestion/to_raw/imf_weo.py:91-96` (ensure_table) | **Co-locate** with its script |
+| `platform/warehouse/raw/eurostat_observations.sql` | nothing | Delete (orphaned) |
+| `platform/warehouse/raw/nbp_exchange_rates.sql` | nothing | Delete (orphaned) |
+| `platform/warehouse/curated/mart_finance.sql` | nothing (dbt has it) | Delete |
+| `platform/warehouse/dimensions/*.sql` (7 files) | nothing (dbt has dim_geo/dim_calendar/dim_cofog with different shapes) | Delete |
+| `platform/warehouse/deploy/` | empty | Delete |
 
 ```bash
+# Step 1: co-locate the 2 live DDL files
+git mv /opt/open-reporting/platform/warehouse/raw/dbw_observations.sql \
+       /opt/open-reporting/platform/ingestion/to_raw/dbw_observations.sql
+git mv /opt/open-reporting/platform/warehouse/raw/imf_weo.sql \
+       /opt/open-reporting/platform/ingestion/to_raw/imf_weo.sql
+
+# Step 2: update the python scripts to use the co-located path
+# imf_weo.py — change ddl_path target from "../../warehouse/raw/imf_weo.sql" to "imf_weo.sql"
+sed -i 's|"../../warehouse/raw/imf_weo.sql"|"imf_weo.sql"|' \
+  /opt/open-reporting/platform/ingestion/to_raw/imf_weo.py
+
+# dbw_observations.py — same idea, plus switch from REPO_ROOT-based to file-relative path
+sed -i 's|"platform/warehouse/raw/dbw_observations.sql"|"dbw_observations.sql"|' \
+  /opt/open-reporting/platform/ingestion/to_raw/dbw_observations.py
+sed -i 's|os.environ.get("REPO_ROOT", "/opt/open-reporting"),|os.path.dirname(os.path.abspath(__file__)),|' \
+  /opt/open-reporting/platform/ingestion/to_raw/dbw_observations.py
+
+# Step 3: now safe to delete the rest of platform/warehouse/
 rm -rf /opt/open-reporting/platform/warehouse/
 ```
 
-Why: Hand-written DDL pre-dating dbt. The dbt project (`platform/processing/dbt/`) is the actual source of truth. These files were referenced by 3 ingestion scripts as comments; nothing runtime depends on them.
+Verify after each step:
+```bash
+python3 -m py_compile /opt/open-reporting/platform/ingestion/to_raw/imf_weo.py
+python3 -m py_compile /opt/open-reporting/platform/ingestion/to_raw/dbw_observations.py
+ls /opt/open-reporting/platform/ingestion/to_raw/*.sql  # should show 2 files
+```
 
-Verify: `grep -rln "warehouse/raw\|warehouse/curated\|warehouse/dimensions" /opt/open-reporting/platform/ingestion` — confirm only comment-string references remain; they don't break anything.
+**Why co-locate (not just move to a new ddl/ subfolder):** survives Phase 3 (move ingestion to products/) automatically — the SQL travels alongside its script. After this step, when the ingestion script moves, its DDL moves with it.
 
 ### 1c. Stale dashboards
 
