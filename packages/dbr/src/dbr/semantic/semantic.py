@@ -41,6 +41,22 @@ SEMANTIC_MODELS_GLOB = "models/**/semantic_models/*.yml"
 
 
 # ── Engine singleton ──────────────────────────────────────────────────────────
+#
+# DuckDB allows only ONE read-write connection to a database file at a time
+# (multiple concurrent readers are fine, but RW + anything else conflicts).
+# dbt-duckdb hardcodes read_only=False on its main connection, so by default
+# the MetricFlow engine would hold an exclusive lock on warehouse.duckdb —
+# which means a second dashboard service fails to boot ("Conflicting lock
+# is held in ...").
+#
+# Solution: dashboards use a dedicated `dashboard` target in profiles.yml
+# that sets `config_options.access_mode = READ_ONLY`. DuckDB honours that
+# via the `config` dict even when the positional `read_only=False` is set,
+# so we get a read-only connection without patching dbt-duckdb. Multiple
+# dashboards can then keep their MetricFlow engines open simultaneously.
+# `dbt run` continues to use the default `dev` target (read-write).
+
+_DASHBOARD_TARGET = "dashboard"
 
 _engine_lock = threading.Lock()
 _engine = None  # type: "MetricFlowEngine | None"
@@ -49,9 +65,9 @@ _engine = None  # type: "MetricFlowEngine | None"
 def _get_engine():
     """Return the process-wide MetricFlowEngine, initialising on first use.
 
-    The engine loads the dbt project (manifest + adapter + semantic
-    manifest) once, which is the expensive step. Thread-safe via a lock
-    so a concurrent first call from two threads doesn't run setup twice.
+    Loads the dbt project (manifest + adapter + semantic manifest) once
+    against the read-only `dashboard` target. Thread-safe via double-
+    checked locking so concurrent first-callers don't run setup twice.
     """
     global _engine
     if _engine is not None:
@@ -61,11 +77,11 @@ def _get_engine():
             return _engine
         from dbt_metricflow.cli.cli_configuration import CLIConfiguration
 
-        # MetricFlow honours DBT_PROFILES_DIR / DBT_PROJECT_DIR if set, but
-        # we default both to the warehouse repo's dbt root so dashboards
-        # don't need to set anything.
         os.environ.setdefault("DBT_PROFILES_DIR", str(DBT_PROJECT_ROOT))
         os.environ.setdefault("DBT_PROJECT_DIR", str(DBT_PROJECT_ROOT))
+        # Force the read-only profile target so multiple dashboards can
+        # share the same warehouse without DuckDB lock conflicts.
+        os.environ["DBT_TARGET"] = _DASHBOARD_TARGET
 
         cfg = CLIConfiguration()
         cfg.setup(
@@ -74,7 +90,9 @@ def _get_engine():
             configure_file_logging=False,
         )
         _engine = cfg.mf
-        log.info("MetricFlowEngine initialised (one-time dbt project load)")
+        log.info(
+            "MetricFlowEngine initialised (target=%s, read-only)", _DASHBOARD_TARGET
+        )
         return _engine
 
 
