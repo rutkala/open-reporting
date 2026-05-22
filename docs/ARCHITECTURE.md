@@ -43,7 +43,7 @@ Everything in the repo belongs to exactly one of two planes.
 │  │       ├── app.py     (8-line bootstrap, never edit)                    │
 │  │       └── pages/<page>/visuals/<visual>.yml                            │
 │  │                                                                         │
-│  ├── blog/  social/  research/  mobile/  domain-briefs/                   │
+│  ├── blog/  social/  research/  domain-briefs/                            │
 │                                                                            │
 │  docs/                  Architecture, contributing, data model            │
 │  team/                  Knowledge base, standards, agent memory           │
@@ -218,13 +218,10 @@ products/dashboards/<domain>/
 | `www.open-reporting.dev` | Ghost blog | Docker container |
 | `portal.open-reporting.dev` | Static portal landing | nginx |
 | `portal.open-reporting.dev/public_finance/` | Public Finance dashboard | dbr / Dash (8057) |
-| `portal.open-reporting.dev/labour/` | Labour dashboard (legacy) | complex_dashboard kit (8050) |
-| `portal.open-reporting.dev/explorer/` | Data Explorer (legacy) | complex_dashboard kit (8051) |
-| `portal.open-reporting.dev/finance/` | Finance dashboard (legacy, parallel to public_finance) | complex_dashboard kit (8053) |
-| `portal.open-reporting.dev/app/` | Mobile PWA | FastAPI (8052) |
-| `portal.open-reporting.dev/test_dashboard/` | dbr smoke test | dbr (8056) |
 
-**Migration state:** legacy dashboards keep running on their existing ports while dbr equivalents are built and verified. Cut-over happens per-domain.
+**One dashboard, one stack.** All earlier dashboards (labour, explorer, finance, mobile PWA, test scaffold) were prototypes from different phases of the project and were retired together with the legacy `complex_dashboard` skill. New domain dashboards (labour, demography, health, …) will be authored on dbr following the public_finance pattern.
+
+A mobile-responsive variant is a future direction — the intent is to extend dbr (or add a dbr-mobile package) so the same declarative YAML can target both desktop and mobile, rather than maintaining a separate FastAPI stack.
 
 ---
 

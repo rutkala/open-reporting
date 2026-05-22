@@ -1,9 +1,0 @@
-# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
-type: card
-encoding:
-  value: { metric: fiscal_balance }
-filter:
-  geo: PL
-options:
-  threshold:
-    rule: sgp_deficit

@@ -1,8 +1,0 @@
-# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
-type: card
-encoding:
-  value: { metric: public_debt }
-filter:
-  geo: PL
-#options:
-#  compact: true

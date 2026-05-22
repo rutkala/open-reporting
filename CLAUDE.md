@@ -51,11 +51,10 @@ Two-plane architecture — see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) fo
 │   │   ├── deploy/      → Versioned migration scripts
 │   │   └── loader.py    → Loads catalogue + seed
 │   ├── dashboards/      → dbr YAML dashboards (one folder per dashboard)
-│   │   ├── public_finance/ → Phase A+B production dashboard (port 8057)
-│   │   ├── test_dashboard/ → dbr smoke
-│   │   ├── labour/, explorer/, finance/ → legacy Python-kit dashboards
-│   │   └── ...
-│   ├── blog/  social/  research/  mobile/  domain-briefs/
+│   │   └── public_finance/  → first dbr dashboard (port 8057). Future
+│   │                          domains (labour, demography, …) authored
+│   │                          on the same pattern.
+│   ├── blog/  social/  research/  domain-briefs/
 │
 ├── docs/                → Architecture, data model, contributing
 │   ├── ARCHITECTURE.md   ← source of truth for repo layout + AI delegation
@@ -161,7 +160,7 @@ Shared session memory at `team/session-memory.md` provides continuity across ses
 - If uncertain, do more research first — never transfer uncertainty to the PO
 
 **Domain intelligence:**
-When working in a business or economic domain, research how practitioners in that field think about the problem before designing anything. Economists, statisticians, and policy analysts have established frameworks, KPIs, and analytical patterns — these are better starting points than generic IT approaches. Sources: Eurostat Statistics Explained, IMF/World Bank reports, GUS methodology papers, ministry publications, academic frameworks. Standards and playbooks in this repo are good defaults; evaluate whether they fit the specific situation and adapt when they don't.
+When working in a business or economic domain, research how practitioners in that field think about the problem before designing anything. Economists, statisticians, and policy analysts have established frameworks, KPIs, and analytical patterns — these are better starting points than generic IT approaches. Sources: Eurostat Statistics Explained, IMF/World Bank reports, GUS methodology papers, ministry publications, academic frameworks. Standards in this repo are good defaults; evaluate whether they fit the specific situation and adapt when they don't.
 
 **How to engage the PO:**
 - Bring fully researched proposals, not open questions. "I researched X, found Y, and here is what I'm recommending and why — does this align with what you're after?" is a good conversation. "What should the dashboard look like?" is not, because the PO has no basis to answer it.
@@ -307,12 +306,10 @@ docker compose ps                           # Check service status
 docker compose logs -f postgres             # View logs
 docker compose up -d --force-recreate nginx # Reload nginx after config/html changes
 
-# Dashboards — Dash (live, dynamic)
-PYTHONPATH=/opt/open-reporting python3 products/dashboards/labour/app.py   # port 8050
-PYTHONPATH=/opt/open-reporting python3 products/dashboards/explorer/app.py # port 8051
-
-# Dashboards — Static HTML generation
-PYTHONPATH=/opt/open-reporting python3 products/dashboards/generate.py
+# Dashboards — dbr (YAML-authored, deployed via systemd + nginx)
+dbr validate products/dashboards/public_finance     # JSON Schema check
+dbr run      products/dashboards/public_finance     # systemd restart + health check + nginx route + reload
+dbr serve    products/dashboards/public_finance     # foreground dev server
 
 # dbt — run all models
 cd products/warehouse && DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt run --profiles-dir .

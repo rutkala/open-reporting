@@ -29,7 +29,7 @@ products/           → declarative work (you + cheap AI edit here)
   blog/ social/ research/ mobile/ domain-briefs/
 docs/               → ARCHITECTURE.md (target), refactor-plan.md, DATA_MODEL.md, …
   archive/          → Superseded docs
-team/               → knowledge base, standards, playbooks, agent memory
+team/               → knowledge base, standards, agent memory
   knowledge-base/   → KB modules — read on demand, see INDEX.md
   standards/        → build + evaluation standards — see INDEX.md
 
@@ -58,9 +58,10 @@ docker compose up -d                         # start all
 docker compose ps                            # status
 docker compose up -d --force-recreate nginx  # reload nginx
 
-# Dashboards
-PYTHONPATH=/opt/open-reporting python3 products/dashboards/labour/app.py    # port 8050
-PYTHONPATH=/opt/open-reporting python3 products/dashboards/explorer/app.py  # port 8051
+# Dashboards (dbr YAML — Dash + Plotly + MetricFlow)
+dbr validate products/dashboards/public_finance     # JSON Schema check
+dbr run      products/dashboards/public_finance     # deploy to systemd + nginx
+dbr serve    products/dashboards/public_finance     # foreground dev server
 
 # dbt
 cd products/warehouse && DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt run --profiles-dir .
