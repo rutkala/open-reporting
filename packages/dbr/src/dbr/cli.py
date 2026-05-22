@@ -160,11 +160,13 @@ def cmd_run(args: argparse.Namespace) -> int:
     _run(["sudo", "-n", "/usr/bin/systemctl", "restart", f"or-{domain}.service"])
     print(f"  ✓ systemd: or-{domain}.service restarted — waiting for health check")
 
-    # 2b. Health check: dashboards take ~25-40s to start (mf subprocesses
-    #     for each visual). Poll for the port to be listening; if not after
-    #     a budget, dump the service status and fail.
+    # 2b. Health check: dashboards take ~6s per visual to start (each
+    #     binds an mf subprocess at boot — see Phase C plan to amortise).
+    #     Poll for the port to be listening; if not after the budget,
+    #     dump the service status and fail.
+    health_budget_s = 180
     import socket
-    deadline = time.time() + 60
+    deadline = time.time() + health_budget_s
     while time.time() < deadline:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.settimeout(0.5)
@@ -180,8 +182,10 @@ def cmd_run(args: argparse.Namespace) -> int:
             ["/usr/bin/systemctl", "status", f"or-{domain}.service", "--no-pager", "-n", "30"],
             capture_output=True, text=True,
         )
-        print(f"Error: port {port} did not open within 60s — service may be in a crash loop",
-              file=sys.stderr)
+        print(
+            f"Error: port {port} did not open within {health_budget_s}s — service may be in a crash loop",
+            file=sys.stderr,
+        )
         print("─" * 60, file=sys.stderr)
         print(status.stdout, file=sys.stderr)
         print("─" * 60, file=sys.stderr)

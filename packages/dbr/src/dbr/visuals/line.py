@@ -1,18 +1,23 @@
-"""line — Line chart. Encoding-based, multi-series via `color`.
+"""line — Line chart. Encoding-based, multi-series via `color` or multi-metric `y`.
 
 Mandatory encoding:
   x:  { dimension: <name>, granularity: <grain> }   — time or category
-  y:  { metric:    <name> }
+  y:  { metric:    <name> }                          — single metric, or
+  y:  { metric:    [<name>, <name>, ...] }          — list → one trace per metric
 
 Optional:
-  color: { dimension: <name> }                       — splits into series
-  options.years:     limit history (when x is time)
-  options.markers:   show point markers
+  color: { dimension: <name> }                       — split single metric by category
+  options.years:           limit history (when x is time)
+  options.markers:         show point markers
+  options.reference_lines: dashed horizontal lines at given y values
+
+Multi-metric `y` (list) and multi-series `color` are mutually exclusive
+— use one or the other, not both, on the same chart.
 """
 from dash import dcc, html
 import plotly.graph_objects as go
 
-from dbr.semantic import semantic_query_data
+from dbr.semantic import metric_label, semantic_query_data
 from dbr.theme import (
     BG_SURFACE, CARD_RADIUS, CARD_SHADOW,
     LINE_CHART_HEIGHT, LINE_CHART_LINE_WIDTH, LINE_CHART_MARKER_SIZE,
@@ -75,15 +80,21 @@ def line(*, encoding: dict, filter: dict | None = None, options: dict | None = N
 
     if not (enc.x and enc.x.dimension):
         raise ValueError("line: encoding.x must bind a dimension")
-    if not (enc.y and enc.y.metric):
+    metrics = enc.y.metrics if enc.y else []
+    if not metrics:
         raise ValueError("line: encoding.y must bind a metric")
+    if enc.color and len(metrics) > 1:
+        raise ValueError(
+            "line: encoding.color cannot be combined with a list-valued y.metric "
+            "(both produce multiple series). Use one or the other."
+        )
 
     group_by = group_by_from_channels(enc.x, enc.color)
     x_col = dimension_column_name(enc.x)
-    metric = enc.y.metric
 
     df = semantic_query_data(
-        metric, group_by=group_by, filter=filter, order=x_col,
+        metrics if len(metrics) > 1 else metrics[0],
+        group_by=group_by, filter=filter, order=x_col,
         limit=opts.get("years") * (df_series_count(enc.color) if enc.color else 1) if opts.get("years") else None,
     )
     if df.empty:
@@ -96,13 +107,22 @@ def line(*, encoding: dict, filter: dict | None = None, options: dict | None = N
     fig = go.Figure()
     if enc.color:
         color_col = dimension_column_name(enc.color)
+        metric = metrics[0]
         for series, sub in df.groupby(color_col):
             fig.add_trace(go.Scatter(
                 x=sub[x_col], y=sub[metric], mode=mode, name=str(series),
                 line=dict(width=LINE_CHART_LINE_WIDTH),
                 marker=dict(size=LINE_CHART_MARKER_SIZE),
             ))
+    elif len(metrics) > 1:
+        for m in metrics:
+            fig.add_trace(go.Scatter(
+                x=df[x_col], y=df[m], mode=mode, name=metric_label(m),
+                line=dict(width=LINE_CHART_LINE_WIDTH),
+                marker=dict(size=LINE_CHART_MARKER_SIZE),
+            ))
     else:
+        metric = metrics[0]
         fig.add_trace(go.Scatter(
             x=df[x_col], y=df[metric], mode=mode,
             line=dict(width=LINE_CHART_LINE_WIDTH),

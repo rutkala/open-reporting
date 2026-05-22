@@ -1,0 +1,32 @@
+version: 2
+
+models:
+  - name: fact_finance_revenue_expenditure
+    description: Wide annual fact — Eurostat ESA 2010 revenue & expenditure composition (% GDP).
+    columns:
+      - name: geo
+        description: Eurostat 2-letter country code (FK to dim_geo).
+        tests: [not_null]
+      - name: period_year
+        tests: [not_null]
+      - name: period_date
+        description: December 31 of period_year (join key to dim_calendar).
+        tests: [not_null]
+      - name: revenue_pct_gdp
+        description: General-government total revenue (% GDP).
+      - name: taxes_income_pct_gdp
+        description: Taxes on income, wealth, etc. (% GDP).
+      - name: taxes_prod_imports_pct_gdp
+        description: Taxes on production and imports (% GDP).
+      - name: social_contributions_pct_gdp
+        description: Net social contributions (% GDP).
+      - name: expenditure_pct_gdp
+        description: General-government total expenditure (% GDP).
+      - name: interest_expenditure_pct_gdp
+        description: Interest payments on public debt (% GDP).
+      - name: govt_investment_pct_gdp
+        description: Government investment / gross fixed capital formation (% GDP).
+      - name: social_transfers_pct_gdp
+        description: Social transfers other than in kind (% GDP).
+      - name: compensation_employees_pct_gdp
+        description: Compensation of public-sector employees (% GDP).

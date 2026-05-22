@@ -30,9 +30,15 @@ from dbr.theme import (
 
 @dataclass
 class Channel:
-    """One encoding channel bound to either a dimension or a metric."""
+    """One encoding channel bound to either a dimension or a metric.
+
+    ``metric`` accepts either a single metric name or a list of names. The
+    ``metrics`` property always returns a list, so callers don't need to
+    branch on scalar/list shape. A multi-metric y-channel is how the line
+    visual plots several series with shared x-axis (one trace per metric).
+    """
     dimension:   str | None = None
-    metric:      str | None = None
+    metric:      str | list[str] | None = None
     granularity: str | None = None      # only for time dimensions
 
     @property
@@ -42,6 +48,15 @@ class Channel:
         if self.metric is not None:
             return "metric"
         return "empty"
+
+    @property
+    def metrics(self) -> list[str]:
+        """Always return metric(s) as a list (empty if none)."""
+        if self.metric is None:
+            return []
+        if isinstance(self.metric, str):
+            return [self.metric]
+        return list(self.metric)
 
     def mf_group_by(self) -> str | None:
         """Return the `mf query --group-by` token for this channel, or None if it's a metric."""

@@ -1,0 +1,15 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Struktura wydatków Polski (% PKB): wydatki ogółem + 4 główne komponenty.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y:
+    metric:
+      - total_expenditure
+      - social_transfers
+      - compensation_employees
+      - govt_investment
+      - interest_expenditure
+filter:
+  geo: PL

@@ -1,0 +1,14 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Struktura dochodów Polski (% PKB): dochody ogółem + 3 główne komponenty.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y:
+    metric:
+      - total_revenue
+      - taxes_income
+      - taxes_production
+      - social_contributions
+filter:
+  geo: PL

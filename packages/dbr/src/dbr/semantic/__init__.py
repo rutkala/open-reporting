@@ -25,12 +25,14 @@ Use:
 """
 from dbr.semantic.semantic import (
     SemanticResult,
+    metric_label,
     semantic_query,
     semantic_query_data,
     semantic_query_history,
 )
 
 __all__ = [
+    "metric_label",
     "semantic_query",
     "semantic_query_data",
     "semantic_query_history",

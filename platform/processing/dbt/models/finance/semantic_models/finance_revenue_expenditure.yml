@@ -1,0 +1,156 @@
+version: 2
+
+# MetricFlow semantic model for the Dochody i wydatki page.
+#
+# 9 simple metrics built from one wide annual fact. All are % of GDP
+# (same axis), so a multi-metric chart can plot any combination on one
+# pair of axes. Polish labels travel via metric.label and are rendered
+# as legend entries by the line visual.
+
+semantic_models:
+  - name: finance_revenue_expenditure
+    description: Annual revenue & expenditure composition (Eurostat ESA 2010, % GDP).
+    model: ref('fact_finance_revenue_expenditure')
+
+    defaults:
+      agg_time_dimension: period
+
+    primary_entity: finance_revexp_row
+
+    entities:
+      - name: geo
+        type: foreign
+        expr: geo
+      - name: date_key
+        type: foreign
+        expr: period_date
+
+    dimensions:
+      # INTERNAL — MetricFlow requirement; not used in dashboard YAMLs.
+      - name: period
+        type: time
+        expr: period_date
+        type_params:
+          time_granularity: year
+
+    measures:
+      - name: revenue_pct_gdp
+        agg: average
+        expr: revenue_pct_gdp
+      - name: taxes_income_pct_gdp
+        agg: average
+        expr: taxes_income_pct_gdp
+      - name: taxes_prod_imports_pct_gdp
+        agg: average
+        expr: taxes_prod_imports_pct_gdp
+      - name: social_contributions_pct_gdp
+        agg: average
+        expr: social_contributions_pct_gdp
+      - name: expenditure_pct_gdp
+        agg: average
+        expr: expenditure_pct_gdp
+      - name: interest_expenditure_pct_gdp
+        agg: average
+        expr: interest_expenditure_pct_gdp
+      - name: govt_investment_pct_gdp
+        agg: average
+        expr: govt_investment_pct_gdp
+      - name: social_transfers_pct_gdp
+        agg: average
+        expr: social_transfers_pct_gdp
+      - name: compensation_employees_pct_gdp
+        agg: average
+        expr: compensation_employees_pct_gdp
+
+metrics:
+  # ── Revenue side ────────────────────────────────────────────────────
+  - name: total_revenue
+    label: Dochody ogółem
+    type: simple
+    type_params: { measure: revenue_pct_gdp }
+    config:
+      meta:
+        format: { decimals: 1, suffix: "% PKB", scale: 1 }
+        source_label: "Eurostat ESA 2010, dochody sektora rządowego"
+        ascending_is_good: true
+
+  - name: taxes_income
+    label: Podatki dochodowe
+    type: simple
+    type_params: { measure: taxes_income_pct_gdp }
+    config:
+      meta:
+        format: { decimals: 1, suffix: "% PKB", scale: 1 }
+        source_label: "Eurostat ESA 2010, podatki dochodowe i od majątku"
+        ascending_is_good: true
+
+  - name: taxes_production
+    label: Podatki od produkcji i importu
+    type: simple
+    type_params: { measure: taxes_prod_imports_pct_gdp }
+    config:
+      meta:
+        format: { decimals: 1, suffix: "% PKB", scale: 1 }
+        source_label: "Eurostat ESA 2010, w tym VAT i akcyza"
+        ascending_is_good: true
+
+  - name: social_contributions
+    label: Składki na ubezpieczenia społeczne
+    type: simple
+    type_params: { measure: social_contributions_pct_gdp }
+    config:
+      meta:
+        format: { decimals: 1, suffix: "% PKB", scale: 1 }
+        source_label: "Eurostat ESA 2010, składki netto"
+        ascending_is_good: true
+
+  # ── Expenditure side ────────────────────────────────────────────────
+  - name: total_expenditure
+    label: Wydatki ogółem
+    type: simple
+    type_params: { measure: expenditure_pct_gdp }
+    config:
+      meta:
+        format: { decimals: 1, suffix: "% PKB", scale: 1 }
+        source_label: "Eurostat ESA 2010, wydatki sektora rządowego"
+        ascending_is_good: false
+
+  - name: interest_expenditure
+    label: Koszty obsługi długu
+    type: simple
+    type_params: { measure: interest_expenditure_pct_gdp }
+    config:
+      meta:
+        format: { decimals: 1, suffix: "% PKB", scale: 1 }
+        source_label: "Eurostat ESA 2010, odsetki od długu publicznego"
+        ascending_is_good: false
+
+  - name: govt_investment
+    label: Inwestycje publiczne
+    type: simple
+    type_params: { measure: govt_investment_pct_gdp }
+    config:
+      meta:
+        format: { decimals: 1, suffix: "% PKB", scale: 1 }
+        source_label: "Eurostat ESA 2010, nakłady brutto na środki trwałe"
+        ascending_is_good: true
+
+  - name: social_transfers
+    label: Świadczenia społeczne
+    type: simple
+    type_params: { measure: social_transfers_pct_gdp }
+    config:
+      meta:
+        format: { decimals: 1, suffix: "% PKB", scale: 1 }
+        source_label: "Eurostat ESA 2010, transfery socjalne (poza in kind)"
+        ascending_is_good: false
+
+  - name: compensation_employees
+    label: Wynagrodzenia w sektorze publicznym
+    type: simple
+    type_params: { measure: compensation_employees_pct_gdp }
+    config:
+      meta:
+        format: { decimals: 1, suffix: "% PKB", scale: 1 }
+        source_label: "Eurostat ESA 2010, wynagrodzenia pracowników"
+        ascending_is_good: false

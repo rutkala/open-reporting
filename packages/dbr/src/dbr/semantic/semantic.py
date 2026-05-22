@@ -80,7 +80,7 @@ def semantic_query_history(
 
 
 def semantic_query_data(
-    metric: str,
+    metric: str | list[str],
     *,
     group_by: list[str] | None = None,
     filter: dict[str, object] | None = None,
@@ -89,13 +89,16 @@ def semantic_query_data(
 ) -> "pd.DataFrame":
     """Generic semantic query — returns a DataFrame keyed by group-by dimensions.
 
-    Used by encoding-based visuals. `group_by` is a list of MetricFlow dimension
-    refs (e.g. ``["metric_time__year"]``, ``["geo"]``, or both). `filter` is a
-    dict of entity/dimension → value (scalars or lists).
+    Used by encoding-based visuals. ``metric`` accepts a single metric name
+    or a list (mf returns one column per metric in the latter case).
+    ``group_by`` is a list of MetricFlow dimension refs (e.g.
+    ``["metric_time__year"]``, ``["geo"]``, or both). ``filter`` is a dict
+    of entity/dimension → value (scalars or lists).
 
     Returns an empty DataFrame on query failure.
     """
-    cmd = ["mf", "query", "--metrics", metric]
+    metrics_list = [metric] if isinstance(metric, str) else list(metric)
+    cmd = ["mf", "query", "--metrics", ",".join(metrics_list)]
     # mf CLI quirk: passing multiple --group-by flags drops earlier ones.
     # Use the comma-separated form which is processed as a single argument.
     if group_by:
@@ -244,6 +247,18 @@ def _format_pl(value: float, decimals: int) -> str:
 
 
 _metric_config_cache: dict[str, dict] = {}
+
+
+def metric_label(metric: str) -> str:
+    """Look up a metric's display label from its semantic_model YAML.
+
+    Falls back to the metric name when no label is defined. Used by chart
+    visuals to render legend entries for multi-metric series.
+    """
+    try:
+        return _load_metric_config(metric).get("label", metric)
+    except KeyError:
+        return metric
 
 
 def _load_metric_config(metric: str) -> dict:
