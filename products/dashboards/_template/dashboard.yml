@@ -1,8 +1,0 @@
-# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/dashboard.schema.json
-# Open Reporting — template dashboard
-# Root config for the dashboard. Only `domain` and `port` are mandatory;
-# everything else is optional and inherits kit defaults when omitted.
-
-domain: template
-port:   8055
-title:  Szablon
