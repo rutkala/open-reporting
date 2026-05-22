@@ -37,7 +37,13 @@ import yaml
 log = logging.getLogger(__name__)
 
 DBT_PROJECT_ROOT = Path("/opt/open-reporting/products/warehouse")
-SEMANTIC_MODELS_GLOB = "models/**/semantic_models/*.yml"
+# Matches MetricFlow semantic model YAMLs in two locations:
+#   models/semantic/*.yml — canonical flat layout (post Phase-4f reshape)
+#   models/**/<file>.yml  — semantic_models embedded inside a model YAML
+#                           (e.g. dim_geo.yml, dim_cofog.yml — dims that
+#                            expose entities/dimensions to MetricFlow)
+# The loader walks every match and picks YAMLs that declare `metrics:`.
+SEMANTIC_MODELS_GLOB = "models/**/*.yml"
 
 
 # ── Engine singleton ──────────────────────────────────────────────────────────

@@ -4,7 +4,7 @@ models:
   - name: fact_finance_overview
     description: >
       Wide intermediate model for the finance dashboard Overview KPI row.
-      Pivots curated.mart_finance from long to wide so MetricFlow can map
+      Pivots curated.int_finance_consolidated from long to wide so MetricFlow can map
       one column per measure. Grain: one row per (geo, period_year).
     columns:
       - name: geo

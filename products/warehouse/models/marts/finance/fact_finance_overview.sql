@@ -6,7 +6,7 @@
   Wide intermediate model for the finance Overview KPI row.
 
   MetricFlow expects one column per measure on a semantic-model source.
-  curated.mart_finance is long-melted (one row per detail_id × source_id × dim_*),
+  curated.int_finance_consolidated is long-melted (one row per detail_id × source_id × dim_*),
   so this view pivots the three Overview indicators into a single
   (geo, period_year, period_date) grain with one numeric column each.
 
@@ -46,7 +46,7 @@ select
             then value
         end) as govt_revenue_pln_mn
 
-from {{ ref('mart_finance') }}
+from {{ ref('int_finance_consolidated') }}
 where value is not null
   and detail_id in (
       'pub.fiscal_balance_gdp',

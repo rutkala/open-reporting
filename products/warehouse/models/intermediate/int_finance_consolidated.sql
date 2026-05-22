@@ -3,7 +3,7 @@
 }}
 
 /*
-  Gold mart: curated.mart_finance
+  Intermediate: curated.int_finance_consolidated
   Domain: Public Finance (domain_id = 'PUB')
 
   Sources:

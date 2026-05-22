@@ -13,7 +13,7 @@ models:
         description: COFOG function code 1..10. Primary key.
         tests: [not_null, unique]
       - name: cofog_code
-        description: Detail_id used in mart_finance (e.g. "pub.cofog_07_gdp").
+        description: Detail_id used in int_finance_consolidated (e.g. "pub.cofog_07_gdp").
         tests: [not_null, unique]
       - name: cofog_label_pl
         description: Polish function name (e.g. "Zdrowie").

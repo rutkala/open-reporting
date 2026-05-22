@@ -6,7 +6,7 @@
   Wide annual fact: revenue and expenditure composition for the
   Dochody i wydatki page.
 
-  Source: curated.mart_finance, Eurostat ESA 2010, General government
+  Source: curated.int_finance_consolidated, Eurostat ESA 2010, General government
   sector. All values are % of GDP. One row per (geo, period_year).
 
   Revenue side (4 columns):
@@ -62,7 +62,7 @@ select
                   and dim_govt_sector = 'General government'
              then value end) as compensation_employees_pct_gdp
 
-from {{ ref('mart_finance') }}
+from {{ ref('int_finance_consolidated') }}
 where source_id = 'eurostat'
   and value is not null
   and detail_id in (

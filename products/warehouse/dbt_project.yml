@@ -17,8 +17,16 @@ models:
   open_reporting:
     +materialized: table
     +schema: curated
-    dbw:
-      +schema: curated
+    staging:
+      +materialized: view
+    intermediate:
+      +materialized: view
+    marts:
+      +materialized: table
+    dim:
+      +materialized: table
+    # semantic/ contains only YAML (semantic_models + metrics), no SQL —
+    # no materialisation config needed.
 
 seeds:
   open_reporting:

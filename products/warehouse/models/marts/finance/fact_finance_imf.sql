@@ -5,10 +5,10 @@
 /*
   Wide annual fact for IMF WEO public-finance projections.
 
-  Source: curated.mart_finance, source_id='imf'. Each row is one country
+  Source: curated.int_finance_consolidated, source_id='imf'. Each row is one country
   in one year, with four % of GDP metrics. The `is_projection` column
   comes straight from the WEO dataset — TRUE for forecast years (2026+
-  as of the spring 2025 WEO), FALSE for historicals. mart_finance stores
+  as of the spring 2025 WEO), FALSE for historicals. int_finance_consolidated stores
   it as nullable BOOLEAN; we coalesce to FALSE here so MetricFlow can
   group on it as a categorical without NULL ambiguity.
 
@@ -28,7 +28,7 @@ select
     max(case when detail_id = 'pub.gross_debt_imf'        then value end) as gross_debt_imf,
     max(case when detail_id = 'pub.net_debt_imf'          then value end) as net_debt_imf
 
-from {{ ref('mart_finance') }}
+from {{ ref('int_finance_consolidated') }}
 where source_id = 'imf'
   and value is not null
   and detail_id in (
