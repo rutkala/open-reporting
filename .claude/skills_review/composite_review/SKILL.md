@@ -52,7 +52,7 @@ Spawn all agents **in parallel** using Agent tool calls in the same message. Age
 - Runs `git diff origin/main...HEAD` independently
 - Reads `team/standards/evaluation/data-engineering-review.md`, checks ELT compliance, DuckDB patterns, dbt conventions, idempotency
 - Returns P1 / P2 / P3 findings with BLOCK / CONDITIONAL / PASS verdict
-- Only spawn if diff touches `products/ingestion/`, `platform/processing/`, or `platform/warehouse/`
+- Only spawn if diff touches `products/ingestion/`, `products/warehouse/`, or `products/warehouse/`
 
 **Agent F — `measures-reviewer`** *(semantic layer changes only)*
 - Runs `git diff origin/main...HEAD` independently

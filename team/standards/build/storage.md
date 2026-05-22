@@ -1,7 +1,7 @@
 # Database Standard
 
 **Derived from:** `team/knowledge-base/data-architecture/architecture.md` ✓ (medallion contracts, Kimball dimensional modelling, schema naming, SCD types, DuckDB type implications)
-**Used by builders:** `data-engineer` (writing DDL in `platform/warehouse/` and `products/database/`)
+**Used by builders:** `data-engineer` (writing DDL in `products/warehouse/` and `products/database/`)
 **Evaluated by:** `architecture-critic` (plan-phase), `data-engineer-reviewer` (PR-phase)
 **Does NOT cover:** ingestion scripts (see `ingestion.md`), dbt model patterns (see `processing.md`), semantic layer (see `measures.md`)
 
@@ -248,7 +248,7 @@ CREATE TABLE IF NOT EXISTS curated.demographics_population (
 - **Full-overwrite pattern:**
   ```python
   conn.execute("DROP TABLE IF EXISTS raw.my_table")
-  with open("platform/warehouse/raw/my_table.sql") as f:
+  with open("products/warehouse/raw/my_table.sql") as f:
       conn.execute(f.read())
   # then INSERT from read_csv(...)
   ```

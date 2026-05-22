@@ -41,7 +41,7 @@ The plan text is provided below the separator line. Read it carefully, then eval
 - **New ingestion without catalogue verification** — the ingestion standard requires catalogue verification before writing code. Flag if the plan skips this step.
 - **New dimension column without updating all staging models** — if the plan adds a new `dim_*` column, all existing staging models must also be updated. Flag if this cross-cutting change isn't mentioned.
 - **No upsert strategy for mutable data** — if a new table will receive repeated ingestions, it needs an upsert pattern. Flag if not mentioned for non-append-only tables.
-- **Tight coupling** — a dashboard importing functions directly from `products/ingestion/` or `platform/processing/`. The only shared layer between platform and products is the `complex_dashboard` skill (`.claude/skills/complex_dashboard/assets/`).
+- **Tight coupling** — a dashboard importing functions directly from `products/ingestion/` or `products/warehouse/`. The only shared layer between platform and products is the `complex_dashboard` skill (`.claude/skills/complex_dashboard/assets/`).
 
 ### NOTE concerns (good to address, does not block)
 

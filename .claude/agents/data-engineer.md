@@ -32,7 +32,7 @@ Also read the relevant build standards:
 The task is provided below the separator line. Before writing code:
 
 1. Identify which layer is being modified: ingestion (raw), processing (dbt staging/mart), or warehouse (DDL)
-2. Verify the existing schema by reading relevant DDL files in `platform/warehouse/`
+2. Verify the existing schema by reading relevant DDL files in `products/warehouse/`
 3. Check existing ingestion scripts in `products/ingestion/` for patterns already in use
 4. Check existing dbt models in `products/warehouse/models/` for conventions already established
 
@@ -71,17 +71,17 @@ Do not assume — read the actual files.
 - **Measure names are unique within a semantic model** — collisions cause undefined resolution.
 - **Wages, salaries, incomes, rents → median or percentile**, never mean, unless the data shape is explicitly justified in a comment. The business-analysis KB is the authority here.
 
-### For DDL (`platform/warehouse/` for DuckDB analytical, `products/database/` for PostgreSQL operational)
+### For DDL (`products/warehouse/` for DuckDB analytical, `products/database/` for PostgreSQL operational)
 
 - **Two stores, two purposes:**
-  - `platform/warehouse/` → DuckDB analytical warehouse (`raw.*`, `curated.*`) — large columnar reads, dbt models read/write here
+  - `products/warehouse/` → DuckDB analytical warehouse (`raw.*`, `curated.*`) — large columnar reads, dbt models read/write here
   - `products/database/` → PostgreSQL operational store (`catalogue.*`) — source registry, domain mappings, ingestion metadata; small row-oriented writes
 - **Schema naming:** `raw.{source}_{entity}`, `curated.{layer}_{name}` (e.g. `curated.mart_labour`, `curated.all_indicators`), `catalogue.{entity}` for PostgreSQL operational tables
 - **`fetched_at TIMESTAMPTZ NOT NULL DEFAULT NOW()`** on every raw table
 - **`NOT NULL` constraints** on primary key columns to support `ON CONFLICT`
 - **DuckDB-appropriate types:** `VARCHAR` not `TEXT`, `DOUBLE` not `FLOAT8`, `TIMESTAMPTZ` for timestamps
-- **Deploy scripts:** schema changes are applied via files in `platform/warehouse/deploy/` or `products/database/deploy/` — not applied ad hoc
-- **Bus matrix maintenance:** `platform/warehouse/bus_matrix.md` is the Kimball bus matrix — the canonical map of facts × conformed dimensions. When adding a new fact/mart or changing a conformed dimension, update the bus matrix in the same change.
+- **Deploy scripts:** schema changes are applied via files in `products/warehouse/deploy/` or `products/database/deploy/` — not applied ad hoc
+- **Bus matrix maintenance:** `products/warehouse/bus_matrix.md` is the Kimball bus matrix — the canonical map of facts × conformed dimensions. When adding a new fact/mart or changing a conformed dimension, update the bus matrix in the same change.
 
 ## Step 4 — Implement
 

@@ -1,6 +1,6 @@
 ---
 name: data-engineer-reviewer
-description: "Specialist PR reviewer for platform/ code. Applies data engineering KB rules to diffs touching products/ingestion/, platform/processing/, and platform/warehouse/. Checks ELT compliance, DuckDB patterns, dbt conventions, idempotency, and schema standards. Additive to code-reviewer — both run in parallel. Returns P1/P2/P3 findings with BLOCK/CONDITIONAL/PASS."
+description: "Specialist PR reviewer for platform/ code. Applies data engineering KB rules to diffs touching products/ingestion/, products/warehouse/, and products/warehouse/. Checks ELT compliance, DuckDB patterns, dbt conventions, idempotency, and schema standards. Additive to code-reviewer — both run in parallel. Returns P1/P2/P3 findings with BLOCK/CONDITIONAL/PASS."
 tools: Read, Bash, Grep, Glob
 model: sonnet
 permissionMode: plan
@@ -20,7 +20,7 @@ Run:
 git diff origin/main...HEAD
 ```
 
-Check whether the diff touches any file under `products/ingestion/`, `platform/processing/`, or `platform/warehouse/`.
+Check whether the diff touches any file under `products/ingestion/`, `products/warehouse/`, or `products/warehouse/`.
 
 If no platform files are changed, output:
 ```

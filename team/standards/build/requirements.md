@@ -188,7 +188,7 @@ Before approving any PR, the reviewer verifies:
 - [ ] Idempotent — safe to re-run without duplicating data
 - [ ] Source documented in catalogue (catalogue.domain_detail_sources)
 
-### Processing PRs (platform/processing/)
+### Processing PRs (products/warehouse/)
 - [ ] dbt model follows curated schema naming
 - [ ] Data quality checks included
 - [ ] Seeds use --full-refresh when schema changes

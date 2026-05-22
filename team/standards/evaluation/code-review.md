@@ -19,8 +19,8 @@ These are non-negotiable. A single P1 finding must be resolved before the PR can
 - **No `.env` in diff** — `.env` must never appear in a staged commit. `.env.example` is fine.
 
 ### Architecture — layer violations
-- **No raw schema queries from dashboard/app layer** — `products/dashboards/` and `.claude/skills/complex_dashboard/assets/` must not contain SQL that references `raw.*` tables directly. Raw queries belong in `products/ingestion/` or `platform/processing/`.
-- **No curated/mart logic in ingestion scripts** — `products/ingestion/` must land data only. Transformation belongs in `platform/processing/` (dbt models).
+- **No raw schema queries from dashboard/app layer** — `products/dashboards/` and `.claude/skills/complex_dashboard/assets/` must not contain SQL that references `raw.*` tables directly. Raw queries belong in `products/ingestion/` or `products/warehouse/`.
+- **No curated/mart logic in ingestion scripts** — `products/ingestion/` must land data only. Transformation belongs in `products/warehouse/` (dbt models).
 
 ### Error handling
 - **No bare `except:`** — catches everything including `KeyboardInterrupt` and `SystemExit`. Always catch a specific exception class (e.g. `except ValueError`, `except duckdb.Error`).
@@ -45,7 +45,7 @@ Fix before merging where practical. If not fixed, explain why in the PR descript
 - **No Polish strings in component library or template code** — `.claude/skills/complex_dashboard/assets/` and `products/dashboards/template/` are English-only. Polish strings belong in domain dashboard files only (user-facing content).
 - **Line length ≤ 100 characters** — flag lines that exceed this. Docstrings and comments included.
 - **Type hints on new function signatures** — every new function must have parameter and return type annotations. Existing functions without hints are not flagged unless they are being modified.
-- **`#!/usr/bin/env python3` shebang on new scripts** — required on any new file in `products/ingestion/` or `platform/processing/` that is meant to be run directly.
+- **`#!/usr/bin/env python3` shebang on new scripts** — required on any new file in `products/ingestion/` or `products/warehouse/` that is meant to be run directly.
 - **Imports ordered: stdlib → third-party → local** — flag only if the order is clearly wrong (e.g. local imports before stdlib), not minor grouping issues.
 
 ### Visual / semantic layer

@@ -155,7 +155,7 @@ Paste this into every PR and check off before requesting review:
 - [ ] Landing zone used for raw files before warehouse load
 - [ ] Source documented in catalogue (catalogue.domain_detail_sources)
 
-### Processing PRs (platform/processing/)
+### Processing PRs (products/warehouse/)
 - [ ] dbt model follows curated schema naming
 - [ ] Data quality checks included (DQ framework — 6 categories)
 - [ ] Seeds use --full-refresh when schema changes

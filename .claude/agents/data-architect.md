@@ -41,9 +41,9 @@ The design task is provided below the separator line. Extract:
 
 Before proposing new designs:
 
-1. **Read existing DDL files** — `platform/warehouse/raw/` and `platform/warehouse/curated/` for current schema
+1. **Read existing DDL files** — `products/warehouse/raw/` and `products/warehouse/curated/` for current schema
 2. **Read existing dbt models** — `products/warehouse/models/` for conventions already established
-3. **Read the bus matrix** — `platform/warehouse/bus_matrix.md` for conformed dimensions
+3. **Read the bus matrix** — `products/warehouse/bus_matrix.md` for conformed dimensions
 4. **Check existing ingestion scripts** — `products/ingestion/` for patterns already in use
 
 Do not assume — read the actual files.
@@ -122,7 +122,7 @@ FROM {{ ref('stg_{source}_{entity}') }}
 {List of shared dimensions and whether they already exist or need to be created}
 
 ### Bus matrix update
-{Changes to platform/warehouse/bus_matrix.md}
+{Changes to products/warehouse/bus_matrix.md}
 
 ### Ingestion approach
 {Append-only vs upsert, update frequency, idempotency strategy}

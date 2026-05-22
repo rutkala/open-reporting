@@ -22,7 +22,7 @@ A single BLOCK finding must be resolved before the plan is presented to the user
 
 ### Coupling violations
 
-- **Dashboard importing from platform code** — `products/dashboards/` directly importing functions from `products/ingestion/` or `platform/processing/`. The only shared layer between platform and products is the `complex_dashboard` skill (`.claude/skills/complex_dashboard/assets/`).
+- **Dashboard importing from platform code** — `products/dashboards/` directly importing functions from `products/ingestion/` or `products/warehouse/`. The only shared layer between platform and products is the `complex_dashboard` skill (`.claude/skills/complex_dashboard/assets/`).
 
 ---
 
