@@ -2,7 +2,7 @@
 
 **Derived from:** `team/knowledge-base/analytical-methods/analytical-thinking.md` *(KB complete)*
 **Used by:** `.claude/agents/analytical-validator.md`
-**Does NOT cover:** code quality (see `evaluation/code-review.md`), architecture layer violations (see `evaluation/architecture-review.md`), visual design (see `evaluation/visualization-diff.md`)
+**Does NOT cover:** code quality (see `evaluation/code-review.md`), architecture layer violations (see `evaluation/architecture-review.md`), visual design (see `evaluation/visualization-image.md`)
 
 Rules applied by the `analytical-validator` agent at plan phase and diff phase.
 A chart or SQL query can be technically correct and architecturally compliant while still communicating a false or misleading picture.

@@ -27,16 +27,34 @@ import time
 import requests
 from playwright.sync_api import sync_playwright
 
-REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+REPO_ROOT = "/opt/open-reporting"
+DASHBOARDS_DIR = os.path.join(REPO_ROOT, "products", "dashboards")
 
-DASHBOARDS = {
-    "labour":   ("products/dashboards/labour/app.py",   "/labour/"),
-    "explorer": ("products/dashboards/explorer/app.py", "/explorer/"),
-    "finance":  ("products/dashboards/finance/app.py",  "/finance/"),
-}
-
-STARTUP_TIMEOUT = 40   # seconds to wait for dashboard to become ready
+STARTUP_TIMEOUT = 60   # seconds to wait for dashboard to become ready (dbr boot)
 RENDER_WAIT_MS  = 3000  # milliseconds to wait after page load for JS rendering
+
+
+def discover_dashboards() -> dict:
+    """Scan products/dashboards/ for valid dbr dashboards.
+
+    Returns {name: dashboard_config_path}. A valid dashboard has a
+    dashboard.yml at the top level (the dbr project root).
+    """
+    import yaml
+    out = {}
+    if not os.path.isdir(DASHBOARDS_DIR):
+        return out
+    for name in sorted(os.listdir(DASHBOARDS_DIR)):
+        project = os.path.join(DASHBOARDS_DIR, name)
+        cfg = os.path.join(project, "dashboard.yml")
+        if os.path.isfile(cfg):
+            try:
+                config = yaml.safe_load(open(cfg)) or {}
+                if config.get("domain") and config.get("port"):
+                    out[name] = project
+            except yaml.YAMLError:
+                continue
+    return out
 
 
 def is_port_free(port: int) -> bool:
@@ -60,37 +78,34 @@ def wait_for_ready(port: int, url_path: str, timeout: int) -> bool:
 
 
 def take_screenshot(dashboard: str, port: int, output: str) -> bool:
-    entry = DASHBOARDS.get(dashboard)
-    if not entry:
-        print(f"ERROR: unknown dashboard '{dashboard}'. Choose from: {', '.join(DASHBOARDS)}", file=sys.stderr)
+    """Start the dashboard via `dbr serve`, wait for ready, screenshot, then stop.
+
+    `port` is informational only — dbr reads its port from dashboard.yml.
+    """
+    dashboards = discover_dashboards()
+    project_root = dashboards.get(dashboard)
+    if not project_root:
+        print(
+            f"ERROR: unknown dashboard '{dashboard}'. "
+            f"Choose from: {', '.join(dashboards) or '<none discovered>'}",
+            file=sys.stderr,
+        )
         return False
 
-    app_path, url_path = entry
-    full_app_path = os.path.join(REPO_ROOT, app_path)
-    if not os.path.exists(full_app_path):
-        print(f"ERROR: dashboard file not found: {full_app_path}", file=sys.stderr)
-        return False
-
-    # Check port availability; try fallback
-    if not is_port_free(port):
-        fallback = port - 1
-        if not is_port_free(fallback):
-            print(f"ERROR: ports {port} and {fallback} are both in use", file=sys.stderr)
-            return False
-        print(f"Port {port} in use, using {fallback}", file=sys.stderr)
-        port = fallback
-
-    env = os.environ.copy()
-    env["PYTHONPATH"] = REPO_ROOT
-    env["OR_PORT"] = str(port)
+    # Read the port from the project's dashboard.yml so we hit the right one
+    import yaml
+    config = yaml.safe_load(open(os.path.join(project_root, "dashboard.yml")))
+    domain = config["domain"]
+    actual_port = int(config["port"])
+    url_path = f"/{domain}/"
 
     proc = subprocess.Popen(
-        [sys.executable, full_app_path],
-        env=env,
+        ["dbr", "serve", project_root],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
         preexec_fn=os.setsid,
     )
+    port = actual_port
 
     try:
         print(f"Starting {dashboard} dashboard on port {port}...", file=sys.stderr)
@@ -118,9 +133,14 @@ def take_screenshot(dashboard: str, port: int, output: str) -> bool:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Take a screenshot of a dashboard for visual review")
-    parser.add_argument("dashboard", choices=list(DASHBOARDS), help="Dashboard to screenshot")
-    parser.add_argument("--port", type=int, default=19999, help="Temp port (default: 19999)")
+    dashboards = discover_dashboards()
+    parser = argparse.ArgumentParser(description="Take a screenshot of a dbr dashboard for visual review")
+    parser.add_argument(
+        "dashboard",
+        choices=list(dashboards) or None,
+        help=f"Dashboard to screenshot (one of: {', '.join(dashboards) or '<none>'})",
+    )
+    parser.add_argument("--port", type=int, default=19999, help="Informational; port comes from dashboard.yml")
     parser.add_argument("--output", help="Output PNG path (default: /tmp/or-screenshot-{dashboard}.png)")
     args = parser.parse_args()
 

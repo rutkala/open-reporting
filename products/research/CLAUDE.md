@@ -68,7 +68,7 @@ Links to related library entries.
 
 ```python
 # Direct warehouse queries (filters, time series)
-from complex_dashboard.assets.data.db import query
+from dbr.semantic import query
 
 # Example: pull GDP growth series
 df = query("SELECT period, value FROM curated.mac_gdp_growth WHERE geo = 'PL'")

@@ -13,7 +13,7 @@
 - **OR-130** — Architecture Critic agent: `architecture-critic` subagent evaluates implementation plans before any code is written. Reads `team/standards/` and checks for BLOCK (layer violations, raw-from-dashboard, transform-in-ingestion, missing dbt staging model, silver queried by domain dashboard, circular dependencies), CONDITIONAL (missing fetched_at, schema naming, catalogue verification, upsert strategy, tight coupling), and NOTE concerns. `/plan` skill updated with Step 3.5: critic runs after plan is drafted, before presenting to user — BLOCK findings are fixed before the user ever sees the plan.
 - **OR-128** — Visualization Reviewer agent: `team/standards/visualization-review.md` (HIGH/MEDIUM/LOW
   rules: colour semantics, KPI reference completeness, series count, y_measure on domain calls,
-  subtitle, pie slice limit, waterfall variant mismatch). `visualization-reviewer` subagent scoped
+  subtitle, pie slice limit, waterfall variant mismatch). `visual-screenshot-reviewer` subagent scoped
   to domain dashboards. `/review` Part 0 now runs both agents in parallel.
 - **OR-127** — Code Reviewer agent: `team/standards/code-review.md` (P1/P2/P3 rules covering
   security, SQL injection, layer violations, logging, DB patterns, Python conventions, semantic

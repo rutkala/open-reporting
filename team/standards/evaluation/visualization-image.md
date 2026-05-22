@@ -2,7 +2,7 @@
 
 **Derived from:** `team/knowledge-base/ux-perception/perception.md` ✓ + `team/knowledge-base/visualization/principles.md` ✓ (KBs complete — pre-attentive, Gestalt, WCAG, cognitive load)
 **Used by:** `.claude/agents/visual-screenshot-reviewer.md`
-**Does NOT cover:** code-level chart configuration (see `evaluation/visualization-diff.md`), statistical correctness (see `evaluation/analytical-review.md`)
+**Does NOT cover:** code-level chart configuration (see `evaluation/visualization-image.md`), statistical correctness (see `evaluation/analytical-review.md`)
 
 Agent reference for image-based dashboard review. Apply only these rules when evaluating a screenshot.
 Complement to `visualization-diff.md` (code-based) — covers what cannot be checked from code.

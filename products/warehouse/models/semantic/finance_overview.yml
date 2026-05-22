@@ -7,7 +7,7 @@ version: 2
 # without leaking SQL or column names into chart code.
 #
 # Display + threshold metadata travels in `config.meta` and is read by
-# complex_dashboard.assets.runtime.semantic.semantic_query() at render time.
+# dbr.semantic.semantic_query() at render time.
 
 semantic_models:
   - name: finance_overview

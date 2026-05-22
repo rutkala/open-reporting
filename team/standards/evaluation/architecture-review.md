@@ -2,7 +2,7 @@
 
 **Derived from:** `team/knowledge-base/data-architecture/architecture.md` ✓ (KB complete — medallion, Kimball, dbt patterns, schema naming, SCD types)
 **Used by:** `.claude/agents/architecture-critic.md`
-**Does NOT cover:** code quality (see `evaluation/code-review.md`), statistical correctness (see `evaluation/analytical-review.md`), visual design (see `evaluation/visualization-diff.md`)
+**Does NOT cover:** code quality (see `evaluation/code-review.md`), statistical correctness (see `evaluation/analytical-review.md`), visual design (see `evaluation/visualization-image.md`)
 
 Rules applied by the `architecture-critic` agent on every implementation plan, before any code is written.
 
@@ -22,7 +22,7 @@ A single BLOCK finding must be resolved before the plan is presented to the user
 
 ### Coupling violations
 
-- **Dashboard importing from platform code** — `products/dashboards/` directly importing functions from `products/ingestion/` or `products/warehouse/`. The only shared layer between platform and products is the `complex_dashboard` skill (`.claude/skills/complex_dashboard/assets/`).
+- **Dashboard importing from platform code** — `products/dashboards/` directly importing functions from `products/ingestion/` or `products/warehouse/`. The only shared layer between platform and products is the `dbr` package (`packages/dbr/src/dbr/`).
 
 ---
 

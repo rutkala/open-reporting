@@ -2,7 +2,7 @@
 
 **Derived from:** `team/knowledge-base/content/editorial.md` ✓ (KB complete — inverted pyramid, fact-checking, source attribution, Polish press law, writing structure, social media standards)
 **Used by:** `.claude/agents/content-reviewer.md`
-**Does NOT cover:** analytical correctness of the underlying data (see `evaluation/analytical-review.md`), chart visual design (see `evaluation/visualization-diff.md`), dashboard functionality (see `evaluation/code-review.md`)
+**Does NOT cover:** analytical correctness of the underlying data (see `evaluation/analytical-review.md`), chart visual design (see `evaluation/visualization-image.md`), dashboard functionality (see `evaluation/code-review.md`)
 
 Rules applied by the `content-reviewer` agent on editorial content produced by the `content-writer` agent. Content is reviewed before publication. The goal is to catch factual, framing, and language errors before they reach readers.
 
@@ -66,7 +66,7 @@ Rules applied by the `content-reviewer` agent on editorial content produced by t
 ## What this standard does NOT cover
 
 - Whether the underlying data in the warehouse is correct — that is the data pipeline's responsibility.
-- Whether the chart renders correctly or uses the right colours — that is `visualization-reviewer`'s scope.
+- Whether the chart renders correctly or uses the right colours — that is `visual-screenshot-reviewer`'s scope.
 - Whether the SQL query that produced the number is correct — that is `analytical-validator`'s scope.
 - Whether the indicator is the best KPI for the domain — that is `domain-specialist`'s scope.
 - Subjective preferences for writing style beyond the rules listed above — matters of taste are not P1/P2/P3 findings.

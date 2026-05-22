@@ -66,4 +66,4 @@ These rules are ADDITIVE to `code-review.md`. Both agents run in parallel. Do no
 - SQL aggregation correctness inside dbt models or ad-hoc queries — that is `analytical-validator`'s scope.
 - Whether a measure is the right KPI for a domain — that is `domain-specialist`'s scope.
 - Whether the semantic model is well-structured architecturally (which entity owns which measure) — that is `architecture-critic`'s scope at plan phase.
-- Number formatting at render time in chart/KPI component calls — that is `visualization-reviewer`'s scope.
+- Number formatting at render time in chart/KPI component calls — that is `visual-screenshot-reviewer`'s scope.

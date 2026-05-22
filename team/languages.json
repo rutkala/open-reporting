@@ -22,7 +22,7 @@
   },
 
   "scope_examples": {
-    "backend_english": ["products/dashboards/labour/", "products/ingestion/", "products/warehouse/", "infra/", "detail_id values", "schema names", "column names", "URL routes", "systemd unit names", "git branches"],
+    "backend_english": ["products/dashboards/<domain>/ folder names", "products/ingestion/", "products/warehouse/", "packages/", "infra/", "detail_id values", "schema names", "column names", "URL routes", "systemd unit names", "git branches"],
     "content_polish": ["chart titles", "axis labels", "KPI card labels", "portal page copy", "dashboard section headings", "tooltip text"]
   }
 }

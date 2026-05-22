@@ -2,7 +2,7 @@
 
 **Derived from:** `team/knowledge-base/data-engineering/engineering.md` ✓ (KB complete — ELT, DuckDB, dbt, Python ETL, DAMA quality)
 **Used by:** `.claude/agents/code-reviewer.md`
-**Does NOT cover:** architectural layer compliance (see `evaluation/architecture-review.md`), statistical correctness (see `evaluation/analytical-review.md`), visual design (see `evaluation/visualization-diff.md`)
+**Does NOT cover:** architectural layer compliance (see `evaluation/architecture-review.md`), statistical correctness (see `evaluation/analytical-review.md`), visual design (see `evaluation/visualization-image.md`)
 
 Rules applied by the `code-reviewer` agent on every PR diff.
 Organised by severity — P1 blocks merge, P2 should be fixed, P3 is noted.
@@ -19,7 +19,7 @@ These are non-negotiable. A single P1 finding must be resolved before the PR can
 - **No `.env` in diff** — `.env` must never appear in a staged commit. `.env.example` is fine.
 
 ### Architecture — layer violations
-- **No raw schema queries from dashboard/app layer** — `products/dashboards/` and `.claude/skills/complex_dashboard/assets/` must not contain SQL that references `raw.*` tables directly. Raw queries belong in `products/ingestion/` or `products/warehouse/`.
+- **No raw schema queries from dashboard/app layer** — `products/dashboards/` and `packages/dbr/src/dbr/` must not contain SQL that references `raw.*` tables directly. Raw queries belong in `products/ingestion/` or `products/warehouse/`.
 - **No curated/mart logic in ingestion scripts** — `products/ingestion/` must land data only. Transformation belongs in `products/warehouse/` (dbt models).
 
 ### Error handling
@@ -42,7 +42,7 @@ Fix before merging where practical. If not fixed, explain why in the PR descript
 - **`load_dotenv(override=True)` in scripts that need env vars** — must appear before any `os.getenv()` calls.
 
 ### Python conventions
-- **No Polish strings in component library or template code** — `.claude/skills/complex_dashboard/assets/` and `products/dashboards/template/` are English-only. Polish strings belong in domain dashboard files only (user-facing content).
+- **No Polish strings in framework code** — `packages/dbr/src/dbr/` is English-only. Polish strings belong in dashboard YAML files (chart titles, KPI labels) and in metric labels in `products/warehouse/models/semantic/`, never in framework Python.
 - **Line length ≤ 100 characters** — flag lines that exceed this. Docstrings and comments included.
 - **Type hints on new function signatures** — every new function must have parameter and return type annotations. Existing functions without hints are not flagged unless they are being modified.
 - **`#!/usr/bin/env python3` shebang on new scripts** — required on any new file in `products/ingestion/` or `products/warehouse/` that is meant to be run directly.

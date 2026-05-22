@@ -118,7 +118,7 @@ Shared session memory at `team/session-memory.md` provides continuity across ses
 |-------|-------|------|-------------|
 | `debug` | All directories | Read-only (plan) | Debugging, tracing, diagnostics |
 | `data-engineer` | `platform/` | Full dev | Ingestion scripts, dbt models, schema DDL, warehouse queries, semantic layer (MetricFlow) |
-| `dashboard-dev` | `products/dashboards/`, `complex_dashboard` skill | Full dev | Dash apps, Plotly components, KPI cards, layout — reads ux-perception + visualization KBs |
+| `dashboard-dev` | `products/dashboards/`, `dbr` package | Full dev | Dash apps, Plotly components, KPI cards, layout — reads ux-perception + visualization KBs |
 | `business-analyst` | Domain research | Read + Web | KPI design, indicator selection, analytical briefs |
 
 **Evaluator agents** (review output independently — invoked by skills, not directly):
@@ -131,7 +131,6 @@ Shared session memory at `team/session-memory.md` provides continuity across ses
 | `code-reviewer` | PR | P1/P2/P3 code quality, security, conventions |
 | `data-engineer-reviewer` | PR (platform/ only) | ELT compliance, DuckDB patterns, dbt conventions, idempotency |
 | `measures-reviewer` | PR (semantic layer only) | Measure definitions, agg correctness, format_type, Polish labels |
-| `visualization-reviewer` | PR | Chart calls — colour semantics, series count, axis labels |
 | `visual-screenshot-reviewer` | PR | Rendered screenshots — perception science, cognitive load, WCAG, colour blindness |
 | `domain-specialist` | Plan + PR | Domain KPI correctness, framing, benchmarks |
 | `cost-estimator` | Feasibility | Token budget forecast, split recommendation |
@@ -276,7 +275,6 @@ Two categories in `team/standards/`. See `team/standards/INDEX.md` for the deriv
 | `architecture-review.md` | `architecture-critic` | Plan |
 | `analytical-review.md` | `analytical-validator` | Plan + PR |
 | `data-engineering-review.md` | `data-engineer-reviewer` | PR (platform/ only) |
-| `visualization-diff.md` | `visualization-reviewer` | PR |
 | `visualization-image.md` | `visual-screenshot-reviewer` | PR |
 | `measures-review.md` | `measures-reviewer` | PR (semantic layer only) |
 | `brief-review.md` | `brief-reviewer` | Plan (after business-analyst) |
@@ -319,7 +317,7 @@ cd products/warehouse && DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb d
 
 # DuckDB direct query test
 PYTHONPATH=/opt/open-reporting python3 -c "
-from complex_dashboard.assets.data.db import query
+from dbr.semantic import query
 print(query('SELECT 42 AS answer'))
 "
 ```

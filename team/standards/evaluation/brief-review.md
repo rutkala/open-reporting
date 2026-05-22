@@ -2,7 +2,7 @@
 
 **Derived from:** `team/knowledge-base/business-analysis/kpi-indicator-design.md` ✓ + `team/knowledge-base/analytical-methods/analytical-thinking.md` ✓ (SMART+FABRIC indicator design, aggregation correctness, stock/flow, leading/lagging, Polish structural breaks, balanced framing, qualified causal claims)
 **Used by:** `.claude/agents/brief-reviewer.md`
-**Does NOT cover:** chart-call correctness in code (see `evaluation/visualization-diff.md`), aggregation in SQL (see `evaluation/analytical-review.md`), semantic-layer measure DDL (see `evaluation/measures-review.md`), domain-specific KPI selection theory beyond what the KB covers (see `domain-specialist` agent)
+**Does NOT cover:** chart-call correctness in code (see `evaluation/visualization-image.md`), aggregation in SQL (see `evaluation/analytical-review.md`), semantic-layer measure DDL (see `evaluation/measures-review.md`), domain-specific KPI selection theory beyond what the KB covers (see `domain-specialist` agent)
 
 Rules applied by the `brief-reviewer` agent on analytical briefs produced by the `business-analyst` agent. Briefs are reviewed in plan-phase, before they become the foundation of a dashboard plan. The goal is to catch indicator design errors at the earliest possible stage, before they propagate through the build pipeline.
 
@@ -59,7 +59,7 @@ These rules are ADDITIVE to a domain-specialist review when one runs. Both agent
 
 ## What this standard does NOT cover
 
-- Whether the dashboard built from the brief actually renders correctly — that is `visualization-reviewer` and `visual-screenshot-reviewer`'s scope.
+- Whether the dashboard built from the brief actually renders correctly — that is `visual-screenshot-reviewer`'s scope.
 - Whether the SQL queries in the resulting build sum correctly — that is `analytical-validator`'s scope at PR phase.
 - Whether the semantic-layer measure DDL declared `agg`, `format_type`, and `scale` correctly — that is `measures-reviewer`'s scope.
 - Whether the indicator is the absolute best KPI for the domain (vs another reasonable choice) — that is `domain-specialist`'s scope.

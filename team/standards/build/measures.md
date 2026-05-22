@@ -126,7 +126,7 @@ fig.update_layout(
 127: Measures defined in `products/warehouse/**/semantic_models/*.yml` are accessed via the `semantic_query` helper.
 128: 
 129: ```python
-130: from complex_dashboard.assets.runtime import semantic_query
+130: from dbr.semantic import semantic_query
 131: 
 132: r = semantic_query("fiscal_balance", filter={"geo": "PL"})
 133: # Accessing formatted display values

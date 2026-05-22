@@ -2,7 +2,7 @@
 
 **Derived from:** `team/knowledge-base/research-methods/methods.md` ✓ (KB complete — reproducible research, OLS/IV/DiD/synthetic control, standard errors, Polish data quirks, coefficient interpretation, common errors)
 **Used by:** `.claude/agents/research-reviewer.md`
-**Does NOT cover:** editorial quality of the prose (see `evaluation/content-review.md`), chart visual design (see `evaluation/visualization-diff.md`), dashboard functionality (see `evaluation/code-review.md`), general analytical framing (see `evaluation/analytical-review.md`)
+**Does NOT cover:** editorial quality of the prose (see `evaluation/content-review.md`), chart visual design (see `evaluation/visualization-image.md`), dashboard functionality (see `evaluation/code-review.md`), general analytical framing (see `evaluation/analytical-review.md`)
 
 Rules applied by the `research-reviewer` agent on quantitative research products produced by the `researcher` agent. Research is reviewed before publication. The goal is to catch econometric and methodological errors before they reach readers.
 
@@ -72,6 +72,6 @@ Rules applied by the `research-reviewer` agent on quantitative research products
 
 - Whether the research question is interesting or important — that is a substantive judgment, not a methodological one.
 - Whether the prose is well-written — that is `content-reviewer`'s scope.
-- Whether the charts look good — that is `visualization-reviewer`'s scope.
+- Whether the charts look good — that is `visual-screenshot-reviewer`'s scope.
 - Whether the underlying data is correct — that is the data pipeline's responsibility.
 - Whether the chosen method is the absolute best for the question (vs. another reasonable choice) — if the method is valid and assumptions are checked, the choice is the researcher's.

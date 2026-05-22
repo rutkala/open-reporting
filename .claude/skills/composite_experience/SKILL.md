@@ -23,7 +23,7 @@ target skill's use, not by an imagined scenario.
 
 | What | Provided by |
 |------|------------|
-| Target skill path | Caller — e.g. `.claude/skills/complex_dashboard/` |
+| Target skill path | Caller — e.g. `.claude/skills/complex_<name>/` |
 | Triggering event | Caller — concrete description of the surprise, failure, value conflict, or unique case being framed |
 | Situation type | Caller or inferred — the class of situation this entry indexes under (used as retrieval key) |
 
@@ -37,7 +37,7 @@ experience.
    that actually happened (a divergence between expectation and outcome,
    a unique case, or a value conflict). Reject imagined scenarios.
 2. **Identify situation type** — name the class of situation this entry
-   belongs to (e.g. for `complex_dashboard`: *ambiguous KPI spec*,
+   belongs to (e.g. for a dashboarding skill: *ambiguous KPI spec*,
    *over-long series*, *failed colour contrast*). Reuse the target's
    existing situation-type vocabulary if one exists; extend it if not.
 3. **Frame** — fill in the 7-field skeleton below (Expected / Observed /

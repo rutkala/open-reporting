@@ -156,7 +156,7 @@ INFRASTRUCTURE
 | Component | Location | Status |
 |-----------|----------|--------|
 | Domain briefs | `products/domain-briefs/` | 1 draft (public-finance) |
-| Visual component library | `.claude/skills/complex_dashboard/assets/components/` | Live |
+| Visual component library | `packages/dbr/src/dbr/visuals/` | Live |
 | Semantic model | `products/semantic/` | Live (legacy, migration pending) |
 | Dashboards (labour, explorer, finance) | `products/dashboards/` | Live |
 | Blog (Ghost CMS) | Docker / Ghost | Live |
@@ -234,7 +234,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
 | Design | Information architecture, navigation, layout system, accessibility | UX / UI Design | `dashboard-dev` | `visual-screenshot-reviewer` | visualisation.md | visualization-image.md |
-| Build | Dash routing, page composition, PWA shell, responsive layout | Dashboard Development | `dashboard-dev` | `visualization-reviewer` | visualisation.md | visualization-diff.md |
+| Build | Dash routing, page composition, PWA shell, responsive layout | Dashboard Development | `dashboard-dev` | `visual-screenshot-reviewer` | visualisation.md | visualization-diff.md |
 
 #### Sub-product 6 — Portal backend
 
@@ -278,7 +278,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
 | Design | Mobile-first layout, touch targets, PWA manifest, offline strategy | UX / UI Design | `dashboard-dev` | `visual-screenshot-reviewer` | visualisation.md | visualization-image.md |
-| Build | Responsive CSS, PWA manifest, service worker, mobile viewport | Dashboard Development | `dashboard-dev` | `visualization-reviewer` | visualisation.md | visualization-diff.md |
+| Build | Responsive CSS, PWA manifest, service worker, mobile viewport | Dashboard Development | `dashboard-dev` | `visual-screenshot-reviewer` | visualisation.md | visualization-diff.md |
 
 #### Sub-product 10 — Mobile backend
 
@@ -305,7 +305,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 |------|--------|-----------|---------|-----------|---------------|---------------|
 | Domain brief | Metric selection, framing, context, Polish convention | Business Analysis | `business-analyst` | `brief-reviewer` | — | brief-review.md |
 | Design | 1080×1080 layout, KPI card design, visual hierarchy, colour semantics | UX / UI Design | `dashboard-dev` | `visual-screenshot-reviewer` | visualisation.md, measures.md | visualization-image.md |
-| Build | Plotly figure generation, PNG export | Dashboard Development | `dashboard-dev` | `visualization-reviewer` | visualisation.md | visualization-diff.md |
+| Build | Plotly figure generation, PNG export | Dashboard Development | `dashboard-dev` | `visual-screenshot-reviewer` | visualisation.md | visualization-diff.md |
 | Write caption | Polish language, factual precision, hashtag conventions | Content / Editorial | `content-writer` *(planned)* | `content-reviewer` *(planned)* | — | content-review.md *(planned)* |
 
 #### Sub-product 13 — Data card
@@ -315,7 +315,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
 | Design | Single-stat layout, number formatting, unit display | UX / UI Design | `dashboard-dev` | `visual-screenshot-reviewer` | measures.md, visualisation.md | visualization-image.md |
-| Build | Plotly figure, PNG export | Dashboard Development | `dashboard-dev` | `visualization-reviewer` | visualisation.md | visualization-diff.md |
+| Build | Plotly figure, PNG export | Dashboard Development | `dashboard-dev` | `visual-screenshot-reviewer` | visualisation.md | visualization-diff.md |
 
 ---
 
@@ -343,7 +343,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 | Domain brief | KPI selection, analytical angles, benchmarks, aggregation rules | Business Analysis | `business-analyst` | `brief-reviewer` | — | brief-review.md |
 | Domain review | Domain KPI correctness, framing, Polish structural breaks | Domain Specialist | — *(evaluator only)* | `domain-specialist` | — | — |
 | Design | Dashboard layout, tab structure, filter design, UX flow | UX / UI Design + Dashboard Development | `dashboard-dev` | `visual-screenshot-reviewer` | visualisation.md | visualization-image.md |
-| Build | Dash app, chart components, KPI cards, gold mart queries | Dashboard Development | `dashboard-dev` | `visualization-reviewer` | visualisation.md | visualization-diff.md |
+| Build | Dash app, chart components, KPI cards, gold mart queries | Dashboard Development | `dashboard-dev` | `visual-screenshot-reviewer` | visualisation.md | visualization-diff.md |
 | Analytical review | Aggregation correctness, causal claims, chart labelling | Analytical Methods | — *(evaluator only)* | `analytical-validator` | — | analytical-review.md |
 
 #### Sub-product 16 — Visual component
@@ -353,7 +353,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
 | Design | Component API, chart type selection, theme compliance, accessibility | UX / UI Design | `dashboard-dev` | `visual-screenshot-reviewer` | visualisation.md | visualization-image.md |
-| Build | Plotly chart function, KPI card function, theme import | Dashboard Development | `dashboard-dev` | `visualization-reviewer` | visualisation.md | visualization-diff.md |
+| Build | Plotly chart function, KPI card function, theme import | Dashboard Development | `dashboard-dev` | `visual-screenshot-reviewer` | visualisation.md | visualization-diff.md |
 
 #### Sub-product 17 — Article
 
@@ -363,7 +363,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 |------|--------|-----------|---------|-----------|---------------|---------------|
 | Domain brief | Analytical framing, indicator selection, story angle | Business Analysis | `business-analyst` | `brief-reviewer` | — | brief-review.md |
 | Write | Data journalism, Polish language, factual precision, editorial standards | Content / Editorial | `content-writer` *(planned)* | `content-reviewer` *(planned)* | — | content-review.md *(planned)* |
-| Visual embed | Chart selection, integration into article template | Dashboard Development | `dashboard-dev` | `visualization-reviewer` | visualisation.md | visualization-diff.md |
+| Visual embed | Chart selection, integration into article template | Dashboard Development | `dashboard-dev` | `visual-screenshot-reviewer` | visualisation.md | visualization-diff.md |
 
 #### Sub-product 18 — Research
 
@@ -394,7 +394,7 @@ Competency = a cluster of related skills. Each competency has a builder role (do
 | 2 | **Data Engineering** | ETL scripting, SQL, DuckDB, dbt, API integration, data quality | `data-engineer` | `data-engineer-reviewer` | #1–#4, #6 (Build tasks) |
 | 3 | **Semantic Modelling** | MetricFlow measures/metrics/dimensions, aggregation correctness, format_type, unit/scale, Polish labelling | `data-engineer` | `measures-reviewer` | #4 |
 | 4 | **UX / UI Design** | Visual perception, cognitive load, Gestalt, colour theory, eye-tracking, WCAG, dashboard layout | `dashboard-dev` | `visual-screenshot-reviewer` | #5, #7, #9, #12, #13, #15, #16 (Design tasks) |
-| 5 | **Dashboard Development** | Plotly, Dash, Python, Nordic design system, component API, responsive layout | `dashboard-dev` | `visualization-reviewer` | #5, #9, #12, #13, #15, #16, #17 (Build tasks) |
+| 5 | **Dashboard Development** | Plotly, Dash, Python, Nordic design system, component API, responsive layout | `dashboard-dev` | `visual-screenshot-reviewer` | #5, #9, #12, #13, #15, #16, #17 (Build tasks) |
 | 6 | **Business Analysis** | KPI theory, indicator selection, aggregation methods, insight hierarchy, Polish public data context | `business-analyst` | `brief-reviewer` | #4, #12, #15, #17, #18 (Domain brief tasks) |
 | 7 | **Domain Specialist** | Domain-specific economics, policy frameworks, benchmark knowledge, Polish statistical context | — *(evaluator only)* | `domain-specialist` | #15 (Domain review tasks) |
 | 8 | **Analytical Methods** | Statistical correctness, aggregation in queries, causal language, chart labelling | — *(evaluator only)* | `analytical-validator` | #15, #18 (Analytical review tasks) |
@@ -430,7 +430,7 @@ Human touch-points are strategic only:
 | `architecture-critic` | Data Architecture | Evaluator | Plan | ✓ Live |
 | `code-reviewer` | Data Engineering | Evaluator | PR | ✓ Live |
 | `data-engineer-reviewer` | Data Engineering | Evaluator (platform/ only) | PR | ✓ Live |
-| `visualization-reviewer` | Dashboard Dev / UX | Evaluator (diff) | PR | ✓ Live |
+| `visual-screenshot-reviewer` | Dashboard Dev / UX | Evaluator (diff) | PR | ✓ Live |
 | `visual-screenshot-reviewer` | UX / UI Design | Evaluator (screenshot + perception science) | PR | ✓ Live |
 | `analytical-validator` | Analytical Methods | Evaluator | Plan + PR | ✓ Live |
 | `brief-reviewer` | Business Analysis | Evaluator (brief only) | Plan | ✓ Live |
@@ -676,7 +676,7 @@ Agent-facing. Derived from KB via build standard. Tells evaluator agents what to
 | Architecture review | `team/standards/evaluation/architecture-review.md` | `knowledge-base/data-architecture/` ✓ | `architecture-critic` | ✓ Live |
 | Analytical review | `team/standards/evaluation/analytical-review.md` | `knowledge-base/analytical-methods/` ✓ | `analytical-validator` | ✓ Live |
 | Data engineering review | `team/standards/evaluation/data-engineering-review.md` | `knowledge-base/data-engineering/` ✓ + `data-architecture/` ✓ | `data-engineer-reviewer` | ✓ Live |
-| Visualization diff | `team/standards/evaluation/visualization-diff.md` | `knowledge-base/visualization/` ✓ + `ux-perception/` ✓ | `visualization-reviewer` | ✓ Live |
+| Visualization diff | `team/standards/evaluation/visualization-image.md` | `knowledge-base/visualization/` ✓ + `ux-perception/` ✓ | `visual-screenshot-reviewer` | ✓ Live |
 | Visualization image | `team/standards/evaluation/visualization-image.md` | `knowledge-base/ux-perception/` ✓ | `visual-screenshot-reviewer` | ✓ Live |
 | Measures review | `team/standards/evaluation/measures-review.md` | `knowledge-base/business-analysis/` ✓ + `analytical-methods/` ✓ + `build/measures.md` | `measures-reviewer` | ✓ Live |
 | Brief review | `team/standards/evaluation/brief-review.md` | `knowledge-base/business-analysis/` ✓ + `analytical-methods/` ✓ | `brief-reviewer` | ✓ Live |
