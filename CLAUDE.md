@@ -310,10 +310,10 @@ PYTHONPATH=/opt/open-reporting python3 products/dashboards/explorer/app.py # por
 PYTHONPATH=/opt/open-reporting python3 products/dashboards/generate.py
 
 # dbt — run all models
-cd platform/processing/dbt && DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt run --profiles-dir .
+cd products/warehouse && DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt run --profiles-dir .
 
 # dbt — run tests
-cd platform/processing/dbt && DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt test --profiles-dir .
+cd products/warehouse && DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt test --profiles-dir .
 
 # DuckDB direct query test
 PYTHONPATH=/opt/open-reporting python3 -c "

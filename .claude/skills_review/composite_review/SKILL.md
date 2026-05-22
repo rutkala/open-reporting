@@ -58,7 +58,7 @@ Spawn all agents **in parallel** using Agent tool calls in the same message. Age
 - Runs `git diff origin/main...HEAD` independently
 - Reads `team/standards/evaluation/measures-review.md`, checks measure definitions, aggregation correctness (stock vs flow, rate summation), `format_type`, unit/scale, Polish labels
 - Returns P1 / P2 / P3 findings with BLOCK / CONDITIONAL / PASS verdict
-- Only spawn if diff touches `products/semantic/`, `platform/processing/dbt/**/semantic_models/*.yml`, or `platform/processing/dbt/**/metrics/*.yml`
+- Only spawn if diff touches `products/semantic/`, `products/warehouse/**/semantic_models/*.yml`, or `products/warehouse/**/metrics/*.yml`
 
 Wait for all agents to complete, then map findings to review output:
 - code-reviewer P1 / data-engineer-reviewer P1 / measures-reviewer P1 / visualization-reviewer HIGH / analytical-validator MISLEADING → **CRITICAL**

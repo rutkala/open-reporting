@@ -155,7 +155,7 @@ A gold mart differs from the silver layer in:
 - **Derived metrics** — YoY change, gender gap, ratios pre-computed as columns
 - **Business hierarchy** — domain-specific groupings (e.g. Revenue / Expenditure / Balance for finance)
 
-Gold marts are built as dbt models in `platform/processing/dbt/models/marts/`:
+Gold marts are built as dbt models in `products/warehouse/models/marts/`:
 ```
 marts/
 ├── labour/mart_labour.sql
@@ -183,7 +183,7 @@ and any computed columns. Adding a gold mart does not change the silver layer.
 ## Adding a New Source (checklist)
 
 1. Ingest to `raw.{source}_{entity}` — follow `standards/ingestion.md`
-2. Create `platform/processing/dbt/models/{source}/stg_{source}.sql` — conform to 33-column schema
+2. Create `products/warehouse/models/{source}/stg_{source}.sql` — conform to 33-column schema
 3. Map source dimension slots to named semantic columns; `null::varchar` for unpopulated dims
 4. If source has a new dimension type not in the 24: add `dim_{name} VARCHAR` to all staging models
 5. Union `select * from {{ ref('stg_{source}') }}` into `all_indicators.sql`

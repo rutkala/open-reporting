@@ -1,7 +1,7 @@
 # Processing Standard
 
 **Derived from:** `team/knowledge-base/data-engineering/engineering.md` ✓ + `team/knowledge-base/data-architecture/architecture.md` ✓ (dbt staging/mart pattern, incremental models, sources.yml, tests, conformed dimensions, medallion silver→gold)
-**Used by builders:** `data-engineer` (writing dbt models in `platform/processing/dbt/`)
+**Used by builders:** `data-engineer` (writing dbt models in `products/warehouse/`)
 **Evaluated by:** `code-reviewer`, `data-engineer-reviewer` (PR-phase), `architecture-critic` (plan-phase)
 **Does NOT cover:** raw loading (see `ingestion.md`), DDL (see `storage.md`), semantic layer (see `measures.md`)
 
@@ -13,15 +13,15 @@ This standard covers the **Transform phase**: moving data from `raw.{source}_{en
 
 ### DuckDB Warehouse (primary path)
 
-Transformations are implemented as **dbt models** in `platform/processing/dbt/models/`. Do not write Python transform scripts for DuckDB — use dbt.
+Transformations are implemented as **dbt models** in `products/warehouse/models/`. Do not write Python transform scripts for DuckDB — use dbt.
 
 ```
 raw.{source}_{entity}                ← Bronze: untouched, native format
         ↓
-platform/processing/dbt/models/
+products/warehouse/models/
   {source}/stg_{source}.sql          ← Staging: conform to shared fact schema
         ↓
-platform/processing/dbt/models/
+products/warehouse/models/
   eurostat/all_indicators.sql        ← Gold: union of all staging models
         ↓
 curated.all_indicators               ← Explorer and dashboards query here
@@ -36,7 +36,7 @@ curated.all_indicators               ← Explorer and dashboards query here
 Run after ingestion:
 ```bash
 sudo systemctl stop or-explorer or-labour
-cd platform/processing/dbt
+cd products/warehouse
 DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt run --profiles-dir .
 sudo systemctl start or-explorer or-labour
 ```

@@ -117,7 +117,7 @@ filter:
 ```
 
 That's the entire visual. The metric's Polish label, unit, format, and
-threshold metadata come from `platform/processing/dbt/.../*.yml`.
+threshold metadata come from `products/warehouse/.../*.yml`.
 
 ## Layout shape — rows-and-items (Rill canvas-style)
 

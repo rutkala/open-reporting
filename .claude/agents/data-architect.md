@@ -42,7 +42,7 @@ The design task is provided below the separator line. Extract:
 Before proposing new designs:
 
 1. **Read existing DDL files** — `platform/warehouse/raw/` and `platform/warehouse/curated/` for current schema
-2. **Read existing dbt models** — `platform/processing/dbt/models/` for conventions already established
+2. **Read existing dbt models** — `products/warehouse/models/` for conventions already established
 3. **Read the bus matrix** — `platform/warehouse/bus_matrix.md` for conformed dimensions
 4. **Check existing ingestion scripts** — `products/ingestion/` for patterns already in use
 

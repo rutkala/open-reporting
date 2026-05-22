@@ -76,7 +76,7 @@ updated_at               TIMESTAMPTZ
 
 **Adding a new source** (checklist):
 1. Ingest to `raw.{source}_{entity}` following ingestion standard
-2. Create `platform/processing/dbt/models/{source}/stg_{source}.sql` — conform to shared schema above
+2. Create `products/warehouse/models/{source}/stg_{source}.sql` — conform to shared schema above
 3. Map source dimension slots to named semantic columns; add `null::varchar as dim_{name}` for all 24 dim columns not populated
 4. If source introduces a new dimension type: add a new `dim_{name} VARCHAR` column to ALL staging models and update `docs/DATA_MODEL.md`
 5. Union `select * from {{ ref('stg_{source}') }}` into `all_indicators.sql`

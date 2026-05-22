@@ -6,8 +6,8 @@
 
 Rules applied by the `measures-reviewer` agent on PR diffs touching the semantic layer:
 - `products/semantic/` (legacy)
-- `platform/processing/dbt/**/semantic_models/*.yml` (MetricFlow)
-- `platform/processing/dbt/**/metrics/*.yml` (MetricFlow)
+- `products/warehouse/**/semantic_models/*.yml` (MetricFlow)
+- `products/warehouse/**/metrics/*.yml` (MetricFlow)
 
 These rules are ADDITIVE to `code-review.md`. Both agents run in parallel. Do not duplicate findings.
 

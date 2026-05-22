@@ -111,7 +111,7 @@
 - **Implementation of MetricFlow semantic-layer pilot** for the Finance dashboard.
 - Introduced `semantic_query` helper in `.claude/skills/complex_dashboard/assets/runtime/` to wrap `mf query` CLI.
 - Enables domain dashboards to query metrics by name (e.g., `fiscal_balance`) without knowing underlying source tables or SQL logic.
-- Added semantic models and wide intermediate models in `platform/processing/dbt/models/finance/` to support MetricFlow.
+- Added semantic models and wide intermediate models in `products/warehouse/models/finance/` to support MetricFlow.
 - Refactored Finance Overview KPI cards to use semantic layer, removing raw SQL/pandas logic from the dashboard code.
 - Improved maintainability: metric metadata (labels, formats, thresholds) now lives in dbt semantic models, not in dashboard code.
 

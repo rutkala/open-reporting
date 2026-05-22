@@ -39,7 +39,7 @@ Folder shape (relative to the calling ``app.py``):
       - items: [trend_chart]
 
 Theme is fixed at the kit level and never appears in the dashboard tree.
-Semantic model lives in ``platform/processing/dbt/`` and is referenced by
+Semantic model lives in ``products/warehouse/`` and is referenced by
 metric name from visuals — never duplicated per dashboard.
 
 The compiler walks this tree, instantiates each visual via the

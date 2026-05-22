@@ -17,7 +17,7 @@ Consumed by: `/complex_dashboard` (via DuckDB queries through the semantic layer
 
 ## Location
 
-`platform/processing/dbt/models/marts/{domain}/semantic_models/{model}.yml`
+`products/warehouse/models/marts/{domain}/semantic_models/{model}.yml`
 
 ---
 

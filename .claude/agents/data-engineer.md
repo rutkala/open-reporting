@@ -34,7 +34,7 @@ The task is provided below the separator line. Before writing code:
 1. Identify which layer is being modified: ingestion (raw), processing (dbt staging/mart), or warehouse (DDL)
 2. Verify the existing schema by reading relevant DDL files in `platform/warehouse/`
 3. Check existing ingestion scripts in `products/ingestion/` for patterns already in use
-4. Check existing dbt models in `platform/processing/dbt/models/` for conventions already established
+4. Check existing dbt models in `products/warehouse/models/` for conventions already established
 
 Do not assume — read the actual files.
 
@@ -51,7 +51,7 @@ Do not assume — read the actual files.
 - **Script structure:** `load_dotenv(override=True)` before env reads; `logging.getLogger(__name__)`; `#!/usr/bin/env python3` shebang
 - **Idempotency:** running the script twice must produce the same result as running it once
 
-### For dbt models (`platform/processing/dbt/models/`)
+### For dbt models (`products/warehouse/models/`)
 
 - **Staging models** (`stg_{source}.sql`): one model per raw source, use `{{ source('raw', '...') }}`, conform to house schema (dim_sex, dim_geo, period_date, etc.), declare output grain in a header comment
 - **All-indicators model** (`all_indicators.sql`): union of staging models via `{{ ref('stg_...') }}` — do not touch unless adding a new source
@@ -61,7 +61,7 @@ Do not assume — read the actual files.
 - **Test coverage:** every new model must have `not_null` + `unique` tests on the primary key in `schema.yml`
 - **`ref()` only** — never hardcode schema.table paths inside dbt models; use `{{ ref() }}` or `{{ source() }}`
 
-### For the semantic layer (`platform/processing/dbt/**/semantic_models/`, `metrics/`, and legacy `products/semantic/`)
+### For the semantic layer (`products/warehouse/**/semantic_models/`, `metrics/`, and legacy `products/semantic/`)
 
 - **Aggregation must match the measure's nature** — `SUM` for flows (revenue, GDP, births), **not** for stocks (population, employment level, debt); `AVG` is almost always wrong for wages/incomes/rents (use median); ratios and percentages cannot be summed across dimensions.
 - **Every measure declares `agg`, `expr`, `format_type`, and `label`** — implicit aggregation is a silent correctness bug. `format_type` drives dashboard rendering and must be present.
@@ -99,10 +99,10 @@ print(query('SELECT 1 AS ok'))
 "
 
 # For dbt models — compile to check syntax
-cd platform/processing/dbt && DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt compile --profiles-dir .
+cd products/warehouse && DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt compile --profiles-dir .
 
 # For dbt models — run tests
-cd platform/processing/dbt && DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt test --profiles-dir . --select {model_name}
+cd products/warehouse && DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt test --profiles-dir . --select {model_name}
 ```
 
 Report any test failures before handing off.

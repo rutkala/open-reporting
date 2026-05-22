@@ -52,8 +52,8 @@ PYTHONPATH=/opt/open-reporting python3 products/dashboards/labour/app.py    # po
 PYTHONPATH=/opt/open-reporting python3 products/dashboards/explorer/app.py  # port 8051
 
 # dbt
-cd platform/processing/dbt && DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt run --profiles-dir .
-cd platform/processing/dbt && DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt test --profiles-dir .
+cd products/warehouse && DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt run --profiles-dir .
+cd products/warehouse && DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt test --profiles-dir .
 ```
 
 ## Workflow Overview

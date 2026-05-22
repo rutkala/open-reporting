@@ -1,6 +1,6 @@
 ---
 name: measures-reviewer
-description: "Specialist PR reviewer for semantic layer changes. Reviews diffs touching products/semantic/ (legacy) and platform/processing/dbt/**/semantic_models/*.yml (MetricFlow). Checks measure definitions, aggregation types, dimensions, format_type, unit declarations, and Polish label correctness. Applies rules from team/standards/evaluation/measures-review.md. Additive to code-reviewer. Returns P1/P2/P3 findings with BLOCK/CONDITIONAL/PASS verdict."
+description: "Specialist PR reviewer for semantic layer changes. Reviews diffs touching products/semantic/ (legacy) and products/warehouse/**/semantic_models/*.yml (MetricFlow). Checks measure definitions, aggregation types, dimensions, format_type, unit declarations, and Polish label correctness. Applies rules from team/standards/evaluation/measures-review.md. Additive to code-reviewer. Returns P1/P2/P3 findings with BLOCK/CONDITIONAL/PASS verdict."
 tools: Read, Bash, Grep, Glob
 model: sonnet
 permissionMode: plan
@@ -22,8 +22,8 @@ git diff origin/main...HEAD
 
 Check whether the diff touches any of:
 - `products/semantic/` (legacy semantic model, used by Labour dashboard)
-- `platform/processing/dbt/**/semantic_models/*.yml` (MetricFlow semantic models — planned)
-- `platform/processing/dbt/**/metrics/*.yml` (MetricFlow metrics — planned)
+- `products/warehouse/**/semantic_models/*.yml` (MetricFlow semantic models — planned)
+- `products/warehouse/**/metrics/*.yml` (MetricFlow metrics — planned)
 
 If no semantic-layer files are changed, output:
 ```

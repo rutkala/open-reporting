@@ -36,7 +36,7 @@ import yaml
 
 log = logging.getLogger(__name__)
 
-DBT_PROJECT_ROOT = Path("/opt/open-reporting/platform/processing/dbt")
+DBT_PROJECT_ROOT = Path("/opt/open-reporting/products/warehouse")
 SEMANTIC_MODELS_GLOB = "models/**/semantic_models/*.yml"
 
 
