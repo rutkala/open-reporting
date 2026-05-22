@@ -377,7 +377,31 @@ grep -rl "platform/ingestion" /opt/open-reporting \
   | xargs sed -i 's|platform/ingestion|products/ingestion|g'
 ```
 
-### 3c. Commit
+### 3c. Update .gitignore — caught during execution
+
+The move breaks any `.gitignore` rule that referenced the old path. Specifically:
+
+```
+# Before:
+platform/ingestion/to_raw/.dlt/secrets.toml
+
+# After:
+products/ingestion/to_raw/.dlt/secrets.toml
+```
+
+When the gitignore rule stops matching, `git add` picks up the previously-ignored file. Even if its content is template-only, the precedent is bad. Check `.gitignore` before committing:
+
+```bash
+grep "platform/" /opt/open-reporting/.gitignore
+# Update any rules to use products/ paths instead.
+
+# Also untrack anything that slipped in:
+git diff --cached --name-only | xargs -I{} git check-ignore -v {} || true
+# If a path appears in `git status` that should be ignored, run:
+#   git rm --cached <path>
+```
+
+### 3d. Commit
 
 ```
 git add -A
@@ -394,6 +418,9 @@ and references updated to the new path. No code-behaviour changes."
 python3 -c "import sys; sys.path.insert(0, '/opt/open-reporting'); from products.ingestion.to_raw import imf_weo"
 # Or just spot-check that scripts still execute their --help
 PYTHONPATH=/opt/open-reporting python3 /opt/open-reporting/products/ingestion/to_raw/eurostat_observations.py --help 2>&1 | head -5
+# Dashboards unaffected by ingestion move — should still serve
+curl -sf -o /dev/null -w '%{http_code}\n' http://localhost:8057/public_finance/
+curl -sf -o /dev/null -w '%{http_code}\n' http://localhost:8056/test_dashboard/
 ```
 
 **Rollback:** `git revert HEAD`.
