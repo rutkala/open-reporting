@@ -96,8 +96,10 @@ def semantic_query_data(
     Returns an empty DataFrame on query failure.
     """
     cmd = ["mf", "query", "--metrics", metric]
-    for dim in group_by or []:
-        cmd += ["--group-by", dim]
+    # mf CLI quirk: passing multiple --group-by flags drops earlier ones.
+    # Use the comma-separated form which is processed as a single argument.
+    if group_by:
+        cmd += ["--group-by", ",".join(group_by)]
     if filter:
         clauses = []
         for k, v in filter.items():

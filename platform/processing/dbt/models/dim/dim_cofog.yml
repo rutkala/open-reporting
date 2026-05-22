@@ -1,0 +1,44 @@
+version: 2
+
+# dim_cofog — COFOG (Classification of the Functions of Government) dimension.
+#
+# Joined by fact_finance_cofog via the `cofog_function` entity. Provides
+# Polish/English labels so visuals can group/color by function.
+
+models:
+  - name: dim_cofog
+    description: COFOG function dimension (10 top-level functions + Polish/English labels).
+    columns:
+      - name: cofog_function
+        description: COFOG function code 1..10. Primary key.
+        tests: [not_null, unique]
+      - name: cofog_code
+        description: Detail_id used in mart_finance (e.g. "pub.cofog_07_gdp").
+        tests: [not_null, unique]
+      - name: cofog_label_pl
+        description: Polish function name (e.g. "Zdrowie").
+        tests: [not_null, unique]
+      - name: cofog_label_en
+        description: English function name (e.g. "Health").
+        tests: [not_null, unique]
+
+semantic_models:
+  - name: dim_cofog
+    description: COFOG function dimension for cross-fact joins on the `cofog_function` entity.
+    model: ref('dim_cofog')
+
+    entities:
+      - name: cofog_function
+        type: primary
+        expr: cofog_function
+
+    dimensions:
+      - name: cofog_label_pl
+        type: categorical
+        expr: cofog_label_pl
+      - name: cofog_label_en
+        type: categorical
+        expr: cofog_label_en
+      - name: cofog_code
+        type: categorical
+        expr: cofog_code
