@@ -41,10 +41,14 @@ The design task is provided below the separator line. Extract:
 
 Before proposing new designs:
 
-1. **Read existing DDL files** — `products/warehouse/raw/` and `products/warehouse/curated/` for current schema
-2. **Read existing dbt models** — `products/warehouse/models/` for conventions already established
-3. **Read the bus matrix** — `products/warehouse/bus_matrix.md` for conformed dimensions
-4. **Check existing ingestion scripts** — `products/ingestion/` for patterns already in use
+1. **Read existing dbt models** — `products/warehouse/models/` is the source of truth for schema. The folders below the convention:
+   - `staging/<source>/` — raw → typed staging views
+   - `intermediate/` — consolidations across sources (`int_*`), plus `by_domain/` for per-domain wide views
+   - `marts/<domain>/` — star-schema facts ready for the semantic layer
+   - `dim/` — shared dimension tables
+   - `semantic/` — MetricFlow definitions (no SQL)
+2. **Check existing ingestion scripts** — `products/ingestion/` for patterns already in use (one Python module per external source)
+3. **Read `docs/ARCHITECTURE.md`** — the authoritative two-plane architecture description; gives the contract between declarative and engine planes.
 
 Do not assume — read the actual files.
 
@@ -52,8 +56,9 @@ Do not assume — read the actual files.
 
 ### Medallion layer contracts (§1 of architecture KB):
 - **Raw layer** (`raw.*`) — land data as-is from source. No joins, no derived columns, no business filters. Permitted: strip whitespace, parse dates, add `fetched_at`, `TRY_CAST` numeric strings.
-- **Curated/staging layer** (`curated.stg_*`) — one model per raw source. Conform to house schema (dim_sex, dim_geo, period_date, etc.). Use `{{ source('raw', '...') }}`. Declare output grain.
-- **Curated/mart layer** (`curated.mart_*`) — Kimball star schema. Fact tables + dimension tables. Use `{{ ref('stg_*') }}`. Filter and shape for one domain.
+- **Staging layer** (`curated.stg_*`, in `models/staging/<source>/`) — one model per raw source. Conform to house schema (dim_sex, dim_geo, period_date, etc.). Use `{{ source('raw', '...') }}`. Declare output grain.
+- **Intermediate layer** (`curated.int_*`, in `models/intermediate/`) — cross-source consolidations and business-key resolution. Use `{{ ref('stg_*') }}`.
+- **Mart layer** (`curated.fact_*`, in `models/marts/<domain>/`) — Kimball star schema. Fact tables ready for the semantic layer. Use `{{ ref('int_*') }}` and `{{ ref('dim_*') }}`. Filter and shape for one domain.
 
 ### Schema naming:
 - **Raw tables:** `raw.{source}_{entity}` (e.g., `raw.gus_bael_employment`)
@@ -112,17 +117,14 @@ FROM {{ source('raw', '{source}_{entity}') }}
 
 #### Mart layer
 ```sql
--- Model: curated.mart_{domain}
+-- Model: curated.fact_{domain}_{topic}
 -- Grain: {one row per ...}
 SELECT ...
 FROM {{ ref('stg_{source}_{entity}') }}
 ```
 
 ### Conformed dimensions
-{List of shared dimensions and whether they already exist or need to be created}
-
-### Bus matrix update
-{Changes to products/warehouse/bus_matrix.md}
+{List of shared dimensions and whether they already exist or need to be created — see `products/warehouse/models/dim/`}
 
 ### Ingestion approach
 {Append-only vs upsert, update frequency, idempotency strategy}

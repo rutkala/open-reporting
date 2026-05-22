@@ -25,62 +25,67 @@ Your role is **50% business analyst, 50% technical architect**. You do not wait 
 
 ## Repo Structure
 
+Two-plane architecture — see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the full contract.
+
 ```
 /opt/open-reporting/
-├── .claude/             → Claude Code config — hooks, skills, agents, settings
-├── team/                → Team knowledge base, standards, memory
-│   ├── PLATFORM.md      → Factory blueprint — product portfolio, competency map, agent roster, quality system
+│
+├── 🟢 DECLARATIVE PLANE — YAML / SQL / Markdown (you + cheap AI edit here)
+│
+├── products/            → Everything you ship or author
+│   ├── ingestion/       → Per-source Python fetchers + dlt pipelines
+│   │   ├── to_landing/  → Fetch external files → data/landing/
+│   │   └── to_raw/      → dlt pipelines → raw.* schema. Raw-table DDL
+│   │                       co-located: <source>.sql next to <source>.py
+│   ├── warehouse/       → dbt project (open_reporting) — DuckDB analytical
+│   │   ├── dbt_project.yml, profiles.yml
+│   │   └── models/
+│   │       ├── staging/<source>/   → raw → curated.stg_*
+│   │       ├── intermediate/       → curated.int_* + by_domain/<X>_indicators.sql
+│   │       ├── marts/<domain>/     → curated.fact_*
+│   │       ├── dim/                → curated.dim_geo, dim_calendar, dim_cofog, …
+│   │       └── semantic/           → MetricFlow semantic_models + metrics YAMLs
+│   ├── database/        → PostgreSQL operational schema (catalogue.*)
+│   │   ├── catalogue/   → DDL for sources, domains, mappings
+│   │   ├── data/        → Seed CSVs
+│   │   ├── deploy/      → Versioned migration scripts
+│   │   └── loader.py    → Loads catalogue + seed
+│   ├── dashboards/      → dbr YAML dashboards (one folder per dashboard)
+│   │   ├── public_finance/ → Phase A+B production dashboard (port 8057)
+│   │   ├── test_dashboard/ → dbr smoke
+│   │   ├── labour/, explorer/, finance/ → legacy Python-kit dashboards
+│   │   └── ...
+│   ├── blog/  social/  research/  mobile/  domain-briefs/
+│
+├── docs/                → Architecture, data model, contributing
+│   ├── ARCHITECTURE.md   ← source of truth for repo layout + AI delegation
+│   ├── refactor-plan.md  ← mechanical playbook (this refactor)
+│   └── archive/         → Superseded docs (SITUATION, MVP, OR-142 findings)
+│
+├── team/                → Knowledge base + standards + memory
+│   ├── PLATFORM.md      → Broader platform blueprint (product portfolio,
+│   │                       agent roster, quality system). Architecture
+│   │                       is in docs/ARCHITECTURE.md.
 │   ├── knowledge-base/  → Research syntheses (authoritative sources → KB → standards)
-│   │   ├── INDEX.md     → KB index with loading guide and status
-│   │   ├── analytical-methods/  → Analytical thinking, insight hierarchy
-│   │   ├── visualization/       → IBCS, chart-type rules, UI principles
-│   │   ├── ux-perception/       → Pre-attentive, Gestalt, cognitive load, WCAG
-│   │   ├── data-architecture/   → Kimball, medallion, dbt patterns
-│   │   ├── data-engineering/    → ELT, DuckDB, dbt conventions, DAMA
-│   │   ├── business-analysis/   → KPI theory, SMART+FABRIC, indicator design
-│   │   ├── domains/             → Per-domain KBs (public-finance, labour, …)
-│   │   └── [content/, research-methods/ — planned]
-│   ├── standards/       → Derived from KB — actionable rules for builders and evaluators
-│   │   ├── INDEX.md     → Standards index with derivation traceability
-│   │   ├── build/       → How to build: ingestion, processing, storage, visualisation, measures, requirements
-│   │   └── evaluation/  → How to review: code-review, architecture-review, analytical-review, data-engineering-review, visualization-diff, visualization-image, measures-review, brief-review
-│   ├── playbooks/       → Step-by-step process guides
+│   ├── standards/       → Derived from KB — actionable rules for builders + evaluators
 │   ├── session-memory.md
 │   └── lessons-learned.md
-├── infra/               → Infrastructure — nginx (conf, certs, html web root)
-├── data/                → Runtime data (git-ignored, entire folder)
+│
+├── 🔴 ENGINE PLANE — Python frameworks + infra (Opus only)
+│
+├── packages/            → Installable Python libs
+│   ├── dbr/             → Dashboard framework (Dash + Plotly + MetricFlow)
+│   └── screenshot/      → Dashboard screenshot CLI
+│
+├── infra/               → nginx + systemd + certs (deploy targets)
+├── .claude/             → Claude Code config — hooks, skills, agents, settings
+│
+├── 🔵 RUNTIME (gitignored)
+│
+├── data/                → Runtime data
 │   ├── landing/         → File landing zone (Excel, PDF, CSV)
 │   └── warehouse.duckdb → DuckDB analytical warehouse
-├── platform/            → Data Platform
-│   ├── ingestion/       → Ingestion scripts
-│   │   ├── to_landing/  → Fetch external files → landing zone
-│   │   └── to_raw/      → dlt pipelines → warehouse raw schema
-│   ├── warehouse/       → DuckDB analytical schema definitions
-│   │   ├── raw/         → DDL for raw.* tables
-│   │   ├── curated/     → DDL for curated.* tables
-│   │   └── deploy/      → SQL scripts applied to DuckDB
-│   ├── database/        → PostgreSQL operational schema definitions
-│   │   ├── catalogue/   → DDL for catalogue.* tables (sources, domains, mappings)
-│   │   └── deploy/      → SQL scripts applied to PostgreSQL
-│   └── processing/      → dbt models: raw.* → curated.* + MetricFlow semantic layer
-│       └── dbt/         → dbt project (open_reporting)
-├── products/            → Products
-│   ├── domain-briefs/   → Domain research outputs — shared components, one per domain
-│   ├── semantic/        → Legacy domain logic (used by Labour dashboard — pending migration)
-│   ├── dashboards/      → Dash apps — import theme/components/db from the complex_dashboard skill
-│   │   ├── labour/      → app.py (Dash), static.py (HTML)
-│   │   └── explorer/    → app.py (Dash)
-│   ├── research/        → Academic research (econometrics, economic models)
-│   │   ├── CLAUDE.md    → Research agent instructions
-│   │   ├── library/     → Knowledge base: theory, models, equations (INDEX.md)
-│   │   ├── references/  → Bibliography index
-│   │   ├── notebooks/   → Jupyter notebooks for analysis
-│   │   └── models/      → Reusable Python model implementations
-│   ├── portal/          → Web service delivery channel
-│   ├── blog/            → Editorial/article delivery channel
-│   ├── mobile/          → Mobile app delivery channel
-│   └── social/          → Social media delivery channel
-├── docs/                → Project documentation
+│
 ├── docker-compose.yml   → All services defined here (root, always)
 ├── .env                 → Secrets (never committed)
 └── .env.example         → Secret template

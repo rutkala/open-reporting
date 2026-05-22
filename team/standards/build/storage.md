@@ -245,10 +245,12 @@ CREATE TABLE IF NOT EXISTS curated.demographics_population (
 ## DuckDB Quirks
 
 - **Cannot DELETE all rows from a table with a compound primary key index.** DuckDB throws a FatalException. For full-overwrite loads, use `DROP TABLE IF EXISTS` + recreate from DDL instead of `DELETE FROM`.
-- **Full-overwrite pattern:**
+- **Full-overwrite pattern:** raw-table DDL is co-located with the ingestion script as `<source>.sql` next to `<source>.py`:
   ```python
+  # in products/ingestion/to_raw/my_source.py
   conn.execute("DROP TABLE IF EXISTS raw.my_table")
-  with open("products/warehouse/raw/my_table.sql") as f:
+  ddl_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "my_source.sql")
+  with open(ddl_path) as f:
       conn.execute(f.read())
   # then INSERT from read_csv(...)
   ```

@@ -18,16 +18,27 @@ These rules apply every session, every task:
 
 ## Key Paths
 
+Two-plane architecture — see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the full contract.
+
 ```
-platform/           → data pipeline: ingestion, dbt models, warehouse DDL
-products/           → dashboards, visuals, portal, blog, mobile, social, research
-team/               → knowledge base, standards, playbooks, domain briefs
-  PLATFORM.md       → factory blueprint (product portfolio, agent roster)
+products/           → declarative work (you + cheap AI edit here)
+  ingestion/        → Per-source Python fetchers + dlt pipelines
+  warehouse/        → dbt project — staging/intermediate/marts/dim/semantic
+  database/         → PostgreSQL operational schema + loader
+  dashboards/       → dbr YAML dashboards (one folder per dashboard)
+  blog/ social/ research/ mobile/ domain-briefs/
+docs/               → ARCHITECTURE.md (target), refactor-plan.md, DATA_MODEL.md, …
+  archive/          → Superseded docs
+team/               → knowledge base, standards, playbooks, agent memory
   knowledge-base/   → KB modules — read on demand, see INDEX.md
   standards/        → build + evaluation standards — see INDEX.md
-  playbooks/        → step-by-step process guides
-.claude/            → Claude Code config: agents, skills, hooks, settings
-infra/              → nginx config, certs, html web root
+
+packages/           → engine code (Opus only)
+  dbr/              → Dashboard framework
+  screenshot/       → Screenshot CLI
+infra/              → nginx + systemd + certs
+.claude/            → Claude Code config
+
 data/               → git-ignored runtime data
   warehouse.duckdb  → DuckDB analytical warehouse
 ```

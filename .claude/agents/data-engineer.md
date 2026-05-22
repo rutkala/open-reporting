@@ -31,10 +31,10 @@ Also read the relevant build standards:
 
 The task is provided below the separator line. Before writing code:
 
-1. Identify which layer is being modified: ingestion (raw), processing (dbt staging/mart), or warehouse (DDL)
-2. Verify the existing schema by reading relevant DDL files in `products/warehouse/`
-3. Check existing ingestion scripts in `products/ingestion/` for patterns already in use
-4. Check existing dbt models in `products/warehouse/models/` for conventions already established
+1. Identify which layer is being modified: ingestion (raw landing), dbt staging/intermediate/mart, dim, semantic, or operational schema (`products/database/`)
+2. Verify the existing schema by reading dbt models in `products/warehouse/models/` — the dbt project is the source of truth for the analytical warehouse
+3. Check existing ingestion scripts in `products/ingestion/` for patterns already in use (raw-table DDL is co-located: `products/ingestion/to_raw/<source>.sql` next to `<source>.py`)
+4. Read `docs/ARCHITECTURE.md` for the authoritative two-plane architecture description
 
 Do not assume — read the actual files.
 
@@ -53,15 +53,20 @@ Do not assume — read the actual files.
 
 ### For dbt models (`products/warehouse/models/`)
 
-- **Staging models** (`stg_{source}.sql`): one model per raw source, use `{{ source('raw', '...') }}`, conform to house schema (dim_sex, dim_geo, period_date, etc.), declare output grain in a header comment
-- **All-indicators model** (`all_indicators.sql`): union of staging models via `{{ ref('stg_...') }}` — do not touch unless adding a new source
-- **Mart models** (`mart_{domain}.sql`): filter and shape all_indicators for one domain; gold layer only
+Standard dbt project layout under `models/`:
+- **`staging/<source>/`** — one model per raw source (`stg_{source}.sql`); use `{{ source('raw', '...') }}`, conform to house schema (dim_sex, dim_geo, period_date, etc.), declare output grain in a header comment
+- **`intermediate/`** — cross-source consolidations and business-key resolution (`int_*`); use `{{ ref('stg_*') }}`. `intermediate/by_domain/` holds per-domain wide views (`<domain>_indicators.sql`).
+- **`marts/<domain>/`** — star-schema facts (`fact_{domain}_{topic}.sql`) ready for the semantic layer; use `{{ ref('int_*') }}` and `{{ ref('dim_*') }}`
+- **`dim/`** — shared dimension tables (`dim_geo`, `dim_calendar`, `dim_cofog`, …) referenced by facts across domains
+- **`semantic/`** — MetricFlow definitions (`semantic_models:` + `metrics:` YAMLs). No SQL. Polish labels and `format_type` declared per metric here.
+
+Rules:
 - **`unique_key` required on all incremental models** — idempotency is non-negotiable
 - **`sources.yml`:** every `{{ source() }}` call must have a matching entry with `loaded_at_field: fetched_at`
-- **Test coverage:** every new model must have `not_null` + `unique` tests on the primary key in `schema.yml`
+- **Test coverage:** every new model must have `not_null` + `unique` tests on the primary key in the model's `.yml`
 - **`ref()` only** — never hardcode schema.table paths inside dbt models; use `{{ ref() }}` or `{{ source() }}`
 
-### For the semantic layer (`products/warehouse/**/semantic_models/`, `metrics/`, and legacy `products/semantic/`)
+### For the semantic layer (`products/warehouse/models/semantic/`, plus embedded `semantic_models:` blocks inside `dim_*.yml`)
 
 - **Aggregation must match the measure's nature** — `SUM` for flows (revenue, GDP, births), **not** for stocks (population, employment level, debt); `AVG` is almost always wrong for wages/incomes/rents (use median); ratios and percentages cannot be summed across dimensions.
 - **Every measure declares `agg`, `expr`, `format_type`, and `label`** — implicit aggregation is a silent correctness bug. `format_type` drives dashboard rendering and must be present.
@@ -71,17 +76,15 @@ Do not assume — read the actual files.
 - **Measure names are unique within a semantic model** — collisions cause undefined resolution.
 - **Wages, salaries, incomes, rents → median or percentile**, never mean, unless the data shape is explicitly justified in a comment. The business-analysis KB is the authority here.
 
-### For DDL (`products/warehouse/` for DuckDB analytical, `products/database/` for PostgreSQL operational)
+### For DDL (raw-table schemas + operational PostgreSQL)
 
 - **Two stores, two purposes:**
-  - `products/warehouse/` → DuckDB analytical warehouse (`raw.*`, `curated.*`) — large columnar reads, dbt models read/write here
-  - `products/database/` → PostgreSQL operational store (`catalogue.*`) — source registry, domain mappings, ingestion metadata; small row-oriented writes
-- **Schema naming:** `raw.{source}_{entity}`, `curated.{layer}_{name}` (e.g. `curated.mart_labour`, `curated.all_indicators`), `catalogue.{entity}` for PostgreSQL operational tables
+  - DuckDB analytical warehouse (`raw.*`, `curated.*`) — large columnar reads. dbt project at `products/warehouse/` owns `curated.*`. Raw-table DDL is **co-located with its ingestion script**: `products/ingestion/to_raw/<source>.sql` next to `<source>.py`, loaded via `ensure_table()` at runtime.
+  - PostgreSQL operational store (`catalogue.*`) — source registry, domain mappings, ingestion metadata; small row-oriented writes. DDL in `products/database/catalogue/` + deploy scripts in `products/database/deploy/`.
+- **Schema naming:** `raw.{source}_{entity}`, `curated.{layer}_{name}` (e.g. `curated.stg_eurostat`, `curated.fact_finance_overview`, `curated.dim_geo`), `catalogue.{entity}` for PostgreSQL operational tables
 - **`fetched_at TIMESTAMPTZ NOT NULL DEFAULT NOW()`** on every raw table
 - **`NOT NULL` constraints** on primary key columns to support `ON CONFLICT`
 - **DuckDB-appropriate types:** `VARCHAR` not `TEXT`, `DOUBLE` not `FLOAT8`, `TIMESTAMPTZ` for timestamps
-- **Deploy scripts:** schema changes are applied via files in `products/warehouse/deploy/` or `products/database/deploy/` — not applied ad hoc
-- **Bus matrix maintenance:** `products/warehouse/bus_matrix.md` is the Kimball bus matrix — the canonical map of facts × conformed dimensions. When adding a new fact/mart or changing a conformed dimension, update the bus matrix in the same change.
 
 ## Step 4 — Implement
 

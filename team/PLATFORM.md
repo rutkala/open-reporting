@@ -2,6 +2,8 @@
 
 **Version:** 1.0 | **Owner:** Lead Analyst & Architect | **Updated:** 2026-04-07
 
+> **For repo layout, folder ownership, and AI delegation rules:** see [`../docs/ARCHITECTURE.md`](../docs/ARCHITECTURE.md) — the authoritative two-plane architecture document. This file (`PLATFORM.md`) describes the broader factory: product portfolio, agent roster, quality system, and workflow processes.
+
 This document is the factory blueprint for Open Reporting. It defines what is produced, how it is produced, who produces it, and how quality is ensured. All other team documents are children of this one — they provide depth on specific areas this document maps.
 
 **Portability:** This framework is designed to be reusable. A new project forks this document, replaces the product portfolio and domain KB, and inherits the quality infrastructure, agent pairs, workflow, and standards derivation chain intact.
