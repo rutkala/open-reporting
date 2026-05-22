@@ -2,6 +2,8 @@
 
 This document defines how all post-MVP work is planned, tracked, and delivered.
 
+> **Note on slash commands referenced below** (`/capture-idea`, `/review-ideas`, `/sprint`, `/kickoff`, `/review`, `/plan`, `/feasibility`): these describe the intended workflow. The corresponding skills currently live in `.claude/skills_review/` awaiting one-at-a-time review and promotion to `.claude/skills/`. Until promoted, you can run the workflow manually (create Linear issues, follow the lifecycle described here) without the slash-command shortcuts.
+
 ---
 
 ## Guiding Rule

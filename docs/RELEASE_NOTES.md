@@ -4,6 +4,19 @@
 
 ## Unreleased
 
+### Two-plane architecture refactor (May 2026)
+
+The repo was reorganised from organic accretion across multiple project phases into a clean **two-plane architecture** — declarative work (YAML, SQL, dbt models, dashboard specs) under `products/`, `docs/`, `team/`; engine code (Python frameworks, infra, AI agent config) under `packages/`, `infra/`, `.claude/`. See [`ARCHITECTURE.md`](ARCHITECTURE.md) for the full contract.
+
+Key changes:
+- `platform/` directory removed entirely; ingestion/processing/database moved into `products/`
+- dbt project moved to `products/warehouse/`; models reorganised into standard dbt convention (`staging/intermediate/marts/dim/semantic`)
+- `tools/screenshot.py` packaged as `packages/screenshot/` with `screenshot` CLI; auto-discovers dashboards from `products/dashboards/<name>/dashboard.yml`
+- **dbr** package (`packages/dbr/`) became the canonical dashboard framework — declarative YAML authoring on top of Dash + Plotly + MetricFlow
+- All legacy prototype dashboards retired (labour, explorer, finance, test_dashboard, mobile PWA, finance_test). The `complex_dashboard` skill (the predecessor Python kit) deleted.
+- Only live dashboard: **Public Finance** at `portal.open-reporting.dev/public_finance/` — 5 pages, 8 charts authored entirely in YAML
+- Documentation consolidated: `docs/ARCHITECTURE.md` is the new source of truth; `team/PLATFORM.md` (864 lines, mostly stale "factory" pattern) archived; duplicate `docs/domain-briefs/` removed (kept `products/domain-briefs/`)
+
 ### Analytics knowledge base
 - **OR-119** — Analytical thinking framework: `team/analytics/analytical-thinking.md` — structured KB covering the five analytical moves (describe/compare/change/relate/rank) with failure modes, four-layer insight hierarchy (headline → evidence → context → caveats), six when-is-it-interesting tests (statistical significance, practical significance, deviation from expectation, named threshold crossing, rate vs level, human scale), Polish public data context (V4/EU27 peer groups, six historical anchors from 2004 accession to present, domain-specific analyst questions for labour and fiscal), and aggregation/ratio rules (pp vs %, base effect, index comparability, per capita fallacy, Simpson's paradox, CAGR limits, definitional break handling). Includes worked example (Q4 2024 LFS unemployment).
 

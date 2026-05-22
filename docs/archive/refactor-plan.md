@@ -1,3 +1,5 @@
+> **ARCHIVED 2026-05-22** — the structural refactor (Phases 1–8.2 + verification) is complete. The end state described here is now the live repo. Kept for historical reference of how the transition was executed. Current architecture: [`../ARCHITECTURE.md`](../ARCHITECTURE.md).
+
 # Refactor Plan — Repo Reorganisation to Two-Plane Architecture
 
 **Purpose:** mechanically transform the current repo into the structure described in [`ARCHITECTURE.md`](./ARCHITECTURE.md).
