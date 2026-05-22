@@ -41,7 +41,7 @@ SELECT detail_id, name, unit, frequency, detail_type, entity_level
 FROM catalogue.domain_details
 WHERE detail_id = '{detail_id}';
 ```
-If missing: add the row to `platform/database/data/domain_details.csv` and re-run the loader.
+If missing: add the row to `products/database/data/domain_details.csv` and re-run the loader.
 
 **Step 2 — Confirm the source mapping exists and is verified in `catalogue.domain_detail_sources`:**
 ```sql
@@ -49,7 +49,7 @@ SELECT detail_id, source_id, series_id, verified, coverage_notes
 FROM catalogue.domain_detail_sources
 WHERE detail_id = '{detail_id}' AND source_id = '{source_id}';
 ```
-- If the row is missing: add it to `platform/database/data/domain_detail_sources.csv`
+- If the row is missing: add it to `products/database/data/domain_detail_sources.csv`
 - If `verified = false` or `series_id IS NULL`: **stop here**. Find the exact series in the source (endpoint, dataset code, variable ID), test it, then update the CSV:
   - Set `series_id` to the exact locator (see format per source type below)
   - Set `verified = true`

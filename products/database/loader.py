@@ -3,10 +3,10 @@
 Catalogue loader — upserts domains, domain_details, sources, and
 domain_detail_sources into PostgreSQL from CSV files.
 
-Run after any change to platform/database/data/*.csv
+Run after any change to products/database/data/*.csv
 
 Usage:
-    PYTHONPATH=/opt/open-reporting python3 platform/database/loader.py
+    PYTHONPATH=/opt/open-reporting python3 products/database/loader.py
 """
 import csv
 import logging
