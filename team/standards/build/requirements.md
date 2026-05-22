@@ -182,7 +182,7 @@ Before approving any PR, the reviewer verifies:
 - [ ] 100 char line length, 4-space indent
 - [ ] logging.getLogger(__name__) — no print() in scripts
 
-### Ingestion PRs (platform/ingestion/)
+### Ingestion PRs (products/ingestion/)
 - [ ] Parameterised queries — no string concatenation in SQL
 - [ ] load_dotenv(override=True) + lazy _dsn() pattern
 - [ ] Idempotent — safe to re-run without duplicating data

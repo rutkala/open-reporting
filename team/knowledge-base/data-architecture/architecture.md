@@ -518,7 +518,7 @@ model conforming the source to the 33-column shared schema.
 → Marts must be built on silver, not raw. Data quality validation in staging is bypassed.
 
 **RULE BLOCK-06** — A circular dependency is proposed (component A imports B, B imports A;
-or a dashboard imports from `platform/ingestion/` or `platform/processing/`).
+or a dashboard imports from `products/ingestion/` or `platform/processing/`).
 → Violates module boundary. The shared library between platform and products is
   the `complex_dashboard` skill (`.claude/skills/complex_dashboard/assets/`) only.
 
@@ -554,7 +554,7 @@ without updating all other staging models.
 → Without `ON CONFLICT DO UPDATE`, repeated ingestion duplicates rows.
 → Storage standard requires explicit conflict target on all mutable tables.
 
-**RULE COND-06** — A dashboard component imports functions directly from `platform/ingestion/`
+**RULE COND-06** — A dashboard component imports functions directly from `products/ingestion/`
 or `platform/processing/`.
 → Tight coupling: a product artefact depends on a platform artefact outside the shared library.
 → Shared surface is the `complex_dashboard` skill (`.claude/skills/complex_dashboard/assets/`) only.

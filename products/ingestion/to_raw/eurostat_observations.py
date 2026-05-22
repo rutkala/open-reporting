@@ -7,9 +7,9 @@ Update method: upsert on (dataset_code, geo, period, dimension_key)
 Schema: raw.eurostat_observations
 Catalogue: reads all rows WHERE source_id='eurostat' AND verified=true
 Usage:
-  PYTHONPATH=/opt/open-reporting python3 platform/ingestion/to_raw/eurostat_observations.py
-  PYTHONPATH=/opt/open-reporting python3 platform/ingestion/to_raw/eurostat_observations.py --dataset demo_gind
-  PYTHONPATH=/opt/open-reporting python3 platform/ingestion/to_raw/eurostat_observations.py --backfill
+  PYTHONPATH=/opt/open-reporting python3 products/ingestion/to_raw/eurostat_observations.py
+  PYTHONPATH=/opt/open-reporting python3 products/ingestion/to_raw/eurostat_observations.py --dataset demo_gind
+  PYTHONPATH=/opt/open-reporting python3 products/ingestion/to_raw/eurostat_observations.py --backfill
 Notes:
   - series_id format: "dataset_code?geo=PL&dim=val&..."
   - Default run fetches only the last 5 periods per dataset (fast daily refresh).

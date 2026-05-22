@@ -2,9 +2,9 @@
 """
 Raw load: data/landing/dbw_hvd/ → raw.dbw_observations + raw.dbw_positions + raw.dbw_variables
 Reads all *_data.csv files from the landing zone in one bulk DuckDB operation.
-Run AFTER platform/ingestion/to_landing/dbw_hvd.py.
+Run AFTER products/ingestion/to_landing/dbw_hvd.py.
 Usage:
-  PYTHONPATH=/opt/open-reporting python3 platform/ingestion/to_raw/dbw_observations.py
+  PYTHONPATH=/opt/open-reporting python3 products/ingestion/to_raw/dbw_observations.py
 Notes:
   - Drops and recreates raw.dbw_observations on every run (full overwrite).
   - Positions (raw.dbw_positions) are loaded from *_dict.csv files — also full overwrite.

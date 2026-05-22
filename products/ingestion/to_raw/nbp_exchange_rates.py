@@ -12,8 +12,8 @@ Catalogue:
   detail_id  : fin.exchange_rate_gbp_pln   series_id: exchangerates/rates/A/GBP  verified: true
   source_id  : nbp
 Usage:
-  PYTHONPATH=/opt/open-reporting python3 platform/ingestion/to_raw/nbp_exchange_rates.py
-  PYTHONPATH=/opt/open-reporting python3 platform/ingestion/to_raw/nbp_exchange_rates.py --backfill
+  PYTHONPATH=/opt/open-reporting python3 products/ingestion/to_raw/nbp_exchange_rates.py
+  PYTHONPATH=/opt/open-reporting python3 products/ingestion/to_raw/nbp_exchange_rates.py --backfill
 Notes:
   - NBP API max window: 93 days per request. Backfill paginates in 90-day chunks.
   - Exchange rates are published on business days only (Mon–Fri, no public holidays).

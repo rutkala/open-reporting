@@ -148,7 +148,7 @@ Paste this into every PR and check off before requesting review:
 - [ ] 100 char line length, 4-space indent
 - [ ] logging.getLogger(__name__) — no print() in scripts
 
-### Ingestion PRs (platform/ingestion/)
+### Ingestion PRs (products/ingestion/)
 - [ ] Parameterised queries — no string concatenation in SQL
 - [ ] load_dotenv(override=True) + lazy _dsn() pattern
 - [ ] Idempotent — safe to re-run without duplicating data

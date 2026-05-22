@@ -161,7 +161,7 @@ INFRASTRUCTURE
 | Mobile PWA | `products/mobile/` | Live |
 | Social publishing | `products/social/` | Live |
 | Research library | `products/research/` | Partial |
-| Data ingestion | `platform/ingestion/` | Live |
+| Data ingestion | `products/ingestion/` | Live |
 | dbt transforms | `platform/processing/dbt/` | Live |
 | DuckDB warehouse | `data/warehouse.duckdb` | Live |
 | PostgreSQL operational DB | Docker / postgres | Live |

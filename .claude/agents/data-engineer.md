@@ -33,14 +33,14 @@ The task is provided below the separator line. Before writing code:
 
 1. Identify which layer is being modified: ingestion (raw), processing (dbt staging/mart), or warehouse (DDL)
 2. Verify the existing schema by reading relevant DDL files in `platform/warehouse/`
-3. Check existing ingestion scripts in `platform/ingestion/` for patterns already in use
+3. Check existing ingestion scripts in `products/ingestion/` for patterns already in use
 4. Check existing dbt models in `platform/processing/dbt/models/` for conventions already established
 
 Do not assume — read the actual files.
 
 ## Step 3 — Apply the rules
 
-### For ingestion scripts (`platform/ingestion/`)
+### For ingestion scripts (`products/ingestion/`)
 
 - **ELT only** — land data into `raw.*` tables untransformed. No joins, no derived columns, no business filters.
 - **Permitted transforms:** strip whitespace, parse dates, add `fetched_at`, `TRY_CAST` numeric strings

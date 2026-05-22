@@ -535,7 +535,7 @@ The following rules extend `team/standards/evaluation/code-review.md`. They are 
 
 ### P1 — Blocks Merge
 
-**RULE P1-DE-01** — Transformation logic (column derivations, ratio calculations, category mappings, filtering on domain criteria) appears in an ingestion script in `platform/ingestion/` → Transformation in ingestion scripts bypasses dbt version control, cannot be tested with `dbt test`, and requires re-fetching from the external source to rerun — violates the ELT principle and makes the raw layer untrustworthy as a source of truth.
+**RULE P1-DE-01** — Transformation logic (column derivations, ratio calculations, category mappings, filtering on domain criteria) appears in an ingestion script in `products/ingestion/` → Transformation in ingestion scripts bypasses dbt version control, cannot be tested with `dbt test`, and requires re-fetching from the external source to rerun — violates the ELT principle and makes the raw layer untrustworthy as a source of truth.
 
 **RULE P1-DE-02** — A SQL query in Python uses f-string, `%` formatting, or `.format()` to construct the WHERE clause, INSERT values, or any dynamic part that carries external data → SQL injection vulnerability. External data includes: API responses, catalogue values, filenames, CLI arguments, config files. Use parameterised queries (`?` for DuckDB, `%s` for psycopg2).
 

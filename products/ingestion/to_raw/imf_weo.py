@@ -19,8 +19,8 @@ Countries: Poland + V4 + major EU economies
 Projection rule: year >= current_calendar_year is flagged as projection
 
 Usage:
-  PYTHONPATH=/opt/open-reporting python3 platform/ingestion/to_raw/imf_weo.py
-  PYTHONPATH=/opt/open-reporting python3 platform/ingestion/to_raw/imf_weo.py --backfill
+  PYTHONPATH=/opt/open-reporting python3 products/ingestion/to_raw/imf_weo.py
+  PYTHONPATH=/opt/open-reporting python3 products/ingestion/to_raw/imf_weo.py --backfill
 """
 import argparse
 import datetime

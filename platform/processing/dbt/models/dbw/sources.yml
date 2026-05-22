@@ -7,7 +7,7 @@ sources:
       - name: dbw_observations
         description: >
           Raw GUS DBW HVD observations. One row per variable x section x year x period
-          x dimension combination. Ingested via platform/ingestion/to_raw/dbw_observations.py.
+          x dimension combination. Ingested via products/ingestion/to_raw/dbw_observations.py.
       - name: dbw_positions
         description: >
           Dimension label lookup. Resolves integer position IDs to human-readable labels.

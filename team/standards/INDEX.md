@@ -13,7 +13,7 @@ See `team/PLATFORM.md §8` for the full standards map and derivation chain.
 
 | Standard | File | Derived from KB | Applies to |
 |----------|------|----------------|------------|
-| Data ingestion | [build/ingestion.md](build/ingestion.md) | `knowledge-base/data-engineering/engineering.md` ✓ | ETL scripts in `platform/ingestion/` |
+| Data ingestion | [build/ingestion.md](build/ingestion.md) | `knowledge-base/data-engineering/engineering.md` ✓ | ETL scripts in `products/ingestion/` |
 | Data processing | [build/processing.md](build/processing.md) | `knowledge-base/data-engineering/engineering.md` ✓ | dbt models in `platform/processing/` |
 | Data storage | [build/storage.md](build/storage.md) | `knowledge-base/data-architecture/architecture.md` ✓ | All DB schema work |
 | Visualisation design | [build/visualisation.md](build/visualisation.md) | `knowledge-base/visualization/` ✓ + `knowledge-base/ux-perception/perception.md` ✓ | Dashboard and component development |

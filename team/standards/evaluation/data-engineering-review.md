@@ -12,7 +12,7 @@ Rules applied by the `data-engineer-reviewer` agent on every PR diff touching `p
 
 ### ELT violations
 
-- **Transform logic in ingestion script** — any Python code in `platform/ingestion/` that derives new columns, filters rows based on domain criteria, joins to reference tables, applies business rules about data validity, or aggregates before loading. Ingestion must land raw data only. The permitted boundary: strip whitespace, parse dates, add `fetched_at`. Everything else belongs in dbt.
+- **Transform logic in ingestion script** — any Python code in `products/ingestion/` that derives new columns, filters rows based on domain criteria, joins to reference tables, applies business rules about data validity, or aggregates before loading. Ingestion must land raw data only. The permitted boundary: strip whitespace, parse dates, add `fetched_at`. Everything else belongs in dbt.
 - **Python row iteration over DuckDB insert** — using `for row in data: conn.execute("INSERT ...")` instead of a single `INSERT ... SELECT FROM read_csv(...)`. Row-by-row Python inserts bypass DuckDB's vectorised engine and are orders of magnitude slower.
 
 ### dbt correctness

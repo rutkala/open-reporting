@@ -1,7 +1,7 @@
 # Ingestion Standard
 
 **Derived from:** `team/knowledge-base/data-engineering/engineering.md` ✓ (ELT principle, DuckDB read_csv/TRY_CAST/upsert/fetched_at, Python ETL standards, DAMA quality dimensions)
-**Used by builders:** `data-engineer` (writing scripts in `platform/ingestion/`)
+**Used by builders:** `data-engineer` (writing scripts in `products/ingestion/`)
 **Evaluated by:** `code-reviewer`, `data-engineer-reviewer` (PR-phase)
 **Does NOT cover:** transformation logic (see `processing.md`), schema design (see `storage.md`), semantic layer (see `measures.md`)
 
@@ -176,7 +176,7 @@ Catalogue:
   detail_id  : {detail_id}          (catalogue.domain_details)
   source_id  : {source_id}          (catalogue.sources)
   series_id  : {series_id}          (catalogue.domain_detail_sources — verified=true)
-Usage: PYTHONPATH=/opt/open-reporting python3 platform/ingestion/to_raw/{name}_ingest.py [--backfill]
+Usage: PYTHONPATH=/opt/open-reporting python3 products/ingestion/to_raw/{name}_ingest.py [--backfill]
 """
 import logging
 import os

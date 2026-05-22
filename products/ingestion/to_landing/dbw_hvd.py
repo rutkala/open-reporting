@@ -5,8 +5,8 @@ Downloads all CSV ZIPs from the HVD catalogue and extracts them to the landing z
 Catalogue API: https://dbw.stat.gov.pl/api_app/getCatalogValues
 No API key required. No rate limiting.
 Usage:
-  PYTHONPATH=/opt/open-reporting python3 platform/ingestion/to_landing/dbw_hvd.py
-  PYTHONPATH=/opt/open-reporting python3 platform/ingestion/to_landing/dbw_hvd.py --force
+  PYTHONPATH=/opt/open-reporting python3 products/ingestion/to_landing/dbw_hvd.py
+  PYTHONPATH=/opt/open-reporting python3 products/ingestion/to_landing/dbw_hvd.py --force
 Notes:
   - Default run skips files already present in the landing zone.
   - --force re-downloads all files.
