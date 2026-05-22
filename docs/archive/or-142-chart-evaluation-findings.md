@@ -1,3 +1,5 @@
+> **ARCHIVED 2026-05-22** — describes a prior state of the project. Current architecture: [`../ARCHITECTURE.md`](../ARCHITECTURE.md).
+
 # OR-142 — Chart Template Evaluation Findings
 <!-- date: 2026-04-08 -->
 
