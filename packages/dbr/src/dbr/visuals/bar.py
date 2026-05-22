@@ -5,20 +5,28 @@ Mandatory encoding:
   y:  { dimension: <name> }     — category on y-axis
 
 Optional:
-  color: { dimension: <name> }  — splits into grouped or stacked bars
-  options.stack: bool           — stack (true) or group (false) when `color` is set
+  color:     { dimension: <name> }  — splits into grouped or stacked bars
+  options.stack:            bool    — stack (true) or group (false) when `color` is set
+  options.sort:             "value-asc" | "value-desc" | "category"
+  options.highlight:                — color one row distinctly (single-series only)
+    value:   <category value>       — exact match against the y-dim column
+    color:   <alias|hex>            — default azure_1
+    other:   <alias|hex>            — default slate_2
+  options.reference_lines:          — vertical dashed lines at given x values
+    - { value: <number>, label: <str>, color: <alias|hex> }
 """
 from dash import dcc, html
 import plotly.graph_objects as go
 
 from dbr.semantic import semantic_query_data
 from dbr.theme import (
-    BG_SURFACE, BAR_CHART_BARGAP, BAR_CHART_HEIGHT,
-    CARD_RADIUS, CARD_SHADOW,
+    AZURE_1, BG_SURFACE, BAR_CHART_BARGAP, BAR_CHART_HEIGHT,
+    CARD_RADIUS, CARD_SHADOW, SLATE_1,
 )
 from dbr.visuals._encoding import (
-    postprocess_time_columns,
+    apply_reference_lines, postprocess_time_columns,
     dimension_column_name, group_by_from_channels, parse_encoding,
+    _resolve_color,
 )
 
 SCHEMA = {
@@ -43,6 +51,30 @@ SCHEMA = {
             "additionalProperties": False,
             "properties": {
                 "stack": {"type": "boolean"},
+                "sort":  {"enum": ["value-asc", "value-desc", "category"]},
+                "highlight": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["value"],
+                    "properties": {
+                        "value": {},
+                        "color": {"type": "string"},
+                        "other": {"type": "string"},
+                    },
+                },
+                "reference_lines": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": False,
+                        "required": ["value"],
+                        "properties": {
+                            "value": {"type": "number"},
+                            "label": {"type": "string"},
+                            "color": {"type": "string"},
+                        },
+                    },
+                },
             },
         },
     },
@@ -72,6 +104,14 @@ def bar(*, encoding: dict, filter: dict | None = None, options: dict | None = No
         return html.Div("No data", style=_CARD_STYLE)
     df = postprocess_time_columns(df, enc)
 
+    sort = opts.get("sort")
+    if sort == "value-asc":
+        df = df.sort_values(metric, ascending=True)
+    elif sort == "value-desc":
+        df = df.sort_values(metric, ascending=False)
+    elif sort == "category":
+        df = df.sort_values(y_col)
+
     fig = go.Figure()
     if enc.color:
         color_col = dimension_column_name(enc.color)
@@ -79,9 +119,21 @@ def bar(*, encoding: dict, filter: dict | None = None, options: dict | None = No
             fig.add_trace(go.Bar(x=sub[metric], y=sub[y_col], orientation="h", name=str(series)))
         fig.update_layout(barmode="stack" if opts.get("stack") else "group")
     else:
-        fig.add_trace(go.Bar(x=df[metric], y=df[y_col], orientation="h"))
+        marker_color = None
+        hi = opts.get("highlight")
+        if hi:
+            target = hi["value"]
+            color_hit = _resolve_color(hi.get("color"), AZURE_1)
+            color_miss = _resolve_color(hi.get("other"), SLATE_1)
+            marker_color = [color_hit if v == target else color_miss for v in df[y_col]]
+        fig.add_trace(go.Bar(
+            x=df[metric], y=df[y_col], orientation="h",
+            marker=dict(color=marker_color) if marker_color else None,
+            showlegend=False,
+        ))
     fig.update_layout(
         height=int(str(BAR_CHART_HEIGHT).rstrip("px")),
         bargap=BAR_CHART_BARGAP, xaxis_title="", yaxis_title="",
     )
+    apply_reference_lines(fig, opts, axis="x")
     return html.Div(dcc.Graph(figure=fig, config={"displayModeBar": False}), style=_CARD_STYLE)

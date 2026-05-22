@@ -21,6 +21,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from dbr.theme import (
+    AZURE_1, AZURE_2, AZURE_3, AZURE_4, AZURE_PALE,
+    BORDER, NEGATIVE, POSITIVE, SLATE_1, SLATE_2, SLATE_3, SLATE_4,
+    SUBTEXT, TEAL_1, TEAL_2, TEAL_3, TEAL_4, TEAL_PALE, WARNING,
+)
+
 
 @dataclass
 class Channel:
@@ -173,3 +179,72 @@ def postprocess_time_columns(df, encoding: Encoding):
             elif ch.granularity == "day":
                 df[col] = ts.dt.strftime("%Y-%m-%d")
     return df
+
+
+# ── Reference lines ───────────────────────────────────────────────────────────
+# YAML shape (per visual):
+#
+#   options:
+#     reference_lines:
+#       - { value: -3,  label: "Próg SGP",        color: negative }
+#       - { value: 60,  label: "Próg Maastricht", color: warning }
+#
+# `value` is the position on the *value axis* of the visual:
+#   - line, column, area → horizontal line at y = value
+#   - bar                → vertical line at x = value
+# Each visual passes the correct `axis` ("y" or "x") to apply_reference_lines.
+
+_COLOR_ALIASES = {
+    # Signal colors (semantic)
+    "negative": NEGATIVE,
+    "positive": POSITIVE,
+    "warning":  WARNING,
+    "subtext":  SUBTEXT,
+    "border":   BORDER,
+    # Brand palette (aliases for highlight / category colors)
+    "azure_1":    AZURE_1, "azure_2": AZURE_2, "azure_3": AZURE_3,
+    "azure_4":    AZURE_4, "azure_pale": AZURE_PALE,
+    "teal_1":     TEAL_1,  "teal_2":  TEAL_2,  "teal_3":  TEAL_3,
+    "teal_4":     TEAL_4,  "teal_pale": TEAL_PALE,
+    "slate_1":    SLATE_1, "slate_2": SLATE_2, "slate_3": SLATE_3,
+    "slate_4":    SLATE_4,
+}
+
+
+def _resolve_color(name: str | None, default: str = NEGATIVE) -> str:
+    """Resolve a YAML color token (alias or hex) to a real color string."""
+    if not name:
+        return default
+    if name.startswith("#"):
+        return name
+    return _COLOR_ALIASES.get(name, default)
+
+
+def apply_reference_lines(fig, options: dict | None, axis: str) -> None:
+    """Add dashed reference lines from options.reference_lines to a Plotly figure.
+
+    `axis` is "y" for line/column/area (horizontal lines) or "x" for bar
+    (vertical lines). Each line is a dict with keys: value (required),
+    label (optional), color (optional alias or hex; default = NEGATIVE).
+    """
+    if not options:
+        return
+    lines = options.get("reference_lines") or []
+    for spec in lines:
+        if not isinstance(spec, dict) or "value" not in spec:
+            continue
+        value = spec["value"]
+        color = _resolve_color(spec.get("color"))
+        label = spec.get("label", "")
+        if axis == "y":
+            fig.add_hline(
+                y=value, line_dash="dash", line_color=color, line_width=1.5,
+                annotation_text=label, annotation_position="top right",
+                annotation_font=dict(color=color, size=11),
+            )
+        else:
+            fig.add_vline(
+                x=value, line_dash="dash", line_color=color, line_width=1.5,
+                annotation_text=label, annotation_position="top right",
+                annotation_font=dict(color=color, size=11),
+            )

@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Przegląd: three KPIs on top, two trend lines below.
+
+rows:
+  - items:
+      - { visual: kpi_balance, width: "33%" }
+      - { visual: kpi_debt,    width: "33%" }
+      - { visual: kpi_revenue, width: "34%" }
+  - items:
+      - { visual: trend_balance, width: "50%" }
+      - { visual: trend_debt,    width: "50%" }

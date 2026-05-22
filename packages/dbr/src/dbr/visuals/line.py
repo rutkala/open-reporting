@@ -18,7 +18,7 @@ from dbr.theme import (
     LINE_CHART_HEIGHT, LINE_CHART_LINE_WIDTH, LINE_CHART_MARKER_SIZE,
 )
 from dbr.visuals._encoding import (
-    postprocess_time_columns,
+    apply_reference_lines, postprocess_time_columns,
     dimension_column_name, group_by_from_channels, parse_encoding,
 )
 
@@ -45,6 +45,19 @@ SCHEMA = {
             "properties": {
                 "years":   {"type": "integer", "minimum": 1, "maximum": 100},
                 "markers": {"type": "boolean"},
+                "reference_lines": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": False,
+                        "required": ["value"],
+                        "properties": {
+                            "value": {"type": "number"},
+                            "label": {"type": "string"},
+                            "color": {"type": "string"},
+                        },
+                    },
+                },
             },
         },
     },
@@ -99,6 +112,7 @@ def line(*, encoding: dict, filter: dict | None = None, options: dict | None = N
         height=int(str(LINE_CHART_HEIGHT).rstrip("px")),
         xaxis_title="", yaxis_title="",
     )
+    apply_reference_lines(fig, opts, axis="y")
     return html.Div(dcc.Graph(figure=fig, config={"displayModeBar": False}), style=_CARD_STYLE)
 
 

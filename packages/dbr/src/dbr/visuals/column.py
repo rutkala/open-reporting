@@ -17,7 +17,7 @@ from dbr.theme import (
     CARD_RADIUS, CARD_SHADOW,
 )
 from dbr.visuals._encoding import (
-    postprocess_time_columns,
+    apply_reference_lines, postprocess_time_columns,
     dimension_column_name, group_by_from_channels, parse_encoding,
 )
 
@@ -43,6 +43,19 @@ SCHEMA = {
             "additionalProperties": False,
             "properties": {
                 "stack": {"type": "boolean"},
+                "reference_lines": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": False,
+                        "required": ["value"],
+                        "properties": {
+                            "value": {"type": "number"},
+                            "label": {"type": "string"},
+                            "color": {"type": "string"},
+                        },
+                    },
+                },
             },
         },
     },
@@ -84,4 +97,5 @@ def column(*, encoding: dict, filter: dict | None = None, options: dict | None =
         height=int(str(BAR_CHART_HEIGHT).rstrip("px")),
         bargap=BAR_CHART_BARGAP, xaxis_title="", yaxis_title="",
     )
+    apply_reference_lines(fig, opts, axis="y")
     return html.Div(dcc.Graph(figure=fig, config={"displayModeBar": False}), style=_CARD_STYLE)

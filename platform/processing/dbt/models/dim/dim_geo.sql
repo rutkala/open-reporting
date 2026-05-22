@@ -35,7 +35,7 @@ with countries (geo, name_pl, name_en, eu_member, continent) as (
         ('FI', 'Finlandia',         'Finland',        true,  'Europe'),
         ('FR', 'Francja',           'France',         true,  'Europe'),
         ('DE', 'Niemcy',            'Germany',        true,  'Europe'),
-        ('GR', 'Grecja',            'Greece',         true,  'Europe'),
+        ('EL', 'Grecja',            'Greece',         true,  'Europe'),  -- Eurostat code (ISO uses GR)
         ('HU', 'Węgry',             'Hungary',        true,  'Europe'),
         ('IE', 'Irlandia',          'Ireland',        true,  'Europe'),
         ('IT', 'Włochy',            'Italy',          true,  'Europe'),
