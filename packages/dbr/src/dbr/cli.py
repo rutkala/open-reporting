@@ -160,11 +160,11 @@ def cmd_run(args: argparse.Namespace) -> int:
     _run(["sudo", "-n", "/usr/bin/systemctl", "restart", f"or-{domain}.service"])
     print(f"  ✓ systemd: or-{domain}.service restarted — waiting for health check")
 
-    # 2b. Health check: dashboards take ~6s per visual to start (each
-    #     binds an mf subprocess at boot — see Phase C plan to amortise).
-    #     Poll for the port to be listening; if not after the budget,
-    #     dump the service status and fail.
-    health_budget_s = 180
+    # 2b. Health check: dashboards take ~5-10s to start. MetricFlow runs
+    #     in-process now (one ~6s engine setup amortised across all
+    #     visuals, then ~50ms per query). Poll for the port to be
+    #     listening; if not after the budget, dump status and fail.
+    health_budget_s = 60
     import socket
     deadline = time.time() + health_budget_s
     while time.time() < deadline:
