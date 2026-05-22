@@ -62,9 +62,6 @@ Two-plane architecture — see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) fo
 │   └── archive/         → Superseded docs (SITUATION, MVP, OR-142 findings)
 │
 ├── team/                → Knowledge base + standards + memory
-│   ├── PLATFORM.md      → Broader platform blueprint (product portfolio,
-│   │                       agent roster, quality system). Architecture
-│   │                       is in docs/ARCHITECTURE.md.
 │   ├── knowledge-base/  → Research syntheses (authoritative sources → KB → standards)
 │   ├── standards/       → Derived from KB — actionable rules for builders + evaluators
 │   ├── session-memory.md

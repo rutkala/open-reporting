@@ -47,7 +47,6 @@ Start with [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — the source of truth 
 
 | Doc | Purpose |
 |-----|---------|
-| [team/PLATFORM.md](team/PLATFORM.md) | Broader platform blueprint — product portfolio, agent roster, quality system |
 | [team/knowledge-base/INDEX.md](team/knowledge-base/INDEX.md) | Research KB index — what's built, what's planned, loading guide |
 | [team/standards/INDEX.md](team/standards/INDEX.md) | Standards index — build rules + evaluation rules, derivation chain |
 | [team/lessons-learned.md](team/lessons-learned.md) | Post-issue retrospectives |

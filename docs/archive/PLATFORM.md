@@ -1,3 +1,5 @@
+> **ARCHIVED 2026-05-22** — this 864-line factory blueprint described an earlier 'factory / DAG / workstation' model that was abandoned in favour of the declarative-YAML approach now described in [`../ARCHITECTURE.md`](../ARCHITECTURE.md). Specific sections (product portfolio, competency map, quality system) are largely superseded by [ARCHITECTURE.md](../ARCHITECTURE.md), the [CLAUDE.md subagent table](../../CLAUDE.md#custom-subagents), [team/standards/INDEX.md](../../team/standards/INDEX.md), and [team/knowledge-base/INDEX.md](../../team/knowledge-base/INDEX.md). Kept for history.
+
 # Open Reporting — Platform Blueprint
 
 **Version:** 1.0 | **Owner:** Lead Analyst & Architect | **Updated:** 2026-04-07

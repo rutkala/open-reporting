@@ -1,7 +1,7 @@
 # Standards — Index
 
 Standards are derived from the knowledge base and distilled into actionable rules.
-See `team/PLATFORM.md §8` for the full standards map and derivation chain.
+See [`../../docs/ARCHITECTURE.md`](../../docs/ARCHITECTURE.md) §"AI delegation contract" for which standard applies to which task.
 
 **Two categories:**
 - `build/` — how we build (developer-facing, tells practitioners what to do)

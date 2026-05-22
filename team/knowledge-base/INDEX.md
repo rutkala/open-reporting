@@ -3,7 +3,7 @@
 Research syntheses for the Open Reporting team. Each file is source-first — no opinions, only synthesis of authoritative sources.
 
 **Loading rule:** Read only what is relevant to the current task. Do not auto-load every session.
-See `team/PLATFORM.md §7` for the full KB map and priority build order.
+See [`../../docs/ARCHITECTURE.md`](../../docs/ARCHITECTURE.md) §"Layer-by-layer" for how each module is consumed.
 
 ---
 

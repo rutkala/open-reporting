@@ -18,7 +18,7 @@ Phase 1 cleanup complete. Repo unblocked. Next: finish pilot_template (Phase 2) 
 - .claude/ writes: auto-approved via approve-claude-dir.js hook
 
 ## Directory Structure (current)
-- `team/PLATFORM.md` — factory blueprint (source of truth: sub-product recipes, competency map, agent roster, quality system)
+- `docs/ARCHITECTURE.md` — authoritative two-plane architecture + AI delegation contract
 - `team/knowledge-base/` — 10 KB modules (all complete except public-finance domain ⏳ draft)
 - `team/standards/build/` — 6 build standards (all with "Derived from" headers)
 - `team/standards/evaluation/` — 12 eval standards (all wired to agents)
