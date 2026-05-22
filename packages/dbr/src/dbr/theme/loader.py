@@ -105,6 +105,7 @@ WEIGHT_SECTION_HEADING = _TYPO["weight_section_heading"]
 PAGE_GAP           = _SPACING["page_gap"]
 PAGE_PADDING       = _SPACING["page_padding"]
 MAIN_PADDING       = _SPACING["main_padding"]
+MAIN_MAX_WIDTH     = _SPACING.get("main_max_width", "1440px")
 SIDEBAR_WIDTH      = _SPACING["sidebar_width"]
 SIDEBAR_PADDING    = _SPACING["sidebar_padding"]
 NAV_LINK_PADDING   = _SPACING["nav_link_padding"]

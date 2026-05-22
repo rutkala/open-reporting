@@ -54,6 +54,7 @@ spacing:
   page_gap:           "8px"      # gap between sidebar and main canvas
   page_padding:       "8px"      # outer padding of the page wrapper
   main_padding:       "24px"     # inner padding of the main canvas
+  main_max_width:     "1440px"   # cap main canvas width — beyond this, page centres
   sidebar_width:      "240px"
   sidebar_padding:    "20px 0"
   nav_link_padding:   "8px 20px"

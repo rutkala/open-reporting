@@ -18,6 +18,7 @@ from dbr.layout.sidebar import build_sidebar
 from dbr.theme import (
     BG_PAGE,
     FONT_FAMILY,
+    MAIN_MAX_WIDTH,
     MAIN_PADDING,
     PAGE_GAP,
     PAGE_PADDING,
@@ -41,8 +42,11 @@ _PAGE_STYLE = {
 }
 
 _MAIN_STYLE = {
-    "flex":    1,
-    "padding": MAIN_PADDING,
+    "flex":      1,
+    "padding":   MAIN_PADDING,
+    "maxWidth":  MAIN_MAX_WIDTH,    # cap on wide monitors so charts don't stretch infinitely
+    "minWidth":  0,                  # let inner content shrink instead of overflowing
+    "boxSizing": "border-box",       # padding counts inside maxWidth
 }
 
 _SECTION_HEADING_STYLE = {
