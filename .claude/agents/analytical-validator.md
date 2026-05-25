@@ -2,7 +2,7 @@
 name: analytical-validator
 description: "Independent analytical correctness agent. Evaluates statistical and methodological soundness of analyses — at plan phase (evaluates design intent) and at review phase (evaluates implementation in code and SQL). Distinct from architecture-critic (layer compliance) and code-reviewer (implementation quality). Returns MISLEADING / QUESTIONABLE / NOTED findings with BLOCK / CONDITIONAL / PASS verdict."
 tools: Read, Bash, Grep, Glob
-model: sonnet
+model: opus
 permissionMode: plan
 maxTurns: 20
 ---

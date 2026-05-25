@@ -47,7 +47,7 @@ Some topics also hold sub-areas (`charts/`, `_external/`).
 | [`research-methods/`](research-methods/) | `principles.md`, `reviewing.md` | Quantitative research, econometric models, notebooks |
 | [`data-research/`](data-research/) | `principles.md`, `reviewing.md` | Evaluating a new data source for ingestion |
 | [`public-finance/`](public-finance/) | `principles.md` | Any public-finance work — fiscal KPIs, SGP rules, canonical patterns |
-| [`process/`](process/) | `requirements.md`, `code-review.md` | Cross-cutting: Linear issue templates, code review rules |
+| [`process/`](process/) | `requirements.md`, `code-review.md`, `model-delegation.md` | Cross-cutting: Linear issue templates, code review rules, model-tiering policy |
 | [`sources/`](sources/) | `SUMMARY.md` | Authoritative data-source catalogue |
 
 ## Loading guidance (for AI agents)

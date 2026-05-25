@@ -2,7 +2,7 @@
 name: domain-specialist
 description: "Domain specialist reviewer. Evaluates a plan or PR diff for domain correctness — whether the KPIs are appropriate, the framing is accurate, the benchmarks are valid, and the data interpretation is sound for the specific domain (labour, finance, demographics, etc.)."
 tools: Read, Bash, Grep
-model: sonnet
+model: opus
 permissionMode: plan
 maxTurns: 20
 ---

@@ -2,7 +2,7 @@
 name: architecture-critic
 description: "Independent architecture review agent. Evaluates implementation plans against project architecture standards before any code is written. Challenges layer assignments, schema design, data flow, and coupling risks. Returns APPROVE / CONDITIONAL / BLOCK."
 tools: Read
-model: sonnet
+model: opus
 permissionMode: plan
 maxTurns: 15
 ---

@@ -2,7 +2,7 @@
 name: cost-estimator
 description: "Token budget estimator. Reads a Linear issue and lessons-learned history to forecast token cost range, risk level, and whether the issue should be split. Called during feasibility and sprint planning."
 tools: Read, Bash, Grep
-model: haiku
+model: sonnet
 permissionMode: plan
 maxTurns: 10
 ---
