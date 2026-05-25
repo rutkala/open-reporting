@@ -75,9 +75,10 @@ def run_dashboard(path: str | Path) -> None:
     run_app(app, port=config["port"])
 
 
-# A section is (title, anchor, rows). A row is (title-or-None, list of (component, width-or-None)).
-# Row title is optional H3 sub-heading; absent rows render without a heading.
-Row = tuple[str | None, list[tuple[object, str | None]]]
+# A section is (title, anchor, rows). A row is (title-or-None, prose-or-None,
+# list of (component, width-or-None)). Row title is optional H3 sub-heading;
+# prose is optional Markdown paragraph rendered above the row items.
+Row = tuple[str | None, str | None, list[tuple[object, str | None]]]
 Section = tuple[str, str, list[Row]]
 
 
@@ -118,7 +119,9 @@ def _load_page_rows(visuals_dir: Path) -> list[Row]:
 
     rows: list[Row] = []
     for row_spec in rows_spec:
-        row_title = row_spec.get("title") if isinstance(row_spec, dict) else None
+        is_dict = isinstance(row_spec, dict)
+        row_title = row_spec.get("title") if is_dict else None
+        row_prose = row_spec.get("prose") if is_dict else None
         row_items: list[tuple[object, str | None]] = []
         for item in row_spec.get("items", []) or []:
             if isinstance(item, str):
@@ -128,7 +131,7 @@ def _load_page_rows(visuals_dir: Path) -> list[Row]:
                 width = item.get("width")
             spec = _load_yaml(visuals_dir / f"{visual_name}.yml")
             row_items.append((_build_visual(spec), width))
-        rows.append((row_title, row_items))
+        rows.append((row_title, row_prose, row_items))
     return rows
 
 

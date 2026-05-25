@@ -11,7 +11,7 @@ from ``dbr.theme`` (sourced from ``theme.yaml``).
 Chrome behaviour flags (sidebar enabled, sidebar position) come from
 ``dbr.layout.loader`` (sourced from ``layout.yaml``).
 """
-from dash import html
+from dash import dcc, html
 
 from dbr.layout.loader import SIDEBAR_ENABLED, SIDEBAR_POSITION
 from dbr.layout.sidebar import build_sidebar
@@ -65,6 +65,15 @@ _ROW_HEADING_STYLE = {
     "marginBottom": "8px",
 }
 
+_ROW_PROSE_STYLE = {
+    "fontSize":     "13px",
+    "color":        TEXT,
+    "lineHeight":   "1.5",
+    "marginTop":    "0",
+    "marginBottom": "12px",
+    "maxWidth":     "780px",   # readable line length — narrative shouldn't span full canvas
+}
+
 _ROW_STYLE = {
     "display":      "flex",
     "gap":          ROW_GAP,
@@ -80,12 +89,15 @@ def _wrap_item(component, width: str | None) -> html.Div:
     return html.Div(component, style=style)
 
 
-def page_shell(sections: list[tuple[str, str, list[tuple[str | None, list[tuple[object, str | None]]]]]]) -> html.Div:
+def page_shell(sections: list[tuple[str, str, list[tuple[str | None, str | None, list[tuple[object, str | None]]]]]]) -> html.Div:
     """Return the full page tree (sidebar + main canvas) for ``app.layout``.
 
     ``sections`` is a list of ``(title, anchor_id, rows)`` where each
-    row is a 2-tuple of ``(row_title_or_None, [(component, width-or-None), ...])``.
-    When ``row_title`` is set, an H3 sub-heading renders above the row.
+    row is a 3-tuple of ``(row_title_or_None, row_prose_or_None,
+    [(component, width-or-None), ...])``. When ``row_title`` is set an
+    H3 sub-heading renders above the row; when ``row_prose`` is set a
+    Markdown paragraph renders below the title and above the items
+    (narrative bridge between charts per rubric dim 17).
 
     Chrome behaviour (sidebar on/off, sidebar position) comes from
     ``layout.yaml``.
@@ -95,9 +107,11 @@ def page_shell(sections: list[tuple[str, str, list[tuple[str | None, list[tuple[
     main_children: list = []
     for label, anchor, rows in sections:
         main_children.append(html.H2(label, id=anchor, style=_SECTION_HEADING_STYLE))
-        for row_title, row_items in rows:
+        for row_title, row_prose, row_items in rows:
             if row_title:
                 main_children.append(html.H3(row_title, style=_ROW_HEADING_STYLE))
+            if row_prose:
+                main_children.append(dcc.Markdown(row_prose, style=_ROW_PROSE_STYLE))
             flex_items = [_wrap_item(component, width) for component, width in row_items]
             main_children.append(html.Div(flex_items, style=_ROW_STYLE))
 

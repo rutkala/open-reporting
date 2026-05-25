@@ -34,6 +34,10 @@
           "type": "string",
           "description": "Optional H3-level heading rendered above the row. Use to label section sub-groups (e.g. 'Trend długu' separately from 'Koszty obsługi długu' on the same page)."
         },
+        "prose": {
+          "type": "string",
+          "description": "Optional Markdown paragraph rendered above the row items (below the title if both present). Use for narrative bridges between charts — the analytical sentence that turns data into an argument (rubric dim 17)."
+        },
         "items": {
           "type": "array",
           "items": { "$ref": "#/$defs/item" }
