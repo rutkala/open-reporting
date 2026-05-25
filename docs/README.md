@@ -36,7 +36,7 @@ Some topics also hold sub-areas (`charts/`, `_external/`).
 
 | Topic | What's in it | Read when |
 |-------|-------------|-----------|
-| [`visualization/`](visualization/) | `principles.md`, `ui-principles.md`, `building.md`, `reviewing.md`, `charts/` | Designing or reviewing any chart, dashboard, or layout |
+| [`visualization/`](visualization/) | `principles.md`, `ui-principles.md`, `building.md`, `reviewing.md`, `quality.md`, `charts/`, `references/` | Designing or reviewing any chart, dashboard, or layout. `quality.md` is the rubric; `references/` is the multimodal example library |
 | [`ux-perception/`](ux-perception/) | `principles.md` | Designing any layout or colour scheme (Pre-attentive, Gestalt, WCAG, Cowan 4±1) |
 | [`data-engineering/`](data-engineering/) | `principles.md`, `ingestion.md`, `processing.md`, `storage.md`, `measures.md`, `reviewing.md`, `measures-review.md` | Writing or reviewing any ETL script, dbt model, semantic measure, or DB DDL |
 | [`data-architecture/`](data-architecture/) | `principles.md`, `reviewing.md` | Any schema design, new mart, dimensional model decision |
@@ -53,7 +53,8 @@ Some topics also hold sub-areas (`charts/`, `_external/`).
 ## Loading guidance (for AI agents)
 
 Do not auto-load everything. Read on demand:
-- Building a chart? → `docs/visualization/principles.md` + `docs/visualization/building.md` + the relevant `docs/visualization/charts/<type>.md`
+- Building a chart? → `docs/visualization/principles.md` + `docs/visualization/building.md` + `docs/visualization/quality.md` (rubric) + the relevant `docs/visualization/charts/<type>.md`
+- Reviewing a dashboard? → `docs/visualization/quality.md` (the rubric) + cited reference images under `docs/visualization/references/`
 - Writing a dbt model? → `docs/data-engineering/principles.md` + the specific build file (`ingestion.md` / `processing.md` / `storage.md` / `measures.md`)
 - Reviewing a PR? → the corresponding `<topic>/reviewing.md`
 - Designing a KPI? → `docs/business-analysis/principles.md` + the relevant domain folder (e.g. `docs/public-finance/principles.md`)

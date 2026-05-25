@@ -1,7 +1,9 @@
 # Visualization references — index
 
-Wave 1 captured 2026-05-25. All five sources processed. Annotation rubric distillation pending (Opus parent task).
+Wave 1 captured 2026-05-25. All five sources processed.
 Wave 2 captured 2026-05-25. 3 of 5 sources yielded images; 2 dropped (network-blocked). See per-source `source.md` files.
+
+**Rubric distilled** from these sources at [`docs/visualization/quality.md`](../quality.md) — 21 dimensions, each grounded in ≥1 captured reference image. Use the rubric for build + review judgments; come back to the source folders here when you need to look at a specific reference.
 
 ## Wave 1
 
