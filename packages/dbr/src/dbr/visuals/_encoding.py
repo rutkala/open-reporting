@@ -235,6 +235,72 @@ def _resolve_color(name: str | None, default: str = NEGATIVE) -> str:
     return _COLOR_ALIASES.get(name, default)
 
 
+def apply_annotations(fig, options: dict | None) -> None:
+    """Add inline chart annotations from options.annotations to a Plotly figure.
+
+    Each spec: {x, text, y?, direction?, color?}.
+      x         — data x value of the point being annotated (year, category, etc.)
+      text      — annotation label (Polish caption)
+      y         — data y value; if absent, annotation floats at top of plot
+                  area with no arrow (paper-coordinate placement)
+      direction — above|below|left|right; controls arrow offset. Default: above.
+      color     — palette alias or hex; default: subtext (muted grey).
+
+    Used for marking structural breaks (COVID 2020 spike, ESA methodology
+    changes, GFC inflection) per gap analysis dimension 21.
+    """
+    if not options:
+        return
+    anns = options.get("annotations") or []
+    offsets = {
+        "above": (0, -40),
+        "below": (0, 40),
+        "left":  (-40, 0),
+        "right": (40, 0),
+    }
+    for spec in anns:
+        if not isinstance(spec, dict) or "x" not in spec or "text" not in spec:
+            continue
+        ax, ay = offsets.get(spec.get("direction", "above"), (0, -40))
+        color = _resolve_color(spec.get("color"), default=SUBTEXT)
+        kwargs = dict(
+            x=spec["x"], text=spec["text"],
+            xref="x",
+            showarrow=True,
+            arrowhead=2, arrowsize=1, arrowwidth=1, arrowcolor=color,
+            ax=ax, ay=ay,
+            font=dict(color=color, size=11),
+            align="center",
+        )
+        if "y" in spec:
+            kwargs["y"] = spec["y"]
+            kwargs["yref"] = "y"
+        else:
+            # No y given — float annotation at top of plot area, no arrow
+            kwargs["y"] = 1.0
+            kwargs["yref"] = "paper"
+            kwargs["showarrow"] = False
+        fig.add_annotation(**kwargs)
+
+
+_ANNOTATIONS_OPTION_SCHEMA = {
+    "type": "array",
+    "items": {
+        "type": "object",
+        "additionalProperties": False,
+        "required": ["x", "text"],
+        "properties": {
+            "x":         {},
+            "y":         {"type": "number"},
+            "text":      {"type": "string"},
+            "direction": {"enum": ["above", "below", "left", "right"]},
+            "color":     {"type": "string"},
+        },
+    },
+    "description": "Inline chart annotations. Each: {x, text, y?, direction?, color?}. Used to mark structural breaks (COVID 2020, ESA methodology changes, etc.).",
+}
+
+
 def apply_reference_lines(fig, options: dict | None, axis: str) -> None:
     """Add dashed reference lines from options.reference_lines to a Plotly figure.
 

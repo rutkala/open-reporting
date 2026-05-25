@@ -24,7 +24,7 @@ from dbr.theme import (
     CARD_RADIUS, CARD_SHADOW, SLATE_1,
 )
 from dbr.visuals._encoding import (
-    apply_reference_lines, postprocess_time_columns,
+    apply_annotations, apply_reference_lines, _ANNOTATIONS_OPTION_SCHEMA, postprocess_time_columns,
     dimension_column_name, group_by_from_channels, parse_encoding,
     _resolve_color,
 )
@@ -77,6 +77,7 @@ SCHEMA = {
                     },
                 },
                 "table": _TABLE_OPTION_SCHEMA,
+                "annotations": _ANNOTATIONS_OPTION_SCHEMA,
             },
         },
     },
@@ -138,4 +139,5 @@ def bar(*, encoding: dict, filter: dict | None = None, options: dict | None = No
         bargap=BAR_CHART_BARGAP, xaxis_title="", yaxis_title="",
     )
     apply_reference_lines(fig, opts, axis="x")
+    apply_annotations(fig, opts)
     return chart_with_optional_table(fig, df, opts, _CARD_STYLE)

@@ -10,5 +10,8 @@ filter:
 options:
   reference_lines:
     - { value: 60, label: "Próg Maastricht (60% PKB)", color: negative }
+  annotations:
+    - { x: 2020, y: 56.9, text: "COVID-19", direction: above, color: subtext }
+    - { x: 2009, y: 49.7, text: "GFC",      direction: above, color: subtext }
   table:
     row_limit: 30

@@ -18,6 +18,7 @@ from dbr.theme import (
     BG_SURFACE, CARD_RADIUS, CARD_SHADOW,
 )
 from dbr.visuals._encoding import (
+    apply_annotations, _ANNOTATIONS_OPTION_SCHEMA,
     postprocess_time_columns,
     dimension_column_name, group_by_from_channels, parse_encoding,
 )
@@ -47,6 +48,7 @@ SCHEMA = {
                 "opacity": {"type": "number", "minimum": 0.0, "maximum": 1.0},
                 "stack":   {"type": "boolean"},
                 "table": _TABLE_OPTION_SCHEMA,
+                "annotations": _ANNOTATIONS_OPTION_SCHEMA,
             },
         },
     },
@@ -101,4 +103,5 @@ def area(*, encoding: dict, filter: dict | None = None, options: dict | None = N
         height=int(str(AREA_CHART_HEIGHT).rstrip("px")),
         xaxis_title="", yaxis_title="",
     )
+    apply_annotations(fig, opts)
     return chart_with_optional_table(fig, df, opts, _CARD_STYLE)

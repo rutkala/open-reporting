@@ -18,6 +18,7 @@ import plotly.graph_objects as go
 from dbr.semantic import semantic_query_data
 from dbr.theme import BG_SURFACE, CARD_RADIUS, CARD_SHADOW
 from dbr.visuals._encoding import (
+    apply_annotations, _ANNOTATIONS_OPTION_SCHEMA,
     dimension_column_name, group_by_from_channels, parse_encoding,
 )
 from dbr.visuals._render import chart_with_optional_table, _TABLE_OPTION_SCHEMA
@@ -92,4 +93,5 @@ def scatter(*, encoding: dict, filter: dict | None = None, options: dict | None 
     fig.update_layout(
         height=400, xaxis_title=enc.x.metric, yaxis_title=enc.y.metric,
     )
+    apply_annotations(fig, opts)
     return chart_with_optional_table(fig, df, opts, _CARD_STYLE)
