@@ -9,3 +9,6 @@ filter:
 options:
   threshold:
     rule: sgp_deficit
+  delta:
+    vs: prior_year
+    format: icon-first

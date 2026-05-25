@@ -9,3 +9,6 @@ filter:
 options:
   threshold:
     rule: maastricht_debt
+  delta:
+    vs: prior_year
+    format: icon-first
