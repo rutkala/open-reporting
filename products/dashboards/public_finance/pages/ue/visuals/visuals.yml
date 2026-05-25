@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 4 layout — two ranked EU-27 horizontal bars (deficit + debt).
+# Polska highlighted in azure in both.
+
+rows:
+  - items:
+      - { visual: eu_deficit, width: "100%" }
+  - items:
+      - { visual: eu_debt,    width: "100%" }

@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Saldo fiskalne wg MFW WEO — historia ciągła + prognoza przerywana.
+# Linia odniesienia: próg SGP -3%, oś równowagi.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: fiscal_balance_weo }
+filter:
+  geo: PL
+options:
+  dash_when:
+    dimension: imf__is_projection
+    value: true
+  reference_lines:
+    - { value: -3, label: "Próg SGP",  color: negative }
+    - { value:  0, label: "Równowaga", color: subtext }

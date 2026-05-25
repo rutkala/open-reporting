@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/dashboard.schema.json
+# Public Finance dashboard for Polish citizens.
+# Built from the design spec at _design/design-spec.md.
+# Audience: non-economist Polish news readers.
+# Story: revenue/expenditure imbalance, debt growth, EU position, forecast.
+
+domain: public_finance
+port:   8057
+title:  Finanse publiczne Polski

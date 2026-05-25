@@ -1,0 +1,5 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/page.schema.json
+# Page 2 — what the government spends on. Citizen question as title.
+
+title:  Na co idą wydatki państwa?
+anchor: wydatki

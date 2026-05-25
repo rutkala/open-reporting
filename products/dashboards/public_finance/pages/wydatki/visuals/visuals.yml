@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 2 layout:
+#   Row 1: COFOG sorted bar (latest year) — answers "where does money go?"
+#   Row 2: trend of top categories (multi-line)
+
+rows:
+  - items:
+      - { visual: cofog_breakdown, width: "100%" }
+  - items:
+      - { visual: cofog_trend,     width: "100%" }

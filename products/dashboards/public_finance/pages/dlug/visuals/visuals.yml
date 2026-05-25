@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 3 layout:
+#   Row 1: debt trend with Maastricht threshold
+#   Row 2: interest-cost trend (the "rosnące koszty" story)
+
+rows:
+  - items:
+      - { visual: debt_trend,     width: "100%" }
+  - items:
+      - { visual: interest_trend, width: "100%" }

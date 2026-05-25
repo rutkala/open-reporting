@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 5 layout — fiscal balance + debt projection (history solid + IMF dashed).
+
+rows:
+  - items:
+      - { visual: balance_projection, width: "100%" }
+  - items:
+      - { visual: debt_projection,    width: "100%" }

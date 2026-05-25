@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Dług publiczny — najnowsza wartość z badge Maastricht.
+
+type: card
+encoding:
+  value: { metric: public_debt }
+filter:
+  geo: PL
+options:
+  threshold:
+    rule: maastricht_debt
