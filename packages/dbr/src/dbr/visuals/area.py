@@ -21,6 +21,7 @@ from dbr.visuals._encoding import (
     postprocess_time_columns,
     dimension_column_name, group_by_from_channels, parse_encoding,
 )
+from dbr.visuals._render import chart_with_optional_table, _TABLE_OPTION_SCHEMA
 
 SCHEMA = {
     "type": "object",
@@ -45,6 +46,7 @@ SCHEMA = {
             "properties": {
                 "opacity": {"type": "number", "minimum": 0.0, "maximum": 1.0},
                 "stack":   {"type": "boolean"},
+                "table": _TABLE_OPTION_SCHEMA,
             },
         },
     },
@@ -99,4 +101,4 @@ def area(*, encoding: dict, filter: dict | None = None, options: dict | None = N
         height=int(str(AREA_CHART_HEIGHT).rstrip("px")),
         xaxis_title="", yaxis_title="",
     )
-    return html.Div(dcc.Graph(figure=fig, config={"displayModeBar": False}), style=_CARD_STYLE)
+    return chart_with_optional_table(fig, df, opts, _CARD_STYLE)

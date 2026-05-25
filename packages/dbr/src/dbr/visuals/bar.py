@@ -28,6 +28,7 @@ from dbr.visuals._encoding import (
     dimension_column_name, group_by_from_channels, parse_encoding,
     _resolve_color,
 )
+from dbr.visuals._render import chart_with_optional_table, _TABLE_OPTION_SCHEMA
 
 SCHEMA = {
     "type": "object",
@@ -75,6 +76,7 @@ SCHEMA = {
                         },
                     },
                 },
+                "table": _TABLE_OPTION_SCHEMA,
             },
         },
     },
@@ -136,4 +138,4 @@ def bar(*, encoding: dict, filter: dict | None = None, options: dict | None = No
         bargap=BAR_CHART_BARGAP, xaxis_title="", yaxis_title="",
     )
     apply_reference_lines(fig, opts, axis="x")
-    return html.Div(dcc.Graph(figure=fig, config={"displayModeBar": False}), style=_CARD_STYLE)
+    return chart_with_optional_table(fig, df, opts, _CARD_STYLE)

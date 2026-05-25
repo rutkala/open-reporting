@@ -10,3 +10,5 @@ filter:
 options:
   reference_lines:
     - { value: 60, label: "Próg Maastricht (60% PKB)", color: negative }
+  table:
+    row_limit: 30

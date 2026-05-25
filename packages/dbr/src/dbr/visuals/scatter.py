@@ -20,6 +20,7 @@ from dbr.theme import BG_SURFACE, CARD_RADIUS, CARD_SHADOW
 from dbr.visuals._encoding import (
     dimension_column_name, group_by_from_channels, parse_encoding,
 )
+from dbr.visuals._render import chart_with_optional_table, _TABLE_OPTION_SCHEMA
 
 SCHEMA = {
     "type": "object",
@@ -91,4 +92,4 @@ def scatter(*, encoding: dict, filter: dict | None = None, options: dict | None 
     fig.update_layout(
         height=400, xaxis_title=enc.x.metric, yaxis_title=enc.y.metric,
     )
-    return html.Div(dcc.Graph(figure=fig, config={"displayModeBar": False}), style=_CARD_STYLE)
+    return chart_with_optional_table(fig, df, opts, _CARD_STYLE)
