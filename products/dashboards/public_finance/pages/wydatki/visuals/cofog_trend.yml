@@ -10,3 +10,5 @@ encoding:
 filter:
   geo: PL
   cofog_function__cofog_label_pl: [Ochrona socjalna, Gospodarka, Zdrowie, Edukacja]
+options:
+  label_endpoints: true

@@ -283,6 +283,63 @@ def apply_annotations(fig, options: dict | None) -> None:
         fig.add_annotation(**kwargs)
 
 
+def apply_endpoint_labels(fig, options: dict | None, colorway: list[str] | None = None) -> None:
+    """Replace the chart's legend with a label at the right edge of each trace.
+
+    Used for multi-series line charts where reader has to match colour to
+    legend label (rubric dimension 6). With label_endpoints: true the
+    legend is hidden and each trace's name is rendered next to its last
+    data point in the same colour as the line.
+
+    Traces with showlegend=False are skipped — this keeps forecast
+    continuation traces (dash_when) from getting duplicate labels.
+    """
+    import pandas as pd
+    if not options or not options.get("label_endpoints"):
+        return
+    fig.update_layout(showlegend=False)
+    palette = colorway or []
+    palette_idx = 0
+    for trace in fig.data:
+        if getattr(trace, "showlegend", None) is False:
+            continue
+        x_vals = list(trace.x) if trace.x is not None else []
+        y_vals = list(trace.y) if trace.y is not None else []
+        if not x_vals or not y_vals:
+            continue
+        # Find last non-null y
+        last_idx = None
+        for i in range(len(y_vals) - 1, -1, -1):
+            v = y_vals[i]
+            if v is None or (isinstance(v, float) and pd.isna(v)):
+                continue
+            last_idx = i
+            break
+        if last_idx is None:
+            continue
+        # Resolve trace colour: explicit on line.color, else next palette slot, else SUBTEXT
+        line_obj = getattr(trace, "line", None)
+        color = getattr(line_obj, "color", None) if line_obj else None
+        if not color and palette:
+            color = palette[palette_idx % len(palette)]
+            palette_idx += 1
+        if not color:
+            color = SUBTEXT
+        fig.add_annotation(
+            x=x_vals[last_idx], y=y_vals[last_idx],
+            text=str(trace.name) if trace.name else "",
+            xref="x", yref="y", showarrow=False,
+            xanchor="left", xshift=8,
+            font=dict(color=color, size=11),
+        )
+
+
+_ENDPOINT_LABELS_OPTION_SCHEMA = {
+    "type": "boolean",
+    "description": "Hide the legend and label each series at its right endpoint. Preferred over a top-of-chart legend box for multi-series line charts (rubric dim 6: direct labelling over legends).",
+}
+
+
 _ANNOTATIONS_OPTION_SCHEMA = {
     "type": "array",
     "items": {

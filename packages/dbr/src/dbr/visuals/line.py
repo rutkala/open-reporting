@@ -25,7 +25,9 @@ from dbr.theme import (
     LINE_CHART_HEIGHT, LINE_CHART_LINE_WIDTH, LINE_CHART_MARKER_SIZE,
 )
 from dbr.visuals._encoding import (
-    apply_annotations, apply_reference_lines, _ANNOTATIONS_OPTION_SCHEMA, postprocess_time_columns,
+    apply_annotations, apply_endpoint_labels, apply_reference_lines,
+    _ANNOTATIONS_OPTION_SCHEMA, _ENDPOINT_LABELS_OPTION_SCHEMA,
+    postprocess_time_columns,
     dimension_column_name, group_by_from_channels, parse_encoding,
 )
 from dbr.visuals._render import chart_with_optional_table, _TABLE_OPTION_SCHEMA
@@ -78,6 +80,7 @@ SCHEMA = {
                 },
                 "table": _TABLE_OPTION_SCHEMA,
                 "annotations": _ANNOTATIONS_OPTION_SCHEMA,
+                "label_endpoints": _ENDPOINT_LABELS_OPTION_SCHEMA,
             },
         },
     },
@@ -156,6 +159,7 @@ def line(*, encoding: dict, filter: dict | None = None, options: dict | None = N
     )
     apply_reference_lines(fig, opts, axis="y")
     apply_annotations(fig, opts)
+    apply_endpoint_labels(fig, opts, colorway=list(COLORWAY))
     return chart_with_optional_table(fig, df, opts, _CARD_STYLE)
 
 
