@@ -175,7 +175,7 @@ A dashboard is assembled from components. Each component has its own production 
 
 | Component | Who builds it | Output |
 |-----------|--------------|--------|
-| Domain Brief (P09) | business-analyst | `team/domain-briefs/{domain}.md` |
+| Domain Brief (P09) | business-analyst | `docs/domain-briefs/{domain}.md` |
 | Requirements (P14) | business-analyst | Requirements doc |
 | Architecture (P00) | data-engineer | Schema design |
 | Semantic Model (P07) | data-engineer | dbt MetricFlow measures |
@@ -215,10 +215,10 @@ Three things are mixed together on this branch:
 - OR-143 legitimate work can't be merged
 
 ### What's good
-- `team/factory/` DAG system — well structured, useful
+- `docs/factory/` DAG system — well structured, useful
 - `biz-specialists/` domain agents — good idea, keep
-- `team/knowledge-base/` — complete (10 modules)
-- `team/standards/` — complete
+- `docs/` — complete (10 modules)
+- `docs/` — complete
 - `products/dashboards/pilot_template/` — good foundation
 
 ---
@@ -235,7 +235,7 @@ Restore from git history: 23 original agents + 9 playbooks.
 Skills will work again.
 
 **Step 3: Keep the best of opencode work**
-- Keep: `team/factory/` DAGs, `biz-specialists/` agents, `dashboard-assembly.md` standard, `pilot_template/`
+- Keep: `docs/factory/` DAGs, `biz-specialists/` agents, `dashboard-assembly.md` standard, `pilot_template/`
 - Discard: `factory-execution.md`, `workstation-template.md`, the 70+ generic dept-task agents
 
 **Step 4: Update AGENTS.md**

@@ -177,7 +177,7 @@ externalisation lives. Without it, an AI has no apprenticeship substitute
 When several entries converge on the same rule, the rule should be **combined
 upward** into:
 
-- a `team/standards/build/` or `team/standards/evaluation/` rule,
+- a `docs/` or `docs/` rule,
 - a section of a skill's `SKILL.md`,
 - a test or check in the pipeline.
 
@@ -289,7 +289,7 @@ An AI model consumes **only explicit** content (Polanyi). Therefore:
 
 Experience is **skill-local**. An entry about Plotly layout behaviour belongs
 in the `dashboard` skill's `experience/`, not in a shared pool. Cross-skill
-lessons that prove durable should be promoted to `team/standards/` via the
+lessons that prove durable should be promoted to `docs/` via the
 combination move (§4) — they become knowledge once standardised.
 
 ### 6.5 Quality bar for `experience/`
@@ -376,7 +376,7 @@ Each criterion is stated as a **rule** with the **failure mode** it prevents.
    about the evolution of the rule, not garbage — keep it with a supersession
    marker if it remains instructive.
 7. **Cross-skill promotion** — when a rule proves durable across skills,
-   move it up to `team/standards/`. At that point it becomes *knowledge* for
+   move it up to `docs/`. At that point it becomes *knowledge* for
    future skills (see `knowledge-definition.md` §4 on the knowledge/experience
    split).
 

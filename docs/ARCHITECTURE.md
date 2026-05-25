@@ -12,7 +12,7 @@ Everything in the repo belongs to exactly one of two planes.
 
 | Plane | Path prefixes | What lives here | Who edits it |
 |---|---|---|---|
-| 🟢 **Declarative** | `products/`, `docs/`, `team/` | YAML, SQL, dbt models, semantic definitions, dashboard specs, knowledge base | Radek + cheap AI (Sonnet, Haiku) |
+| 🟢 **Declarative** | `products/`, `docs/` | YAML, SQL, dbt models, semantic definitions, dashboard specs, documentation (topic-first knowledge + rules) | Radek + cheap AI (Sonnet, Haiku) |
 | 🔴 **Engine** | `packages/`, `infra/`, `.claude/` | Python frameworks, nginx config, systemd units, AI agent + hook config | Expert AI (Opus) only |
 | 🔵 **Runtime** | `data/` (gitignored) | DuckDB warehouse, landing files | Pipelines write; nothing else |
 
@@ -45,8 +45,13 @@ Everything in the repo belongs to exactly one of two planes.
 │  │                                                                         │
 │  ├── blog/  social/  research/  domain-briefs/                            │
 │                                                                            │
-│  docs/                  Architecture, contributing, data model            │
-│  team/                  Knowledge base, standards, agent memory           │
+│  docs/                  Single source of truth — humans + AI read same    │
+│  ├── ARCHITECTURE.md, PROJECT.md, ROADMAP.md, CONTRIBUTING.md…            │
+│  ├── <topic>/           Topic-first (visualization, data-engineering…):   │
+│  │                       principles.md / building files / reviewing.md     │
+│  ├── process/           Cross-cutting: requirements.md, code-review.md    │
+│  ├── session-memory.md, lessons-learned.md, languages.json                │
+│  └── archive/           Superseded docs                                   │
 │                                                                            │
 └──────────────────────────────────────────────────────────────────────────┘
 
@@ -239,7 +244,7 @@ This section is the **routing rule** for which model handles which task. Read th
 | Add a dbt model | `products/warehouse/models/<staging|intermediate|marts|dim>/<file>.sql` + `.yml` | `dbt run --select <model>`, `dbt test` |
 | Tweak ingestion config (URL, schema, columns) | `products/ingestion/to_*/configs/<source>.yml` (when implemented) | run the script |
 | Author a blog post / domain brief / social card | `products/blog/`, `products/domain-briefs/`, `products/social/` | content-reviewer agent |
-| Update docs | `docs/*.md`, `team/**/*.md` | manual review |
+| Update docs | `docs/*.md`, `docs/**/*.md` | manual review |
 
 ### Engine plane (Opus only)
 
@@ -259,7 +264,7 @@ This section is the **routing rule** for which model handles which task. Read th
 If a Sonnet/Haiku session needs something it can't do declaratively (e.g., "the column visual doesn't support a dual-axis option I need"), it must:
 
 1. **Stop** — do not edit `packages/`.
-2. **Log the request** as a Linear issue or `team/lessons-learned.md` entry describing the missing capability and the declarative shape it should have.
+2. **Log the request** as a Linear issue or `docs/lessons-learned.md` entry describing the missing capability and the declarative shape it should have.
 3. **Find a declarative workaround** for the immediate task if possible.
 
 Expert AI consumes the queue and batches framework improvements.

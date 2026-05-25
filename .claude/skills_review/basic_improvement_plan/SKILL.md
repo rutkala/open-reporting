@@ -10,14 +10,14 @@ An improvement plan is a structured proposal of specific changes to make to stan
 skills, or processes based on observed patterns from completed work.
 
 Produced by: `/composite_improve` (via `/write`)
-Consumed by: PO review, then applied to `.claude/skills/` and `team/standards/`
+Consumed by: PO review, then applied to `.claude/skills/` and `docs/`
 
 ---
 
 ## Location
 
-`team/improvement-plans/{date}-{topic}.md`
-Or as a section in `team/lessons-learned.md`.
+`docs/improvement-plans/{date}-{topic}.md`
+Or as a section in `docs/lessons-learned.md`.
 
 ---
 
@@ -39,7 +39,7 @@ Or as a section in `team/lessons-learned.md`.
 
 ### 1. {Change title}
 
-**File:** `.claude/skills/{skill}/SKILL.md` or `team/standards/build/{standard}.md`
+**File:** `.claude/skills/{skill}/SKILL.md` or `docs/{standard}.md`
 **Change:** {exactly what to add, remove, or modify}
 **Rationale:** {why this prevents recurrence}
 

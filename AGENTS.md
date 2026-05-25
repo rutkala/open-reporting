@@ -27,11 +27,14 @@ products/           → declarative work (you + cheap AI edit here)
   database/         → PostgreSQL operational schema + loader
   dashboards/       → dbr YAML dashboards (one folder per dashboard)
   blog/ social/ research/ mobile/ domain-briefs/
-docs/               → ARCHITECTURE.md (target), refactor-plan.md, DATA_MODEL.md, …
+docs/               → single source of truth — humans + AI read the same files
+  README.md         → navigation map
+  ARCHITECTURE.md, PROJECT.md, ROADMAP.md, CONTRIBUTING.md, DATA_MODEL.md, …
+  <topic>/          → topic-first (visualization/, data-engineering/, …):
+                      principles.md / building files / reviewing.md
+  process/          → cross-cutting: requirements.md, code-review.md
+  session-memory.md, lessons-learned.md, languages.json
   archive/          → Superseded docs
-team/               → knowledge base, standards, agent memory
-  knowledge-base/   → KB modules — read on demand, see INDEX.md
-  standards/        → build + evaluation standards — see INDEX.md
 
 packages/           → engine code (Opus only)
   dbr/              → Dashboard framework

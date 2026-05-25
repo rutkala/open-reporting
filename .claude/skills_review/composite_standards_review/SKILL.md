@@ -13,7 +13,7 @@ Reads the lessons-learned log for recurring patterns and proposes concrete updat
 
 ## Step 1 — Read lessons learned
 
-Read `team/lessons-learned.md` in full.
+Read `docs/lessons-learned.md` in full.
 
 Look for:
 - **Recurring finding types** — if the same type of issue appears 3+ times (e.g. "missing type hints", "bare except", "non-standard KPI"), it should become a P1/P2 rule
@@ -25,24 +25,24 @@ Look for:
 ## Step 2 — Read current standards
 
 Read all evaluation standards:
-- `team/standards/evaluation/code-review.md`
-- `team/standards/evaluation/visualization-diff.md`
-- `team/standards/evaluation/visualization-image.md`
+- `docs/process/code-review.md`
+- `docs/visualization-diff.md`
+- `docs/visualization/reviewing.md`
 
 Read relevant build standards if process failures were noted:
-- `team/standards/build/requirements.md`
-- `team/standards/build/ingestion.md`
-- `team/standards/build/processing.md`
+- `docs/process/requirements.md`
+- `docs/data-engineering/ingestion.md`
+- `docs/data-engineering/processing.md`
 
 ## Step 3 — Cross-reference KB
 
 For any proposed new rule, check whether there is KB backing:
-- `team/knowledge-base/analytical-methods/analytical-thinking.md`
-- `team/knowledge-base/visualization/`
-- `team/knowledge-base/ux-perception/` (if built)
-- `team/knowledge-base/data-architecture/` (if built)
-- `team/knowledge-base/data-engineering/` (if built)
-- `team/knowledge-base/business-analysis/` (if built)
+- `docs/analytical-methods/principles.md`
+- `docs/visualization/`
+- `docs/ux-perception/` (if built)
+- `docs/data-architecture/` (if built)
+- `docs/data-engineering/` (if built)
+- `docs/business-analysis/` (if built)
 
 A new rule without KB backing should be marked "experience-based — KB not yet built" in the standard.
 
@@ -74,8 +74,8 @@ Ask: *"Which proposals should I apply?"* — user can say "all", "N, N, N", or "
 
 For each approved proposal:
 1. Edit the relevant standard or skill file directly
-2. Update `team/standards/INDEX.md` if a new standard is added
-3. Add a note to `team/lessons-learned.md`: *"Standards review applied: {proposal summary}"*
+2. Update `docs/README.md` if a new standard is added
+3. Add a note to `docs/lessons-learned.md`: *"Standards review applied: {proposal summary}"*
 
 ## Step 7 — Summary
 

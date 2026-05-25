@@ -50,8 +50,8 @@ and stop.
 ## Step 2 — Read the KB
 
 Read these files in full before evaluating any screenshot:
-- `team/knowledge-base/ux-perception/perception.md` — pre-attentive attributes, Gestalt laws, cognitive load, eye-tracking patterns, colour perception, WCAG 2.2, working memory limits
-- `team/knowledge-base/visualization/principles.md` — IBCS, data-ink ratio, colour semantics, reference lines
+- `docs/ux-perception/principles.md` — pre-attentive attributes, Gestalt laws, cognitive load, eye-tracking patterns, colour perception, WCAG 2.2, working memory limits
+- `docs/visualization/principles.md` — IBCS, data-ink ratio, colour semantics, reference lines
 
 These are your scientific grounding. Do not invent findings beyond what these KB files document.
 

@@ -94,9 +94,9 @@ When producing this artifact within `/composite_design`, specify every element b
 
 ## Standards
 
-- `team/standards/build/visualisation.md`
+- `docs/visualization/building.md`
 - `dashboard/references/theme.md`
 - `dashboard/references/chart-types.md`
-- `team/knowledge-base/ux-perception/perception.md`
-- `team/knowledge-base/visualization/principles.md`
+- `docs/ux-perception/principles.md`
+- `docs/visualization/principles.md`
 - Reviewed by: `visualization-reviewer`, `visual-screenshot-reviewer`

@@ -69,5 +69,5 @@ This skill defines WHAT social content is. The process lives in `/composite_deve
 
 ## Standards
 
-- `team/standards/build/visualisation.md` (visual design)
-- `team/standards/evaluation/content-review.md`
+- `docs/visualization/building.md` (visual design)
+- `docs/content/reviewing.md`

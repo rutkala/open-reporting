@@ -56,16 +56,25 @@ Two-plane architecture — see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) fo
 │   │                          on the same pattern.
 │   ├── blog/  social/  research/  domain-briefs/
 │
-├── docs/                → Architecture, data model, contributing
-│   ├── ARCHITECTURE.md   ← source of truth for repo layout + AI delegation
-│   ├── refactor-plan.md  ← mechanical playbook (this refactor)
-│   └── archive/         → Superseded docs (SITUATION, MVP, OR-142 findings)
-│
-├── team/                → Knowledge base + standards + memory
-│   ├── knowledge-base/  → Research syntheses (authoritative sources → KB → standards)
-│   ├── standards/       → Derived from KB — actionable rules for builders + evaluators
-│   ├── session-memory.md
-│   └── lessons-learned.md
+├── docs/                → Single source of truth — humans + AI read the same files
+│   ├── README.md         ← navigation map
+│   ├── ARCHITECTURE.md   ← repo layout + AI delegation contract
+│   ├── PROJECT.md, ROADMAP.md, RELEASE_NOTES.md
+│   ├── CONTRIBUTING.md, DATA_MODEL.md, DATA_SOURCES.md, DOMAINS.md
+│   ├── session-memory.md, lessons-learned.md, languages.json
+│   ├── archive/         → Superseded docs (SITUATION, MVP, refactor-plan…)
+│   └── <topic>/         → One folder per discipline. Each holds the files
+│       │                  that exist for it — no forced uniformity:
+│       │                    principles.md  → what good X is (theory, frameworks)
+│       │                    building.md or named files → rules when building
+│       │                    reviewing.md   → checklist when reviewing
+│       │                    charts/ etc.   → sub-areas when warranted
+│       ├── visualization/, ux-perception/, data-engineering/,
+│       ├── data-architecture/, business-analysis/, analytical-methods/,
+│       ├── content/, platform-ops/, research-methods/, data-research/,
+│       ├── public-finance/  → first live domain
+│       ├── process/         → cross-cutting: requirements.md, code-review.md
+│       └── sources/         → authoritative data-source catalogue
 │
 ├── 🔴 ENGINE PLANE — Python frameworks + infra (Opus only)
 │
@@ -98,13 +107,13 @@ Two-plane architecture — see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) fo
 
 ## Session Memory (Auto-Sync)
 
-Shared session memory at `team/session-memory.md` provides continuity across sessions.
+Shared session memory at `docs/session-memory.md` provides continuity across sessions.
 
 **At the START of each conversation:**
 - Injected automatically via `SessionStart` hook — no manual read needed
 
 **At the END of each conversation (when wrapping up):**
-- Update `team/session-memory.md` with current focus, what was done, and open items
+- Update `docs/session-memory.md` with current focus, what was done, and open items
 - Keep the file concise — max 100 lines, roll off oldest sessions
 
 ## Custom Subagents
@@ -165,7 +174,7 @@ When working in a business or economic domain, research how practitioners in tha
 
 **Self-improvement:**
 - After every issue, research what could have been done better
-- Document findings in `team/lessons-learned.md`, promote patterns to standards and skills
+- Document findings in `docs/lessons-learned.md`, promote patterns to standards and skills
 - Use web search before every architectural or domain design decision — cite authoritative sources
 
 ## Three-Stage Workflow
@@ -249,48 +258,35 @@ one-by-one review. They are not loaded as slash commands. As each one
 is reviewed, it is renamed, reshaped, merged, or deleted, and (if
 kept) returned to `.claude/skills/`.
 
-## Standards
+## Documentation
 
-Two categories in `team/standards/`. See `team/standards/INDEX.md` for the derivation chain.
+All documentation lives under `docs/`, organised topic-first. Humans and AI read the same files — no separate "knowledge base" vs "standards" split. See `docs/README.md` for the full map.
 
-**Build standards** (`team/standards/build/`) — developer-facing, what to do when building:
+Each topic folder uses up to three files (only those that apply):
 
-| File | Applies to | Purpose |
-|------|-----------|---------|
-| `requirements.md` | All Linear issues | Definition of ready, issue templates per type, acceptance criteria rules |
-| `ingestion.md` | ETL scripts | ELT phases, raw loading rules, update methods, script structure |
-| `processing.md` | Transform scripts | 6-category DQ framework, quality logging, processing script structure |
-| `storage.md` | All DB work | Schema naming, data types, upsert pattern, indexes |
-| `visualisation.md` | Dashboards | Nordic design, colour palette, Plotly template, chart types, layout |
-| `measures.md` | Semantic layer | Measure definitions, format_type, scale conventions |
+| File | Purpose | Read when |
+|------|---------|-----------|
+| `principles.md` | What good X is — theory, frameworks, authoritative sources | Before designing in this area |
+| `building.md` (or named files like `ingestion.md`, `measures.md`) | Rules when building X — patterns, conventions, do/don't | Before writing code in this area |
+| `reviewing.md` (or `<x>-review.md`) | Checklist when reviewing X | Before reviewing PRs in this area |
 
-**Evaluation standards** (`team/standards/evaluation/`) — agent-facing, what to check when reviewing:
+Current topics:
 
-| File | Used by agent | Phase |
-|------|--------------|-------|
-| `code-review.md` | `code-reviewer` | PR |
-| `architecture-review.md` | `architecture-critic` | Plan |
-| `analytical-review.md` | `analytical-validator` | Plan + PR |
-| `data-engineering-review.md` | `data-engineer-reviewer` | PR (platform/ only) |
-| `visualization-image.md` | `visual-screenshot-reviewer` | PR |
-| `measures-review.md` | `measures-reviewer` | PR (semantic layer only) |
-| `brief-review.md` | `brief-reviewer` | Plan (after business-analyst) |
-
-## Knowledge Base
-
-Research syntheses in `team/knowledge-base/` — read on demand during `/domain-brief` and `/composite_plan` phases, not auto-loaded every session. See `team/knowledge-base/INDEX.md` for the full module list and loading instructions.
-
-| File | Covers | Read when |
-|------|--------|-----------|
-| `visualization/principles.md` | IBCS SUCCESS, Gestalt, colour semantics, reference lines | Before designing any chart or dashboard |
-| `visualization/ui-principles.md` | Layout, grid, dashboard types, interaction | Before designing dashboard layout |
-| `visualization/charts/*.md` | Chart-type rules (bar, line, waterfall, scatter, map, table) | Before building that chart type |
-| `ux-perception/perception.md` | Pre-attentive attributes, Gestalt, cognitive load, WCAG 2.2, Cowan 4±1 | Before designing any layout or colour scheme |
-| `data-architecture/architecture.md` | Medallion, Kimball, dbt patterns, schema naming, SCD | Before any schema design or new mart |
-| `data-engineering/engineering.md` | ELT, DuckDB patterns, dbt conventions, DAMA quality | Before writing any ingestion script or dbt model |
-| `business-analysis/kpi-indicator-design.md` | SMART+FABRIC, stock/flow, aggregation correctness, Polish structural breaks | Before designing any KPI or semantic-layer measure |
-| `analytical-methods/analytical-thinking.md` | 5 analytical moves, insight hierarchy, Polish public data context | Before structuring any analysis |
-| `domains/public-finance.md` | Fiscal KPIs, SGP rules, canonical chart patterns | Before any public finance work |
+| Topic | Has | Covers |
+|-------|-----|--------|
+| `docs/visualization/` | principles, ui-principles, building, reviewing, charts/ | IBCS, Gestalt, colour, chart-type rules |
+| `docs/ux-perception/` | principles | Pre-attentive attributes, cognitive load, WCAG, Cowan 4±1 |
+| `docs/data-engineering/` | principles, ingestion, processing, storage, measures, reviewing, measures-review | ELT, DuckDB, dbt, DAMA, MetricFlow |
+| `docs/data-architecture/` | principles, reviewing | Medallion, Kimball, schema naming, SCD |
+| `docs/business-analysis/` | principles, reviewing | SMART+FABRIC, stock/flow, aggregation, Polish structural breaks |
+| `docs/analytical-methods/` | principles, reviewing | 5 analytical moves, insight hierarchy, Polish public data |
+| `docs/content/` | principles, reviewing | Editorial standards |
+| `docs/platform-ops/` | principles, reviewing | Infra, deploy, ops |
+| `docs/research-methods/` | principles, reviewing | Quant research, model diagnostics |
+| `docs/data-research/` | principles, reviewing | Data source evaluation |
+| `docs/public-finance/` | principles | Fiscal KPIs, SGP rules, canonical chart patterns |
+| `docs/process/` | requirements.md, code-review.md | Linear issue templates, code review rules |
+| `docs/sources/` | SUMMARY.md | Authoritative data-source catalogue |
 
 ## Development Commands
 
@@ -327,7 +323,7 @@ print(query('SELECT 42 AS answer'))
 
 ## Language Configuration
 
-`team/languages.json`:
+`docs/languages.json`:
 - **Agent language**: English (all responses, commits, reviews)
 - **Backend language**: English — **always and without exception**: folder names, file names, variable names, function names, DB schemas, column names, URL routes, config keys, log messages, systemd unit names
 - **Content language**: Polish — user-facing strings only (chart titles, axis labels, KPI labels, portal copy, tooltips)
@@ -336,7 +332,7 @@ print(query('SELECT 42 AS answer'))
 
 ## Code Standards
 
-Key rules (full details in `team/standards/build/`):
+Key rules (full details in `docs/`):
 - Parameterised queries always (no string concatenation in SQL)
 - Never commit `.env` — use env vars for all secrets
 - 100 char line length, 4-space indent

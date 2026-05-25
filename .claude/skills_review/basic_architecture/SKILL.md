@@ -53,8 +53,8 @@ Or standalone: `products/domain-briefs/{domain}/basic_architecture.md`
 
 ## Standards
 
-- `team/standards/build/storage.md`
-- `team/standards/build/measures.md`
-- `team/standards/build/processing.md`
-- `team/knowledge-base/data-architecture/architecture.md`
+- `docs/data-engineering/storage.md`
+- `docs/data-engineering/measures.md`
+- `docs/data-engineering/processing.md`
+- `docs/data-architecture/principles.md`
 - Reviewed by: `architecture-critic` agent

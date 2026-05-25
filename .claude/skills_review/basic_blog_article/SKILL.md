@@ -78,5 +78,5 @@ Before handing to `/composite_evaluate`:
 
 ## Standards
 
-- `team/standards/evaluation/content-review.md`
-- `team/knowledge-base/analytical-methods/analytical-thinking.md`
+- `docs/content/reviewing.md`
+- `docs/analytical-methods/principles.md`

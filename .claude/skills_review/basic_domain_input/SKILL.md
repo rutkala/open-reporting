@@ -40,8 +40,8 @@ When `/basic_research` is invoked for domain research (by `/composite_document`)
 
 ### Step 0 — Check existing KB module
 
-Before any web research, check `team/knowledge-base/INDEX.md` for an existing domain module:
-- If a module exists (e.g. `team/knowledge-base/domains/public-finance.md`): read it first. Use it as the foundation — skip or abbreviate what it already covers. Fill only the gaps with targeted web research.
+Before any web research, check `docs/README.md` for an existing domain module:
+- If a module exists (e.g. `docs/public-finance/principles.md`): read it first. Use it as the foundation — skip or abbreviate what it already covers. Fill only the gaps with targeted web research.
 - If no module exists: proceed with full research, then consider whether findings warrant creating a new module (raise with PO after the brief).
 
 ### Step 1 — Define domain scope
@@ -138,6 +138,6 @@ After writing the brief, spawn `brief-reviewer`:
 
 ## Standards
 
-- `team/knowledge-base/business-analysis/kpi-indicator-design.md`
-- `team/knowledge-base/analytical-methods/analytical-thinking.md`
-- `team/standards/evaluation/brief-review.md`
+- `docs/business-analysis/principles.md`
+- `docs/analytical-methods/principles.md`
+- `docs/business-analysis/reviewing.md`

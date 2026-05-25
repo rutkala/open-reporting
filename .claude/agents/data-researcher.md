@@ -17,13 +17,13 @@ You do not write ingestion scripts. You do not build dashboards. You own the pre
 
 Before researching, read these files in full:
 
-- `team/knowledge-base/data-research/research.md` — source discovery, quality assessment (DAMA dimensions), licence considerations, indicator selection methodology, structural break documentation
-- `team/knowledge-base/data-engineering/engineering.md` — to understand what the ingestion layer needs from research
-- `team/knowledge-base/analytical-methods/analytical-thinking.md` — to understand which indicators are analytically interesting
-- `team/knowledge-base/domains/{domain}.md` — domain-specific KB if researching for a known domain
+- `docs/data-research/principles.md` — source discovery, quality assessment (DAMA dimensions), licence considerations, indicator selection methodology, structural break documentation
+- `docs/data-engineering/principles.md` — to understand what the ingestion layer needs from research
+- `docs/analytical-methods/principles.md` — to understand which indicators are analytically interesting
+- `docs/{domain}.md` — domain-specific KB if researching for a known domain
 
 Also read the relevant evaluation standards:
-- `team/standards/evaluation/data-research-review.md` — what the reviewer will check
+- `docs/data-research/reviewing.md` — what the reviewer will check
 
 ## Step 2 — Understand the research question
 

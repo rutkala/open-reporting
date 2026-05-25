@@ -17,15 +17,15 @@ Scope: `products/ingestion/`, `products/warehouse/`, `products/database/` (Postg
 
 Before implementing anything, read these files in full:
 
-- `team/knowledge-base/data-architecture/architecture.md` — medallion layer contracts, Kimball dimensional modelling, dbt patterns, schema naming, SCD types, DuckDB implications
-- `team/knowledge-base/data-engineering/engineering.md` — ELT principle, DuckDB patterns (read_csv, TRY_CAST, upsert, fetched_at), dbt conventions (staging, incremental, sources.yml, tests), Python ETL standards, DAMA quality dimensions
-- `team/knowledge-base/business-analysis/kpi-indicator-design.md` — **required when touching the semantic layer**: indicator design (SMART+FABRIC), aggregation correctness, stock vs flow, leading vs lagging, Polish structural breaks
+- `docs/data-architecture/principles.md` — medallion layer contracts, Kimball dimensional modelling, dbt patterns, schema naming, SCD types, DuckDB implications
+- `docs/data-engineering/principles.md` — ELT principle, DuckDB patterns (read_csv, TRY_CAST, upsert, fetched_at), dbt conventions (staging, incremental, sources.yml, tests), Python ETL standards, DAMA quality dimensions
+- `docs/business-analysis/principles.md` — **required when touching the semantic layer**: indicator design (SMART+FABRIC), aggregation correctness, stock vs flow, leading vs lagging, Polish structural breaks
 
 Also read the relevant build standards:
-- `team/standards/build/storage.md` — schema naming, data types, upsert pattern, indexes
-- `team/standards/build/ingestion.md` — ELT phases, raw loading rules, script structure
-- `team/standards/build/processing.md` — dbt-only transforms, staging model pattern, DQ framework
-- `team/standards/build/measures.md` — **required when touching the semantic layer**: number formatting, unit names, format_type conventions, Polish labelling
+- `docs/data-engineering/storage.md` — schema naming, data types, upsert pattern, indexes
+- `docs/data-engineering/ingestion.md` — ELT phases, raw loading rules, script structure
+- `docs/data-engineering/processing.md` — dbt-only transforms, staging model pattern, DQ framework
+- `docs/data-engineering/measures.md` — **required when touching the semantic layer**: number formatting, unit names, format_type conventions, Polish labelling
 
 ## Step 2 — Understand the task
 

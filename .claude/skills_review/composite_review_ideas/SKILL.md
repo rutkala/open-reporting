@@ -37,7 +37,7 @@ Present all recommendations at once, then ask: *"Which would you like to accept,
 ## Step 3 — Process decisions
 
 For each **accepted** idea:
-1. Identify the issue type (dashboard / ingestion / article / infrastructure) using `team/standards/build/requirements.md`
+1. Identify the issue type (dashboard / ingestion / article / infrastructure) using `docs/process/requirements.md`
 2. Fill in the full issue template for that type
 3. If the idea is large, split into a parent issue (epic) + sub-issues
 4. Create the issue(s) in Linear:

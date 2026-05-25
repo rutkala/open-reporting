@@ -27,36 +27,36 @@ Spawn all agents **in parallel** using Agent tool calls in the same message. Age
 
 **Agent A — `code-reviewer`**
 - Runs `git diff origin/main...HEAD` independently
-- Reads `team/standards/evaluation/code-review.md`, applies rules to the diff
+- Reads `docs/process/code-review.md`, applies rules to the diff
 - Returns P1 / P2 / P3 findings with BLOCK / CONDITIONAL / PASS verdict
 
 **Agent B — `visualization-reviewer`**
 - Runs `git diff origin/main...HEAD` independently
-- Reads `team/standards/evaluation/visualization-diff.md`, checks chart/KPI calls in domain dashboards
+- Reads `docs/visualization-diff.md`, checks chart/KPI calls in domain dashboards
 - Returns HIGH / MEDIUM / LOW findings with BLOCK / CONDITIONAL / PASS verdict
 - Scoped to `products/dashboards/` (excl. template) and `products/visuals/components/`
 
 **Agent C — `analytical-validator`**
 - Runs `git diff origin/main...HEAD` independently (diff-phase mode — leave $PLAN empty)
-- Reads `team/knowledge-base/analytical-methods/analytical-thinking.md`, checks SQL aggregation, CAGR, labelling, and causal language
+- Reads `docs/analytical-methods/principles.md`, checks SQL aggregation, CAGR, labelling, and causal language
 - Returns MISLEADING / QUESTIONABLE / NOTED findings with BLOCK / CONDITIONAL / PASS verdict
 - Scoped to SQL files, Python data queries, and chart call string literals
 
 **Agent D — `domain-specialist`** *(domain dashboard changes only)*
 - Runs `git diff origin/main...HEAD` independently
-- Reads `team/knowledge-base/domains/{domain}.md`, checks KPI selection, framing, benchmark correctness
+- Reads `docs/{domain}.md`, checks KPI selection, framing, benchmark correctness
 - Pass diff as `$INPUT`
 - Only spawn if diff touches `products/dashboards/{domain}/` (not template, not explorer)
 
 **Agent E — `data-engineer-reviewer`** *(platform/ changes only)*
 - Runs `git diff origin/main...HEAD` independently
-- Reads `team/standards/evaluation/data-engineering-review.md`, checks ELT compliance, DuckDB patterns, dbt conventions, idempotency
+- Reads `docs/data-engineering/reviewing.md`, checks ELT compliance, DuckDB patterns, dbt conventions, idempotency
 - Returns P1 / P2 / P3 findings with BLOCK / CONDITIONAL / PASS verdict
 - Only spawn if diff touches `products/ingestion/`, `products/warehouse/`, or `products/warehouse/`
 
 **Agent F — `measures-reviewer`** *(semantic layer changes only)*
 - Runs `git diff origin/main...HEAD` independently
-- Reads `team/standards/evaluation/measures-review.md`, checks measure definitions, aggregation correctness (stock vs flow, rate summation), `format_type`, unit/scale, Polish labels
+- Reads `docs/data-engineering/measures-review.md`, checks measure definitions, aggregation correctness (stock vs flow, rate summation), `format_type`, unit/scale, Polish labels
 - Returns P1 / P2 / P3 findings with BLOCK / CONDITIONAL / PASS verdict
 - Only spawn if diff touches `products/semantic/`, `products/warehouse/**/semantic_models/*.yml`, or `products/warehouse/**/metrics/*.yml`
 
@@ -75,7 +75,7 @@ After Part 0 completes with no BLOCK, check whether the diff touches `products/d
 
 - Starts each affected dashboard from branch code on a temp port
 - Takes a Playwright screenshot at 1440×900
-- Reads the PNG image and evaluates against `team/standards/evaluation/visualization-image.md`
+- Reads the PNG image and evaluates against `docs/visualization/reviewing.md`
 - Returns HIGH / MEDIUM / LOW findings with BLOCK / CONDITIONAL / PASS verdict
 
 Map findings to review output:

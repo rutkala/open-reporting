@@ -48,7 +48,7 @@ reviewed against any contract and that will likely need to be rewritten.
 
 ## Standards
 
-- `team/standards/build/storage.md` (database work)
-- `team/standards/build/processing.md` (dbt models)
-- `team/standards/build/measures.md` (semantic layer)
+- `docs/data-engineering/storage.md` (database work)
+- `docs/data-engineering/processing.md` (dbt models)
+- `docs/data-engineering/measures.md` (semantic layer)
 - Product skill standards (loaded by calling skill)

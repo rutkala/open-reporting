@@ -53,4 +53,4 @@ This skill defines WHAT the blog platform is. For individual article work, use `
 
 ## Standards
 
-- `team/standards/evaluation/content-review.md`
+- `docs/content/reviewing.md`

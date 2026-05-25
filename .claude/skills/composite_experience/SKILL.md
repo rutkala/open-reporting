@@ -149,7 +149,7 @@ Every entry passes all eight, or is rejected / revised / deferred.
   a one-line reference.
 - **Skill-local scope** — entries belong to one target skill's
   `experience/`. Cross-skill patterns are promoted up to
-  `team/standards/`, at which point they become *knowledge* (input to
+  `docs/`, at which point they become *knowledge* (input to
   future `composite_knowledge` runs).
 
 ## Output checklist

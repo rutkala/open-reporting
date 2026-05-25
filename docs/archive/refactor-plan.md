@@ -74,7 +74,7 @@ When in doubt: **ARCHITECTURE.md wins**. If a step in this plan contradicts the 
 │   └── screenshot/             (was tools/screenshot.py)
 │
 ├── docs/                       (unchanged location; refreshed content)
-├── team/                       (unchanged location; path refs updated)
+├── docs/                       (unchanged location; path refs updated)
 ├── infra/                      (unchanged)
 ├── .claude/                    (path refs updated in agents)
 ├── data/                       (unchanged, gitignored)
@@ -336,7 +336,7 @@ This is the find/replace map. Apply each:
 
 | Old path | New path | Files affected |
 |---|---|---|
-| `platform/ingestion/` | `products/ingestion/` | docs/, team/, .claude/agents/, ingestion scripts internal docstrings |
+| `platform/ingestion/` | `products/ingestion/` | docs/, docs/, .claude/agents/, ingestion scripts internal docstrings |
 
 ```bash
 # Generate the list of files that reference the old path
@@ -356,16 +356,16 @@ Expected files (verify each):
 - `products/ingestion/to_raw/nbp_exchange_rates.py`
 - `products/ingestion/to_raw/dbw_observations.py`
 - `products/ingestion/to_landing/dbw_hvd.py`
-- `team/PLATFORM.md`
-- `team/knowledge-base/data-architecture/architecture.md`
-- `team/knowledge-base/data-engineering/engineering.md`
+- `docs/PLATFORM.md`
+- `docs/data-architecture/principles.md`
+- `docs/data-engineering/principles.md`
 - `docs/CONTRIBUTING.md`
 - `docs/DATA_SOURCES.md`
-- `team/standards/INDEX.md`
-- `team/standards/evaluation/data-engineering-review.md`
-- `team/standards/evaluation/architecture-review.md`
-- `team/standards/evaluation/code-review.md`
-- `team/standards/build/requirements.md`
+- `docs/README.md`
+- `docs/data-engineering/reviewing.md`
+- `docs/data-architecture/reviewing.md`
+- `docs/process/code-review.md`
+- `docs/process/requirements.md`
 - `CLAUDE.md`
 - `AGENTS.md`
 
@@ -472,13 +472,13 @@ Expected files (verify):
 - `.claude/agents/data-engineer.md`
 - `packages/dbr/src/dbr/semantic/semantic.py`
 - `packages/dbr/src/dbr/compiler/compiler.py`
-- `team/PLATFORM.md`
+- `docs/PLATFORM.md`
 - `docs/RELEASE_NOTES.md`
 - `docs/DATA_MODEL.md`
-- `team/standards/build/processing.md`
-- `team/standards/build/storage.md`
-- `team/standards/evaluation/measures-review.md`
-- `team/standards/build/measures.md`
+- `docs/data-engineering/processing.md`
+- `docs/data-engineering/storage.md`
+- `docs/data-engineering/measures-review.md`
+- `docs/data-engineering/measures.md`
 
 ### 4c. Verify dbt still works at the new path
 
@@ -776,8 +776,8 @@ grep -rln "platform/database" /opt/open-reporting \
 Expected files:
 - `.claude/agents/data-engineer.md`
 - `products/database/loader.py` (internal docstrings)
-- `team/standards/build/ingestion.md`
-- `team/standards/build/storage.md`
+- `docs/data-engineering/ingestion.md`
+- `docs/data-engineering/storage.md`
 
 Commit:
 ```
@@ -826,7 +826,7 @@ For each of the following, open and update sections that mention old paths or no
 
 - `docs/DATA_MODEL.md` — refresh schema to reference new fact_finance_*, dim_geo, dim_cofog
 - `docs/CONTRIBUTING.md` — paths to new structure
-- `team/PLATFORM.md` — replace inline architecture with: "See [`../docs/ARCHITECTURE.md`](../docs/ARCHITECTURE.md) for the authoritative architecture document."
+- `docs/PLATFORM.md` — replace inline architecture with: "See [`../docs/ARCHITECTURE.md`](../docs/ARCHITECTURE.md) for the authoritative architecture document."
 - `CLAUDE.md` — update the "Repo Structure" section to reference new tree
 - `AGENTS.md` — update path examples
 
@@ -841,7 +841,7 @@ git commit -m "docs: archive stale docs, refresh remaining for new structure
   to docs/archive/ — each describes a prior state.
 - Updated DATA_MODEL.md, CONTRIBUTING.md, CLAUDE.md, AGENTS.md to
   reference the new declarative-plane / engine-plane layout.
-- team/PLATFORM.md now points at docs/ARCHITECTURE.md instead of
+- docs/PLATFORM.md now points at docs/ARCHITECTURE.md instead of
   duplicating its content."
 ```
 

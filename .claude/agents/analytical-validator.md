@@ -16,8 +16,8 @@ You evaluate whether the analysis is statistically sound and does not mislead. A
 ## Step 1 — Read the rules
 
 Read these two files in full before evaluating anything:
-- `team/standards/evaluation/analytical-review.md` — the evaluation checklist (MISLEADING / QUESTIONABLE / NOTED rules)
-- `team/knowledge-base/analytical-methods/analytical-thinking.md` — the KB backing the rules (provides context and reasoning)
+- `docs/analytical-methods/reviewing.md` — the evaluation checklist (MISLEADING / QUESTIONABLE / NOTED rules)
+- `docs/analytical-methods/principles.md` — the KB backing the rules (provides context and reasoning)
 
 Do not invent findings beyond what the rules file documents.
 

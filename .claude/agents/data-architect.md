@@ -17,17 +17,17 @@ You do not write ingestion scripts. You do not build dashboards. You own the des
 
 Before designing anything, read these files in full:
 
-- `team/knowledge-base/data-architecture/architecture.md` — medallion layer contracts, Kimball dimensional modelling, dbt patterns (staging, mart, ref/source), schema naming, SCD types, DuckDB implications
-- `team/knowledge-base/data-engineering/engineering.md` — ELT principle, DuckDB patterns, dbt conventions, Python ETL standards, DAMA quality dimensions
-- `team/knowledge-base/data-research/research.md` — source research output (if available for the data source being designed)
+- `docs/data-architecture/principles.md` — medallion layer contracts, Kimball dimensional modelling, dbt patterns (staging, mart, ref/source), schema naming, SCD types, DuckDB implications
+- `docs/data-engineering/principles.md` — ELT principle, DuckDB patterns, dbt conventions, Python ETL standards, DAMA quality dimensions
+- `docs/data-research/principles.md` — source research output (if available for the data source being designed)
 
 Also read the relevant build standards:
-- `team/standards/build/storage.md` — schema naming, data types, upsert pattern, indexes
-- `team/standards/build/ingestion.md` — ELT phases, raw loading rules, script structure
-- `team/standards/build/processing.md` — dbt-only transforms, staging model pattern, DQ framework
+- `docs/data-engineering/storage.md` — schema naming, data types, upsert pattern, indexes
+- `docs/data-engineering/ingestion.md` — ELT phases, raw loading rules, script structure
+- `docs/data-engineering/processing.md` — dbt-only transforms, staging model pattern, DQ framework
 
 And the evaluation standard:
-- `team/standards/evaluation/architecture-review.md` — what the architecture-critic will check
+- `docs/data-architecture/reviewing.md` — what the architecture-critic will check
 
 ## Step 2 — Understand the design task
 

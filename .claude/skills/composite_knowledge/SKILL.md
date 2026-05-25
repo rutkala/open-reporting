@@ -46,7 +46,7 @@ the experience and assets layers do not apply.
 
 | What | Provided by |
 |------|------------|
-| Target path | Caller — usually `.claude/skills/complex_<name>/knowledge/`, but can be any directory (e.g. `team/knowledge-base/<topic>/`, `products/research/<topic>/`, ad-hoc) |
+| Target path | Caller — usually `.claude/skills/complex_<name>/knowledge/`, but can be any directory (e.g. `docs/<topic>/`, `products/research/<topic>/`, ad-hoc) |
 | Seed input | Either `<complex_skill>/_seed.md` (complex-skill case) OR caller-provided scope: purpose, out-of-scope, pre-existing experience, seed sources |
 | Topic scope (fallback) | Caller — one or two sentences. Required if no seed file exists. |
 | Depth target (EQF 1–8) | Caller or seed file — L3–4 = broad context; L5–6 = comprehensive/specialised; L7–8 = frontier. Scopes how deep the collect phase goes. Default: L5 if unstated. |

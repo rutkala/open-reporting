@@ -26,11 +26,11 @@ Read the plan or diff (provided below) and identify which domain this covers:
 
 ## Step 2 — Read the domain KB
 
-Read `team/knowledge-base/domains/{domain}.md` if it exists.
+Read `docs/{domain}.md` if it exists.
 
 If no domain KB exists yet, use your knowledge of the domain plus the general analytical KB:
-- `team/knowledge-base/analytical-methods/analytical-thinking.md`
-- `team/knowledge-base/business-analysis/` (if exists)
+- `docs/analytical-methods/principles.md`
+- `docs/business-analysis/` (if exists)
 
 ## Step 3 — Evaluate domain correctness
 

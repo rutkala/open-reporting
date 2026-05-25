@@ -1,4 +1,4 @@
-> **ARCHIVED 2026-05-22** — this 864-line factory blueprint described an earlier 'factory / DAG / workstation' model that was abandoned in favour of the declarative-YAML approach now described in [`../ARCHITECTURE.md`](../ARCHITECTURE.md). Specific sections (product portfolio, competency map, quality system) are largely superseded by [ARCHITECTURE.md](../ARCHITECTURE.md), the [CLAUDE.md subagent table](../../CLAUDE.md#custom-subagents), [team/standards/INDEX.md](../../team/standards/INDEX.md), and [team/knowledge-base/INDEX.md](../../team/knowledge-base/INDEX.md). Kept for history.
+> **ARCHIVED 2026-05-22** — this 864-line factory blueprint described an earlier 'factory / DAG / workstation' model that was abandoned in favour of the declarative-YAML approach now described in [`../ARCHITECTURE.md`](../ARCHITECTURE.md). Specific sections (product portfolio, competency map, quality system) are largely superseded by [ARCHITECTURE.md](../ARCHITECTURE.md), the [CLAUDE.md subagent table](../../CLAUDE.md#custom-subagents), [docs/README.md](../../docs/README.md), and [docs/README.md](../../docs/README.md). Kept for history.
 
 # Open Reporting — Platform Blueprint
 
@@ -138,7 +138,7 @@ SUB-PRODUCTS
         │                    CMS (Ghost)   Notebooks
   Semantic Model                                │
         │                              ─────────────────────
-  Curated Data Layer         ←──────  team/knowledge-base/
+  Curated Data Layer         ←──────  docs/
         │                             (economics, domains)
   Raw Data Layer + dbt
         │
@@ -187,7 +187,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 
 #### Sub-product 1 — Data ingested into environment
 
-*Playbook:* `team/playbooks/data-ingestion.md` | *Depends on:* —
+*Playbook:* `docs/playbooks/data-ingestion.md` | *Depends on:* —
 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
@@ -197,7 +197,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 
 #### Sub-product 2 — Data curated (silver)
 
-*Playbook:* `team/playbooks/data-ingestion.md` (Phase 3) | *Depends on:* #1
+*Playbook:* `docs/playbooks/data-ingestion.md` (Phase 3) | *Depends on:* #1
 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
@@ -206,7 +206,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 
 #### Sub-product 3 — Data mart (gold)
 
-*Playbook:* `team/playbooks/data-mart.md` | *Depends on:* #2
+*Playbook:* `docs/playbooks/data-mart.md` | *Depends on:* #2
 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
@@ -215,7 +215,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 
 #### Sub-product 4 — Semantic layer
 
-*Playbook:* `team/playbooks/data-mart.md` (Phase 2) | *Depends on:* #3
+*Playbook:* `docs/playbooks/data-mart.md` (Phase 2) | *Depends on:* #3
 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
@@ -229,7 +229,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 
 #### Sub-product 5 — Portal frontend
 
-*Playbook:* `team/playbooks/portal.md` | *Depends on:* #15, #16
+*Playbook:* `docs/playbooks/portal.md` | *Depends on:* #15, #16
 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
@@ -238,7 +238,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 
 #### Sub-product 6 — Portal backend
 
-*Playbook:* `team/playbooks/portal.md` | *Depends on:* #3
+*Playbook:* `docs/playbooks/portal.md` | *Depends on:* #3
 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
@@ -251,7 +251,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 
 #### Sub-product 7 — Blog frontend
 
-*Playbook:* `team/playbooks/blog.md` | *Depends on:* #17, #16
+*Playbook:* `docs/playbooks/blog.md` | *Depends on:* #17, #16
 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
@@ -260,7 +260,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 
 #### Sub-product 8 — Blog backend
 
-*Playbook:* `team/playbooks/blog.md` | *Depends on:* —
+*Playbook:* `docs/playbooks/blog.md` | *Depends on:* —
 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
@@ -273,7 +273,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 
 #### Sub-product 9 — Mobile frontend
 
-*Playbook:* `team/playbooks/portal.md` (mobile-first variant) | *Depends on:* #5
+*Playbook:* `docs/playbooks/portal.md` (mobile-first variant) | *Depends on:* #5
 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
@@ -290,7 +290,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 
 #### Sub-product 11 — Social platform setup
 
-*Playbook:* `team/playbooks/social.md` (platform section) | *Depends on:* —
+*Playbook:* `docs/playbooks/social.md` (platform section) | *Depends on:* —
 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
@@ -299,7 +299,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 
 #### Sub-product 12 — Social card
 
-*Playbook:* `team/playbooks/social.md` | *Depends on:* #16, #3
+*Playbook:* `docs/playbooks/social.md` | *Depends on:* #16, #3
 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
@@ -310,7 +310,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 
 #### Sub-product 13 — Data card
 
-*Playbook:* `team/playbooks/social.md` (data card section) | *Depends on:* #16, #3
+*Playbook:* `docs/playbooks/social.md` (data card section) | *Depends on:* #16, #3
 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
@@ -323,7 +323,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 
 #### Sub-product 14 — Platform infra
 
-*Playbook:* `team/playbooks/infra.md` | *Depends on:* —
+*Playbook:* `docs/playbooks/infra.md` | *Depends on:* —
 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
@@ -336,7 +336,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 
 #### Sub-product 15 — Dashboard
 
-*Playbook:* `team/playbooks/dashboard.md` | *Depends on:* #3, #16; may trigger #1–#4
+*Playbook:* `docs/playbooks/dashboard.md` | *Depends on:* #3, #16; may trigger #1–#4
 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
@@ -348,7 +348,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 
 #### Sub-product 16 — Visual component
 
-*Playbook:* inline in `team/playbooks/dashboard.md` | *Depends on:* —
+*Playbook:* inline in `docs/playbooks/dashboard.md` | *Depends on:* —
 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
@@ -357,7 +357,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 
 #### Sub-product 17 — Article
 
-*Playbook:* `team/playbooks/article.md` | *Depends on:* #3 (optional), #18 (optional)
+*Playbook:* `docs/playbooks/article.md` | *Depends on:* #3 (optional), #18 (optional)
 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
@@ -367,7 +367,7 @@ Agents marked *(gap)* are not yet live — the recipe defines the target state. 
 
 #### Sub-product 18 — Research
 
-*Playbook:* `team/playbooks/research.md` | *Depends on:* #3
+*Playbook:* `docs/playbooks/research.md` | *Depends on:* #3
 
 | Task | Skills | Competency | Builder | Evaluator | Build standard | Eval standard |
 |------|--------|-----------|---------|-----------|---------------|---------------|
@@ -517,18 +517,18 @@ Quality is only defensible when rules are traceable to research. The chain is:
 ```
 PRIMARY SOURCES (academic papers, standards bodies, authoritative publications)
       ↓
-team/knowledge-base/{competency}/     ← Research synthesis. No opinions.
+docs/{competency}/     ← Research synthesis. No opinions.
       ↓
-team/standards/build/{standard}.md    ← Our implementation decisions, KB-derived.
+docs/{standard}.md    ← Our implementation decisions, KB-derived.
       ↓
-team/standards/evaluation/{rules}.md  ← Agent evaluation checklist, traced to standard.
+docs/{rules}.md  ← Agent evaluation checklist, traced to standard.
       ↓
 .claude/agents/{evaluator}.md         ← Agent reads evaluation rules, applies to output.
 ```
 
 Every evaluation standard file opens with:
 ```
-Derived from: team/knowledge-base/{path}
+Derived from: docs/{path}
 Used by: .claude/agents/{agent}.md
 Does NOT cover: {explicit scope boundary}
 ```
@@ -573,7 +573,7 @@ Human is never involved in iteration — only in resolution of genuine deadlocks
 ### 6.4 Self-improvement loop
 
 **After every issue (automatic — part of `/document` skill):**
-- `team/lessons-learned.md` updated: what worked, what failed, actual token usage vs estimate
+- `docs/lessons-learned.md` updated: what worked, what failed, actual token usage vs estimate
 - Recurring failure patterns flagged: if the same type of finding appears 3+ times in lessons-learned, a standards update is proposed
 
 **After every 10 issues (scheduled):**
@@ -603,7 +603,7 @@ The `cost-estimator` agent provides a token budget forecast before any task star
 - Number of files likely involved (estimated from scope)
 - Number of agent invocations required
 - Whether web search / external sources are needed
-- Historical data from `team/lessons-learned.md` for similar task types
+- Historical data from `docs/lessons-learned.md` for similar task types
 
 **Output:** estimated range + risk level + recommendation (proceed / split into sub-issues / warn about rate limit risk)
 
@@ -619,33 +619,33 @@ Each KB entry is research-first — no opinions, only synthesis of authoritative
 
 | KB | Location | Status | Grounded in |
 |----|----------|--------|-------------|
-| Analytical methods | `team/knowledge-base/analytical-methods/analytical-thinking.md` | ✓ Complete | ONS, UNECE, IZA, GSS, IRE, GIJN |
-| Visualization principles | `team/knowledge-base/visualization/principles.md` | ✓ Complete | Playfairdata, EU Data Viz Guide, IBCS |
-| Visualization charts | `team/knowledge-base/visualization/charts/*.md` (7 files) | ✓ Complete | Same sources |
-| Visualization UI | `team/knowledge-base/visualization/ui-principles.md` | ✓ Complete | Same sources |
-| UX / Perception | `team/knowledge-base/ux-perception/perception.md` | ✓ Complete | Colin Ware, Treisman, Sweller, Nielsen Norman, WCAG 2.2 |
-| Data Architecture | `team/knowledge-base/data-architecture/architecture.md` | ✓ Complete | Kimball, Databricks medallion, dbt Labs |
-| Data Engineering | `team/knowledge-base/data-engineering/engineering.md` | ✓ Complete | DuckDB docs, dbt docs, DAMA, ANSI SQL |
-| Business Analysis | `team/knowledge-base/business-analysis/kpi-indicator-design.md` | ✓ Complete | Eurostat, OECD, Kaplan & Norton, ONS, IMF, GUS |
-| Domain — public finance | `team/knowledge-base/domains/public-finance.md` | Draft — needs review | Eurostat, IMF, MF Poland |
-| Domain — labour market | `team/knowledge-base/domains/labour-market.md` | Planned | ILO, Eurostat, IZA |
+| Analytical methods | `docs/analytical-methods/principles.md` | ✓ Complete | ONS, UNECE, IZA, GSS, IRE, GIJN |
+| Visualization principles | `docs/visualization/principles.md` | ✓ Complete | Playfairdata, EU Data Viz Guide, IBCS |
+| Visualization charts | `docs/visualization/charts/*.md` (7 files) | ✓ Complete | Same sources |
+| Visualization UI | `docs/visualization/ui-principles.md` | ✓ Complete | Same sources |
+| UX / Perception | `docs/ux-perception/principles.md` | ✓ Complete | Colin Ware, Treisman, Sweller, Nielsen Norman, WCAG 2.2 |
+| Data Architecture | `docs/data-architecture/principles.md` | ✓ Complete | Kimball, Databricks medallion, dbt Labs |
+| Data Engineering | `docs/data-engineering/principles.md` | ✓ Complete | DuckDB docs, dbt docs, DAMA, ANSI SQL |
+| Business Analysis | `docs/business-analysis/principles.md` | ✓ Complete | Eurostat, OECD, Kaplan & Norton, ONS, IMF, GUS |
+| Domain — public finance | `docs/public-finance/principles.md` | Draft — needs review | Eurostat, IMF, MF Poland |
+| Domain — labour market | `docs/labour-market.md` | Planned | ILO, Eurostat, IZA |
 | Economics theory | `products/research/library/` | Partial | Standard textbooks |
 
 ### 7.2 Planned KB (priority order)
 
 | KB | Location | Priority | Sources to research |
 |----|----------|----------|-------------------|
-| **Content / Editorial** | `team/knowledge-base/content/` | Medium | Data journalism curricula (Columbia, CUL), Reuters Institute, GUS publication style, Polish editorial standards |
-| **Research Methods** | `team/knowledge-base/research-methods/` | Medium | Econometrics textbooks, panel data methods, reproducible research standards |
+| **Content / Editorial** | `docs/content/` | Medium | Data journalism curricula (Columbia, CUL), Reuters Institute, GUS publication style, Polish editorial standards |
+| **Research Methods** | `docs/research-methods/` | Medium | Econometrics textbooks, panel data methods, reproducible research standards |
 
 ### 7.3 Domain KB (per domain, on demand before dashboard work)
 
 | Domain | KB file | Status |
 |--------|---------|--------|
-| Public Finance | `team/knowledge-base/domains/public-finance.md` | Draft |
-| Labour Market | `team/knowledge-base/domains/labour-market.md` | Planned |
-| Demographics | `team/knowledge-base/domains/demographics.md` | Not started |
-| (remaining 15 domains) | `team/knowledge-base/domains/{domain}.md` | Not started |
+| Public Finance | `docs/public-finance/principles.md` | Draft |
+| Labour Market | `docs/labour-market.md` | Planned |
+| Demographics | `docs/demographics.md` | Not started |
+| (remaining 15 domains) | `docs/{domain}.md` | Not started |
 
 Domain KB files are created via `/domain-brief` skill before any dashboard work begins on that domain.
 
@@ -659,12 +659,12 @@ Developer-facing. Derived from KB. Tells practitioners what to do.
 
 | Standard | File | Derived from KB | Status |
 |----------|------|----------------|--------|
-| Data ingestion | `team/standards/build/ingestion.md` | `knowledge-base/data-engineering/` ✓ | ✓ Live |
-| Data processing | `team/standards/build/processing.md` | `knowledge-base/data-engineering/` ✓ | ✓ Live |
-| Data storage | `team/standards/build/storage.md` | `knowledge-base/data-architecture/` ✓ | ✓ Live |
-| Visualisation design | `team/standards/build/visualisation.md` | `knowledge-base/visualization/` ✓ + `ux-perception/` ✓ | ✓ Live |
-| Measures | `team/standards/build/measures.md` | `knowledge-base/business-analysis/` ✓ | ✓ Live |
-| Linear requirements | `team/standards/build/requirements.md` | — (workflow, not KB-derived) | ✓ Live |
+| Data ingestion | `docs/data-engineering/ingestion.md` | `knowledge-base/data-engineering/` ✓ | ✓ Live |
+| Data processing | `docs/data-engineering/processing.md` | `knowledge-base/data-engineering/` ✓ | ✓ Live |
+| Data storage | `docs/data-engineering/storage.md` | `knowledge-base/data-architecture/` ✓ | ✓ Live |
+| Visualisation design | `docs/visualization/building.md` | `knowledge-base/visualization/` ✓ + `ux-perception/` ✓ | ✓ Live |
+| Measures | `docs/data-engineering/measures.md` | `knowledge-base/business-analysis/` ✓ | ✓ Live |
+| Linear requirements | `docs/process/requirements.md` | — (workflow, not KB-derived) | ✓ Live |
 
 ### 8.2 Evaluation standards (how we review)
 
@@ -672,15 +672,15 @@ Agent-facing. Derived from KB via build standard. Tells evaluator agents what to
 
 | Standard | File | Derived from | Agent that uses it | Status |
 |----------|------|-------------|-------------------|--------|
-| Code review | `team/standards/evaluation/code-review.md` | `knowledge-base/data-engineering/` ✓ | `code-reviewer` | ✓ Live |
-| Architecture review | `team/standards/evaluation/architecture-review.md` | `knowledge-base/data-architecture/` ✓ | `architecture-critic` | ✓ Live |
-| Analytical review | `team/standards/evaluation/analytical-review.md` | `knowledge-base/analytical-methods/` ✓ | `analytical-validator` | ✓ Live |
-| Data engineering review | `team/standards/evaluation/data-engineering-review.md` | `knowledge-base/data-engineering/` ✓ + `data-architecture/` ✓ | `data-engineer-reviewer` | ✓ Live |
-| Visualization diff | `team/standards/evaluation/visualization-image.md` | `knowledge-base/visualization/` ✓ + `ux-perception/` ✓ | `visual-screenshot-reviewer` | ✓ Live |
-| Visualization image | `team/standards/evaluation/visualization-image.md` | `knowledge-base/ux-perception/` ✓ | `visual-screenshot-reviewer` | ✓ Live |
-| Measures review | `team/standards/evaluation/measures-review.md` | `knowledge-base/business-analysis/` ✓ + `analytical-methods/` ✓ + `build/measures.md` | `measures-reviewer` | ✓ Live |
-| Brief review | `team/standards/evaluation/brief-review.md` | `knowledge-base/business-analysis/` ✓ + `analytical-methods/` ✓ | `brief-reviewer` | ✓ Live |
-| Cost estimation rules | *(heuristics inline in agent)* | `team/lessons-learned.md` | `cost-estimator` | ✓ Live (no standalone file) |
+| Code review | `docs/process/code-review.md` | `knowledge-base/data-engineering/` ✓ | `code-reviewer` | ✓ Live |
+| Architecture review | `docs/data-architecture/reviewing.md` | `knowledge-base/data-architecture/` ✓ | `architecture-critic` | ✓ Live |
+| Analytical review | `docs/analytical-methods/reviewing.md` | `knowledge-base/analytical-methods/` ✓ | `analytical-validator` | ✓ Live |
+| Data engineering review | `docs/data-engineering/reviewing.md` | `knowledge-base/data-engineering/` ✓ + `data-architecture/` ✓ | `data-engineer-reviewer` | ✓ Live |
+| Visualization diff | `docs/visualization/reviewing.md` | `knowledge-base/visualization/` ✓ + `ux-perception/` ✓ | `visual-screenshot-reviewer` | ✓ Live |
+| Visualization image | `docs/visualization/reviewing.md` | `knowledge-base/ux-perception/` ✓ | `visual-screenshot-reviewer` | ✓ Live |
+| Measures review | `docs/data-engineering/measures-review.md` | `knowledge-base/business-analysis/` ✓ + `analytical-methods/` ✓ + `build/measures.md` | `measures-reviewer` | ✓ Live |
+| Brief review | `docs/business-analysis/reviewing.md` | `knowledge-base/business-analysis/` ✓ + `analytical-methods/` ✓ | `brief-reviewer` | ✓ Live |
+| Cost estimation rules | *(heuristics inline in agent)* | `docs/lessons-learned.md` | `cost-estimator` | ✓ Live (no standalone file) |
 | Domain review | *(heuristics inline in agent)* | `knowledge-base/domains/{domain}/` | `domain-specialist` | ✓ Live (no standalone file) |
 
 ---
@@ -740,7 +740,7 @@ Every document declares:
 │
 ├── infra/                       ← Infrastructure configuration
 │
-└── team/                        ← TEAM OPERATING SYSTEM
+└── docs/                        ← TEAM OPERATING SYSTEM
     │
     ├── PLATFORM.md              ← THIS FILE. The factory blueprint.
     │
@@ -784,7 +784,7 @@ Every document declares:
 |-------|---------------------|-----------------|
 | Three-stage workflow | `CLAUDE.md` | `docs/CONTRIBUTING.md` (human-readable summary, links to CLAUDE.md) |
 | Sprint process | `.claude/skills_review/composite_sprint/SKILL.md` (under review) | `docs/ROADMAP.md` (links to Linear) |
-| Issue templates | `team/standards/build/requirements.md` | Referenced from CLAUDE.md |
+| Issue templates | `docs/process/requirements.md` | Referenced from CLAUDE.md |
 | Git conventions | `CLAUDE.md` | `docs/CONTRIBUTING.md` |
 
 ---

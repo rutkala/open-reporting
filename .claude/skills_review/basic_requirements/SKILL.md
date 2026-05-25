@@ -75,6 +75,6 @@ Prevents scope creep during build and QA.
 
 ## Standards
 
-- `team/standards/build/requirements.md`
-- `team/knowledge-base/business-analysis/kpi-indicator-design.md`
+- `docs/process/requirements.md`
+- `docs/business-analysis/principles.md`
 - Reviewed by: `brief-reviewer`

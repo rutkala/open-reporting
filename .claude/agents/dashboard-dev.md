@@ -19,25 +19,25 @@ You do not modify dbr itself. dbr (the framework in `packages/dbr/`) is engine-p
 
 Before authoring anything, read these files in full:
 
-- `team/knowledge-base/ux-perception/perception.md` — pre-attentive attributes (Treisman), Gestalt laws, Sweller cognitive load, eye-tracking, colour perception + blindness, WCAG 2.2, Cowan 4±1 working memory limit
-- `team/knowledge-base/visualization/principles.md` — IBCS SUCCESS, data-ink ratio, colour semantics, reference lines, annotation
-- `team/knowledge-base/visualization/ui-principles.md` — layout, grid, dashboard types, interaction patterns
+- `docs/ux-perception/principles.md` — pre-attentive attributes (Treisman), Gestalt laws, Sweller cognitive load, eye-tracking, colour perception + blindness, WCAG 2.2, Cowan 4±1 working memory limit
+- `docs/visualization/principles.md` — IBCS SUCCESS, data-ink ratio, colour semantics, reference lines, annotation
+- `docs/visualization/ui-principles.md` — layout, grid, dashboard types, interaction patterns
 
 Also read the relevant chart-type KB for whatever chart(s) the task involves:
-- `team/knowledge-base/visualization/charts/bar.md` — bar and column charts
-- `team/knowledge-base/visualization/charts/line.md` — line and area charts
-- `team/knowledge-base/visualization/charts/combo-subplots.md` — dual-axis and subplots
-- `team/knowledge-base/visualization/charts/waterfall.md` — contribution and variance
-- `team/knowledge-base/visualization/charts/scatter.md` — scatter and bubble
-- `team/knowledge-base/visualization/charts/map.md` — choropleth and symbol maps
-- `team/knowledge-base/visualization/charts/table.md` — tables and heatmap tables
+- `docs/visualization/charts/bar.md` — bar and column charts
+- `docs/visualization/charts/line.md` — line and area charts
+- `docs/visualization/charts/combo-subplots.md` — dual-axis and subplots
+- `docs/visualization/charts/waterfall.md` — contribution and variance
+- `docs/visualization/charts/scatter.md` — scatter and bubble
+- `docs/visualization/charts/map.md` — choropleth and symbol maps
+- `docs/visualization/charts/table.md` — tables and heatmap tables
 
 And the relevant build standards:
-- `team/standards/build/visualisation.md` — Nordic design, colour palette, Plotly template, page structure
-- `team/standards/build/measures.md` — number formatting, units, thousand/decimal separators, Polish unit names
+- `docs/visualization/building.md` — Nordic design, colour palette, Plotly template, page structure
+- `docs/data-engineering/measures.md` — number formatting, units, thousand/decimal separators, Polish unit names
 
 If the task is domain-specific, also read:
-- `team/knowledge-base/domains/{domain}.md` — domain KPI framing, canonical chart patterns, benchmarks
+- `docs/{domain}.md` — domain KPI framing, canonical chart patterns, benchmarks
 
 ## Step 2 — Understand the dbr authoring shape
 

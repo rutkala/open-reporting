@@ -68,13 +68,13 @@ After writing the plan, spawn **both** review agents **in parallel** using two A
 Pass the plan text as the `$PLAN` variable to both agents.
 
 **Agent A — `architecture-critic`**
-Reads `team/standards/evaluation/architecture-review.md` (its rule book) plus `team/standards/build/storage.md`, `ingestion.md`, `processing.md`, and `visualisation.md` for context. Evaluates layer contracts, schema naming, and coupling risks.
+Reads `docs/data-architecture/reviewing.md` (its rule book) plus `docs/data-engineering/storage.md`, `ingestion.md`, `processing.md`, and `visualisation.md` for context. Evaluates layer contracts, schema naming, and coupling risks.
 
 **Agent B — `analytical-validator`**
-Reads `team/standards/evaluation/analytical-review.md` (its rule book) plus `team/knowledge-base/analytical-methods/analytical-thinking.md` for context. Evaluates statistical and methodological soundness.
+Reads `docs/analytical-methods/reviewing.md` (its rule book) plus `docs/analytical-methods/principles.md` for context. Evaluates statistical and methodological soundness.
 
 **Agent C — `domain-specialist`** *(if domain dashboard or domain indicator work)*
-Reads `team/knowledge-base/domains/{domain}.md` and evaluates KPI selection, framing, and benchmark correctness.
+Reads `docs/{domain}.md` and evaluates KPI selection, framing, and benchmark correctness.
 Pass `$PLAN` as `$INPUT`. Only invoke if the plan involves domain-specific indicator selection or dashboard design.
 
 Skip Agent A if the plan touches no data layer (e.g. a pure UI or config change).

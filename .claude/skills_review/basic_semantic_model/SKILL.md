@@ -72,6 +72,6 @@ semantic_models:
 
 ## Standards
 
-- `team/standards/build/measures.md`
-- `team/knowledge-base/business-analysis/kpi-indicator-design.md`
+- `docs/data-engineering/measures.md`
+- `docs/business-analysis/principles.md`
 - Reviewed by: `measures-reviewer` agent

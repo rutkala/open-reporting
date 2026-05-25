@@ -68,7 +68,7 @@ Before handing to `/composite_evaluate`:
 
 ## Standards
 
-- `team/standards/evaluation/analytical-review.md`
-- `team/standards/evaluation/research-review.md` (if exists)
-- `team/knowledge-base/analytical-methods/analytical-thinking.md`
+- `docs/analytical-methods/reviewing.md`
+- `docs/research-methods/reviewing.md` (if exists)
+- `docs/analytical-methods/principles.md`
 - `products/research/CLAUDE.md` (research-specific instructions)

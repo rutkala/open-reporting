@@ -69,5 +69,5 @@ Linear: OR-108
 
 ## Standards
 
-- `team/standards/build/visualisation.md`
+- `docs/visualization/building.md`
 - `dashboard/references/theme.md` (shared Nordic theme)

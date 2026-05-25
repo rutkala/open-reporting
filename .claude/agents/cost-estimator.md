@@ -24,7 +24,7 @@ The issue text is provided below the separator line. Extract:
 
 ## Step 2 — Read historical patterns
 
-Read `team/lessons-learned.md` — scan for entries that mention token usage or similar task types. Note any patterns.
+Read `docs/lessons-learned.md` — scan for entries that mention token usage or similar task types. Note any patterns.
 
 Also apply these heuristics based on project experience:
 

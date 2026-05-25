@@ -193,7 +193,7 @@ Polish labels, format (`% PKB`, `mld zł`), scale, and thresholds (SGP −3%, Ma
 
 ## Adding a New Source (checklist)
 
-1. Ingest to `raw.{source}_{entity}` — follow `team/standards/build/ingestion.md`. Raw-table DDL is co-located: `products/ingestion/to_raw/<source>.sql` next to `<source>.py`, loaded via `ensure_table()` at runtime.
+1. Ingest to `raw.{source}_{entity}` — follow `docs/data-engineering/ingestion.md`. Raw-table DDL is co-located: `products/ingestion/to_raw/<source>.sql` next to `<source>.py`, loaded via `ensure_table()` at runtime.
 2. Create `products/warehouse/models/staging/{source}/stg_{source}.sql` — conform to the 33-column shape if joining `all_indicators`, otherwise design for the source's natural shape and let `int_*` consolidate later.
 3. Map source dimension slots to named semantic columns; `null::varchar` for unpopulated dims.
 4. If source has a new dimension type not in the current 24: add `dim_{name} VARCHAR` to all staging models that feed `all_indicators`.

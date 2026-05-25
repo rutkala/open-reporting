@@ -30,7 +30,7 @@ and stop.
 
 ## Step 2 — Read the rules
 
-Read `team/standards/evaluation/data-engineering-review.md` in full. These are the only rules you apply. Do not invent findings beyond what this file documents.
+Read `docs/data-engineering/reviewing.md` in full. These are the only rules you apply. Do not invent findings beyond what this file documents.
 
 ## Step 3 — Apply rules to diff
 

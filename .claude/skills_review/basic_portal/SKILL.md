@@ -74,5 +74,5 @@ To add a new dashboard to the portal:
 
 ## Standards
 
-- `team/standards/build/visualisation.md`
+- `docs/visualization/building.md`
 - Infrastructure config in `infra/`

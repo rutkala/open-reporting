@@ -14,13 +14,11 @@ infra/nginx/www/
 infra/nginx/html/labour/
 weo_*.csv
 
-# Analytics KB — scraped source materials (large binary/html cache)
-team/analytics/visualization/docs/viz-kb-full/
-team/analytics/dashboards/templates/
+# Visualization external — scraped source materials (large binary/html cache)
+docs/visualization/_external/viz-kb-full/
 tools/dalle-gen.ts
 bun.lock
 products/dashboards/finance_test/Test/
-team/knowledge-base/visualization/docs/viz-kb-full/
 
 # npx skills CLI — multi-agent install artifacts (we only use .claude/)
 .agents/

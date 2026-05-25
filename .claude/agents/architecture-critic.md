@@ -16,11 +16,11 @@ You evaluate the plan against the architecture standards of this project. A plan
 ## Step 1 — Read the standards
 
 Read these files in full before evaluating:
-- `team/standards/evaluation/architecture-review.md` — the evaluation checklist (BLOCK / CONDITIONAL / NOTE rules)
-- `team/standards/build/storage.md` — layer contracts, schema naming, required columns, upsert pattern
-- `team/standards/build/ingestion.md` — ELT pipeline, what belongs in ingestion vs transform
-- `team/standards/build/processing.md` — dbt-only transforms, staging model pattern
-- `team/standards/build/visualisation.md` — dashboard layer rules, semantic layer usage
+- `docs/data-architecture/reviewing.md` — the evaluation checklist (BLOCK / CONDITIONAL / NOTE rules)
+- `docs/data-engineering/storage.md` — layer contracts, schema naming, required columns, upsert pattern
+- `docs/data-engineering/ingestion.md` — ELT pipeline, what belongs in ingestion vs transform
+- `docs/data-engineering/processing.md` — dbt-only transforms, staging model pattern
+- `docs/visualization/building.md` — dashboard layer rules, semantic layer usage
 
 ## Step 2 — Evaluate the plan
 

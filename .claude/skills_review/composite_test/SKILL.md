@@ -91,9 +91,9 @@ Return to `/composite_build` with:
 
 ## Standards
 
-- `team/standards/evaluation/analytical-review.md` (data products)
-- `team/standards/evaluation/visualization-image.md` (visual products)
-- `team/standards/evaluation/content-review.md` (content products)
-- `team/standards/evaluation/research-review.md` (research products)
+- `docs/analytical-methods/reviewing.md` (data products)
+- `docs/visualization/reviewing.md` (visual products)
+- `docs/content/reviewing.md` (content products)
+- `docs/research-methods/reviewing.md` (research products)
 
 Load only the standards relevant to the product type being tested.

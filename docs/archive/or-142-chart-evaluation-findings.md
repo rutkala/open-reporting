@@ -3,7 +3,7 @@
 # OR-142 — Chart Template Evaluation Findings
 <!-- date: 2026-04-08 -->
 
-Two-pass review: code audit (visualization-reviewer) + screenshot audit (visual-screenshot-reviewer) against `team/standards/evaluation/visualization-diff.md` and `team/standards/evaluation/visualization-image.md`.
+Two-pass review: code audit (visualization-reviewer) + screenshot audit (visual-screenshot-reviewer) against `docs/visualization-diff.md` and `docs/visualization/reviewing.md`.
 
 **Overall verdict: CONDITIONAL** — no blocking HIGH findings, but several MEDIUM issues to fix in OR-143.
 

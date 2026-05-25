@@ -33,8 +33,8 @@ Start with [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — the source of truth 
 
 | Doc | Purpose |
 |-----|---------|
+| [docs/README.md](docs/README.md) | Navigation map for the whole docs tree |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | **Authoritative**: two-plane architecture, folder ownership, AI delegation contract |
-| [docs/refactor-plan.md](docs/refactor-plan.md) | Mechanical playbook for the structural refactor (mostly executed) |
 | [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) | How to contribute — issue lifecycle, Git workflow, PR process |
 | [docs/ROADMAP.md](docs/ROADMAP.md) | Pointer to Linear (where roadmap lives) |
 | [docs/RELEASE_NOTES.md](docs/RELEASE_NOTES.md) | What's shipped |
@@ -42,15 +42,11 @@ Start with [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — the source of truth 
 | [docs/DOMAINS.md](docs/DOMAINS.md) | Data domain taxonomy |
 | [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md) | Data sources, APIs, naming conventions |
 | [docs/DATA_MODEL.md](docs/DATA_MODEL.md) | Schema overview |
-
-**Team knowledge base** (standards, KB, agent memory):
-
-| Doc | Purpose |
-|-----|---------|
-| [team/knowledge-base/INDEX.md](team/knowledge-base/INDEX.md) | Research KB index — what's built, what's planned, loading guide |
-| [team/standards/INDEX.md](team/standards/INDEX.md) | Standards index — build rules + evaluation rules, derivation chain |
-| [team/lessons-learned.md](team/lessons-learned.md) | Post-issue retrospectives |
+| [docs/lessons-learned.md](docs/lessons-learned.md) | Post-issue retrospectives |
+| [docs/session-memory.md](docs/session-memory.md) | Cross-session continuity (auto-injected) |
 | [CLAUDE.md](CLAUDE.md) | Lead Analyst & Architect instructions — collaboration model, repo structure, skills |
+
+**Topic folders** under `docs/<topic>/` hold the principles, building rules, and review checklists for each discipline (visualization, data-engineering, business-analysis, public-finance, etc.). See [docs/README.md](docs/README.md) for the full map.
 
 ---
 
