@@ -21,7 +21,7 @@ import pandas as pd
 
 from dbr.semantic import metric_label, semantic_query_data
 from dbr.theme import (
-    BG_SURFACE, CARD_RADIUS, CARD_SHADOW, COLORWAY,
+    AZURE_1, BG_SURFACE, CARD_RADIUS, CARD_SHADOW, COLORWAY, SLATE_3,
     LINE_CHART_HEIGHT, LINE_CHART_LINE_WIDTH, LINE_CHART_MARKER_SIZE,
 )
 from dbr.visuals._encoding import (
@@ -29,6 +29,7 @@ from dbr.visuals._encoding import (
     _ANNOTATIONS_OPTION_SCHEMA, _ENDPOINT_LABELS_OPTION_SCHEMA,
     postprocess_time_columns,
     dimension_column_name, group_by_from_channels, parse_encoding,
+    _resolve_color,
 )
 from dbr.visuals._render import chart_with_optional_table, _TABLE_OPTION_SCHEMA
 
@@ -81,6 +82,17 @@ SCHEMA = {
                 "table": _TABLE_OPTION_SCHEMA,
                 "annotations": _ANNOTATIONS_OPTION_SCHEMA,
                 "label_endpoints": _ENDPOINT_LABELS_OPTION_SCHEMA,
+                "highlight": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["value"],
+                    "properties": {
+                        "value": {},
+                        "color": {"type": "string"},
+                        "other": {"type": "string"},
+                    },
+                    "description": "Grey-accent palette: named series gets accent colour; all other series rendered in slate-grey. value = series category to highlight; color = optional accent override (default azure_1); other = optional grey override (default slate_3).",
+                },
             },
         },
     },
@@ -131,11 +143,21 @@ def line(*, encoding: dict, filter: dict | None = None, options: dict | None = N
     if enc.color:
         color_col = dimension_column_name(enc.color)
         metric = metrics[0]
+        highlight = opts.get("highlight") or None
+        h_value  = highlight.get("value") if highlight else None
+        h_accent = _resolve_color(highlight.get("color"), default=AZURE_1) if highlight else None
+        h_grey   = _resolve_color(highlight.get("other"), default=SLATE_3) if highlight else None
         for series, sub in df.groupby(color_col):
+            line_kwargs = dict(width=LINE_CHART_LINE_WIDTH)
+            marker_kwargs = dict(size=LINE_CHART_MARKER_SIZE)
+            if h_value is not None:
+                col = h_accent if str(series) == str(h_value) else h_grey
+                line_kwargs["color"] = col
+                marker_kwargs["color"] = col
             fig.add_trace(go.Scatter(
                 x=sub[x_col], y=sub[metric], mode=mode, name=str(series),
-                line=dict(width=LINE_CHART_LINE_WIDTH),
-                marker=dict(size=LINE_CHART_MARKER_SIZE),
+                line=line_kwargs,
+                marker=marker_kwargs,
             ))
     elif dash_when:
         _add_dashed_traces(fig, df, x_col, metrics, dash_when, mode)
