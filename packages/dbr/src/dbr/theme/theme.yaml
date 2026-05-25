@@ -40,9 +40,14 @@ colors:
   muted:      "#95A5B0"
 
   # ── Semantic ───────────────────────────────────────────────────
-  positive: "#4A9B6F"
-  negative: "#C0503A"
-  warning:  "#D4874A"
+  # Polarity tokens — rubric dim 9: blue/orange polarity, not red/green.
+  # Red/green fails ~8% of male readers (deuteranopia / protanopia).
+  # positive = good-direction signal (blue azure_1);
+  # negative = deteriorating signal (orange).
+  # Applied uniformly across badges, deltas, threshold reference lines.
+  positive: "#4A7FB5"  # blue
+  negative: "#D4874A"  # orange
+  warning:  "#D4874A"  # orange — same as negative (threshold approach == breach in fiscal context)
 
 typography:
   font_family:            "Inter, 'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif"
