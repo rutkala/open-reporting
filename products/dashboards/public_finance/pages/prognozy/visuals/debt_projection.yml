@@ -13,3 +13,7 @@ options:
     value: true
   reference_lines:
     - { value: 60, label: "Próg Maastricht", color: negative }
+  annotations:
+    - { x: 2027, text: "Próg Maastricht", direction: above, color: subtext }
+  table:
+    row_limit: 20

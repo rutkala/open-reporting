@@ -14,3 +14,5 @@ options:
   label_endpoints: true
   highlight:
     value: "Ochrona socjalna"
+  annotations:
+    - { x: 2020, y: 8.8, text: "COVID — wsparcie gospodarki", direction: above, color: subtext }

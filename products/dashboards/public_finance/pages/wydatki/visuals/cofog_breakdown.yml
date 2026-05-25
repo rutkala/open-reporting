@@ -11,3 +11,5 @@ filter:
   date_key__cal_year: 2023
 options:
   sort: value-desc
+  table:
+    row_limit: 12

@@ -7,3 +7,7 @@ encoding:
   value: { metric: interest_expenditure }
 filter:
   geo: PL
+options:
+  delta:
+    vs: prior_year
+    format: icon-first

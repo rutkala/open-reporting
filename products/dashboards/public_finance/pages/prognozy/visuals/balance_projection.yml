@@ -15,3 +15,5 @@ options:
   reference_lines:
     - { value: -3, label: "Próg SGP",  color: negative }
     - { value:  0, label: "Równowaga", color: subtext }
+  table:
+    row_limit: 20
