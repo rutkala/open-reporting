@@ -4,7 +4,9 @@
 #   Row 2: interest-cost trend (the "rosnące koszty" story)
 
 rows:
-  - items:
+  - title: "Trend długu publicznego"
+    items:
       - { visual: debt_trend,     width: "100%" }
-  - items:
+  - title: "Koszty obsługi długu"
+    items:
       - { visual: interest_trend, width: "100%" }

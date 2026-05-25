@@ -75,8 +75,10 @@ def run_dashboard(path: str | Path) -> None:
     run_app(app, port=config["port"])
 
 
-# A section is (title, anchor, rows). A row is a list of (component, width-or-None).
-Section = tuple[str, str, list[list[tuple[object, str | None]]]]
+# A section is (title, anchor, rows). A row is (title-or-None, list of (component, width-or-None)).
+# Row title is optional H3 sub-heading; absent rows render without a heading.
+Row = tuple[str | None, list[tuple[object, str | None]]]
+Section = tuple[str, str, list[Row]]
 
 
 def _load_pages(pages_dir: Path) -> list[Section]:
@@ -93,25 +95,31 @@ def _load_pages(pages_dir: Path) -> list[Section]:
     return sections
 
 
-def _load_page_rows(visuals_dir: Path) -> list[list[tuple[object, str | None]]]:
-    """Parse ``visuals.yml`` into a list of rows, each a list of (component, width)."""
+def _load_page_rows(visuals_dir: Path) -> list[Row]:
+    """Parse ``visuals.yml`` into a list of rows.
+
+    Each row is ``(title-or-None, [(component, width-or-None), ...])``.
+    The optional row title renders as an H3 sub-heading above the row
+    items in ``page_shell``.
+    """
     if not visuals_dir.exists():
         return []
     meta = _load_yaml(visuals_dir / "visuals.yml")
 
     # Normalize the two YAML shapes into a single internal form:
-    #   rows_spec = [{"items": [<string-or-dict>, ...]}, ...]
+    #   rows_spec = [{"title"?: str, "items": [<string-or-dict>, ...]}, ...]
     if "rows" in meta:
         rows_spec = meta.get("rows") or []
     elif "order" in meta:
-        # Short form: each entry becomes its own row of width 100%
+        # Short form: each entry becomes its own row of width 100% (no titles)
         rows_spec = [{"items": [name]} for name in (meta.get("order") or [])]
     else:
         return []
 
-    rows: list[list[tuple[object, str | None]]] = []
+    rows: list[Row] = []
     for row_spec in rows_spec:
-        row: list[tuple[object, str | None]] = []
+        row_title = row_spec.get("title") if isinstance(row_spec, dict) else None
+        row_items: list[tuple[object, str | None]] = []
         for item in row_spec.get("items", []) or []:
             if isinstance(item, str):
                 visual_name, width = item, None
@@ -119,8 +127,8 @@ def _load_page_rows(visuals_dir: Path) -> list[list[tuple[object, str | None]]]:
                 visual_name = item["visual"]
                 width = item.get("width")
             spec = _load_yaml(visuals_dir / f"{visual_name}.yml")
-            row.append((_build_visual(spec), width))
-        rows.append(row)
+            row_items.append((_build_visual(spec), width))
+        rows.append((row_title, row_items))
     return rows
 
 

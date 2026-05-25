@@ -30,6 +30,10 @@
       "required": ["items"],
       "additionalProperties": false,
       "properties": {
+        "title": {
+          "type": "string",
+          "description": "Optional H3-level heading rendered above the row. Use to label section sub-groups (e.g. 'Trend długu' separately from 'Koszty obsługi długu' on the same page)."
+        },
         "items": {
           "type": "array",
           "items": { "$ref": "#/$defs/item" }

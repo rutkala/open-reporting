@@ -57,6 +57,14 @@ _SECTION_HEADING_STYLE = {
     "marginBottom": SECTION_BOTTOM_GAP,
 }
 
+_ROW_HEADING_STYLE = {
+    "fontSize":     "16px",
+    "fontWeight":   600,
+    "color":        TEXT,
+    "marginTop":    "16px",
+    "marginBottom": "8px",
+}
+
 _ROW_STYLE = {
     "display":      "flex",
     "gap":          ROW_GAP,
@@ -72,11 +80,12 @@ def _wrap_item(component, width: str | None) -> html.Div:
     return html.Div(component, style=style)
 
 
-def page_shell(sections: list[tuple[str, str, list[list[tuple[object, str | None]]]]]) -> html.Div:
+def page_shell(sections: list[tuple[str, str, list[tuple[str | None, list[tuple[object, str | None]]]]]]) -> html.Div:
     """Return the full page tree (sidebar + main canvas) for ``app.layout``.
 
     ``sections`` is a list of ``(title, anchor_id, rows)`` where each
-    row is a list of ``(component, width-or-None)`` tuples.
+    row is a 2-tuple of ``(row_title_or_None, [(component, width-or-None), ...])``.
+    When ``row_title`` is set, an H3 sub-heading renders above the row.
 
     Chrome behaviour (sidebar on/off, sidebar position) comes from
     ``layout.yaml``.
@@ -86,8 +95,10 @@ def page_shell(sections: list[tuple[str, str, list[list[tuple[object, str | None
     main_children: list = []
     for label, anchor, rows in sections:
         main_children.append(html.H2(label, id=anchor, style=_SECTION_HEADING_STYLE))
-        for row in rows:
-            flex_items = [_wrap_item(component, width) for component, width in row]
+        for row_title, row_items in rows:
+            if row_title:
+                main_children.append(html.H3(row_title, style=_ROW_HEADING_STYLE))
+            flex_items = [_wrap_item(component, width) for component, width in row_items]
             main_children.append(html.Div(flex_items, style=_ROW_STYLE))
 
     main = html.Main(style=_MAIN_STYLE, children=main_children)
