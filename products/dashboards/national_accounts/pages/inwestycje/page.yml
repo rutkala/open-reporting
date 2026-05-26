@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/page.schema.json
+# Page 3 — investment and external balance: GFCF % GDP + current account % GDP.
+# Story it tells: Poland's investment rate and its shift from deficit to surplus on external balance.
+
+title:  "Inwestycje i bilans"
+anchor: inwestycje

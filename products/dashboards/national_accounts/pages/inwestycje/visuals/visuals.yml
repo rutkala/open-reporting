@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 3 layout — investment and external balance:
+#   Row 1: GFCF % GDP line (full width)
+#   Row 2: current account % GDP line (full width)
+
+rows:
+  - title: "Inwestycje (GFCF) jako % PKB"
+    items:
+      - { visual: line_gfcf, width: "100%" }
+  - title: "Rachunek bieżący bilansu płatniczego (% PKB)"
+    items:
+      - { visual: line_rachunek_biezacy, width: "100%" }

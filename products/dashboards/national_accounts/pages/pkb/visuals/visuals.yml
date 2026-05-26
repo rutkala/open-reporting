@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 2 layout — PKB detail:
+#   Row 1: real GDP growth bar chart (full width) — primary story
+#   Row 2: nominal GDP line (50%) + industrial output bar (50%) — supporting context
+
+rows:
+  - title: "Realny wzrost PKB — Polska 2004–2024"
+    items:
+      - { visual: bar_wzrost_pkb, width: "100%" }
+  - title: "Poziom PKB i produkcja przemysłowa"
+    items:
+      - { visual: line_pkb_nominal,  width: "50%" }
+      - { visual: trend_produkcja,   width: "50%" }

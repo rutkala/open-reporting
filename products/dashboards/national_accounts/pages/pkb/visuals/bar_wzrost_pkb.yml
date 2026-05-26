@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Realny wzrost PKB — pełna historia roczna, Polska.
+# Bar: discrete annual growth rates; negative values (COVID 2020) drop below zero baseline.
+
+type: bar
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: gdp_real_growth }
+filter:
+  geo: PL

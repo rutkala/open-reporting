@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Inwestycje (GFCF) % PKB — najnowsza wartość roczna.
+# ascending_is_good=true: wyższy udział inwestycji jest korzystny dla wzrostu.
+
+type: card
+encoding:
+  value: { metric: gfcf_pct_gdp }
+filter:
+  geo: PL
+options:
+  delta:
+    vs: prior_year
+    format: icon-first

@@ -1,0 +1,18 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 1 layout — scoreboard:
+#   Row 1: 3 KPI cards (wzrost PKB, GFCF, rachunek bieżący)
+#   Row 2: bar chart — annual real GDP growth (full width)
+#   Row 3: line chart — nominal GDP level in EUR bn (full width)
+
+rows:
+  - title: "Trzy kluczowe wskaźniki makroekonomiczne"
+    items:
+      - { visual: kpi_wzrost_pkb,        width: "33%" }
+      - { visual: kpi_gfcf,              width: "33%" }
+      - { visual: kpi_rachunek_biezacy,  width: "33%" }
+  - title: "Realny wzrost PKB — historia roczna"
+    items:
+      - { visual: trend_wzrost_pkb, width: "100%" }
+  - title: "PKB nominalny w mld EUR"
+    items:
+      - { visual: trend_pkb_nominal, width: "100%" }

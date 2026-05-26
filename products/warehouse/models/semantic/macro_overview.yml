@@ -1,0 +1,129 @@
+version: 2
+
+# MetricFlow semantic model for the National Accounts & Macroeconomics dashboard.
+#
+# Single source: curated.fact_macro_overview (wide, one column per measure).
+# Five metrics expose annual macroeconomic indicators to the visual layer.
+#
+# Aggregation note: `agg: average` used throughout. The pivot produces at most
+# one non-null value per (geo, period_year) for annual series and an averaged
+# value for the current account (quarterly-to-annual). Average is correct for
+# MetricFlow conventions and behaves safely when geo or time groupings broaden.
+
+semantic_models:
+  - name: macro_overview
+    description: Annual macroeconomic KPIs — Poland (Eurostat national accounts + BOP).
+    model: ref('fact_macro_overview')
+
+    defaults:
+      agg_time_dimension: period
+
+    primary_entity: macro_overview_row
+
+    entities:
+      - name: geo
+        type: foreign
+        expr: geo
+      - name: date_key
+        type: foreign
+        expr: period_date
+
+    dimensions:
+      - name: period
+        type: time
+        expr: period_date
+        type_params:
+          time_granularity: year
+
+    measures:
+      - name: gdp_real_growth_pct
+        description: Real GDP growth rate (tec00115, chain-linked, % YoY).
+        agg: average
+        expr: gdp_real_growth_pct
+      - name: gdp_nominal_beur
+        description: Nominal GDP in EUR billions (nama_10_gdp, current prices).
+        agg: average
+        expr: gdp_nominal_beur
+      - name: gfcf_pct_gdp
+        description: GFCF as % of GDP (tec00011).
+        agg: average
+        expr: gfcf_pct_gdp
+      - name: industrial_output_pct
+        description: Industrial output growth (sts_inpr_a, NACE B-D, % YoY).
+        agg: average
+        expr: industrial_output_pct
+      - name: current_account_pct_gdp
+        description: Current account % of GDP, annual avg of quarterly BOP (bop_gdp6_q).
+        agg: average
+        expr: current_account_pct_gdp
+
+metrics:
+  - name: gdp_real_growth
+    label: "Wzrost PKB (realny)"
+    type: simple
+    type_params:
+      measure: gdp_real_growth_pct
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: "%"
+          scale: 1
+        source_label: "Eurostat (tec00115), ceny stałe, r/r"
+        ascending_is_good: true
+
+  - name: gdp_nominal
+    label: "PKB nominalny"
+    type: simple
+    type_params:
+      measure: gdp_nominal_beur
+    config:
+      meta:
+        format:
+          decimals: 0
+          suffix: " mld EUR"
+          scale: 1
+        source_label: "Eurostat (nama_10_gdp), ceny bieżące"
+        ascending_is_good: true
+
+  - name: gfcf_pct_gdp
+    label: "Inwestycje (GFCF) % PKB"
+    type: simple
+    type_params:
+      measure: gfcf_pct_gdp
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: "% PKB"
+          scale: 1
+        source_label: "Eurostat (tec00011)"
+        ascending_is_good: true
+
+  - name: industrial_output_growth
+    label: "Produkcja przemysłowa"
+    type: simple
+    type_params:
+      measure: industrial_output_pct
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: "% r/r"
+          scale: 1
+        source_label: "Eurostat (sts_inpr_a), NACE Rev2 B–D"
+        ascending_is_good: true
+
+  - name: current_account_balance
+    label: "Rachunek bieżący % PKB"
+    type: simple
+    type_params:
+      measure: current_account_pct_gdp
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: "% PKB"
+          scale: 1
+        source_label: "Eurostat (bop_gdp6_q), BPM6, kwartalne"
+        ascending_is_good: true

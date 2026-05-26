@@ -1,0 +1,27 @@
+version: 2
+models:
+  - name: fact_macro_overview
+    description: >
+      Annual macroeconomic indicators for Poland. Wide pivot — one column per
+      indicator, one row per (geo, period_year). Quarterly BOP data averaged
+      to annual grain.
+    columns:
+      - name: geo
+        description: ISO alpha-2 country code (PL for Poland).
+        tests: [not_null]
+      - name: period_year
+        description: Calendar year (integer).
+        tests: [not_null]
+      - name: period_date
+        description: December 31 of period_year — MetricFlow time spine join key.
+        tests: [not_null]
+      - name: gdp_real_growth_pct
+        description: Real GDP growth rate (% year-on-year, chain-linked, tec00115).
+      - name: gdp_nominal_beur
+        description: Nominal GDP in EUR billions (current prices, nama_10_gdp).
+      - name: gfcf_pct_gdp
+        description: Gross fixed capital formation as % of GDP (tec00011).
+      - name: industrial_output_pct
+        description: Industrial output growth index (% vs prior year, sts_inpr_a).
+      - name: current_account_pct_gdp
+        description: Current account balance as % of GDP (annual avg of quarterly bop_gdp6_q data).

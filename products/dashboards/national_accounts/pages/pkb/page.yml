@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/page.schema.json
+# Page 2 — GDP deep-dive: real growth history, nominal level trajectory, industrial output.
+# Story it tells: Poland's long-run growth record and current momentum.
+
+title:  "PKB"
+anchor: pkb

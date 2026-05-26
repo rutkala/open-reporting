@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/pages.schema.json
+# Narrative arc:
+#   1. Scorecard snapshot (Przegląd)
+#   2. GDP growth and level (PKB)
+#   3. Investment and external balance (Inwestycje)
+order:
+  - przeglad
+  - pkb
+  - inwestycje

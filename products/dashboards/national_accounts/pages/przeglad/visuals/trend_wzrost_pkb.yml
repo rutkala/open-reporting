@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Wzrost PKB realny — historia 2004–2024, Polska.
+# Bar chosen over line: discrete annual growth rates (flow concept, not a continuous level).
+# Negative bars (2020 COVID shock) render below zero baseline naturally.
+
+type: bar
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: gdp_real_growth }
+filter:
+  geo: PL

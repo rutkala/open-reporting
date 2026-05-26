@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/page.schema.json
+# Page 1 — scoreboard summary of current Polish macroeconomic state.
+# Story it tells: GDP growth + investment + external balance headline KPIs + long-run trends.
+
+title:  "Przegląd"
+anchor: przeglad

@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Rachunek bieżący % PKB — najnowsza wartość.
+# ascending_is_good=true: nadwyżka (wartość dodatnia) jest korzystna.
+
+type: card
+encoding:
+  value: { metric: current_account_balance }
+filter:
+  geo: PL
+options:
+  delta:
+    vs: prior_year
+    format: icon-first

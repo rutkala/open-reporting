@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Rachunek bieżący % PKB — historia, Polska.
+# Line: shows positive/negative fluctuations around zero — deficit vs surplus over time.
+# Zero baseline is meaningful: values above = external surplus, below = deficit.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: current_account_balance }
+filter:
+  geo: PL

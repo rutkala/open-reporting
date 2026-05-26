@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/dashboard.schema.json
+# National Accounts & Macroeconomics dashboard for Polish citizens.
+# Audience: non-economist Polish news readers.
+# Story: GDP growth history, investment levels, external balance.
+
+domain: national_accounts
+port:   8059
+title:  "Gospodarka: rachunki narodowe"

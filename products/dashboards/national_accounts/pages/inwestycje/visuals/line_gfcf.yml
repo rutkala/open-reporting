@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Inwestycje (GFCF) jako % PKB — historia, Polska.
+# Line: ratio/level concept over time — continuous trajectory is the analytical signal.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: gfcf_pct_gdp }
+filter:
+  geo: PL

@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Wzrost PKB realny — najnowsza wartość roczna z deltą r/r.
+# ascending_is_good=true: wzrost jest dobry (ikona pozytywna przy dodatniej delcie).
+
+type: card
+encoding:
+  value: { metric: gdp_real_growth }
+filter:
+  geo: PL
+options:
+  delta:
+    vs: prior_year
+    format: icon-first
