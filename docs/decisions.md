@@ -182,4 +182,26 @@ Format per entry:
 
 ---
 
+## 2026-05-26 19:30 UTC — #10 — OR-56 Labour Market dashboard shipped (autonomous + PO-assisted)
+
+**Decision:** Closed OR-56 Labour Market dashboard. Live at https://portal.open-reporting.dev/labour_market/. Mixed-mode build: autonomous agent shipped 3 commits (15:06–17:15 UTC) building the structure; conversational PO session (19:20–19:30 UTC) caught 2 real defects and fixed them.
+
+**Autonomous agent's 3 commits (`92733d8e`, `f79b904f`, `ee5022bd`):** dbt mart models (`fact_labour_overview`, `fact_labour_wages`), semantic models (`labour_overview.yml`, `labour_wages.yml`), 4-page dashboard YAML (przeglad, bezrobocie, wynagrodzenia, ue). Followed the public_finance pattern faithfully.
+
+**Defects caught + fixed in this session:**
+1. **YAML parse error** in `pages/bezrobocie/page.yml`: `title:  Bezrobocie: Polska na tle UE` — unquoted colon. `dbr validate` rightly caught it; the autonomous run correctly did NOT deploy. Fixed: wrapped in quotes. The autonomous run should validate-then-fix-then-retry rather than abandoning.
+2. **No data on dashboard**: dbt models referenced `lab.unemployment_rate`, `lab.employment_rate`, `lab.activity_rate`, `lab.youth_unemployment_rate` detail_ids, but the seed `eurostat_series.csv` had wrong dimension_keys (missing `age=`, `citizen=TOTAL`, `&unit=PC`). Updated 4 seed entries to match actual raw dimension_keys; `dbt seed + dbt run`; `fact_labour_overview` now has 28 rows of real PL data 1995–2025. Dashboard now renders: Stopa bezrobocia 3,1%, Wskaźnik zatrudnienia 78,8%, Aktywność zawodowa 64,3% with YoY deltas, full trend charts.
+
+**Lessons for autonomous runs (next run will read this):**
+- **End-to-end verify, not just deploy-OK.** After `dbr run` returns 200, do a Playwright screenshot + visually check >0 charts render data. "200 OK" from health check isn't enough.
+- **dbt seed + dbt run after adding new mart models.** If models reference new detail_ids, the seed needs entries AND those entries must match actual raw dimension_keys (check `raw.eurostat_observations` to find the exact dim key shape before authoring seed rows).
+- **Validate-then-fix, not validate-then-abandon.** When `dbr validate` fails, the run should attempt a fix (e.g., quoting a YAML title) rather than committing broken state. Add this to the prompt's safety rules.
+
+**Status:** Shipped — Linear OR-56 Done.
+
+**Followup not blocking:**
+- Update autonomous routine prompt: add "after dbr run, Playwright-verify charts render data" + "if dbr validate fails, attempt one fix iteration before abandoning" — will do in a follow-up cycle.
+
+---
+
 <!-- Append new decisions below -->
