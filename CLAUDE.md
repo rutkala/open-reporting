@@ -118,35 +118,26 @@ Shared session memory at `docs/session-memory.md` provides continuity across ses
 
 ## Custom Subagents
 
-**Builder agents** (do the work):
+6 agents under `.claude/agents/`. All evaluators — independent, parallelisable, judgment-heavy work. Builder work happens directly in the main session (no per-domain builder agents).
 
-| Agent | Scope | Mode | Description |
-|-------|-------|------|-------------|
-| `debug` | All directories | Read-only (plan) | Debugging, tracing, diagnostics |
-| `data-engineer` | `platform/` | Full dev | Ingestion scripts, dbt models, schema DDL, warehouse queries, semantic layer (MetricFlow) |
-| `dashboard-dev` | `products/dashboards/`, `dbr` package | Full dev | Dash apps, Plotly components, KPI cards, layout — reads ux-perception + visualization KBs |
-| `business-analyst` | Domain research | Read + Web | KPI design, indicator selection, analytical briefs |
+| Agent | Phase | Model | What it checks |
+|-------|-------|-------|---------------|
+| `code-reviewer` | PR | Sonnet | P1/P2/P3 code quality, security, conventions per `docs/process/code-review.md` |
+| `architecture-critic` | Plan + Feasibility | Opus | Layer violations, schema design, coupling per `docs/data-architecture/reviewing.md` |
+| `analytical-validator` | Plan + PR | Opus | Statistical correctness, aggregation, causal claims per `docs/analytical-methods/reviewing.md` |
+| `visual-screenshot-reviewer` | PR | Sonnet | Multimodal: screenshots + per-dimension scoring against `docs/visualization/quality.md` grounded in `docs/visualization/references/` |
+| `domain-specialist` | Plan + PR | Opus | Domain KPI correctness, framing, benchmarks per the relevant `docs/<domain>/principles.md` |
+| `debug` | Any | Sonnet | Read-only diagnostic and root-cause tracing |
 
-**Evaluator agents** (review output independently — invoked by skills, not directly):
-
-| Agent | Phase | What it checks |
-|-------|-------|---------------|
-| `architecture-critic` | Plan + Feasibility | Layer violations, schema design, coupling |
-| `analytical-validator` | Plan + Feasibility + PR | Statistical correctness, aggregation, causal claims |
-| `brief-reviewer` | Plan (after business-analyst) | Analytical brief — SMART+FABRIC, aggregation rules, stock/flow, benchmarks, Polish structural breaks |
-| `code-reviewer` | PR | P1/P2/P3 code quality, security, conventions |
-| `data-engineer-reviewer` | PR (platform/ only) | ELT compliance, DuckDB patterns, dbt conventions, idempotency |
-| `measures-reviewer` | PR (semantic layer only) | Measure definitions, agg correctness, format_type, Polish labels |
-| `visual-screenshot-reviewer` | PR | Rendered screenshots — perception science, cognitive load, WCAG, colour blindness |
-| `domain-specialist` | Plan + PR | Domain KPI correctness, framing, benchmarks |
-| `cost-estimator` | Feasibility | Token budget forecast, split recommendation |
+Model tiering follows `docs/process/model-delegation.md`. Per-call override via the Agent tool's `model:` parameter.
 
 **When to delegate:**
 - Bug investigation → `debug` (read-only, safe)
-- Dashboard/visual work → `dashboard-dev`
-- Platform/ETL/schema/semantic-layer work → `data-engineer`
-- Domain KPI research → `business-analyst`
-- All evaluators are spawned automatically by `/composite_plan`, `/composite_review`, `/composite_feasibility` — do not invoke directly
+- PR code review → `code-reviewer`
+- Plan or PR statistical claims → `analytical-validator`
+- Architecture / schema decisions → `architecture-critic`
+- Domain KPI / framing questions → `domain-specialist`
+- Rendered dashboard visual review → `visual-screenshot-reviewer`
 
 ## Collaboration Model
 
