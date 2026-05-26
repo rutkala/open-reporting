@@ -19,6 +19,7 @@ from dbr.visuals._encoding import (
     postprocess_time_columns,
     dimension_column_name, parse_encoding,
 )
+from dbr.visuals._render import _label_for_column
 
 SCHEMA = {
     "type": "object",
@@ -41,6 +42,11 @@ SCHEMA = {
             "additionalProperties": False,
             "properties": {
                 "row_limit": {"type": "integer", "minimum": 1, "maximum": 1000},
+                "labels": {
+                    "type": "object",
+                    "additionalProperties": {"type": "string"},
+                    "description": "Map raw column names to Polish display labels. Same shape as the table-companion `labels` option on chart visuals.",
+                },
             },
         },
     },
@@ -66,6 +72,7 @@ def table(*, encoding: dict, filter: dict | None = None, options: dict | None = 
     enc = parse_encoding(encoding)
     opts = options or {}
     limit = opts.get("row_limit", TABLE_ROW_LIMIT)
+    labels = opts.get("labels") or {}
 
     if not enc.rows or not all(c.dimension for c in enc.rows):
         raise ValueError("table: encoding.rows must be a list of dimensions")
@@ -92,7 +99,9 @@ def table(*, encoding: dict, filter: dict | None = None, options: dict | None = 
         children=html.Table(
             style={"width": "100%", "borderCollapse": "collapse"},
             children=[
-                html.Thead(html.Tr([html.Th(h, style=_TH) for h in header])),
+                html.Thead(html.Tr([
+                    html.Th(_label_for_column(h, labels), style=_TH) for h in header
+                ])),
                 html.Tbody([
                     html.Tr([html.Td(_fmt(row[h]), style=_TD) for h in header])
                     for _, row in df.iterrows()

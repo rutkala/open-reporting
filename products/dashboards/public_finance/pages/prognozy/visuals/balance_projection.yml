@@ -19,3 +19,7 @@ options:
     - { x: 2020, y: -6.935, text: "COVID-19", direction: above, color: subtext }
   table:
     row_limit: 20
+    labels:
+      date_key__cal_year: "Rok"
+      fiscal_balance_weo: "Saldo (% PKB)"
+      imf__is_projection: "Prognoza"
