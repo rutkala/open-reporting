@@ -13,7 +13,7 @@ Multimodal rubric-based reviewer for dashboard outputs. Captures rendered screen
 
 ## When invoked
 
-Spawned by `/composite_review` or directly when a dashboard PR needs a visual gap check. Typically against `products/dashboards/<name>/` after a `dbr serve` or `dbr run`.
+Spawned by `/review` or directly when a dashboard PR needs a visual gap check. Typically against `products/dashboards/<name>/` after a `dbr serve` or `dbr run`.
 
 ## Inputs
 

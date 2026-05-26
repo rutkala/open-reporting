@@ -21,7 +21,7 @@ To change an agent's tier, edit the `model:` line in `.claude/agents/<agent-name
 
 ## Mechanism B — Skill-level delegation pattern
 
-Composite skills (`composite_plan`, `composite_review`, `composite_develop`, etc.) should explicitly name the model when spawning execution subagents. The pattern:
+Lifecycle skills (`plan`, `review`, `develop`, etc.) should explicitly name the model when spawning execution subagents. The pattern:
 
 ```
 Spawn the data-engineer subagent (model: sonnet) to implement the ingestion script.

@@ -1,5 +1,5 @@
 ---
-name: composite_experience
+name: experience
 description: >
   Composite builder skill — adds a framed entry to the `experience/` bucket of a
   target complex skill. Triggered by a real surprising, unique, or value-conflicted
@@ -12,7 +12,7 @@ user-invocable: true
 argument-hint: "<target skill path> <triggering event>"
 ---
 
-# `composite_experience` — add a framed entry to a complex skill's experience bucket
+# `experience` — add a framed entry to a complex skill's experience bucket
 
 A composite skill that turns a real episode into a structured, retrievable
 entry under `<target>/experience/<YYYY-MM-DD>-<slug>.md`. It does no
@@ -150,7 +150,7 @@ Every entry passes all eight, or is rejected / revised / deferred.
 - **Skill-local scope** — entries belong to one target skill's
   `experience/`. Cross-skill patterns are promoted up to
   `docs/`, at which point they become *knowledge* (input to
-  future `composite_knowledge` runs).
+  future `/knowledge` runs).
 
 ## Output checklist
 

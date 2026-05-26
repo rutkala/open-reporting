@@ -1,5 +1,5 @@
 ---
-name: composite_review
+name: review
 description: "Review completed implementation for quality, security, and correctness. Runs parallel evaluator agents (code, visualization, analytical, domain). Auto-commits/pushes/opens PR when all pass. Loops autonomously to fix when blocked."
 user-invocable: true
 argument-hint: "[scope or directory]"
@@ -23,18 +23,18 @@ Review scope: `$ARGUMENTS` (if provided, focus here only — otherwise review al
 
 ## Part 0 — Independent agent passes
 
-Spawn all agents **in parallel** using Agent tool calls in the same message. Agents A–C always run. D and E are conditional.
+Spawn all agents **in parallel** using Agent tool calls in the same message. Agents A–C always run. D is conditional.
 
 **Agent A — `code-reviewer`**
 - Runs `git diff origin/main...HEAD` independently
 - Reads `docs/process/code-review.md`, applies rules to the diff
 - Returns P1 / P2 / P3 findings with BLOCK / CONDITIONAL / PASS verdict
 
-**Agent B — `visualization-reviewer`**
-- Runs `git diff origin/main...HEAD` independently
-- Reads `docs/visualization-diff.md`, checks chart/KPI calls in domain dashboards
+**Agent B — `visual-screenshot-reviewer`** *(dashboard diff only — diff-level check)*
+- Runs `git diff origin/main...HEAD` independently for chart/KPI convention issues in dashboard YAML
 - Returns HIGH / MEDIUM / LOW findings with BLOCK / CONDITIONAL / PASS verdict
-- Scoped to `products/dashboards/` (excl. template) and `products/visuals/components/`
+- Scoped to `products/dashboards/` (excl. template)
+- Skip if diff contains no dashboard changes
 
 **Agent C — `analytical-validator`**
 - Runs `git diff origin/main...HEAD` independently (diff-phase mode — leave $PLAN empty)
@@ -48,22 +48,10 @@ Spawn all agents **in parallel** using Agent tool calls in the same message. Age
 - Pass diff as `$INPUT`
 - Only spawn if diff touches `products/dashboards/{domain}/` (not template, not explorer)
 
-**Agent E — `data-engineer-reviewer`** *(platform/ changes only)*
-- Runs `git diff origin/main...HEAD` independently
-- Reads `docs/data-engineering/reviewing.md`, checks ELT compliance, DuckDB patterns, dbt conventions, idempotency
-- Returns P1 / P2 / P3 findings with BLOCK / CONDITIONAL / PASS verdict
-- Only spawn if diff touches `products/ingestion/`, `products/warehouse/`, or `products/warehouse/`
-
-**Agent F — `measures-reviewer`** *(semantic layer changes only)*
-- Runs `git diff origin/main...HEAD` independently
-- Reads `docs/data-engineering/measures-review.md`, checks measure definitions, aggregation correctness (stock vs flow, rate summation), `format_type`, unit/scale, Polish labels
-- Returns P1 / P2 / P3 findings with BLOCK / CONDITIONAL / PASS verdict
-- Only spawn if diff touches `products/semantic/`, `products/warehouse/**/semantic_models/*.yml`, or `products/warehouse/**/metrics/*.yml`
-
 Wait for all agents to complete, then map findings to review output:
-- code-reviewer P1 / data-engineer-reviewer P1 / measures-reviewer P1 / visualization-reviewer HIGH / analytical-validator MISLEADING → **CRITICAL**
-- code-reviewer P2 / data-engineer-reviewer P2 / measures-reviewer P2 / visualization-reviewer MEDIUM / analytical-validator QUESTIONABLE → **WARNING**
-- code-reviewer P3 / data-engineer-reviewer P3 / measures-reviewer P3 / visualization-reviewer LOW / analytical-validator NOTED → **SUGGESTION**
+- code-reviewer P1 / visual-screenshot-reviewer HIGH / analytical-validator MISLEADING → **CRITICAL**
+- code-reviewer P2 / visual-screenshot-reviewer MEDIUM / analytical-validator QUESTIONABLE → **WARNING**
+- code-reviewer P3 / visual-screenshot-reviewer LOW / analytical-validator NOTED → **SUGGESTION**
 
 If any agent returns BLOCK → do NOT proceed to Part 0.5. Go to the **Autonomous Fix Loop** below.
 
@@ -116,7 +104,7 @@ If any Part 1 check fails: go to the Autonomous Fix Loop.
 When a BLOCK or Part 1 failure is found:
 
 1. Fix the issue directly — read the failing file, apply the fix, verify
-2. Re-run `/composite_review` (all agents again)
+2. Re-run `/review` (all agents again)
 3. Repeat up to 3 iterations for BLOCK findings, 2 for CONDITIONAL
 4. If still failing after max iterations: escalate to user with a clear description of what was tried and what is still blocking
 
@@ -152,6 +140,6 @@ The user's only required action is **PR merge approval**. Everything up to that 
 
 ---
 
-## If invoked standalone (not from /composite_kickoff)
+## If invoked standalone (not from /kickoff)
 
-Present the Part 2 summary and wait for the user to say "commit" before committing. The autonomous auto-commit only applies when `/composite_review` is called from within `/composite_kickoff` pipeline context.
+Present the Part 2 summary and wait for the user to say "commit" before committing. The autonomous auto-commit only applies when `/review` is called from within `/kickoff` pipeline context.

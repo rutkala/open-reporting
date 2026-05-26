@@ -1,5 +1,5 @@
 ---
-name: composite_plan
+name: plan
 description: "Create an implementation plan before writing code. Analyses the request, identifies affected files, designs the approach, and presents it for user approval in plain business language. Use before starting any non-trivial task."
 user-invocable: true
 argument-hint: "<what to implement>"
@@ -96,7 +96,7 @@ The user should only see structurally, analytically, and domain-correct plans.
 - If the user suggests changes, update the plan and present again
 - Only confirm once approved — execution is the caller's responsibility
 
-**Terminal state:** When the user approves, return control to the caller. `/composite_plan` does not implement — it plans. The caller (`/composite_kickoff`, `/composite_develop`, or inline work) decides what happens next.
+**Terminal state:** When the user approves, return control to the caller. `/plan` does not implement — it plans. The caller (`/kickoff`, `/develop`, or inline work) decides what happens next.
 
 ## Rules
 - **Business language first** — the user is the product owner, not a developer

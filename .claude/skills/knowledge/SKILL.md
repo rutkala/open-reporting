@@ -1,5 +1,5 @@
 ---
-name: composite_knowledge
+name: knowledge
 description: >
   Composite builder skill — produces a structured knowledge document for a target topic.
   Primary use: fills the `knowledge/` bucket of a complex skill (reads `_seed.md`).
@@ -11,7 +11,7 @@ user-invocable: true
 argument-hint: "<target path> [topic scope]"
 ---
 
-# `composite_knowledge` — build a structured knowledge document
+# `knowledge` — build a structured knowledge document
 
 A composite skill that runs a multi-phase workflow (scope → tier
 sources → collect → analyse coverage → synthesise → save) to produce
@@ -37,7 +37,7 @@ makes the folder actually hold *knowledge*.
 When the target is a complex skill, this composite fills the **explicit**
 layer of the three-layer model. Tacit content (rules of thumb, war
 stories, gut calls) is not knowledge in the ESCO sense and routes to
-`<complex_skill>/experience/` via `/composite_experience`. Applied
+`<complex_skill>/experience/` via `/experience`. Applied
 output (visuals, settings, fixtures) lives in `<complex_skill>/assets/`.
 For non-complex-skill targets, only the knowledge layer is produced;
 the experience and assets layers do not apply.
@@ -177,7 +177,7 @@ Before reporting completion:
 - [ ] §1 (Overview) names the **field** in plain language and the **EQF depth target**.
 - [ ] `<target>/raw/` contains the surviving sources, each with a license note.
 - [ ] `<target>/summary.md` has all 7 sections; every claim cites a `raw/` file.
-- [ ] §7 (Gaps) is honest and non-empty; tacit content that resisted codification is flagged for `/composite_experience` (complex-skill targets) or recorded as an open question (other targets) rather than smoothed over.
+- [ ] §7 (Gaps) is honest and non-empty; tacit content that resisted codification is flagged for `/experience` (complex-skill targets) or recorded as an open question (other targets) rather than smoothed over.
 - [ ] For complex-skill targets only: 3–6 load-bearing rules have been distilled up into `<complex_skill>/SKILL.md`.
 - [ ] Every `raw/` file passes the 7-rule rubric (or carries a recorded waiver).
 

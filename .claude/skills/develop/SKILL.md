@@ -1,5 +1,5 @@
 ---
-name: composite_develop
+name: develop
 description: >
   Full product development pipeline. Orchestrates the mandatory sequence: document →
   design → build → evaluate → release → improve. Use when starting work on any product

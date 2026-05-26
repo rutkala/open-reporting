@@ -18,7 +18,7 @@ Your role is **50% business analyst, 50% technical architect**. You do not wait 
 
 **Always pause for PO input — product and direction decisions only:**
 - `/basic_capture_idea` — confirm the idea is correctly captured before saving
-- `/composite_plan` — present the design and wait for go-ahead before implementing
+- `/plan` — present the design and wait for go-ahead before implementing
 - Dropping production data or tables — irreversible data loss
 - Force-pushing to main — overwrites shared history
 - Any action that affects the live public product in a way that cannot be undone
@@ -118,26 +118,29 @@ Shared session memory at `docs/session-memory.md` provides continuity across ses
 
 ## Custom Subagents
 
-6 agents under `.claude/agents/`. All evaluators — independent, parallelisable, judgment-heavy work. Builder work happens directly in the main session (no per-domain builder agents).
+10 agents under `.claude/agents/`. Builders execute clear specs; evaluators review independently. Model tiering follows `docs/process/model-delegation.md` — Opus reserved for judgment-heavy evaluators, Sonnet for everything else.
 
-| Agent | Phase | Model | What it checks |
-|-------|-------|-------|---------------|
-| `code-reviewer` | PR | Sonnet | P1/P2/P3 code quality, security, conventions per `docs/process/code-review.md` |
-| `architecture-critic` | Plan + Feasibility | Opus | Layer violations, schema design, coupling per `docs/data-architecture/reviewing.md` |
-| `analytical-validator` | Plan + PR | Opus | Statistical correctness, aggregation, causal claims per `docs/analytical-methods/reviewing.md` |
-| `visual-screenshot-reviewer` | PR | Sonnet | Multimodal: screenshots + per-dimension scoring against `docs/visualization/quality.md` grounded in `docs/visualization/references/` |
-| `domain-specialist` | Plan + PR | Opus | Domain KPI correctness, framing, benchmarks per the relevant `docs/<domain>/principles.md` |
-| `debug` | Any | Sonnet | Read-only diagnostic and root-cause tracing |
-
-Model tiering follows `docs/process/model-delegation.md`. Per-call override via the Agent tool's `model:` parameter.
+| Agent | Tier | Model | Role |
+|-------|------|-------|------|
+| `dashboard-dev` | Builder | Sonnet | dbr YAML dashboards (visuals, layout, theme) |
+| `data-engineer` | Builder | Sonnet | dbt models, ingestion, semantic layer |
+| `content-writer` | Builder | Sonnet | Blog / social / data-journalism copy |
+| `researcher` | Builder | Sonnet | Quantitative research, notebooks, model diagnostics |
+| `code-reviewer` | Evaluator | Sonnet | PR code quality (P1/P2/P3) per `docs/process/code-review.md` |
+| `architecture-critic` | Evaluator | Opus | Layer + schema design judgment |
+| `analytical-validator` | Evaluator | Opus | Statistical correctness, causal claims |
+| `visual-screenshot-reviewer` | Evaluator | Sonnet | Multimodal: rendered output vs `docs/visualization/quality.md` + `references/` |
+| `domain-specialist` | Evaluator | Opus | Domain KPI / framing / benchmarks |
+| `debug` | Utility | Sonnet | Read-only diagnostic tracing |
 
 **When to delegate:**
-- Bug investigation → `debug` (read-only, safe)
+- New product code → builder agent (Sonnet) per domain
 - PR code review → `code-reviewer`
-- Plan or PR statistical claims → `analytical-validator`
-- Architecture / schema decisions → `architecture-critic`
-- Domain KPI / framing questions → `domain-specialist`
-- Rendered dashboard visual review → `visual-screenshot-reviewer`
+- Architecture / schema decision → `architecture-critic`
+- Statistical claim → `analytical-validator`
+- Rendered dashboard → `visual-screenshot-reviewer`
+- Domain framing question → `domain-specialist`
+- Bug investigation → `debug` (read-only, safe)
 
 ## Collaboration Model
 
@@ -175,7 +178,7 @@ All work follows three stages. Never skip stages or implement directly from chat
 ```
 Stage 1 — Ideas       Stage 2 — Planning        Stage 3 — Implementation
 ─────────────────     ──────────────────────     ────────────────────────
-Chat discussion   →   /composite_review_ideas          →   /composite_kickoff OR-XXX
+Chat discussion   →   /review_ideas                    →   /kickoff OR-XXX
   → /basic_capture_idea       Review, decide              Full pipeline:
                         Convert to issues           branch → code → PR → merge
 Direct Linear entry
@@ -185,7 +188,7 @@ Direct Linear entry
 **Chat contract (CRITICAL):**
 - Normal chat = explore, advise, explain — no code, no commits, ever
 - Any idea discussed in chat → I capture it with `/basic_capture_idea`, never implement
-- `/composite_kickoff` is the only gate into implementation — and only from a proper OR- issue
+- `/kickoff` is the only gate into implementation — and only from a proper OR- issue
 - If user says "implement X" without a Linear issue → redirect to `/basic_capture_idea` first
 
 ## Linear Setup
@@ -214,40 +217,32 @@ Direct Linear entry
 - `In Progress` — being worked on
 - `Done` — complete
 
-Ideas always start in Backlog with the Idea label. When accepted via `/composite_review_ideas`, they become proper issues (label changes, status stays Backlog until pulled into a sprint).
+Ideas always start in Backlog with the Idea label. When accepted via `/review_ideas`, they become proper issues (label changes, status stays Backlog until pulled into a sprint).
 
 **Linear MCP tools available:** `get_issue`, `save_issue`, `list_issues`, `save_comment`, `get_project`, `save_milestone`, `list_issue_statuses`, `list_issue_labels`, `create_issue_label`
 
 ## Skills (Slash Commands)
 
-The skills system is being rebuilt one skill at a time. Most skills
-have been moved to `.claude/skills_review/` for individual review and
-will return to `.claude/skills/` as their final shape, name, and kind
-are confirmed.
+7 skills under `.claude/skills/`. Five **lifecycle** skills orchestrate common workflows; two are **framework** for building out new skills.
 
-### Framework (loaded)
+### Lifecycle skills
 
-| Skill | Description |
-|-------|-------------|
-| `/composite_knowledge <target>` | Build a structured knowledge document — fills the `knowledge/` bucket of a complex skill (reads `_seed.md`), or works for any target needing a knowledge synthesis. Workflow: scope → tier sources → collect → analyse coverage → synthesise → save |
-| `/composite_experience <target> <event>` | Add a framed entry to a complex skill's `experience/` bucket — Expected / Observed / Surprise / Rule, single- vs double-loop |
-| `_template/` | Scaffold for new complex skills (not user-invocable) — `cp -r` to start, fill `_seed.md`, then invoke `/composite_knowledge` |
+| Skill | Purpose |
+|-------|---------|
+| `/kickoff` | Start work on a Linear OR-XXX issue. Drives full pipeline: research → plan → build → review → PR |
+| `/plan` | Research + design + plan before any code is written |
+| `/develop` | End-to-end product development pipeline (any product type — dashboard, blog, research, etc.) using builder agents |
+| `/review` | Multi-agent PR review — code, architecture, analytical, visual, domain evaluators run in parallel |
+| `/review_ideas` | Backlog grooming — review captured ideas, convert accepted ones to proper Linear issues |
 
-### Skill kinds
+### Framework (for building new complex skills)
 
-| Prefix | Internal shape |
-|--------|---------------|
-| `basic_` | Atomic action — single `SKILL.md`. Use only when a step is genuinely reused across multiple composites; otherwise inline the step into the composite's workflow prose |
-| `composite_` | Multi-phase orchestrator — single `SKILL.md`. Phases are inlined as workflow prose by default; named as separate `basic_` skills only when a phase is reused across composites |
-| `complex_` | Asset-bearing — `SKILL.md` + `knowledge/` + `experience/` + `assets/` (built from `_template/`) |
-| `_` (leading underscore) | Scaffold / framework, not user-invocable |
+| Skill | Purpose |
+|-------|---------|
+| `/knowledge <target>` | Build a structured knowledge document (fills `knowledge/` bucket of a complex skill) |
+| `/experience <target>` | Add a framed lesson to a complex skill's `experience/` bucket |
 
-### Under review
-
-All other skills are quarantined in `.claude/skills_review/` pending
-one-by-one review. They are not loaded as slash commands. As each one
-is reviewed, it is renamed, reshaped, merged, or deleted, and (if
-kept) returned to `.claude/skills/`.
+Per `docs/process/model-delegation.md`: lifecycle skills typically delegate execution to Sonnet builder agents; framework skills are usually invoked by Opus when shaping new skills.
 
 ## Documentation
 

@@ -1,5 +1,5 @@
 ---
-name: composite_review_ideas
+name: review_ideas
 description: "Review the ideas board, decide which to pursue, and convert accepted ideas into proper Linear issues with full templates."
 user-invocable: true
 argument-hint: ""
@@ -7,7 +7,7 @@ argument-hint: ""
 
 # Review Ideas
 
-Go through all ideas in Linear, decide which to accept or reject, and convert accepted ones into proper issues ready for `/composite_kickoff`.
+Go through all ideas in Linear, decide which to accept or reject, and convert accepted ones into proper issues ready for `/kickoff`.
 
 ## Step 1 — Fetch ideas
 
@@ -46,9 +46,9 @@ For each **accepted** idea:
    - Assign to a milestone if it clearly belongs to Phase 1 / 2 / 3
    - Link sub-issues to parent
    - Set `relatedTo` the original idea issue ID (creates traceable chain)
-5. Run `/composite_feasibility {new issue ID}` — pass the issue description to all evaluators in parallel
-6. If FEASIBLE or PARTIAL: leave in Backlog, add feasibility report as Linear comment
-7. If BLOCKED: add comment with blocking finding; do not move to Backlog until blocker is resolved
+5. Spawn `architecture-critic` and `analytical-validator` in parallel against the new issue description
+6. If both APPROVE or CONDITIONAL: leave in Backlog, add evaluator findings as Linear comment
+7. If any BLOCK: add comment with blocking finding; do not move to Backlog until blocker is resolved
 8. Close the original idea: set to **Canceled**, add comment: *"Converted to {new issue ID(s)}"*
 
 For each **deferred** idea:
@@ -68,4 +68,4 @@ After processing all decisions, show:
 ❌ Rejected → {list}
 ```
 
-Issues marked ✅ are ready for `/composite_kickoff`.
+Issues marked ✅ are ready for `/kickoff`.
