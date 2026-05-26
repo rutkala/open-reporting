@@ -112,4 +112,29 @@ Format per entry:
 
 ---
 
+## 2026-05-26 — #7 — Shipped OR-80 + OR-74 (first article published); built reusable Ghost pipeline
+
+**Decision:** Drafted, charted, and published OR-80 ("Polska wobec progów SGP i Maastricht: co mówią dane 1995-2024") on https://www.open-reporting.dev/sgp-maastricht-1995-2024/. Built and committed a reusable Markdown→Ghost publisher (`products/blog/publish_to_ghost.py`) so future articles are a one-command shipment.
+
+**Why:** Theme 2 (Activate content channel) — the dashboard is the data, the article is the story. Pairing data-journalism articles with the live dashboard is the core value proposition of Open Reporting.
+
+**What shipped:**
+- `data/drafts/or-80-sgp-maastricht.md` — ~888 word Polish draft (via `content-writer` agent, Sonnet). Source-attributed, neutral framing, internal verification block on numbers.
+- `products/blog/publish_to_ghost.py` — frontmatter-aware MD→HTML→Ghost publisher. Uploads referenced images, embeds figures at specified headings, posts via Ghost Admin API. CLI for one-command future publishes.
+- Live article: 2 embedded charts (debt trend 1995-2024 + EU-27 deficit cross-section 2024 vs 2023), source citations in every section, dedicated Źródła i metodologia closing, ESA 2010 methodology footnote, CTA to portal dashboard.
+- Linear OR-80 + OR-74 → Done.
+
+**Pipeline reusable for future articles:** spec → content-writer agent → markdown draft → Playwright clip 2-3 dashboard sections → `publish_to_ghost.py --publish`. Per article: ~30-45K tokens (Sonnet draft + Opus oversight) + ~3 min Playwright capture + 5 sec API publish.
+
+**Surprise:** Ghost blog had 2 pre-existing posts ("Budżety polskich województw", "Budżet państwa") that weren't documented anywhere in the repo. OR-80's "first article" interpretation: first AI-Lead-authored data-journalism piece tied to the dashboards. Doesn't change the ship status.
+
+**Status:** Shipped. Linear OR-80, OR-74 Done. OR-79 (Portal nav) still Backlog/PO-action.
+
+**Revisit:** Add another article every 1-2 weeks as cadence. Topics in the pipeline (worth a Linear capture):
+- "Koszty obsługi długu — dlaczego podwoiły się w 4 lata" (deep-dive into the interest-cost story)
+- "COFOG — gdzie naprawdę idą wydatki państwa" (paired with wydatki page)
+- "Polska na tle UE — deficyt vs dług 2024" (paired with ue page)
+
+---
+
 <!-- Append new decisions below -->
