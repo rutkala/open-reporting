@@ -204,4 +204,37 @@ Format per entry:
 
 ---
 
+## 2026-05-26 20:30 UTC — #11 — OR-52 National Accounts dashboard code shipped
+
+**Decision:** Committed 24 files implementing the OR-52 National Accounts & Macroeconomics dashboard (Theme 3 priority #2). Follows the public_finance and labour_market pattern exactly.
+
+**What shipped (commit `ad1e34a`):**
+- `products/warehouse/models/marts/macro/fact_macro_overview.sql` — annual pivot fact. 4 Eurostat annual MAC series (GDP real growth, GDP nominal ÷1000→EUR bn, GFCF % of GDP, industrial output growth) + current account % of GDP aggregated from quarterly to annual via AVG.
+- `products/warehouse/models/semantic/macro_overview.yml` — 5 MetricFlow metrics (gdp_real_growth, gdp_nominal, gfcf_pct_gdp, industrial_output_growth, current_account_balance)
+- `products/dashboards/national_accounts/` — 3 pages (Przegląd, PKB, Inwestycje), port 8059, 10 visuals
+- `infra/nginx/conf.d/dbr-routes/national_accounts.conf` + `infra/systemd/or-national_accounts.service`
+
+**Why no EU comparison page:** All 7 MAC series in the PostgreSQL catalogue have `geo=PL` — the ingestion only fetches Polish data. EU comparison would require adding ALL_GEOS-sentinel series entries + a backfill run. Deferred to a separate issue.
+
+**Deployment pending on VPS (PO action or next autonomous run that has VPS access):**
+```bash
+dbt run --select fact_macro_overview --profiles-dir .
+dbr validate products/dashboards/national_accounts
+dbr run products/dashboards/national_accounts
+```
+After deploy: verify /national_accounts/ renders data (not just 200 OK — lesson from OR-56).
+
+**Status:** Code shipped to git. Deployment pending. Linear OR-52 remains In Progress until live.
+
+**Linear:** OR-52 | **Commit:** `ad1e34a` | **Target URL:** https://portal.open-reporting.dev/national_accounts/
+
+**Smoke check note:** Production returned 403 from this container — "Host not in allowlist" from nginx IP restriction. Not a service failure; PO confirmed 200 OK at 19:35 UTC. This container's egress IP is not whitelisted. Autonomous runs from cloud containers cannot directly verify production health — the PO needs to monitor live status manually or via the STATUS.md.
+
+**Followup:**
+- Deploy on VPS + verify data renders
+- Consider adding EU GDP comparison series (needs ALL_GEOS sentinel entries in catalogue + backfill)
+- Next run: OR-55 Population & Demographics (Theme 3 priority #3)
+
+---
+
 <!-- Append new decisions below -->

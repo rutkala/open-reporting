@@ -1,8 +1,8 @@
 # Open Reporting — Live Status
 
-**Last updated:** 2026-05-26 20:05 UTC
+**Last updated:** 2026-05-26 20:35 UTC
 
-Autonomous agent: **RUNNING** — 20:00 UTC tick (run #4 since 4h cadence). Smoke check: production returning 403 from container IP (nginx allowlist) — not a service failure; PO confirmed 200 OK at 19:35 UTC. Pushing 5 unpushed OR-56 commits, then starting OR-52 National Accounts & Macro dashboard.
+Autonomous agent: **IDLE** — 20:00 UTC run completed. Shipped OR-52 National Accounts dashboard code (24 files, commit `ad1e34a`). Deployment on VPS pending (PO action). Next scheduled fire: 2026-05-27 00:00 UTC.
 
 ---
 
@@ -21,12 +21,15 @@ Autonomous agent: **RUNNING** — 20:00 UTC tick (run #4 since 4h cadence). Smok
 
 ## Production
 
-| Service | URL | Status (last check 20:05 UTC) |
+| Service | URL | Status (last PO-verified 19:35 UTC) |
 |---------|-----|------------------------------|
-| Public finance dashboard | https://portal.open-reporting.dev/public_finance/ | 200 OK (PO-verified 19:35 UTC; 403 from container IP = nginx allowlist, not service down) |
-| Labour market dashboard | https://portal.open-reporting.dev/labour_market/ | 200 OK (PO-verified 19:35 UTC) |
-| Blog | https://www.open-reporting.dev/ | 200 OK (PO-verified 19:35 UTC) |
+| Public finance dashboard | https://portal.open-reporting.dev/public_finance/ | 200 OK |
+| Labour market dashboard | https://portal.open-reporting.dev/labour_market/ | 200 OK with real data |
+| **National accounts dashboard** | https://portal.open-reporting.dev/national_accounts/ | **PENDING DEPLOY** — code in git, needs `dbt run` + `dbr run` on VPS |
+| Blog | https://www.open-reporting.dev/ | 200 OK |
 | Daily ingestion (NBP + Eurostat) | cron `0 22 * * *` UTC | last run 2026-05-26 13:52 UTC, exit=0 |
+
+⚠️ **Container smoke check note:** Cloud container IP is not in nginx allowlist — health checks return 403 "Host not in allowlist" from this container. PO should verify production health directly.
 
 ---
 
@@ -45,7 +48,7 @@ Autonomous agent: **RUNNING** — 20:00 UTC tick (run #4 since 4h cadence). Smok
 
 ## Currently working on
 
-**OR-52** — National Accounts & Macroeconomics dashboard (Theme 3 priority #2)
+`<NOTHING>` — agent idle. Next run (00:00 UTC) will start OR-55 Population & Demographics dashboard.
 
 ---
 
@@ -53,7 +56,8 @@ Autonomous agent: **RUNNING** — 20:00 UTC tick (run #4 since 4h cadence). Smok
 
 | When (UTC) | Linear | Commit | What |
 |------------|--------|--------|------|
-| **2026-05-26 19:30** | **OR-56** | `fe9beac` | Labour Market dashboard live — fixed YAML + seed defects |
+| **2026-05-26 20:30** | **OR-52** | `ad1e34a` | **National Accounts dashboard — code in git, deploy pending** |
+| 2026-05-26 19:30 | OR-56 | `fe9beac` | Labour Market dashboard live — fixed YAML + seed defects |
 | 2026-05-26 17:15 | OR-56 | `ee5022bd` | linter comments on labour YAMLs (autonomous) |
 | 2026-05-26 17:15 | OR-56 | `f79b904f` | labour dashboard YAML (autonomous) |
 | 2026-05-26 17:15 | OR-56 | `92733d8e` | labour dbt mart models + semantic layer (autonomous) |
@@ -62,7 +66,6 @@ Autonomous agent: **RUNNING** — 20:00 UTC tick (run #4 since 4h cadence). Smok
 | 2026-05-26 14:14 | OR-80, OR-74 | `4fab3af3` | first article published + reusable Ghost publisher |
 | 2026-05-26 14:02 | OR-78, OR-85 | `866d9f46` | daily ingestion cron + Ghost admin verified |
 | 2026-05-26 10:09 | — | `86bf9add` | AI Lead activation |
-| 2026-05-26 08:55 | — | `2bd9c4a8` | initial Phase B/C work merged to main (via PR #61) |
 
 ---
 
@@ -70,6 +73,7 @@ Autonomous agent: **RUNNING** — 20:00 UTC tick (run #4 since 4h cadence). Smok
 
 | Linear | What needs PO |
 |--------|---------------|
+| **OR-52** | Deploy national_accounts on VPS: `dbt run --select fact_macro_overview --profiles-dir .` + `dbr run products/dashboards/national_accounts`. Verify /national_accounts/ renders data (not just 200 OK). |
 | **OR-90** | Refresh Instagram token in Meta Developer portal — `@otwarteraporty` profile |
 | **OR-79** | Update Ghost navigation in `/ghost/` browser admin: add "Portal" link, set locale to `pl`, accent colour `#4A7FB5`, Polish description |
 
@@ -83,11 +87,11 @@ Autonomous agent: **RUNNING** — 20:00 UTC tick (run #4 since 4h cadence). Smok
 | OR-85 | Daily ingestion cron | Done |
 | OR-80 | First data-driven article | Done |
 | OR-74 | Blog setup + first content | Done |
-| OR-56 | Labour Market dashboard | Done |
-| **OR-52** | **National Accounts & Macro dashboard** | **In Progress** |
-| OR-55 | Population & Demographics dashboard | Backlog (Theme 3 priority #3) |
-| OR-90 | Instagram token | **PO-blocked** |
-| OR-79 | Portal nav | **PO-blocked** |
+| OR-56 | Labour Market dashboard | Done (live) |
+| **OR-52** | **National Accounts dashboard** | **In Progress — code in git, deploy pending** |
+| OR-55 | Population & Demographics dashboard | Backlog (next run) |
+| OR-90 | Instagram token | PO-blocked |
+| OR-79 | Portal nav | PO-blocked |
 
 ---
 

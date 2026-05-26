@@ -1,82 +1,68 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-05-26 -->
+<!-- last-updated: 2026-05-26 20:30 UTC -->
 
 ## Current Focus
 
-AI Lead operating model **active** (see `docs/process/lead-protocol.md`). Strategic direction, editorial picks, and execution are autonomous within cost ceiling. Themes 1+2 of the 4-6 week roadmap are essentially complete; Theme 3 (3 more domain dashboards) is next.
+AI Lead autonomous week underway. 4h cron cadence (`trig_01TqBcSxS3SzQn7BtSTiDmif`). Themes 1+2 complete. Theme 3 dashboard #1 (OR-56 Labour) is live. Theme 3 dashboard #2 (OR-52 Macro) code is in git — **deployment pending on VPS**.
 
-## What shipped (2026-05-26 session)
-
-Direct-to-main commits since merge of PR #61:
+## What shipped (2026-05-26 autonomous runs)
 
 | Commit | What | Linear |
 |---|---|---|
-| `57de7ba1` | YAML gap closures (Poland labels, COVID/breach annotations) | — |
-| `cc4c34c3` | Codex P2: line.py post-fetch slice (fix silent truncation for >4 series) | — |
-| `e5afdd09` | Table column labels resolver (`labels:` config) | — |
-| `ee1a1e77` | Phase D agent slim 22→6 (over-cut, corrected next) | — |
-| `519110d5` | Phase D reshape: 10 agents, 8 skills, Opus orchestrates | — |
-| `463863b7` | C.8 `dual_year` grouped bar primitive | — |
-| `9608e806` | Delete archived public_finance_phase_b | — |
-| `828186aa` / `6eb67976` | Wrap-up: session memory + drop `composite_` skill prefix | — |
-| `86bf9add` | **AI Lead activation:** lead-protocol.md, roadmap.md, decisions.md | — |
-| `866d9f46` | OR-78 + OR-85: Ghost admin verified + daily ingestion cron live | OR-78, OR-85 |
-| `4fab3af3` | OR-80: first article published + reusable Ghost publisher | OR-80, OR-74 |
+| `92733d8` / `f79b904` / `ee5022b` | OR-56 Labour Market dbt mart + dashboard YAML (autonomous, 15:11–17:15 UTC) | OR-56 |
+| `fe9beac` | OR-56 complete: fix YAML parse error + seed dimension_key mismatch (PO conversational session 19:30 UTC) | OR-56 |
+| `caee76d` | STATUS.md heartbeat (orphaned, recovered in 20:00 UTC run) | — |
+| `ad1e34a` | **OR-52 National Accounts dashboard** — 24 files (dbt mart, semantic, YAML, infra) | OR-52 |
 
-## Linear status — Theme 1 + 2
+## Live production state (PO-verified 19:35 UTC)
 
-| Issue | Title | Status |
-|---|---|---|
-| OR-78 | Ghost admin | **Done** |
-| OR-85 | Daily ingestion cron | **Done** (22:00 UTC, stops dashboard ~9min, restarts) |
-| OR-80 | First data-driven article | **Done** (live at /sgp-maastricht-1995-2024/) |
-| OR-74 | Blog setup + first content | **Done** |
-| **OR-90** | Instagram token refresh | **BLOCKED on PO** (Meta Developer portal) |
-| **OR-79** | Portal nav link | **BLOCKED on PO** (Ghost browser admin session needed) |
+- **Public finance dashboard:** `portal.open-reporting.dev/public_finance/` — 200 OK
+- **Labour market dashboard:** `portal.open-reporting.dev/labour_market/` — 200 OK with real data
+- **National accounts dashboard:** `portal.open-reporting.dev/national_accounts/` — **PENDING DEPLOY** (code in git, needs `dbt run` + `dbr run` on VPS)
+- **Blog:** `www.open-reporting.dev` — 200 OK
+- **Daily ingestion:** cron `0 22 * * *` UTC, last run 2026-05-26 13:52 UTC exit=0
 
-## Live production state
+## Note: autonomous runs from cloud containers
 
-- **Dashboards:** `portal.open-reporting.dev/public_finance/` — 71%+ rubric pass rate after Phase B/C work
-- **Blog:** `www.open-reporting.dev` — 3 articles + Coming Soon placeholder (1 newly authored by AI Lead, 2 pre-existing)
-- **Daily ingestion:** cron at `0 22 * * *` UTC → NBP rates + Eurostat observations → upsert into DuckDB warehouse
-- **Autonomous loop:** scheduled remote agent fires Mondays 09:07 Warsaw (`trig_01TqBcSxS3SzQn7BtSTiDmif`)
+The cron fires in an ephemeral cloud container, not on the VPS. This means:
+- `dbr run`, `dbt run`, `docker compose` commands are NOT available
+- Production health checks return 403 from this container's IP (nginx allowlist) — NOT a service failure
+- Deployment must be done by PO or a VPS-side session
+- Code can be written and pushed to git; deploy is the PO's action
 
-## Next pending — Theme 3 (3 more domain dashboards)
+## Next pending — Theme 3
 
-| # | Linear | What |
-|---|---|---|
-| 7 | **OR-56** | Labour Market dashboard (Polish public-data flagship topic) |
-| 8 | **OR-52** | National Accounts & Macroeconomics (pairs with public_finance for full macro picture) |
-| 9 | **OR-55** | Population & Demographics (long-arc public interest) |
+| # | Linear | What | Status |
+|---|---|---|---|
+| 7 | OR-56 | Labour Market dashboard | **Done** (live) |
+| 8 | OR-52 | National Accounts & Macro dashboard | **Code in git** — needs VPS deploy |
+| 9 | OR-55 | Population & Demographics dashboard | Backlog (next) |
 
-Pattern to follow: `products/dashboards/public_finance/` is the canonical example. Each new domain = dbt staging models + semantic layer + dbr YAML pages.
+## Linear blocked on PO action
+
+| Issue | What |
+|---|---|
+| OR-90 | Instagram token — Meta Developer portal |
+| OR-79 | Ghost nav link — browser admin session |
 
 ## Architecture (current)
 
-**Opus orchestrates, agents execute.** Per `docs/process/model-delegation.md`:
-- Opus (me) = analyse, plan, orchestrate, integrate
-- Sonnet builders = `dashboard-dev`, `data-engineer`, `content-writer`, `researcher`
-- Mixed evaluators = `code-reviewer` (Sonnet), `architecture-critic`, `analytical-validator`, `domain-specialist` (Opus), `visual-screenshot-reviewer` (Sonnet)
-- Utility = `debug` (Sonnet)
+**Code-in-cloud, deploy-on-VPS.** Autonomous runs from cloud containers write YAML/SQL/Python to git. Deployment (`dbt run` + `dbr run`) requires VPS access — PO or conversational session.
 
-**Skills (7):** `kickoff`, `plan`, `develop`, `review`, `review_ideas`, `knowledge`, `experience` (no `composite_` prefix).
+**Model delegation:** Sonnet builders (dashboard-dev, data-engineer) execute from clear specs. Opus orchestrates. SubAgent budget: 6/run.
 
 ## Key Technical Facts
 
-- DuckDB: `data/warehouse.duckdb` (exclusive lock during writes — daily cron stops + restarts dashboard)
-- PostgreSQL: `localhost:5432 db=reporting`
-- Ghost: `ghost:5-alpine` container, SQLite backend, JWT-based Admin API at `GHOST_KEY_ID`/`GHOST_KEY_SECRET` in .env
-- Production deploy: `dbr run products/dashboards/<name>` → systemd `or-<name>.service` + nginx
-- Article publishing: `python3 products/blog/publish_to_ghost.py <draft.md> --publish` (reusable)
-- Visual reviewer is **multimodal** — compares rendered screenshots against `docs/visualization/references/` using `docs/visualization/quality.md` rubric
+- DuckDB: `data/warehouse.duckdb` — write-locked during cron (22:00 UTC)
+- Port assignments: public_finance=8057, labour_market=8058, national_accounts=8059
+- MAC seed dimension_keys verified against PostgreSQL catalogue; all 7 MAC series have `verified=true` and `geo=PL`
+- Quarterly BOP data (mac.current_account_gdp) aggregated to annual via AVG in fact_macro_overview
+- Next dashboard port: 8060 (for OR-55 demographics)
 
-## Deferred (low-priority, not blocking)
+## Deferred
 
-- Ghost settings updates via API require browser session (501 on Integration JWT) — OR-79 PO action
-- DuckDB read-only mode in `dbr serve` would eliminate the 9-min daily downtime — file a Linear issue when next touching dbr
-- Bar annotation y-axis can't take categorical string (schema relaxation needed)
-- Grey-history primitive (needs design decision)
-- Wave 3 reference captures (Tableau / IMF PDF / GUS detail)
-- complex_dashboard skill recreation (retired in feat branch; recreate when needed)
-- `data/drafts/` is gitignored — future article drafts should go under `products/blog/drafts/`
+- EU comparison for macro (needs ALL_GEOS sentinel + backfill run)
+- OR-77 social automation, OR-89 weekly snapshot (Theme 4)
+- OR-76 pipeline robustness, OR-86 BDL ingestion (Theme 5)
+- Grey-history primitive, Wave 3 reference captures, complex_dashboard skill
