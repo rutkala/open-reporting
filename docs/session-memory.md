@@ -4,32 +4,53 @@
 
 ## Current Focus
 
-Quality-driven dashboard framework is **shipped + live**. Phase B/C/D loop closed with measurement: the `public_finance` dashboard at https://portal.open-reporting.dev/public_finance/ rebuilt against a 21-dimension rubric grounded in 8 multimodal reference sources. Rubric pass rate jumped from **~50% baseline → ~71% post-build**.
+AI Lead operating model **active** (see `docs/process/lead-protocol.md`). Strategic direction, editorial picks, and execution are autonomous within cost ceiling. Themes 1+2 of the 4-6 week roadmap are essentially complete; Theme 3 (3 more domain dashboards) is next.
 
-Next session: pick a real Linear issue and run `/composite_kickoff OR-XXX` to test the new orchestration loop end-to-end. That's the unproven thing.
+## What shipped (2026-05-26 session)
 
-## Major work since 2026-05-25 (commits on main)
+Direct-to-main commits since merge of PR #61:
 
-- `26b6bfa4` — PR 1: team/ → docs/ topic-first reorg
-- `60e1ed95` — Model-tiering policy + agent frontmatter
-- `65fe21a0` — Multimodal capture recipe
-- `fe762bdb` / `8c601a39` — Reference library (8 sources, 33+ images)
-- `6bfc1954` — `docs/visualization/quality.md` 21-dimension rubric
-- `d138011d` — Baseline gap analysis
-- `e95649fc` / `99348e7f` / `960fcfbe` — Phase C primitives: `table:`, `annotations:`, `delta:`
-- `d3db6da6` / `5ca4836e` / `5aacc4c8` — Phase C: `label_endpoints`, grey-accent `highlight`, row `title:`
-- `dfaf739f` — Theme polarity tokens red/green → orange/blue
-- `fab92fc2` — Row `prose:` Markdown narrative
-- `a0f7e776` — Phase C primitives wired across all 5 pages
-- `75fe817b` — Post-Phase-C gap analysis (+15 PASS)
-- `0dab4f13` — Codex P1 fixes (scatter, SQL paths)
-- `c79c3e1d` — **Merge PR #61** to main
-- `9608e806` — Delete archived public_finance_phase_b
-- `57de7ba1` — YAML closures (Poland labels, COVID/breach/inflection annotations)
-- `cc4c34c3` — Codex P2 fix (line.py post-fetch slice)
-- `e5afdd09` — Table column labels resolver
-- `ee1a1e77` + `519110d5` — Phase D orchestration reshape: 10 agents + 8 skills
-- `463863b7` — C.8 `dual_year` grouped bar primitive
+| Commit | What | Linear |
+|---|---|---|
+| `57de7ba1` | YAML gap closures (Poland labels, COVID/breach annotations) | — |
+| `cc4c34c3` | Codex P2: line.py post-fetch slice (fix silent truncation for >4 series) | — |
+| `e5afdd09` | Table column labels resolver (`labels:` config) | — |
+| `ee1a1e77` | Phase D agent slim 22→6 (over-cut, corrected next) | — |
+| `519110d5` | Phase D reshape: 10 agents, 8 skills, Opus orchestrates | — |
+| `463863b7` | C.8 `dual_year` grouped bar primitive | — |
+| `9608e806` | Delete archived public_finance_phase_b | — |
+| `828186aa` / `6eb67976` | Wrap-up: session memory + drop `composite_` skill prefix | — |
+| `86bf9add` | **AI Lead activation:** lead-protocol.md, roadmap.md, decisions.md | — |
+| `866d9f46` | OR-78 + OR-85: Ghost admin verified + daily ingestion cron live | OR-78, OR-85 |
+| `4fab3af3` | OR-80: first article published + reusable Ghost publisher | OR-80, OR-74 |
+
+## Linear status — Theme 1 + 2
+
+| Issue | Title | Status |
+|---|---|---|
+| OR-78 | Ghost admin | **Done** |
+| OR-85 | Daily ingestion cron | **Done** (22:00 UTC, stops dashboard ~9min, restarts) |
+| OR-80 | First data-driven article | **Done** (live at /sgp-maastricht-1995-2024/) |
+| OR-74 | Blog setup + first content | **Done** |
+| **OR-90** | Instagram token refresh | **BLOCKED on PO** (Meta Developer portal) |
+| **OR-79** | Portal nav link | **BLOCKED on PO** (Ghost browser admin session needed) |
+
+## Live production state
+
+- **Dashboards:** `portal.open-reporting.dev/public_finance/` — 71%+ rubric pass rate after Phase B/C work
+- **Blog:** `www.open-reporting.dev` — 3 articles + Coming Soon placeholder (1 newly authored by AI Lead, 2 pre-existing)
+- **Daily ingestion:** cron at `0 22 * * *` UTC → NBP rates + Eurostat observations → upsert into DuckDB warehouse
+- **Autonomous loop:** scheduled remote agent fires Mondays 09:07 Warsaw (`trig_01TqBcSxS3SzQn7BtSTiDmif`)
+
+## Next pending — Theme 3 (3 more domain dashboards)
+
+| # | Linear | What |
+|---|---|---|
+| 7 | **OR-56** | Labour Market dashboard (Polish public-data flagship topic) |
+| 8 | **OR-52** | National Accounts & Macroeconomics (pairs with public_finance for full macro picture) |
+| 9 | **OR-55** | Population & Demographics (long-arc public interest) |
+
+Pattern to follow: `products/dashboards/public_finance/` is the canonical example. Each new domain = dbt staging models + semantic layer + dbr YAML pages.
 
 ## Architecture (current)
 
@@ -39,25 +60,23 @@ Next session: pick a real Linear issue and run `/composite_kickoff OR-XXX` to te
 - Mixed evaluators = `code-reviewer` (Sonnet), `architecture-critic`, `analytical-validator`, `domain-specialist` (Opus), `visual-screenshot-reviewer` (Sonnet)
 - Utility = `debug` (Sonnet)
 
-**Skills (8):** `composite_kickoff`, `composite_plan`, `composite_develop`, `composite_review`, `composite_review_ideas` (lifecycle); `composite_knowledge`, `composite_experience`, `_template` (framework).
+**Skills (7):** `kickoff`, `plan`, `develop`, `review`, `review_ideas`, `knowledge`, `experience` (no `composite_` prefix).
 
-## Key Technical Facts (unchanged)
+## Key Technical Facts
 
-- DuckDB: `data/warehouse.duckdb`
+- DuckDB: `data/warehouse.duckdb` (exclusive lock during writes — daily cron stops + restarts dashboard)
 - PostgreSQL: `localhost:5432 db=reporting`
-- Production deploy: `dbr run products/dashboards/<name>` → systemd `or-<name>.service` + nginx route + reload
-- Visual reviewer is now **multimodal** — compares rendered screenshots against `docs/visualization/references/` using `docs/visualization/quality.md` as checklist
+- Ghost: `ghost:5-alpine` container, SQLite backend, JWT-based Admin API at `GHOST_KEY_ID`/`GHOST_KEY_SECRET` in .env
+- Production deploy: `dbr run products/dashboards/<name>` → systemd `or-<name>.service` + nginx
+- Article publishing: `python3 products/blog/publish_to_ghost.py <draft.md> --publish` (reusable)
+- Visual reviewer is **multimodal** — compares rendered screenshots against `docs/visualization/references/` using `docs/visualization/quality.md` rubric
 
 ## Deferred (low-priority, not blocking)
 
+- Ghost settings updates via API require browser session (501 on Integration JWT) — OR-79 PO action
+- DuckDB read-only mode in `dbr serve` would eliminate the 9-min daily downtime — file a Linear issue when next touching dbr
+- Bar annotation y-axis can't take categorical string (schema relaxation needed)
 - Grey-history primitive (needs design decision)
-- Colorblind palette enforcement (preventive; C.7 already remapped actual red/green)
 - Wave 3 reference captures (Tableau / IMF PDF / GUS detail)
-- complex_dashboard skill recreation (retired in feat branch; recreate when starting a 2nd dashboard)
-- Bar annotation y-axis can't take categorical string (schema relaxation when next needed)
-
-## Linear — Active (per prior memory; verify before acting)
-
-- OR-78 (Ghost admin), OR-85 (daily cron), OR-90 (Instagram token)
-- OR-108 (Mobile-optimized dashboards), OR-120 (Public Finance domain KB), OR-129 (Domain Specialist agents)
-- Product backlog: OR-74 to OR-113
+- complex_dashboard skill recreation (retired in feat branch; recreate when needed)
+- `data/drafts/` is gitignored — future article drafts should go under `products/blog/drafts/`
