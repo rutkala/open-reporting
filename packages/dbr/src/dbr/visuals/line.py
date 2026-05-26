@@ -128,11 +128,18 @@ def line(*, encoding: dict, filter: dict | None = None, options: dict | None = N
     df = semantic_query_data(
         metrics if len(metrics) > 1 else metrics[0],
         group_by=group_by, filter=filter, order=x_col,
-        limit=opts.get("years") * (df_series_count(enc.color) if enc.color else 1) if opts.get("years") else None,
     )
     if df.empty:
         return html.Div("No data", style=_CARD_STYLE)
     df = postprocess_time_columns(df, enc)
+    # Apply `years` window post-fetch: slice to the last N distinct x values.
+    # Done after fetch (not as a SQL LIMIT) so the slice works correctly for
+    # any series cardinality — fixes the prior hack that multiplied the limit
+    # by a hardcoded 4 and silently truncated charts with >4 series.
+    years_limit = opts.get("years")
+    if years_limit:
+        keep = sorted(df[x_col].unique())[-years_limit:]
+        df = df[df[x_col].isin(keep)]
     if dash_when:
         df = df.sort_values(x_col)
 
@@ -183,10 +190,6 @@ def line(*, encoding: dict, filter: dict | None = None, options: dict | None = N
     apply_annotations(fig, opts)
     apply_endpoint_labels(fig, opts, colorway=list(COLORWAY))
     return chart_with_optional_table(fig, df, opts, _CARD_STYLE)
-
-
-def df_series_count(_color_channel) -> int:
-    return 4
 
 
 def _add_dashed_traces(fig, df, x_col, metrics, dash_when, mode):
