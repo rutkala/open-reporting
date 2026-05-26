@@ -1,0 +1,50 @@
+version: 2
+
+models:
+  - name: fact_labour_overview
+    description: >
+      Annual Labour Market Overview fact. Pivots four LFS rate indicators
+      (unemployment, employment, activity, youth unemployment) into a wide
+      (geo, period_year, period_date) grain. One row per country per year.
+      Source: curated.lab_indicators (domain_id = 'LAB').
+    columns:
+      - name: geo
+        description: ISO country/region code (e.g. 'PL', 'DE', 'EU27_2020').
+        tests: [not_null]
+      - name: period_year
+        description: Calendar year (integer).
+        tests: [not_null]
+      - name: period_date
+        description: December 31 of period_year — MetricFlow time spine key.
+        tests: [not_null]
+      - name: unemployment_rate_pct
+        description: Annual LFS unemployment rate, % of active population (une_rt_a).
+      - name: employment_rate_pct
+        description: Annual LFS employment rate, age 20–64, % (lfsa_ergan).
+      - name: activity_rate_pct
+        description: Annual LFS activity rate, age 15–74, % (lfsa_argan).
+      - name: youth_unemployment_rate_pct
+        description: Annual LFS youth unemployment rate, age 15–24, % (yth_empl_090).
+
+  - name: fact_labour_wages
+    description: >
+      Annual Labour Market Wages & Vacancies fact. Pivots three indicators
+      (wage cost growth, statutory minimum wage, job vacancy rate) into a wide
+      (geo, period_year, period_date) grain. One row per country per year.
+      Source: curated.lab_indicators (domain_id = 'LAB').
+    columns:
+      - name: geo
+        description: ISO country/region code (e.g. 'PL', 'DE', 'EU27_2020').
+        tests: [not_null]
+      - name: period_year
+        description: Calendar year (integer).
+        tests: [not_null]
+      - name: period_date
+        description: December 31 of period_year — MetricFlow time spine key.
+        tests: [not_null]
+      - name: wage_growth_pct
+        description: Labour cost index growth, % yoy, sector B–S (lc_lci_r2_a).
+      - name: minimum_wage_eur
+        description: Statutory minimum wage in EUR per month (earn_mw_cur).
+      - name: vacancy_rate_pct
+        description: Job vacancy rate, sector B–S, % (jvs_a_nace2).

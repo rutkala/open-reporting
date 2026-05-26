@@ -1,0 +1,134 @@
+version: 2
+
+# MetricFlow semantic model for the Labour Market Overview KPI row.
+#
+# Single source: curated.fact_labour_overview (wide, one column per measure).
+# Four metrics expose the latest annual value of each LFS rate indicator to
+# the visual layer without leaking SQL or column names into chart code.
+#
+# Display + threshold metadata travels in `config.meta` and is read by
+# dbr.semantic.semantic_query() at render time.
+#
+# Aggregation note: `agg: average` is used for all rate measures. The pivot
+# produces at most one non-null value per (geo, period_year, detail_id) cell,
+# so average collapses identically to max/min — the choice of average is
+# intentional to match MetricFlow conventions for the finance layer and to
+# behave correctly when geo or time groupings are broadened.
+
+semantic_models:
+  - name: labour_overview
+    description: Annual Labour Market Overview KPIs (LFS rates, % of population).
+    model: ref('fact_labour_overview')
+
+    # ── Star-schema convention ────────────────────────────────────────────
+    # A fact table declares measures + foreign keys. For visuals, ALL
+    # categorical and time slicing comes from dim_* tables joined via the
+    # foreign entities below — never from the fact directly.
+    #
+    # The `period` time dimension below is MANDATED by MetricFlow's data
+    # model (every measure must have an aggregation time dimension). It is
+    # for the engine's internal use (cumulative metrics, metric_time
+    # resolution). Dashboard YAMLs MUST NOT reference `dimension: period`
+    # — use `date_key__cal_year` / `date_key__cal_year_quarter` / etc.
+    # from dim_calendar instead.
+
+    defaults:
+      agg_time_dimension: period
+
+    # The fact's grain is a composite of (geo, period_year). There's no
+    # single natural primary key, so declare a synthetic primary entity
+    # to satisfy MetricFlow's requirement when dimensions are present.
+    primary_entity: labour_overview_row
+
+    entities:
+      - name: geo                       # foreign key joins to dim_geo
+        type: foreign
+        expr: geo
+      - name: date_key                  # foreign key joins to dim_calendar
+        type: foreign
+        expr: period_date
+
+    dimensions:
+      # INTERNAL — MetricFlow requirement; do not reference in dashboard YAMLs.
+      - name: period
+        type: time
+        expr: period_date
+        type_params:
+          time_granularity: year
+
+    measures:
+      - name: unemployment_rate_pct
+        description: Annual LFS unemployment rate, % of active population (une_rt_a).
+        agg: average
+        expr: unemployment_rate_pct
+      - name: employment_rate_pct
+        description: Annual LFS employment rate, age 20–64, % (lfsa_ergan).
+        agg: average
+        expr: employment_rate_pct
+      - name: activity_rate_pct
+        description: Annual LFS activity rate, age 15–74, % (lfsa_argan).
+        agg: average
+        expr: activity_rate_pct
+      - name: youth_unemployment_rate_pct
+        description: Annual LFS youth unemployment rate, age 15–24, % (yth_empl_090).
+        agg: average
+        expr: youth_unemployment_rate_pct
+
+metrics:
+  - name: unemployment_rate
+    label: Stopa bezrobocia
+    type: simple
+    type_params:
+      measure: unemployment_rate_pct
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: "% aktywnych zawodowo"
+          scale: 1
+        source_label: "Eurostat LFS (une_rt_a)"
+        ascending_is_good: false
+
+  - name: employment_rate
+    label: "Wskaźnik zatrudnienia 20–64"
+    type: simple
+    type_params:
+      measure: employment_rate_pct
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: "%"
+          scale: 1
+        thresholds:
+          eu2030: 78.0
+        source_label: "Eurostat LFS (lfsa_ergan), wiek 20–64"
+        ascending_is_good: true
+
+  - name: activity_rate
+    label: "Aktywność zawodowa 15–74"
+    type: simple
+    type_params:
+      measure: activity_rate_pct
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: "%"
+          scale: 1
+        source_label: "Eurostat LFS (lfsa_argan), wiek 15–74"
+        ascending_is_good: true
+
+  - name: youth_unemployment_rate
+    label: "Bezrobocie młodych 15–24"
+    type: simple
+    type_params:
+      measure: youth_unemployment_rate_pct
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: "%"
+          scale: 1
+        source_label: "Eurostat LFS (yth_empl_090), wiek 15–24"
+        ascending_is_good: false

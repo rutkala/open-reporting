@@ -1,0 +1,108 @@
+version: 2
+
+# MetricFlow semantic model for the Labour Market Wages & Vacancies KPI row.
+#
+# Single source: curated.fact_labour_wages (wide, one column per measure).
+# Three metrics expose the latest annual value of each wages/vacancies
+# indicator to the visual layer without leaking SQL or column names into chart code.
+#
+# Display metadata travels in `config.meta` and is read by
+# dbr.semantic.semantic_query() at render time.
+#
+# Aggregation note: `agg: average` is used for all measures. The pivot
+# produces at most one non-null value per (geo, period_year, detail_id) cell,
+# so average collapses identically to max/min. minimum_wage_eur is an annual
+# statutory level (stock-like), not a flow — average is correct here because
+# Eurostat publishes one value per country per year (January reference point);
+# summing across countries would be meaningless, and median is not applicable
+# at this aggregation level. wage_growth_pct is a yoy index growth rate;
+# averaging across time is only meaningful within a single geo filter — callers
+# should always filter by geo to get a country-level value.
+
+semantic_models:
+  - name: labour_wages
+    description: Annual Labour Market Wages & Vacancies KPIs (LCI growth, minimum wage, vacancy rate).
+    model: ref('fact_labour_wages')
+
+    # ── Star-schema convention ────────────────────────────────────────────
+    # The `period` time dimension below is MANDATED by MetricFlow's data
+    # model. Dashboard YAMLs MUST NOT reference `dimension: period`
+    # — use `date_key__cal_year` from dim_calendar instead.
+
+    defaults:
+      agg_time_dimension: period
+
+    primary_entity: labour_wages_row
+
+    entities:
+      - name: geo                       # foreign key joins to dim_geo
+        type: foreign
+        expr: geo
+      - name: date_key                  # foreign key joins to dim_calendar
+        type: foreign
+        expr: period_date
+
+    dimensions:
+      # INTERNAL — MetricFlow requirement; do not reference in dashboard YAMLs.
+      - name: period
+        type: time
+        expr: period_date
+        type_params:
+          time_granularity: year
+
+    measures:
+      - name: wage_growth_pct
+        description: Labour cost index growth, % yoy, sector B–S (lc_lci_r2_a).
+        agg: average
+        expr: wage_growth_pct
+      - name: minimum_wage_eur
+        description: Statutory minimum wage in EUR per month (earn_mw_cur).
+        agg: average
+        expr: minimum_wage_eur
+      - name: vacancy_rate_pct
+        description: Job vacancy rate, sector B–S, % (jvs_a_nace2).
+        agg: average
+        expr: vacancy_rate_pct
+
+metrics:
+  - name: wage_growth
+    label: Wzrost kosztów pracy
+    type: simple
+    type_params:
+      measure: wage_growth_pct
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: "%"
+          scale: 1
+        source_label: "Eurostat LCI (lc_lci_r2_a), sektor B–S, r/r"
+        ascending_is_good: true
+
+  - name: minimum_wage_eur
+    label: Płaca minimalna
+    type: simple
+    type_params:
+      measure: minimum_wage_eur
+    config:
+      meta:
+        format:
+          decimals: 0
+          suffix: " EUR/mies."
+          scale: 1
+        source_label: "Eurostat (earn_mw_cur)"
+        ascending_is_good: true
+
+  - name: vacancy_rate
+    label: "Wskaźnik wakatów"
+    type: simple
+    type_params:
+      measure: vacancy_rate_pct
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: "%"
+          scale: 1
+        source_label: "Eurostat JVS (jvs_a_nace2), sektor B–S"
+        ascending_is_good: true
