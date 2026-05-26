@@ -89,4 +89,27 @@ Format per entry:
 
 ---
 
+## 2026-05-26 — #6 — Shipped OR-78 + OR-85; flagged OR-79 PO-blocked
+
+**Decision:** Closed OR-78 (Ghost admin) and OR-85 (daily ingestion cron) directly in this session, deviating from Decision #4's "defer per-issue execution to autonomous loop" — PO explicitly overrode it ("you stopped from old-cost-discipline habit").
+
+**What shipped:**
+
+- **OR-78 (Ghost admin)** — verified via Admin API JWT auth (Integration key already in `.env`). Admin account exists, title "Otwarte Raporty" set, site responds 200. Marked Done with comment.
+
+- **OR-85 (daily ingestion cron)** — `products/ingestion/run_daily.sh` wrapper + user crontab entry `0 22 * * * ...`. Stops dbr serve to release DuckDB exclusive lock, runs NBP + Eurostat, restarts dashboard via `trap EXIT`. Logs to `data/logs/ingest-daily-YYYY-MM-DD.log`. Test run upserted 39,814 Eurostat observations. Documented at `docs/platform-ops/cron.md`. Marked Done with full implementation comment in Linear.
+
+- **OR-79 (Portal nav link)** — BLOCKED on PO. Ghost's Custom Integration JWT does not have permission to write site settings (returns 501 NotImplementedError on `PUT /ghost/api/admin/settings/`). Settings updates require a logged-in admin browser session. Documented in OR-78's closing comment with 5-min setup steps for the PO.
+
+**Why ship now vs. defer:** PO directive overrides cost-discipline default. Theme 1 work is real value: data freshness foundation (OR-85) unlocks every downstream domain dashboard; OR-78 unblocks Theme 2 (content). Two of three Theme 1 items now closed (OR-90 still PO-blocked on Meta portal).
+
+**Follow-up surfaced (not blocking):**
+- DuckDB read-only mode in dbr serve would eliminate the daily 9-minute downtime — file a Linear issue when next touching dbr internals.
+
+**Status:** Shipped. Linear OR-78 + OR-85 = Done. OR-79 + OR-90 = Backlog (PO action).
+
+**Revisit:** Next autonomous Monday (2026-06-01) — pick up Theme 2 (OR-74 blog setup → OR-80 first article) and/or Theme 3 (start OR-56 Labour Market dashboard).
+
+---
+
 <!-- Append new decisions below -->
