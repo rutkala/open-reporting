@@ -2,7 +2,7 @@
 -- Run once against PostgreSQL operational database
 -- Idempotent: uses IF NOT EXISTS throughout
 
-\i platform/database/catalogue/01_domains.sql
-\i platform/database/catalogue/02_domain_details.sql
-\i platform/database/catalogue/03_sources.sql
-\i platform/database/catalogue/04_domain_detail_sources.sql
+\i products/database/catalogue/01_domains.sql
+\i products/database/catalogue/02_domain_details.sql
+\i products/database/catalogue/03_sources.sql
+\i products/database/catalogue/04_domain_detail_sources.sql

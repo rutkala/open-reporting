@@ -53,6 +53,7 @@ _CARD_STYLE = {
 
 def scatter(*, encoding: dict, filter: dict | None = None, options: dict | None = None) -> html.Div:
     enc = parse_encoding(encoding)
+    opts = options or {}
 
     if not (enc.x and enc.x.metric):
         raise ValueError("scatter: encoding.x must bind a metric")
