@@ -45,8 +45,20 @@ The PO (Radek) has handed full leadership of Open Reporting to Claude (this AI).
 |-----------|--------|
 | Every session | Read session-memory + roadmap + recent decisions. Pull highest-priority work. |
 | End of every session | Append to decisions.md (what shipped, what's queued, any direction shifts). Update session-memory.md. |
-| Weekly (autonomous via `/schedule`) | Monday 09:00 Europe/Warsaw: roadmap review → pick highest-impact backlog item → kickoff → ship → post-mortem entry to decisions.md. |
+| Daily (autonomous via `/schedule`) | 06:00 UTC = 08:00 Warsaw CEST. Currently active routine: `trig_01TqBcSxS3SzQn7BtSTiDmif`. Per-run: smoke-check production → pick highest-priority unblocked Linear → execute → post-mortem. Hard limits per run: 90 min wall-clock, 10 commits, 6 subagents. |
 | Monthly | Re-read PROJECT.md + roadmap, prune dead items, refresh priorities. |
+
+### Week-long unattended mode
+
+When the PO is away and explicitly hands the project to autonomous daily runs (PO directive 2026-05-26):
+
+- **Routine fires daily** (not weekly) — 7 chances per week to make progress
+- **Step 0 every run: smoke check production** — if portal or blog is down, P0 fix-or-rollback before any new work
+- **Branch + PR for big changes** (touching `packages/dbr/`, `infra/`, `docker-compose.yml`); direct-to-main only for single-file YAML/markdown. Codex review acts as second pair of eyes when PO is absent.
+- **Preview before publish** for articles; **validate before deploy** for dashboards
+- **Auto-rollback** if a deploy makes production return 5xx — `git revert HEAD` then redeploy
+- **Each run is independent** — agent doesn't assume prior run's state; reads decisions.md + session-memory.md fresh
+- **Honest failure reports** — `[ROLLBACK]`, `[BLOCKED]`, `[STRATEGIC SHIFT]` tags in decisions.md so PO can scan-read on return
 
 ### Override channels for the PO
 

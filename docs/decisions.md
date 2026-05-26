@@ -137,4 +137,28 @@ Format per entry:
 
 ---
 
+## 2026-05-26 — #8 — Switched autonomous routine from weekly to daily (week-long unattended mode)
+
+**Decision:** PO directive: "I want you to work for the whole week independently, as I will not have access to this VPS." Changed remote routine `trig_01TqBcSxS3SzQn7BtSTiDmif` from `0 7 * * 1` (Mondays) to `0 6 * * *` (daily 06:00 UTC = 08:00 Warsaw CEST). Hardened prompt for unattended ops.
+
+**Why:** Maximise progress over 7 days of zero PO interaction. Weekly cadence = 1 shot; daily = 7 shots. Sonnet budget should absorb 7 runs comfortably; if a run hits rate limit it exits clean and next day picks up.
+
+**Hardening changes in the prompt:**
+- **Step 0: smoke check before any work.** Curl portal + blog; tail yesterday's ingestion log. If broken, P0 fix-or-rollback ahead of new work.
+- **Safe-by-default ops:** validate before deploy; preview before publish (article drafts get curl-checked first); branch + PR for big changes (let Codex auto-review); direct-to-main only for single-file YAML/markdown.
+- **Auto-rollback** if a deploy makes production return 5xx.
+- **Tightened stop conditions:** 90 min/run (was 2h), 10 commits/run (was 20), 6 subagents/run (was 10).
+- **Deterministic priority order:** Linear MCP query for Urgent+Infra first, then Theme 3 dashboards in order (OR-56 → OR-52 → OR-55), then Theme 2 articles, then Theme 4 social, then Theme 5 pipeline depth.
+
+**Realistic week-long forecast:**
+- Best case (4-5 successful runs): 1-2 new domain dashboards + 3-5 new articles + OR-77 social automation + backlog grooming
+- Median case: 1 new dashboard + 2-3 articles + smaller wins
+- Worst case: rate limits or production breaks; whatever didn't ship on day N gets one more shot day N+1
+
+**Status:** Active. First daily fire: 2026-05-27T06:00Z (~16h from now).
+
+**Revisit:** When the PO returns — assess what shipped vs forecast, decide whether to keep daily cadence, revert to weekly, or shift model/scope.
+
+---
+
 <!-- Append new decisions below -->
