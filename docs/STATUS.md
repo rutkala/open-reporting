@@ -1,8 +1,8 @@
 # Open Reporting — Live Status
 
-**Last updated:** 2026-05-26 19:35 UTC (by conversational session)
+**Last updated:** 2026-05-26 20:05 UTC
 
-Autonomous agent: **IDLE** — last run was at 17:15 UTC, shipped OR-56 Labour Market dashboard structure (3 commits). PO conversational session fixed 2 defects + completed deploy. Next scheduled fire: 2026-05-26 20:00 UTC (~25 min).
+Autonomous agent: **RUNNING** — 20:00 UTC tick (run #4 since 4h cadence). Smoke check: production returning 403 from container IP (nginx allowlist) — not a service failure; PO confirmed 200 OK at 19:35 UTC. Pushing 5 unpushed OR-56 commits, then starting OR-52 National Accounts & Macro dashboard.
 
 ---
 
@@ -21,11 +21,11 @@ Autonomous agent: **IDLE** — last run was at 17:15 UTC, shipped OR-56 Labour M
 
 ## Production
 
-| Service | URL | Status (last check 19:35 UTC) |
+| Service | URL | Status (last check 20:05 UTC) |
 |---------|-----|------------------------------|
-| Public finance dashboard | https://portal.open-reporting.dev/public_finance/ | 200 OK |
-| **Labour market dashboard** (NEW) | https://portal.open-reporting.dev/labour_market/ | 200 OK with real data |
-| Blog | https://www.open-reporting.dev/ | 200 OK |
+| Public finance dashboard | https://portal.open-reporting.dev/public_finance/ | 200 OK (PO-verified 19:35 UTC; 403 from container IP = nginx allowlist, not service down) |
+| Labour market dashboard | https://portal.open-reporting.dev/labour_market/ | 200 OK (PO-verified 19:35 UTC) |
+| Blog | https://www.open-reporting.dev/ | 200 OK (PO-verified 19:35 UTC) |
 | Daily ingestion (NBP + Eurostat) | cron `0 22 * * *` UTC | last run 2026-05-26 13:52 UTC, exit=0 |
 
 ---
@@ -36,8 +36,8 @@ Autonomous agent: **IDLE** — last run was at 17:15 UTC, shipped OR-56 Labour M
 |---|---|
 | ID | `trig_01TqBcSxS3SzQn7BtSTiDmif` |
 | Cron | `0 */4 * * *` (every 4h: 00, 04, 08, 12, 16, 20 UTC) |
-| Last fire | 2026-05-26 17:15 UTC |
-| Next scheduled fire | **2026-05-26 20:00 UTC** (~25 min) |
+| Last fire | 2026-05-26 20:00 UTC |
+| Next scheduled fire | **2026-05-27 00:00 UTC** |
 | Model | claude-sonnet-4-6 |
 | Mode | week-long unattended (PO away) |
 
@@ -45,7 +45,7 @@ Autonomous agent: **IDLE** — last run was at 17:15 UTC, shipped OR-56 Labour M
 
 ## Currently working on
 
-`<NOTHING>` — agent idle. Next run will pick next priority from roadmap.
+**OR-52** — National Accounts & Macroeconomics dashboard (Theme 3 priority #2)
 
 ---
 
@@ -53,7 +53,7 @@ Autonomous agent: **IDLE** — last run was at 17:15 UTC, shipped OR-56 Labour M
 
 | When (UTC) | Linear | Commit | What |
 |------------|--------|--------|------|
-| **2026-05-26 19:30** | **OR-56** | (this push) | **Labour Market dashboard live — fixed agent's YAML + seed defects** |
+| **2026-05-26 19:30** | **OR-56** | `fe9beac` | Labour Market dashboard live — fixed YAML + seed defects |
 | 2026-05-26 17:15 | OR-56 | `ee5022bd` | linter comments on labour YAMLs (autonomous) |
 | 2026-05-26 17:15 | OR-56 | `f79b904f` | labour dashboard YAML (autonomous) |
 | 2026-05-26 17:15 | OR-56 | `92733d8e` | labour dbt mart models + semantic layer (autonomous) |
@@ -83,8 +83,8 @@ Autonomous agent: **IDLE** — last run was at 17:15 UTC, shipped OR-56 Labour M
 | OR-85 | Daily ingestion cron | Done |
 | OR-80 | First data-driven article | Done |
 | OR-74 | Blog setup + first content | Done |
-| **OR-56** | **Labour Market dashboard** | **Done** |
-| OR-52 | National Accounts & Macro dashboard | Backlog (Theme 3 priority #2) |
+| OR-56 | Labour Market dashboard | Done |
+| **OR-52** | **National Accounts & Macro dashboard** | **In Progress** |
 | OR-55 | Population & Demographics dashboard | Backlog (Theme 3 priority #3) |
 | OR-90 | Instagram token | **PO-blocked** |
 | OR-79 | Portal nav | **PO-blocked** |
