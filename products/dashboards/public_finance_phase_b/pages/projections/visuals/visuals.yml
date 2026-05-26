@@ -1,9 +1,0 @@
-# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
-# Dwa wykresy: saldo + saldo pierwotne (lewy), długi brutto i netto (prawy).
-# Każda seria ma fragment historyczny (linia ciągła) i prognozowany (linia
-# przerywana). Punkt przejścia: ostatni rok historyczny wg najnowszego WEO.
-
-rows:
-  - items:
-      - { visual: balance_projection, width: "50%" }
-      - { visual: debt_projection,    width: "50%" }

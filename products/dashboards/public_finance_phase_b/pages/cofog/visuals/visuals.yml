@@ -1,6 +1,0 @@
-# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
-# Wydatki publiczne wg funkcji COFOG — jeden wykres skumulowany.
-
-rows:
-  - items:
-      - { visual: cofog_stack, width: "100%" }

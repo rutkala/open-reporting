@@ -1,6 +1,0 @@
-# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
-# Porównanie UE: jedno horyzontalne porównanie krajów (2024).
-
-rows:
-  - items:
-      - { visual: eu_balance, width: "100%" }

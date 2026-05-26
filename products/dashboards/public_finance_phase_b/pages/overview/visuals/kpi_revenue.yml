@@ -1,8 +1,0 @@
-# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
-# Dochody sektora finansów publicznych Polski — najnowsza wartość roczna.
-
-type: card
-encoding:
-  value: { metric: govt_revenue }
-filter:
-  geo: PL
