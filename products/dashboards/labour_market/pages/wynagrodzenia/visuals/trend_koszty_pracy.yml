@@ -1,5 +1,7 @@
 # yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
-# Wzrost kosztów pracy w Polsce r/r — indeks LCI Eurostat.
+# Wzrost kosztów pracy r/r — Polska.
+# Reference line at 0: visually separates growth from contraction without relying on colour alone.
+# Single series — no legend needed.
 
 type: line
 encoding:

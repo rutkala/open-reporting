@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
-# Wskaźnik wakatów w Polsce — udział wolnych miejsc pracy w ogóle etatów.
+# Wskaźnik wakatów — Polska.
+# Single series — vacancy pressure post-pandemic; no legend needed.
 
 type: line
 encoding:

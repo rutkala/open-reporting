@@ -1,8 +1,8 @@
 # yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
 # Page 3 layout — wages and vacancies:
-#   Row 1: wage growth trend PL (full width)
-#   Row 2: minimum wage multi-country Visegrad comparison (full width) with prose
-#   Row 3: vacancy rate trend PL (full width)
+#   Row 1: Labour cost growth YoY — Poland (full width)
+#   Row 2: Minimum wage EUR — Visegrad + DE + RO comparison + contextual prose (full width)
+#   Row 3: Vacancy rate — Poland (full width)
 
 rows:
   - title: "Wzrost kosztów pracy — Polska r/r"

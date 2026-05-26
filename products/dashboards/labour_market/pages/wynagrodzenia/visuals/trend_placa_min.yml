@@ -1,5 +1,8 @@
 # yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
-# Płaca minimalna — porównanie Polska i wybrane kraje UE (Wyszehrad + DE).
+# Płaca minimalna EUR/mies. — Polska i kraje Wyszehradzkie + Rumunia + Niemcy.
+# 6 series: PL, CZ, HU, SK, RO, DE — at the Cowan 4±1 upper bound (6 categorical series).
+# Line over bar: multi-year convergence trend is the story; temporal order matters.
+# Categorical palette resolves through theme.yaml — no hex literals.
 
 type: line
 encoding:

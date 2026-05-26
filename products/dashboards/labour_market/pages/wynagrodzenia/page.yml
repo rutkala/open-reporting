@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/page.schema.json
-# Page 3 — wages and vacancy dynamics: wage growth trend, minimum wage
-# Visegrad comparison, vacancy rate signal.
+# Page 3 — wages and vacancies: labour cost growth, minimum wage convergence, vacancy pressure.
+# Story it tells: Poland's rapid minimum wage catch-up and tight post-pandemic labour market.
 
 title:  Wynagrodzenia i wakaty
 anchor: wynagrodzenia
