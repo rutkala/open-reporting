@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
-# Deficyt fiskalny UE-27 w 2024 — Polska wyróżniona.
+# Deficyt fiskalny UE-27, dwa najnowsze lata side-by-side — Polska wyróżniona.
 
 type: bar
 encoding:
@@ -7,8 +7,8 @@ encoding:
   y: { dimension: geo__country_name_pl }
 filter:
   geo: [AT, BE, BG, CY, CZ, DE, DK, EE, EL, ES, FI, FR, HR, HU, IE, IT, LT, LU, LV, MT, NL, PL, PT, RO, SE, SI, SK]
-  date_key__cal_year: 2024
 options:
+  dual_year: true
   sort: value-asc
   highlight:
     value: Polska
@@ -16,7 +16,9 @@ options:
     other: slate_3
   reference_lines:
     - { value: -3, label: "Próg SGP", color: negative }
-  annotations:
-    - { x: -6.5, text: "Polska wyróżniona azurowym", direction: right, color: azure_1 }
   table:
-    row_limit: 27
+    row_limit: 54
+    labels:
+      geo__country_name_pl: "Kraj"
+      date_key__cal_year: "Rok"
+      fiscal_balance: "Saldo (% PKB)"

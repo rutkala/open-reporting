@@ -20,8 +20,8 @@ import plotly.graph_objects as go
 
 from dbr.semantic import semantic_query_data
 from dbr.theme import (
-    AZURE_1, BG_SURFACE, BAR_CHART_BARGAP, BAR_CHART_HEIGHT,
-    CARD_RADIUS, CARD_SHADOW, SLATE_1,
+    AZURE_1, AZURE_PALE, BG_SURFACE, BAR_CHART_BARGAP, BAR_CHART_HEIGHT,
+    CARD_RADIUS, CARD_SHADOW, SLATE_1, SLATE_3, SLATE_4,
 )
 from dbr.visuals._encoding import (
     apply_annotations, apply_reference_lines, _ANNOTATIONS_OPTION_SCHEMA, postprocess_time_columns,
@@ -78,6 +78,21 @@ SCHEMA = {
                 },
                 "table": _TABLE_OPTION_SCHEMA,
                 "annotations": _ANNOTATIONS_OPTION_SCHEMA,
+                "dual_year": {
+                    "oneOf": [
+                        {"type": "boolean"},
+                        {
+                            "type": "object",
+                            "additionalProperties": False,
+                            "required": ["current", "prior"],
+                            "properties": {
+                                "current": {"type": "integer"},
+                                "prior":   {"type": "integer"},
+                            },
+                        },
+                    ],
+                    "description": "Render side-by-side prior/current year bars per category. true = auto-detect latest 2 years; {current, prior} = explicit. Closes rubric dim 13 (dual-year grouped encoding > animated change).",
+                },
             },
         },
     },
@@ -98,9 +113,20 @@ def bar(*, encoding: dict, filter: dict | None = None, options: dict | None = No
     if not (enc.y and enc.y.dimension):
         raise ValueError("bar: encoding.y must bind a dimension")
 
-    group_by = group_by_from_channels(enc.y, enc.color)
     y_col = dimension_column_name(enc.y)
     metric = enc.x.metric
+
+    dual = opts.get("dual_year")
+    if dual:
+        # dual_year overrides the standard query path. We need both years of
+        # data per category, so we drop any single-year filter the YAML had
+        # and add date_key__cal_year to group_by.
+        return _render_dual_year(
+            metric=metric, y_col=y_col, enc=enc,
+            filter=filter, opts=opts, dual=dual,
+        )
+
+    group_by = group_by_from_channels(enc.y, enc.color)
 
     df = semantic_query_data(metric, group_by=group_by, filter=filter, order=y_col)
     if df.empty:
@@ -137,6 +163,86 @@ def bar(*, encoding: dict, filter: dict | None = None, options: dict | None = No
     fig.update_layout(
         height=int(str(BAR_CHART_HEIGHT).rstrip("px")),
         bargap=BAR_CHART_BARGAP, xaxis_title="", yaxis_title="",
+    )
+    apply_reference_lines(fig, opts, axis="x")
+    apply_annotations(fig, opts)
+    return chart_with_optional_table(fig, df, opts, _CARD_STYLE)
+
+
+def _render_dual_year(*, metric, y_col, enc, filter, opts, dual) -> html.Div:
+    """Render a grouped bar chart with prior + current year per category.
+
+    Prior year: muted slate-grey (azure-pale for the highlighted category).
+    Current year: full accent (azure for the highlighted category).
+
+    Side-by-side grouping puts both years adjacent per category — readable
+    YoY comparison without a time slider or animation.
+    """
+    # Strip any single-year filter; we need both years of data
+    yr_filter = (filter or {}).copy()
+    yr_filter.pop("date_key__cal_year", None)
+
+    group_by = group_by_from_channels(enc.y) + ["date_key__cal_year"]
+    df = semantic_query_data(metric, group_by=group_by, filter=yr_filter, order=y_col)
+    if df.empty:
+        return html.Div("No data", style=_CARD_STYLE)
+    df = postprocess_time_columns(df, enc)
+
+    # Pick the two years
+    if isinstance(dual, dict):
+        current_year = dual["current"]
+        prior_year = dual["prior"]
+    else:
+        years_in_data = sorted(df["date_key__cal_year"].unique())
+        if len(years_in_data) < 2:
+            return html.Div("Dual-year requires ≥2 years of data", style=_CARD_STYLE)
+        current_year, prior_year = years_in_data[-1], years_in_data[-2]
+    df = df[df["date_key__cal_year"].isin([current_year, prior_year])]
+
+    # Sort categories by current-year value (most useful for "who's worst now")
+    sort = opts.get("sort", "value-asc")
+    current_df = df[df["date_key__cal_year"] == current_year]
+    if sort == "value-asc":
+        cat_order = current_df.sort_values(metric, ascending=True)[y_col].tolist()
+    elif sort == "value-desc":
+        cat_order = current_df.sort_values(metric, ascending=False)[y_col].tolist()
+    else:
+        cat_order = current_df.sort_values(y_col)[y_col].tolist()
+
+    # Per-trace colour: highlight applied within each year's trace
+    hi = opts.get("highlight") or {}
+    target = hi.get("value")
+    accent = _resolve_color(hi.get("color"), AZURE_1)
+    grey   = _resolve_color(hi.get("other"), SLATE_3)
+    accent_pale = AZURE_PALE
+    grey_pale   = SLATE_4
+
+    fig = go.Figure()
+    # Prior year — muted shades
+    prior_df = df[df["date_key__cal_year"] == prior_year].set_index(y_col).reindex(cat_order).reset_index()
+    prior_colors = [
+        (accent_pale if v == target else grey_pale) for v in prior_df[y_col]
+    ] if target else [grey_pale] * len(prior_df)
+    fig.add_trace(go.Bar(
+        x=prior_df[metric], y=prior_df[y_col], orientation="h",
+        marker=dict(color=prior_colors),
+        name=str(prior_year),
+    ))
+    # Current year — full accent
+    curr_df = df[df["date_key__cal_year"] == current_year].set_index(y_col).reindex(cat_order).reset_index()
+    curr_colors = [
+        (accent if v == target else grey) for v in curr_df[y_col]
+    ] if target else [grey] * len(curr_df)
+    fig.add_trace(go.Bar(
+        x=curr_df[metric], y=curr_df[y_col], orientation="h",
+        marker=dict(color=curr_colors),
+        name=str(current_year),
+    ))
+    fig.update_layout(
+        height=int(str(BAR_CHART_HEIGHT).rstrip("px")),
+        bargap=BAR_CHART_BARGAP, xaxis_title="", yaxis_title="",
+        barmode="group",
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
     )
     apply_reference_lines(fig, opts, axis="x")
     apply_annotations(fig, opts)
