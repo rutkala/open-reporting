@@ -161,4 +161,25 @@ Format per entry:
 
 ---
 
+## 2026-05-26 15:02 UTC — #9 — Cadence correction: every 4 hours + immediate trigger
+
+**Decision:** PO pushback: "why daily? we are at 5pm Today, a lot of time wasted before tomorrow 8am". Two changes:
+1. Cron `0 6 * * *` (daily) → `0 */4 * * *` (every 4 hours: 00, 04, 08, 12, 16, 20 UTC) → ~42 runs over the week (was 7)
+2. Triggered an immediate manual run (don't wait for the 16:00 UTC cron tick — start NOW)
+
+**Why:** Maximise chances of progress with PO away. Sonnet is the model; Pro quota should absorb 42 runs comfortably. Most runs will be small/incremental — cumulative progress is the goal, not heroic single sessions. If rate limits fire, agent exits clean + next 4h tick picks up.
+
+**Prompt patched to match:**
+- "you will fire every 4 hours...~42 runs total"
+- "Most runs will be small ones — that's fine; cumulative progress is what matters. Don't try to do everything in one run."
+- Added "When there's nothing to do" section — pivot to rubric re-review, backlog grooming, or Wave 3 reference captures rather than burning a run on nothing
+- "IMPORTANT: previous runs may have already advanced work — check git log -20 and Linear recently-Done so you don't redo finished work"
+- Multi-run dashboard builds use "In Progress" status to signal continuation across runs
+
+**Status:** Active. Manual run triggered at 15:02 UTC; next cron tick 16:00 UTC; then every 4 hours.
+
+**Revisit:** When PO returns — assess total progress, decide whether to keep 4h cadence or scale back.
+
+---
+
 <!-- Append new decisions below -->
