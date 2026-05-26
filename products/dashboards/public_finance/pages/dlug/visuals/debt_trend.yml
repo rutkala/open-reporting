@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Dług publiczny Polski (% PKB) z linią Maastricht 60%.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: public_debt }
+filter:
+  geo: PL
+options:
+  reference_lines:
+    - { value: 60, label: "Próg Maastricht (60% PKB)", color: negative }
+  annotations:
+    - { x: 2020, y: 56.9, text: "COVID-19", direction: above, color: subtext }
+    - { x: 2009, y: 49.7, text: "GFC",      direction: above, color: subtext }
+  table:
+    row_limit: 30

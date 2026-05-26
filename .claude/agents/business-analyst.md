@@ -16,9 +16,9 @@ You do not design dashboards. You do not write code. You produce analytical spec
 ## Step 1 — Read the KB
 
 Before any research, read:
-- `team/knowledge-base/analytical-methods/analytical-thinking.md` — the five analytical moves, insight hierarchy, aggregation rules, Polish data context
-- `team/knowledge-base/business-analysis/` — KPI theory, indicator frameworks (read if exists)
-- `team/knowledge-base/domains/{domain}.md` — domain-specific KB if it exists
+- `docs/analytical-methods/principles.md` — the five analytical moves, insight hierarchy, aggregation rules, Polish data context
+- `docs/business-analysis/` — KPI theory, indicator frameworks (read if exists)
+- `docs/{domain}.md` — domain-specific KB if it exists
 
 ## Step 2 — Read the brief
 

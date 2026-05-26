@@ -16,8 +16,8 @@ You do not write content. You do not propose alternatives. You evaluate the cont
 ## Step 1 — Read the rules and KB
 
 Read in full before evaluating:
-- `team/standards/evaluation/content-review.md` — your evaluation checklist (P1 / P2 / P3)
-- `team/knowledge-base/content/editorial.md` — editorial standards, inverted pyramid, fact-checking, Polish press law, writing structure
+- `docs/content/reviewing.md` — your evaluation checklist (P1 / P2 / P3)
+- `docs/content/principles.md` — editorial standards, inverted pyramid, fact-checking, Polish press law, writing structure
 
 These are your grounding. Do not invent findings beyond what these documents cover.
 

@@ -1,0 +1,68 @@
+version: 2
+
+# dim_calendar serves two roles:
+#   1. MetricFlow's time spine (day-grain calendar for DATE_TRUNC operations)
+#   2. A regular dimension table joined to fact tables on `date_key`
+#
+# Star-schema convention: every fact table that needs date slicing declares
+# a `foreign` entity named `date_key` joining to this dim. Visuals can then
+# group by `year`, `quarter`, `month`, `year_quarter`, or `year_month`.
+
+models:
+  - name: dim_calendar
+    description: Shared day-grain calendar dimension with pre-built year/quarter/month labels.
+    time_spine:
+      standard_granularity_column: date_key
+    columns:
+      - name: date_key
+        description: One row per day, 1980-01-01..2050-12-31. Primary key.
+        granularity: day
+        tests: [not_null, unique]
+      - name: year
+        description: Calendar year as integer (e.g. 2024).
+        tests: [not_null]
+      - name: quarter
+        description: Calendar quarter 1..4.
+        tests: [not_null]
+      - name: month
+        description: Calendar month 1..12.
+        tests: [not_null]
+      - name: year_quarter
+        description: Human-readable year+quarter, e.g. "2024 Q1".
+        tests: [not_null]
+      - name: year_month
+        description: Year+zero-padded month, e.g. "2024-01".
+        tests: [not_null]
+
+semantic_models:
+  - name: dim_calendar
+    description: Calendar dimension for date-based slicing across all fact tables.
+    model: ref('dim_calendar')
+
+    entities:
+      - name: date_key
+        type: primary
+        expr: date_key
+
+    # Note on naming: MetricFlow reserves `year`, `quarter`, `month` as
+    # time-grain keywords (used in `metric_time__year` etc.) and blocks
+    # them as dimension names. We therefore expose the calendar columns
+    # with a `cal_` prefix at the semantic-layer level — the SQL column
+    # names in dim_calendar stay as `year`, `quarter`, `month` per the
+    # data-model convention, and the `expr:` field maps between them.
+    dimensions:
+      - name: cal_year
+        type: categorical
+        expr: year
+      - name: cal_quarter
+        type: categorical
+        expr: quarter
+      - name: cal_month
+        type: categorical
+        expr: month
+      - name: cal_year_quarter
+        type: categorical
+        expr: year_quarter
+      - name: cal_year_month
+        type: categorical
+        expr: year_month

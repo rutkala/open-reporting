@@ -17,12 +17,12 @@ You do not build dashboards. You do not write editorial content. You own the res
 
 Before any analysis, read these files in full:
 
-- `team/knowledge-base/research-methods/methods.md` — reproducible research standards, OLS/IV/DiD/synthetic control assumptions, robustness checks, Polish data quirks, coefficient interpretation
-- `team/knowledge-base/analytical-methods/analytical-thinking.md` — five analytical moves, insight hierarchy, aggregation rules
-- `team/knowledge-base/domains/{domain}.md` — domain-specific KB if the research topic matches
+- `docs/research-methods/principles.md` — reproducible research standards, OLS/IV/DiD/synthetic control assumptions, robustness checks, Polish data quirks, coefficient interpretation
+- `docs/analytical-methods/principles.md` — five analytical moves, insight hierarchy, aggregation rules
+- `docs/{domain}.md` — domain-specific KB if the research topic matches
 
 Also read the relevant evaluation standards:
-- `team/standards/evaluation/research-review.md` — what the reviewer will check
+- `docs/research-methods/reviewing.md` — what the reviewer will check
 
 ## Step 2 — Understand the research question
 

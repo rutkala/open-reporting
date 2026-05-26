@@ -4,54 +4,47 @@ Architecture decision record for the Open Reporting analytical warehouse.
 
 ---
 
-## Architecture: Medallion with Kimball-style Conformed Dimensions
+## Architecture: Medallion + standard dbt layout + MetricFlow semantic layer
 
-The warehouse follows the **medallion pattern** (bronze / silver / gold), with Kimball-style
-conformed dimensions used in the silver integration layer.
+The warehouse follows the **medallion pattern** (raw → curated) with Kimball-style conformed dimensions, organised inside the dbt project (`products/warehouse/`) using the standard dbt convention (`staging/intermediate/marts/dim/semantic`). Dashboards never query the warehouse directly — they go through **MetricFlow** (the semantic layer), which the dbr framework wraps.
 
 ```
-Bronze  raw.*                      Source-aligned, untouched, reproducible from source
-        ↓  dbt stg_*.sql
-Silver  curated.all_indicators     Integration layer — all sources unified, atomic grain
-        curated.stg_*              Source-staging models (dbt-internal, not queried directly)
-        curated.dim_*              Conformed dimensions (Kimball-style)
-        ↓  dbt mart_*.sql (future)
-Gold    curated.mart_labour        Domain-specific marts — pre-joined, Polish labels, derived metrics
-        curated.mart_finance       (built per domain as dashboards mature)
-        ...
+raw.*                                Source-aligned, untouched, reproducible
+    ↓  models/staging/<source>/stg_*.sql
+curated.stg_*                        Conformed staging — one model per source
+    ↓  models/intermediate/{int_*,  by_domain/<X>_indicators.sql}
+curated.int_*                        Cross-source consolidations (e.g. int_finance_consolidated)
+curated.{agr,bus,…}_indicators       Per-domain wide views over curated.all_indicators
+    ↓  models/marts/<domain>/fact_*.sql
+curated.fact_*                       Star-schema facts ready for the semantic layer
+curated.dim_*                        Shared dimensions (dim_geo, dim_calendar, dim_cofog)
+    ↓  models/semantic/*.yml         MetricFlow semantic_models + metrics (no SQL)
+MetricFlow (in-process engine)       Metric name → SQL, run by dbr.semantic at dashboard render
+    ↓
+dbr visual factory (Plotly figure)
 ```
 
-### Silver layer — what it is and what it is not
+### The two-table type — wide vs star
 
-`curated.all_indicators` is the **silver integration layer**: a single cross-domain observation
-table that unifies all sources into a consistent, conformed schema. It is the single source of
-truth for all analytical data in the warehouse.
+The warehouse has **two distinct fact-table shapes**:
 
-It is **not** a Kimball fact table. Kimball requires one fact table per business process (one
-for labour, one for public finance, one for prices, etc.). `all_indicators` spans all 18 domains
-deliberately — this is the correct design for an integration layer. Kimball's principle of named,
-conformed semantic columns **is** applied here (no EAV), but the table itself is the integration
-layer, not the presentation layer.
+- **Wide cross-source integration:** `curated.all_indicators` (the legacy "silver" integration layer — one row per source × detail × geo × period, with 24 sparse `dim_*` columns). Still produced by `models/staging/eurostat/all_indicators.sql` for use by cross-domain discovery (Explorer-style tools).
+- **Domain star-schema facts:** `curated.fact_<domain>_<topic>` (Kimball-style, narrow). Joined by their foreign-key entities to `curated.dim_*` tables. Consumed by MetricFlow semantic models. This is what dashboards see.
 
-**The Explorer queries silver directly** — this is correct. The Explorer is a cross-domain
-discovery tool; no single gold mart can serve it.
-
-**Domain dashboards should query gold marts**, not silver directly. Gold marts are built per
-domain on top of the silver layer. They contain only domain-relevant columns, pre-joined Polish
-labels, and any pre-computed metrics. The gold layer is built domain by domain as dashboards
-mature.
+The Explorer (cross-domain discovery) reads `curated.all_indicators`; domain dashboards read facts via the semantic layer. Both patterns coexist.
 
 ### Conformed dimensions (Kimball-style)
 
-The `curated.dim_*` tables are Kimball-style conformed dimensions — managed once, shared across
-all queries:
+The `curated.dim_*` tables are Kimball-style conformed dimensions — managed once, shared across all facts:
 
 | Table | Rows | Purpose |
 |-------|------|---------|
+| `curated.dim_geo` | 34 | Eurostat country codes (EU-27 + EFTA + non-European peers), Polish/English names, EU membership, continent |
+| `curated.dim_calendar` | ~25,900 | Day-grain calendar 1980–2050 with year/quarter/month/year_quarter/year_month columns. Also serves as MetricFlow time spine. |
+| `curated.dim_cofog` | 10 | COFOG-10 functional spending classification (Polish/English labels) |
 | `curated.dim_domain_detail` | 305 | Indicator catalogue — all valid `detail_id` values, labels, domains, units |
-| `curated.dim_source` | 3 | Source registry |
-| `curated.dim_geo` | 25 | Geographic hierarchy — PL + NUTS1 + NUTS2 |
-| `curated.dim_calendar` | ~420 | Monthly spine 1995–2029 |
+| `curated.dim_source` | 3 | Source registry (eurostat, nbp, dbw) |
+| `curated.dim_primary_source` | small | Primary-source registry |
 
 ---
 
@@ -144,50 +137,77 @@ END AS dim_sex
 
 ---
 
-## Gold Layer (domain data marts)
+## Star-schema fact layer (`marts/<domain>/`)
 
-Domain dashboards (Labour, Public Finance, etc.) should query **gold marts**, not
-`curated.all_indicators` directly. Gold marts are built per domain as domain dashboards mature.
+Domain dashboards query the warehouse exclusively through MetricFlow metrics defined on star-schema facts. Each fact lives in `products/warehouse/models/marts/<domain>/` with shape:
 
-A gold mart differs from the silver layer in:
-- **Domain scope** — only the indicators relevant to that domain; all 22+ irrelevant dim columns removed
-- **Pre-joined labels** — Polish indicator names, unit labels, geographic names resolved at build time
-- **Derived metrics** — YoY change, gender gap, ratios pre-computed as columns
-- **Business hierarchy** — domain-specific groupings (e.g. Revenue / Expenditure / Balance for finance)
-
-Gold marts are built as dbt models in `platform/processing/dbt/models/marts/`:
 ```
-marts/
-├── labour/mart_labour.sql
-├── finance/mart_finance.sql
-└── ...
+marts/finance/
+├── fact_finance_overview.sql              ← measures fact (wide, one column per measure)
+├── fact_finance_overview.yml              ← schema + tests
+├── fact_finance_cofog.sql                 ← long-format fact (one row per geo/period/function)
+├── fact_finance_imf.sql                   ← annual wide, with is_projection flag
+├── fact_finance_revenue_expenditure.sql   ← annual wide
+└── schema.yml
 ```
 
-Each is a `SELECT` from `curated.all_indicators` with pre-joins to dim tables, column pruning,
-and any computed columns. Adding a gold mart does not change the silver layer.
+A fact in this project is:
+- **Domain-scoped** — only the indicators relevant to one domain
+- **Star-schema** — narrow tables with foreign-key entities (`geo`, `date_key`, `cofog_function`) that join to `curated.dim_*`
+- **MetricFlow-ready** — exposes measures (raw aggregations) that the semantic layer wraps as metrics
+- **Built from intermediate consolidations** — uses `{{ ref('int_*') }}`, not raw or all_indicators directly
+
+### Intermediate layer (`intermediate/`)
+
+The intermediate layer holds two patterns:
+
+- **`int_finance_consolidated.sql`** — cross-source consolidation. Brings Eurostat + IMF + DBW finance data into one long-format intermediate. Facts in `marts/finance/` pivot this into wide MetricFlow-ready shapes.
+- **`intermediate/by_domain/<X>_indicators.sql`** (18 files) — per-domain filtered views over `all_indicators`. Used by cross-domain discovery (Explorer-style) and as inputs to domain consolidations.
+
+### Semantic layer (`semantic/`)
+
+MetricFlow YAMLs define **measures** (raw aggregations on a fact) and **metrics** (named, formatted business KPIs). Dashboards reference metrics by name only — they never see SQL.
+
+```
+models/semantic/
+├── finance_overview.yml          ← semantic_model + 3 metrics (fiscal_balance, public_debt, govt_revenue)
+├── finance_cofog.yml             ← 1 metric (cofog_expenditure) over the long-format fact
+├── finance_imf.yml               ← 5 IMF WEO metrics + is_projection dimension
+└── finance_revenue_expenditure.yml  ← 9 revenue/expenditure metrics
+```
+
+Polish labels, format (`% PKB`, `mld zł`), scale, and thresholds (SGP −3%, Maastricht 60%) live in `metric.config.meta` blocks and are read by dbr at render time.
 
 ---
 
 ## Rules
 
-1. **Dashboards query `curated.*` only** — never `raw.*` directly.
-2. **Explorer queries silver** (`curated.all_indicators`) — this is correct and intentional.
-3. **Domain dashboards query gold** (their domain mart) — not silver.
-4. **Silver is append/replace, never modified** — re-run `dbt run` to refresh.
-5. **NULL for absent dimensions** — do not use empty string or placeholder values in dim columns.
-6. **Adding a new dimension** — if a new source introduces a dimension not in the current 24,
-   add a new `dim_{name} VARCHAR` column to all staging models and update this document.
+1. **Dashboards consume metrics, not tables** — `semantic_query()` / `semantic_query_data()` in dbr, never raw SQL against `curated.*`.
+2. **Cross-domain discovery (Explorer-style) reads `curated.all_indicators`** — intentional bypass of the semantic layer for "show me everything" UX.
+3. **Raw tables (`raw.*`) are never queried by anything except staging** — strict layer discipline.
+4. **NULL for absent dimensions** in `all_indicators` — do not use empty string or placeholder values.
+5. **Adding a new dimension column** — if a new source introduces a dim not in the current 24, add a new `dim_{name} VARCHAR` column to `models/staging/<source>/` and update this document.
+6. **Dashboards open warehouse read-only** — via the `dashboard` dbt target (`config_options.access_mode: READ_ONLY`) so multiple dashboard services can hold concurrent MetricFlow engines.
 
 ---
 
 ## Adding a New Source (checklist)
 
-1. Ingest to `raw.{source}_{entity}` — follow `standards/ingestion.md`
-2. Create `platform/processing/dbt/models/{source}/stg_{source}.sql` — conform to 33-column schema
-3. Map source dimension slots to named semantic columns; `null::varchar` for unpopulated dims
-4. If source has a new dimension type not in the 24: add `dim_{name} VARCHAR` to all staging models
-5. Union `select * from {{ ref('stg_{source}') }}` into `all_indicators.sql`
-6. Add source row to `dim_source.csv` seed
-7. Add indicator rows to `dim_domain_detail.csv` seed
-8. Run `dbt seed --full-refresh && dbt run`
-9. Validate: row counts per source, NULL rates per dim column, sample values in Explorer
+1. Ingest to `raw.{source}_{entity}` — follow `docs/data-engineering/ingestion.md`. Raw-table DDL is co-located: `products/ingestion/to_raw/<source>.sql` next to `<source>.py`, loaded via `ensure_table()` at runtime.
+2. Create `products/warehouse/models/staging/{source}/stg_{source}.sql` — conform to the 33-column shape if joining `all_indicators`, otherwise design for the source's natural shape and let `int_*` consolidate later.
+3. Map source dimension slots to named semantic columns; `null::varchar` for unpopulated dims.
+4. If source has a new dimension type not in the current 24: add `dim_{name} VARCHAR` to all staging models that feed `all_indicators`.
+5. (If integrating with `all_indicators`) Union `select * from {{ ref('stg_{source}') }}` into `models/staging/eurostat/all_indicators.sql`.
+6. Add source row to `dim_source.csv` seed.
+7. Add indicator rows to `dim_domain_detail.csv` seed.
+8. Run `dbt seed --full-refresh && dbt run`.
+9. Validate: row counts per source, NULL rates per dim column.
+
+## Adding a New Domain Dashboard (checklist)
+
+1. Build the dimensions you need in `models/dim/` (or reuse existing).
+2. Consolidate source data into `models/intermediate/int_{domain}_consolidated.sql` if multi-source.
+3. Build star-schema fact(s) in `models/marts/{domain}/fact_{domain}_{topic}.sql` — wide for headline KPIs, long for breakdowns (see `fact_finance_cofog.sql`).
+4. Define semantic model in `models/semantic/{domain}_{topic}.yml` — measures + metrics with Polish labels.
+5. Author the dashboard YAML in `products/dashboards/{domain}/` following the `public_finance` pattern.
+6. `dbr validate` then `dbr run`.

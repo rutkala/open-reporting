@@ -1,0 +1,110 @@
+version: 2
+
+# MetricFlow semantic model for IMF WEO public-finance projections.
+#
+# Five metrics keyed to the WEO indicator set. The `is_projection`
+# categorical dimension is the lever the line visual uses (via
+# `options.dash_when`) to draw history as a solid trace and forecast
+# years as a dashed continuation in the same color.
+
+semantic_models:
+  - name: finance_imf
+    description: Annual IMF WEO public-finance metrics (% GDP) with history/projection flag.
+    model: ref('fact_finance_imf')
+
+    defaults:
+      agg_time_dimension: period
+
+    # Short primary-entity name so MetricFlow's mandatory `<entity>__<dim>`
+    # prefix for native dimensions stays readable in dashboard YAMLs
+    # (e.g. `imf__is_projection` rather than `finance_imf_row__is_projection`).
+    primary_entity: imf
+
+    entities:
+      - name: geo
+        type: foreign
+        expr: geo
+      - name: date_key
+        type: foreign
+        expr: period_date
+
+    dimensions:
+      # INTERNAL — MetricFlow requirement; not used in dashboard YAMLs.
+      - name: period
+        type: time
+        expr: period_date
+        type_params:
+          time_granularity: year
+
+      - name: is_projection
+        description: TRUE if the row is an IMF WEO forecast, FALSE if historical.
+        type: categorical
+        expr: is_projection
+
+    measures:
+      - name: fiscal_balance_imf
+        agg: average
+        expr: fiscal_balance_imf
+      - name: primary_balance_imf
+        agg: average
+        expr: primary_balance_imf
+      - name: structural_balance_imf
+        agg: average
+        expr: structural_balance_imf
+      - name: gross_debt_imf
+        agg: average
+        expr: gross_debt_imf
+      - name: net_debt_imf
+        agg: average
+        expr: net_debt_imf
+
+metrics:
+  - name: fiscal_balance_weo
+    label: Saldo fiskalne (MFW)
+    type: simple
+    type_params: { measure: fiscal_balance_imf }
+    config:
+      meta:
+        format: { decimals: 1, suffix: "% PKB", scale: 1 }
+        source_label: "MFW World Economic Outlook"
+        ascending_is_good: true
+
+  - name: primary_balance_weo
+    label: Saldo pierwotne (MFW)
+    type: simple
+    type_params: { measure: primary_balance_imf }
+    config:
+      meta:
+        format: { decimals: 1, suffix: "% PKB", scale: 1 }
+        source_label: "MFW WEO — saldo bez kosztów obsługi długu"
+        ascending_is_good: true
+
+  - name: structural_balance_weo
+    label: Saldo strukturalne (MFW)
+    type: simple
+    type_params: { measure: structural_balance_imf }
+    config:
+      meta:
+        format: { decimals: 1, suffix: "% PKB", scale: 1 }
+        source_label: "MFW WEO — saldo cyklicznie skorygowane"
+        ascending_is_good: true
+
+  - name: gross_debt_weo
+    label: Dług publiczny brutto (MFW)
+    type: simple
+    type_params: { measure: gross_debt_imf }
+    config:
+      meta:
+        format: { decimals: 1, suffix: "% PKB", scale: 1 }
+        source_label: "MFW WEO — dług brutto sektora rządowego"
+        ascending_is_good: false
+
+  - name: net_debt_weo
+    label: Dług publiczny netto (MFW)
+    type: simple
+    type_params: { measure: net_debt_imf }
+    config:
+      meta:
+        format: { decimals: 1, suffix: "% PKB", scale: 1 }
+        source_label: "MFW WEO — dług netto sektora rządowego"
+        ascending_is_good: false

@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 4 layout — two ranked EU-27 horizontal bars (deficit + debt).
+# Polska highlighted in azure in both.
+
+rows:
+  - title: "Deficyt fiskalny 2024 (% PKB)"
+    prose: |
+      W 2024 r. **Polska przekroczyła próg SGP** (-3% PKB) z deficytem ~-6,5%.
+      Tylko Rumunia notuje większy deficyt w UE-27. Niemcy, Holandia i Dania
+      pozostają znacząco poniżej progu.
+    items:
+      - { visual: eu_deficit, width: "100%" }
+  - title: "Dług publiczny 2024 (% PKB)"
+    prose: |
+      Dług publiczny Polski (~55% PKB) **mieści się poniżej** progu Maastricht
+      (60% PKB), ale przewyższa średnią krajów Europy Środkowo-Wschodniej.
+      Najwyższe długi w UE-27 notują Grecja i Włochy.
+    items:
+      - { visual: eu_debt,    width: "100%" }

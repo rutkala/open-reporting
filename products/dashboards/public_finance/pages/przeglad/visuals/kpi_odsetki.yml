@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Koszty obsługi długu publicznego — % PKB.
+# Context (for editorial framing when E2 lands): zbliżyły się do wydatków na obronę (~2.1% PKB).
+
+type: card
+encoding:
+  value: { metric: interest_expenditure }
+filter:
+  geo: PL
+options:
+  delta:
+    vs: prior_year
+    format: icon-first

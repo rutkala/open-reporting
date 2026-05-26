@@ -1,0 +1,20 @@
+version: 2
+
+models:
+  - name: fact_finance_imf
+    description: Wide annual fact — IMF WEO public-finance metrics (% GDP) with is_projection flag.
+    columns:
+      - name: geo
+        tests: [not_null]
+      - name: period_year
+        tests: [not_null]
+      - name: period_date
+        tests: [not_null]
+      - name: is_projection
+        description: TRUE if this row is an IMF WEO forecast value, FALSE if historical.
+        tests: [not_null]
+      - name: fiscal_balance_imf
+      - name: primary_balance_imf
+      - name: structural_balance_imf
+      - name: gross_debt_imf
+      - name: net_debt_imf

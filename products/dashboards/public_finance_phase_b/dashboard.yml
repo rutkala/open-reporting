@@ -1,0 +1,7 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/dashboard.schema.json
+# Open Reporting — Polish public finance dashboard.
+# Phase A: Przegląd (KPIs + trends) + Porównanie UE (EU-27 ranking).
+
+domain: public_finance
+port:   8057
+title:  Finanse publiczne

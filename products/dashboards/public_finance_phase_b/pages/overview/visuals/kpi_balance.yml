@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Saldo finansów publicznych Polski — najnowsza wartość roczna.
+
+type: card
+encoding:
+  value: { metric: fiscal_balance }
+filter:
+  geo: PL
+options:
+  threshold:
+    rule: sgp_deficit

@@ -4,18 +4,31 @@
 
 ## Unreleased
 
+### Two-plane architecture refactor (May 2026)
+
+The repo was reorganised from organic accretion across multiple project phases into a clean **two-plane architecture** — declarative work (YAML, SQL, dbt models, dashboard specs) under `products/`, `docs/`, `docs/`; engine code (Python frameworks, infra, AI agent config) under `packages/`, `infra/`, `.claude/`. See [`ARCHITECTURE.md`](ARCHITECTURE.md) for the full contract.
+
+Key changes:
+- `platform/` directory removed entirely; ingestion/processing/database moved into `products/`
+- dbt project moved to `products/warehouse/`; models reorganised into standard dbt convention (`staging/intermediate/marts/dim/semantic`)
+- `tools/screenshot.py` packaged as `packages/screenshot/` with `screenshot` CLI; auto-discovers dashboards from `products/dashboards/<name>/dashboard.yml`
+- **dbr** package (`packages/dbr/`) became the canonical dashboard framework — declarative YAML authoring on top of Dash + Plotly + MetricFlow
+- All legacy prototype dashboards retired (labour, explorer, finance, test_dashboard, mobile PWA, finance_test). The `complex_dashboard` skill (the predecessor Python kit) deleted.
+- Only live dashboard: **Public Finance** at `portal.open-reporting.dev/public_finance/` — 5 pages, 8 charts authored entirely in YAML
+- Documentation consolidated: `docs/ARCHITECTURE.md` is the new source of truth; `docs/PLATFORM.md` (864 lines, mostly stale "factory" pattern) archived; duplicate `docs/domain-briefs/` removed (kept `products/domain-briefs/`)
+
 ### Analytics knowledge base
-- **OR-119** — Analytical thinking framework: `team/analytics/analytical-thinking.md` — structured KB covering the five analytical moves (describe/compare/change/relate/rank) with failure modes, four-layer insight hierarchy (headline → evidence → context → caveats), six when-is-it-interesting tests (statistical significance, practical significance, deviation from expectation, named threshold crossing, rate vs level, human scale), Polish public data context (V4/EU27 peer groups, six historical anchors from 2004 accession to present, domain-specific analyst questions for labour and fiscal), and aggregation/ratio rules (pp vs %, base effect, index comparability, per capita fallacy, Simpson's paradox, CAGR limits, definitional break handling). Includes worked example (Q4 2024 LFS unemployment).
+- **OR-119** — Analytical thinking framework: `docs/analytics/analytical-thinking.md` — structured KB covering the five analytical moves (describe/compare/change/relate/rank) with failure modes, four-layer insight hierarchy (headline → evidence → context → caveats), six when-is-it-interesting tests (statistical significance, practical significance, deviation from expectation, named threshold crossing, rate vs level, human scale), Polish public data context (V4/EU27 peer groups, six historical anchors from 2004 accession to present, domain-specific analyst questions for labour and fiscal), and aggregation/ratio rules (pp vs %, base effect, index comparability, per capita fallacy, Simpson's paradox, CAGR limits, definitional break handling). Includes worked example (Q4 2024 LFS unemployment).
 
 ### Evaluation framework
-- **OR-132** — Screenshot-based visual reviewer: `tools/screenshot.py` starts an affected dashboard on a temp port (19999), waits for React render, takes a Playwright full-page screenshot at 1440×900, then stops it. `visual-screenshot-reviewer` agent reads the PNG via Claude's multimodal Read tool and evaluates against `team/standards/visual-screenshot-review.md` (HIGH: broken render, semantic colour mismatch, contrast failure, truncated text; MEDIUM: F-pattern, competing elements, wrong chart type, palette inconsistency). `/review` Part 0.5 triggers this automatically when dashboard files change. All three dashboards updated to read port from `OR_PORT` env var.
+- **OR-132** — Screenshot-based visual reviewer: `tools/screenshot.py` starts an affected dashboard on a temp port (19999), waits for React render, takes a Playwright full-page screenshot at 1440×900, then stops it. `visual-screenshot-reviewer` agent reads the PNG via Claude's multimodal Read tool and evaluates against `docs/visual-screenshot-review.md` (HIGH: broken render, semantic colour mismatch, contrast failure, truncated text; MEDIUM: F-pattern, competing elements, wrong chart type, palette inconsistency). `/review` Part 0.5 triggers this automatically when dashboard files change. All three dashboards updated to read port from `OR_PORT` env var.
 - **OR-131** — Analytical Validator agent: `analytical-validator` subagent evaluates statistical and methodological correctness. Dual-mode: plan-phase checks analytical design intent ($PLAN text); diff-phase checks SQL/Python/chart code. BLOCK concerns: AVG() on wage/income columns, CAGR across structural breaks (2008–09, 2020, 2004), non-comparable population comparisons, causal language in chart strings, % label on pp difference. `/plan` Step 3.5 now runs architecture-critic and analytical-validator in parallel. `/review` Part 0 now runs three agents in parallel — MISLEADING maps to CRITICAL.
-- **OR-130** — Architecture Critic agent: `architecture-critic` subagent evaluates implementation plans before any code is written. Reads `team/standards/` and checks for BLOCK (layer violations, raw-from-dashboard, transform-in-ingestion, missing dbt staging model, silver queried by domain dashboard, circular dependencies), CONDITIONAL (missing fetched_at, schema naming, catalogue verification, upsert strategy, tight coupling), and NOTE concerns. `/plan` skill updated with Step 3.5: critic runs after plan is drafted, before presenting to user — BLOCK findings are fixed before the user ever sees the plan.
-- **OR-128** — Visualization Reviewer agent: `team/standards/visualization-review.md` (HIGH/MEDIUM/LOW
+- **OR-130** — Architecture Critic agent: `architecture-critic` subagent evaluates implementation plans before any code is written. Reads `docs/` and checks for BLOCK (layer violations, raw-from-dashboard, transform-in-ingestion, missing dbt staging model, silver queried by domain dashboard, circular dependencies), CONDITIONAL (missing fetched_at, schema naming, catalogue verification, upsert strategy, tight coupling), and NOTE concerns. `/plan` skill updated with Step 3.5: critic runs after plan is drafted, before presenting to user — BLOCK findings are fixed before the user ever sees the plan.
+- **OR-128** — Visualization Reviewer agent: `docs/visualization-review.md` (HIGH/MEDIUM/LOW
   rules: colour semantics, KPI reference completeness, series count, y_measure on domain calls,
-  subtitle, pie slice limit, waterfall variant mismatch). `visualization-reviewer` subagent scoped
+  subtitle, pie slice limit, waterfall variant mismatch). `visual-screenshot-reviewer` subagent scoped
   to domain dashboards. `/review` Part 0 now runs both agents in parallel.
-- **OR-127** — Code Reviewer agent: `team/standards/code-review.md` (P1/P2/P3 rules covering
+- **OR-127** — Code Reviewer agent: `docs/code-review.md` (P1/P2/P3 rules covering
   security, SQL injection, layer violations, logging, DB patterns, Python conventions, semantic
   layer). `code-reviewer` subagent runs independently on every PR diff. `/review` skill updated
   with mandatory Part 0 agent pass before internal checks.
@@ -107,13 +120,20 @@
 - Loaded 756,626 observations across 85 variables, 82 cross-sections, years 1995–2026
 - Raw tables: `raw.dbw_observations`, `raw.dbw_positions`
 
+### Semantic-layer measures (MetricFlow) pilot (2026-05-09) — OR-144
+- **Implementation of MetricFlow semantic-layer pilot** for the Finance dashboard.
+- Introduced `semantic_query` helper in `.claude/skills/complex_dashboard/assets/runtime/` to wrap `mf query` CLI.
+- Enables domain dashboards to query metrics by name (e.g., `fiscal_balance`) without knowing underlying source tables or SQL logic.
+- Added semantic models and wide intermediate models in `products/warehouse/models/finance/` to support MetricFlow.
+- Refactored Finance Overview KPI cards to use semantic layer, removing raw SQL/pandas logic from the dashboard code.
+- Improved maintainability: metric metadata (labels, formats, thresholds) now lives in dbt semantic models, not in dashboard code.
+
 ### Documentation & project hygiene (2026-03-28)
-- Expanded `docs/DOMAINS.md` to full 18-domain catalogue with Eurostat themes, GUS equivalents, and subcategories
-- Archived all three Linear documents (Domain Taxonomy, Tech Stack & Environment, Data Catalog) — GitHub is now single source of truth for all documentation
-- Updated Linear project description (mobile live, Instagram-only social, Polish-first language)
-- Rewrote `docs/ARCHITECTURE.md` to reflect current stack (DuckDB/PostgreSQL roles, systemd services, URL structure)
-- Rewrote `README.md` with correct product list, live URLs, doc index
-- Added `docs/MVP.md`, `docs/ROADMAP.md`, `docs/CONTRIBUTING.md`, `docs/RELEASE_NOTES.md`
-- Added `docs/CONTRIBUTING.md` defining post-MVP agile workflow (Linear → feature branch → PR → review → merge)
-- Added `.claude/playbooks/social.md` for Instagram publishing flow
-- Added `.claude/lessons-learned.md` for continuous process improvement
+111: - Expanded `docs/DOMAINS.md` to full 18-domain catalogue with Eurostat themes, GUS equivalents, and subcategories
+112: - Archived all three Linear documents (Domain Taxonomy, Tech Stack & Environment, Data Catalog) — GitHub is now single source of truth for all documentation
+113: - Updated Linear project description (mobile live, Instagram-only social, Polish-first language)
+114: - Rewrote `docs/ARCHITECTURE.md` to reflect current stack (DuckDB/PostgreSQL roles, systemd services, URL structure)
+115: - Rewrote `README.md` with correct product list, live URLs, doc index
+116: - Added `docs/MVP.md`, `docs/ROADMAP.md`, `docs/CONTRIBUTING.md`, `docs/RELEASE_NOTES.md`
+117: - Added `.claude/playbooks/social.md` for Instagram publishing flow
+118: - Added `.claude/lessons-learned.md` for continuous process improvement

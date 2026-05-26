@@ -18,16 +18,30 @@ These rules apply every session, every task:
 
 ## Key Paths
 
+Two-plane architecture — see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the full contract.
+
 ```
-platform/           → data pipeline: ingestion, dbt models, warehouse DDL
-products/           → dashboards, visuals, portal, blog, mobile, social, research
-team/               → knowledge base, standards, playbooks, domain briefs
-  PLATFORM.md       → factory blueprint (product portfolio, agent roster)
-  knowledge-base/   → KB modules — read on demand, see INDEX.md
-  standards/        → build + evaluation standards — see INDEX.md
-  playbooks/        → step-by-step process guides
-.claude/            → Claude Code config: agents, skills, hooks, settings
-infra/              → nginx config, certs, html web root
+products/           → declarative work (you + cheap AI edit here)
+  ingestion/        → Per-source Python fetchers + dlt pipelines
+  warehouse/        → dbt project — staging/intermediate/marts/dim/semantic
+  database/         → PostgreSQL operational schema + loader
+  dashboards/       → dbr YAML dashboards (one folder per dashboard)
+  blog/ social/ research/ mobile/ domain-briefs/
+docs/               → single source of truth — humans + AI read the same files
+  README.md         → navigation map
+  ARCHITECTURE.md, PROJECT.md, ROADMAP.md, CONTRIBUTING.md, DATA_MODEL.md, …
+  <topic>/          → topic-first (visualization/, data-engineering/, …):
+                      principles.md / building files / reviewing.md
+  process/          → cross-cutting: requirements.md, code-review.md
+  session-memory.md, lessons-learned.md, languages.json
+  archive/          → Superseded docs
+
+packages/           → engine code (Opus only)
+  dbr/              → Dashboard framework
+  screenshot/       → Screenshot CLI
+infra/              → nginx + systemd + certs
+.claude/            → Claude Code config
+
 data/               → git-ignored runtime data
   warehouse.duckdb  → DuckDB analytical warehouse
 ```
@@ -47,13 +61,14 @@ docker compose up -d                         # start all
 docker compose ps                            # status
 docker compose up -d --force-recreate nginx  # reload nginx
 
-# Dashboards
-PYTHONPATH=/opt/open-reporting python3 products/dashboards/labour/app.py    # port 8050
-PYTHONPATH=/opt/open-reporting python3 products/dashboards/explorer/app.py  # port 8051
+# Dashboards (dbr YAML — Dash + Plotly + MetricFlow)
+dbr validate products/dashboards/public_finance     # JSON Schema check
+dbr run      products/dashboards/public_finance     # deploy to systemd + nginx
+dbr serve    products/dashboards/public_finance     # foreground dev server
 
 # dbt
-cd platform/processing/dbt && DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt run --profiles-dir .
-cd platform/processing/dbt && DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt test --profiles-dir .
+cd products/warehouse && DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt run --profiles-dir .
+cd products/warehouse && DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt test --profiles-dir .
 ```
 
 ## Workflow Overview

@@ -1,0 +1,62 @@
+version: 2
+
+# MetricFlow semantic model for COFOG (Classification of the Functions
+# of Government) expenditure breakdown.
+#
+# Long-format source: curated.fact_finance_cofog with one row per
+# (geo, period, cofog_function). Single measure `cofog_pct_gdp` averaged
+# across rows — meaningful because the source is already annual % of GDP.
+#
+# A dashboard visual that groups by `cofog_function__cofog_label_pl` will
+# get one trace per function for stacking.
+
+semantic_models:
+  - name: finance_cofog
+    description: Annual COFOG expenditure shares by function (Eurostat ESA 2010).
+    model: ref('fact_finance_cofog')
+
+    defaults:
+      agg_time_dimension: period
+
+    # Composite grain (geo, period, cofog_function) — synthetic primary.
+    primary_entity: finance_cofog_row
+
+    entities:
+      - name: geo
+        type: foreign
+        expr: geo
+      - name: date_key
+        type: foreign
+        expr: period_date
+      - name: cofog_function
+        type: foreign
+        expr: cofog_function
+
+    dimensions:
+      # INTERNAL — MetricFlow requirement; do not reference in dashboard YAMLs.
+      - name: period
+        type: time
+        expr: period_date
+        type_params:
+          time_granularity: year
+
+    measures:
+      - name: cofog_pct_gdp
+        description: General-government expenditure on this COFOG function (% GDP).
+        agg: average
+        expr: cofog_pct_gdp
+
+metrics:
+  - name: cofog_expenditure
+    label: Wydatki wg funkcji COFOG
+    type: simple
+    type_params:
+      measure: cofog_pct_gdp
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: "% PKB"
+          scale: 1
+        source_label: "Eurostat COFOG (ESA 2010)"
+        ascending_is_good: false

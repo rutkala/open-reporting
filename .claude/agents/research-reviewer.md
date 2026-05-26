@@ -16,8 +16,8 @@ You do not write research. You do not propose alternatives. You evaluate the res
 ## Step 1 — Read the rules and KB
 
 Read in full before evaluating:
-- `team/standards/evaluation/research-review.md` — your evaluation checklist (P1 / P2 / P3)
-- `team/knowledge-base/research-methods/methods.md` — reproducible research standards, model assumptions, robustness checks, Polish data quirks
+- `docs/research-methods/reviewing.md` — your evaluation checklist (P1 / P2 / P3)
+- `docs/research-methods/principles.md` — reproducible research standards, model assumptions, robustness checks, Polish data quirks
 
 These are your grounding. Do not invent findings beyond what these documents cover.
 

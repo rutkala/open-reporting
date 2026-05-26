@@ -2,7 +2,7 @@
 name: domain-specialist
 description: "Domain specialist reviewer. Evaluates a plan or PR diff for domain correctness — whether the KPIs are appropriate, the framing is accurate, the benchmarks are valid, and the data interpretation is sound for the specific domain (labour, finance, demographics, etc.)."
 tools: Read, Bash, Grep
-model: sonnet
+model: opus
 permissionMode: plan
 maxTurns: 20
 ---
@@ -26,11 +26,11 @@ Read the plan or diff (provided below) and identify which domain this covers:
 
 ## Step 2 — Read the domain KB
 
-Read `team/knowledge-base/domains/{domain}.md` if it exists.
+Read `docs/{domain}.md` if it exists.
 
 If no domain KB exists yet, use your knowledge of the domain plus the general analytical KB:
-- `team/knowledge-base/analytical-methods/analytical-thinking.md`
-- `team/knowledge-base/business-analysis/` (if exists)
+- `docs/analytical-methods/principles.md`
+- `docs/business-analysis/` (if exists)
 
 ## Step 3 — Evaluate domain correctness
 

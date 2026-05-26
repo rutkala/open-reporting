@@ -1,0 +1,112 @@
+version: 2
+
+# MetricFlow semantic model for the finance dashboard Overview KPI row.
+#
+# Single source: curated.fact_finance_overview (wide, one column per measure).
+# Three metrics expose the latest annual value of each KPI to the visual layer
+# without leaking SQL or column names into chart code.
+#
+# Display + threshold metadata travels in `config.meta` and is read by
+# dbr.semantic.semantic_query() at render time.
+
+semantic_models:
+  - name: finance_overview
+    description: Annual Overview KPIs for Polish public finance.
+    model: ref('fact_finance_overview')
+
+    # ── Star-schema convention ────────────────────────────────────────────
+    # A fact table declares measures + foreign keys. For visuals, ALL
+    # categorical and time slicing comes from dim_* tables joined via the
+    # foreign entities below — never from the fact directly.
+    #
+    # The `period` time dimension below is MANDATED by MetricFlow's data
+    # model (every measure must have an aggregation time dimension). It is
+    # for the engine's internal use (cumulative metrics, metric_time
+    # resolution). Dashboard YAMLs MUST NOT reference `dimension: period`
+    # — use `date_key__cal_year` / `date_key__cal_year_quarter` / etc.
+    # from dim_calendar instead.
+
+    defaults:
+      agg_time_dimension: period
+
+    # The fact's grain is a composite of (geo, period_year). There's no
+    # single natural primary key, so declare a synthetic primary entity
+    # to satisfy MetricFlow's requirement when dimensions are present.
+    primary_entity: finance_overview_row
+
+    entities:
+      - name: geo                       # foreign key joins to dim_geo
+        type: foreign
+        expr: geo
+      - name: date_key                  # foreign key joins to dim_calendar
+        type: foreign
+        expr: period_date
+
+    dimensions:
+      # INTERNAL — MetricFlow requirement; do not reference in dashboard YAMLs.
+      - name: period
+        type: time
+        expr: period_date
+        type_params:
+          time_granularity: year
+
+    measures:
+      - name: fiscal_balance_pct_gdp
+        description: Government net lending/borrowing as % of GDP, latest year.
+        agg: average
+        expr: fiscal_balance_pct_gdp
+      - name: public_debt_pct_gdp
+        description: Consolidated general government gross debt as % of GDP, latest year.
+        agg: average
+        expr: public_debt_pct_gdp
+      - name: govt_revenue_pln_mn
+        description: General government total revenue, PLN million, latest year.
+        agg: average
+        expr: govt_revenue_pln_mn
+
+metrics:
+  - name: fiscal_balance
+    label: Saldo finansów publicznych
+    type: simple
+    type_params:
+      measure: fiscal_balance_pct_gdp
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: "% PKB"
+          scale: 1
+        thresholds:
+          sgp_deficit: -3.0
+        source_label: "Eurostat ESA 2010, sektor rządowy"
+        ascending_is_good: true
+
+  - name: public_debt
+    label: Dług publiczny
+    type: simple
+    type_params:
+      measure: public_debt_pct_gdp
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: "% PKB"
+          scale: 1
+        thresholds:
+          maastricht_debt: 60.0
+        source_label: "Kryterium z Maastricht: 60% PKB"
+        ascending_is_good: false
+
+  - name: govt_revenue
+    label: Dochody sektora finansów publ.
+    type: simple
+    type_params:
+      measure: govt_revenue_pln_mn
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: "mld zł"
+          scale: 0.001
+        source_label: "Dochody ogółem, sektor S13"
+        ascending_is_good: true

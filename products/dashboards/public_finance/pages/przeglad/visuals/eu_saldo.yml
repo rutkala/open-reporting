@@ -1,0 +1,21 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Porównanie deficytu w UE-27 dla 2024 — Polska wyróżniona kolorem azure.
+# Sortowanie value-asc: kraje z największym deficytem na dole.
+
+type: bar
+encoding:
+  x: { metric: fiscal_balance }
+  y: { dimension: geo__country_name_pl }
+filter:
+  geo: [AT, BE, BG, CY, CZ, DE, DK, EE, EL, ES, FI, FR, HR, HU, IE, IT, LT, LU, LV, MT, NL, PL, PT, RO, SE, SI, SK]
+  date_key__cal_year: 2024
+options:
+  sort: value-asc
+  highlight:
+    value: Polska
+    color: azure_1
+    other: slate_3
+  reference_lines:
+    - { value: -3, label: "Próg SGP", color: negative }
+  table:
+    row_limit: 27

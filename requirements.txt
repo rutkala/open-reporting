@@ -1,6 +1,7 @@
 # Data platform
 dbt-core
 dbt-duckdb
+dbt-metricflow[dbt-duckdb]==0.12.0
 dlt[duckdb]
 duckdb
 

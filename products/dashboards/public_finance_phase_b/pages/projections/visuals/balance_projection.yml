@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Saldo fiskalne MFW WEO — historia + prognoza, z dodatkową linią
+# salda pierwotnego (saldo bez kosztów obsługi długu).
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y:
+    metric:
+      - fiscal_balance_weo
+      - primary_balance_weo
+filter:
+  geo: PL
+options:
+  dash_when:
+    dimension: imf__is_projection
+    value: true
+  reference_lines:
+    - { value: -3, label: "Próg SGP", color: negative }
+    - { value:  0, label: "Równowaga", color: subtext }

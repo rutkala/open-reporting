@@ -1,0 +1,5 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/page.schema.json
+# Page 3 — debt level and interest cost. Citizen question as title.
+
+title:  Jak duży mamy dług publiczny?
+anchor: dlug

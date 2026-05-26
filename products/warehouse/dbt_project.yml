@@ -1,0 +1,40 @@
+name: 'open_reporting'
+version: '1.0.0'
+profile: 'open_reporting'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  open_reporting:
+    +materialized: table
+    +schema: curated
+    staging:
+      +materialized: view
+    intermediate:
+      +materialized: view
+    marts:
+      +materialized: table
+    dim:
+      +materialized: table
+    # semantic/ contains only YAML (semantic_models + metrics), no SQL —
+    # no materialisation config needed.
+
+seeds:
+  open_reporting:
+    dim_domain_detail:
+      +schema: curated
+    seed_geo_nuts:
+      +schema: curated
+    dim_source:
+      +schema: curated
+    dim_primary_source:
+      +schema: curated

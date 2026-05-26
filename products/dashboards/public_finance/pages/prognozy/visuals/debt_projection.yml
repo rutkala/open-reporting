@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Dług publiczny brutto wg MFW WEO — historia + prognoza, próg Maastricht 60%.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: gross_debt_weo }
+filter:
+  geo: PL
+options:
+  dash_when:
+    dimension: imf__is_projection
+    value: true
+  reference_lines:
+    - { value: 60, label: "Próg Maastricht", color: negative }
+  annotations:
+    - { x: 2027, text: "Próg Maastricht", direction: above, color: subtext }
+  table:
+    row_limit: 20

@@ -58,8 +58,8 @@ Requires explicit user approval before use. Must document source credibility and
   - `no_value_id != 0` indicates suppressed/missing value — stored as NULL
   - Landing zone has 426 files (~_data.csv + _dict.csv per dataset); full reload takes ~11s via DuckDB native CSV reader
 - **Ingestion scripts**:
-  - `platform/ingestion/to_landing/dbw_hvd.py` — downloads all ZIPs to `data/landing/dbw_hvd/`
-  - `platform/ingestion/to_raw/dbw_observations.py` — bulk-loads landing CSVs into DuckDB
+  - `products/ingestion/to_landing/dbw_hvd.py` — downloads all ZIPs to `data/landing/dbw_hvd/`
+  - `products/ingestion/to_raw/dbw_observations.py` — bulk-loads landing CSVs into DuckDB
 - **Raw tables**: `raw.dbw_observations`, `raw.dbw_positions`, `raw.dbw_variables`
   - `raw.dbw_variables`: 85-row lookup — variable_id → variable_name, section_id, category
     (populated from dict CSVs + catalogue API during `to_raw` ingestion)

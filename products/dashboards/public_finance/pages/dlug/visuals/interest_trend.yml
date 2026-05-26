@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Koszty obsługi długu Polski (% PKB) — wzrost od ok. 1.4% (2020) do 2.2% (2024).
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: interest_expenditure }
+filter:
+  geo: PL

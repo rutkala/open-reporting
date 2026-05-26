@@ -1,0 +1,24 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 1 layout — dense scoreboard:
+#   Row 1: 4 KPI cards (Saldo, Dług, Wydatki, Odsetki)
+#   Row 2: 2 trend charts (saldo + dług, side by side)
+#   Row 3: EU comparison bar (full width)
+
+rows:
+  - title: "Cztery liczby roku"
+    items:
+      - { visual: kpi_saldo,    width: "25%" }
+      - { visual: kpi_dlug,     width: "25%" }
+      - { visual: kpi_wydatki,  width: "25%" }
+      - { visual: kpi_odsetki,  width: "25%" }
+  - title: "Tendencja długoterminowa 1995–2024"
+    items:
+      - { visual: trend_saldo,  width: "50%" }
+      - { visual: trend_dlug,   width: "50%" }
+  - title: "Polska na tle UE — deficyt 2024"
+    prose: |
+      Polska należy do grupy krajów z **największym deficytem w UE-27**,
+      przekraczając próg SGP (-3% PKB). Większość krajów strefy euro
+      i Europy Północnej utrzymuje deficyt poniżej progu traktatowego.
+    items:
+      - { visual: eu_saldo,     width: "100%" }

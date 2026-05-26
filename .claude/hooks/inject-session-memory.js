@@ -17,7 +17,7 @@ process.stdin.on('end', () => {
   try {
     const data    = JSON.parse(input || '{}');
     const cwd     = data.cwd || process.cwd();
-    const memFile = path.join(cwd, 'team', 'session-memory.md');
+    const memFile = path.join(cwd, 'docs', 'session-memory.md');
 
     if (!fs.existsSync(memFile)) {
       process.exit(0); // No memory file yet — start fresh

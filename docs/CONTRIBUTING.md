@@ -2,6 +2,8 @@
 
 This document defines how all post-MVP work is planned, tracked, and delivered.
 
+> **Note on slash commands referenced below** (`/capture-idea`, `/review-ideas`, `/sprint`, `/kickoff`, `/review`, `/plan`, `/feasibility`): these describe the intended workflow. The corresponding skills currently live in `.claude/skills_review/` awaiting one-at-a-time review and promotion to `.claude/skills/`. Until promoted, you can run the workflow manually (create Linear issues, follow the lifecycle described here) without the slash-command shortcuts.
+
 ---
 
 ## Guiding Rule
@@ -31,9 +33,9 @@ Direct Linear entry          Reject → archive           Move to Todo          
 ## Issue Lifecycle
 
 ### 1. Create the issue
-Create in Linear (`OR` project). Issue must meet the **Definition of Ready** defined in `team/standards/build/requirements.md` before work starts.
+Create in Linear (`OR` project). Issue must meet the **Definition of Ready** defined in `docs/process/requirements.md` before work starts.
 
-Issue types and required fields are defined in `team/standards/build/requirements.md`:
+Issue types and required fields are defined in `docs/process/requirements.md`:
 - **Feature** — new product capability
 - **Bug** — something broken that worked before
 - **Data** — new ingestion pipeline or data transformation
@@ -65,7 +67,7 @@ Branch naming convention:
 
 ### 4. Implementation
 - Commits on the feature branch reference the issue: `feat: OR-123 short description`
-- Follow all standards in `team/standards/`
+- Follow all standards in `docs/`
 - Never commit `.env` or secrets
 - Keep commits logical — one change per commit
 
@@ -148,20 +150,20 @@ Paste this into every PR and check off before requesting review:
 - [ ] 100 char line length, 4-space indent
 - [ ] logging.getLogger(__name__) — no print() in scripts
 
-### Ingestion PRs (platform/ingestion/)
+### Ingestion PRs (products/ingestion/)
 - [ ] Parameterised queries — no string concatenation in SQL
 - [ ] load_dotenv(override=True) + lazy _dsn() pattern
 - [ ] Idempotent — safe to re-run without duplicating data
 - [ ] Landing zone used for raw files before warehouse load
 - [ ] Source documented in catalogue (catalogue.domain_detail_sources)
 
-### Processing PRs (platform/processing/)
+### Processing PRs (products/warehouse/)
 - [ ] dbt model follows curated schema naming
 - [ ] Data quality checks included (DQ framework — 6 categories)
 - [ ] Seeds use --full-refresh when schema changes
 
 ### Visualisation PRs (products/)
-- [ ] Nordic theme imported from products/visuals/lib/theme.py
+- [ ] Nordic theme imported from dbr.theme
 - [ ] No hardcoded colours
 - [ ] All chart labels in Polish
 - [ ] Source attribution visible
@@ -209,4 +211,4 @@ Claude Code (this tool) acts as the implementation partner:
 - Updates Linear status and adds implementation notes as comments
 - Never pushes directly to `main`
 - Never auto-commits or auto-pushes without user instruction
-- Follows all standards in `team/standards/`
+- Follows all standards in `docs/`

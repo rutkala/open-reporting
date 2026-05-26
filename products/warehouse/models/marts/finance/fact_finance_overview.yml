@@ -1,0 +1,24 @@
+version: 2
+
+models:
+  - name: fact_finance_overview
+    description: >
+      Wide intermediate model for the finance dashboard Overview KPI row.
+      Pivots curated.int_finance_consolidated from long to wide so MetricFlow can map
+      one column per measure. Grain: one row per (geo, period_year).
+    columns:
+      - name: geo
+        description: 2-letter Eurostat country code (PL for Poland)
+        tests: [not_null]
+      - name: period_year
+        description: Calendar year (annual data)
+        tests: [not_null]
+      - name: period_date
+        description: December 31 of period_year — anchor date for MetricFlow time spine
+        tests: [not_null]
+      - name: fiscal_balance_pct_gdp
+        description: Government net lending/borrowing as % of GDP (Eurostat ESA 2010, S.13)
+      - name: public_debt_pct_gdp
+        description: Consolidated general government gross debt as % of GDP (Eurostat EDP)
+      - name: govt_revenue_pln_mn
+        description: General government total revenue, PLN million (GUS DBW HVD, ESA 2010)

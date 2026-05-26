@@ -25,17 +25,21 @@ If that returns nothing, run:
 git diff origin/main...HEAD --name-only
 ```
 
-Map changed files to dashboards using this routing table:
+Map changed files to dashboards using this routing table. Every dbr
+dashboard lives under `products/dashboards/<domain>/`; changes inside
+that folder map to that dashboard. Changes to the dbr framework itself
+fan out to every dashboard.
 
 | Changed path prefix | Dashboard(s) to screenshot |
 |---------------------|---------------------------|
-| `products/dashboards/labour/` | labour |
-| `products/dashboards/explorer/` | explorer |
-| `products/dashboards/finance/` | finance |
-| `products/visuals/components/` | labour, explorer, finance |
-| `products/visuals/lib/` | labour, explorer, finance |
+| `products/dashboards/<domain>/` | `<domain>` |
+| `packages/dbr/src/dbr/visuals/` | all dashboards |
+| `packages/dbr/src/dbr/theme/` | all dashboards |
+| `packages/dbr/src/dbr/layout/` | all dashboards |
+| `packages/dbr/src/dbr/semantic/` | all dashboards |
 
-Exclude: `products/dashboards/template/`, `products/dashboards/generate.py`, `products/dashboards/finance_test/`
+Currently live dashboards: `public_finance` (port 8057). Future domains
+follow the same `products/dashboards/<domain>/` pattern.
 
 If no files in scope are changed, output:
 ```
@@ -46,8 +50,8 @@ and stop.
 ## Step 2 — Read the KB
 
 Read these files in full before evaluating any screenshot:
-- `team/knowledge-base/ux-perception/perception.md` — pre-attentive attributes, Gestalt laws, cognitive load, eye-tracking patterns, colour perception, WCAG 2.2, working memory limits
-- `team/knowledge-base/visualization/principles.md` — IBCS, data-ink ratio, colour semantics, reference lines
+- `docs/ux-perception/principles.md` — pre-attentive attributes, Gestalt laws, cognitive load, eye-tracking patterns, colour perception, WCAG 2.2, working memory limits
+- `docs/visualization/principles.md` — IBCS, data-ink ratio, colour semantics, reference lines
 
 These are your scientific grounding. Do not invent findings beyond what these KB files document.
 
@@ -56,12 +60,12 @@ These are your scientific grounding. Do not invent findings beyond what these KB
 For each affected dashboard, run the screenshot utility:
 
 ```bash
-PYTHONPATH=/opt/open-reporting python3 /opt/open-reporting/tools/screenshot.py <dashboard>
+screenshot <dashboard>
 ```
 
-Where `<dashboard>` is one of: `labour`, `explorer`, `finance`.
+Where `<dashboard>` is the folder name under `products/dashboards/`.
 
-The script prints the output PNG path to stdout (e.g. `/tmp/or-screenshot-labour.png`) and logs progress to stderr. If it exits with code 1, the dashboard could not be started — note this as a MEDIUM finding and continue with other dashboards.
+The script prints the output PNG path to stdout (e.g. `/tmp/or-screenshot-<dashboard>.png`) and logs progress to stderr. If it exits with code 1, the dashboard could not be started — note this as a MEDIUM finding and continue with other dashboards.
 
 Run one dashboard at a time (they share the same temp port 19999).
 

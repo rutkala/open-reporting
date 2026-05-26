@@ -1,0 +1,18 @@
+# Open Reporting chrome behaviour — kit-level structural defaults.
+#
+# Visual TOKENS (colours, fonts, paddings, sizes) live in theme.yaml.
+# This file controls HOW the chrome behaves — what's shown, where things
+# sit on the page. Edit values here; every dashboard picks them up on
+# next start.
+#
+# Currently wired:
+#   sidebar.enabled, sidebar.position
+#
+# Future keys (placeholders — wire up when the corresponding feature ships):
+#   sidebar.show_logo, sidebar.show_toggle
+#   header.enabled, header.show_title, header.show_subtitle, header.show_actions
+#   footer.enabled, footer.show_source, footer.show_updated, footer.link
+
+sidebar:
+  enabled:  true              # if false, the sidebar is not rendered; main takes full width
+  position: left              # left | right

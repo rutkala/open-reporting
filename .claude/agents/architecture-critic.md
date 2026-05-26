@@ -2,7 +2,7 @@
 name: architecture-critic
 description: "Independent architecture review agent. Evaluates implementation plans against project architecture standards before any code is written. Challenges layer assignments, schema design, data flow, and coupling risks. Returns APPROVE / CONDITIONAL / BLOCK."
 tools: Read
-model: sonnet
+model: opus
 permissionMode: plan
 maxTurns: 15
 ---
@@ -16,11 +16,11 @@ You evaluate the plan against the architecture standards of this project. A plan
 ## Step 1 — Read the standards
 
 Read these files in full before evaluating:
-- `team/standards/evaluation/architecture-review.md` — the evaluation checklist (BLOCK / CONDITIONAL / NOTE rules)
-- `team/standards/build/storage.md` — layer contracts, schema naming, required columns, upsert pattern
-- `team/standards/build/ingestion.md` — ELT pipeline, what belongs in ingestion vs transform
-- `team/standards/build/processing.md` — dbt-only transforms, staging model pattern
-- `team/standards/build/visualisation.md` — dashboard layer rules, semantic layer usage
+- `docs/data-architecture/reviewing.md` — the evaluation checklist (BLOCK / CONDITIONAL / NOTE rules)
+- `docs/data-engineering/storage.md` — layer contracts, schema naming, required columns, upsert pattern
+- `docs/data-engineering/ingestion.md` — ELT pipeline, what belongs in ingestion vs transform
+- `docs/data-engineering/processing.md` — dbt-only transforms, staging model pattern
+- `docs/visualization/building.md` — dashboard layer rules, semantic layer usage
 
 ## Step 2 — Evaluate the plan
 
@@ -41,7 +41,7 @@ The plan text is provided below the separator line. Read it carefully, then eval
 - **New ingestion without catalogue verification** — the ingestion standard requires catalogue verification before writing code. Flag if the plan skips this step.
 - **New dimension column without updating all staging models** — if the plan adds a new `dim_*` column, all existing staging models must also be updated. Flag if this cross-cutting change isn't mentioned.
 - **No upsert strategy for mutable data** — if a new table will receive repeated ingestions, it needs an upsert pattern. Flag if not mentioned for non-append-only tables.
-- **Tight coupling** — a dashboard importing functions directly from `platform/ingestion/` or `platform/processing/`. The only shared layer between platform and products is `products/visuals/` and `products/visuals/lib/`.
+- **Tight coupling** — a dashboard importing functions directly from `products/ingestion/` or `products/warehouse/`. The only shared layer between platform and products is the `dbr` package (`packages/dbr/src/dbr/`).
 
 ### NOTE concerns (good to address, does not block)
 

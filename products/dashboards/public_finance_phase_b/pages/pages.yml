@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/pages.schema.json
+# Page order — list pages in the order they appear in the sidebar.
+
+order:
+  - overview
+  - comparison
+  - revenue_expenditure
+  - cofog
+  - projections

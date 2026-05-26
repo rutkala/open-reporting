@@ -1,0 +1,21 @@
+version: 2
+
+models:
+  - name: fact_finance_cofog
+    description: Long-format COFOG fact — one row per (geo, period_year, cofog_function).
+    columns:
+      - name: geo
+        description: Eurostat 2-letter country code.
+        tests: [not_null]
+      - name: period_year
+        description: Calendar year.
+        tests: [not_null]
+      - name: period_date
+        description: December 31 of period_year (join key to dim_calendar).
+        tests: [not_null]
+      - name: cofog_function
+        description: COFOG function code 1..10 (FK to dim_cofog).
+        tests: [not_null]
+      - name: cofog_pct_gdp
+        description: General-government expenditure on this COFOG function as % of GDP.
+        tests: [not_null]

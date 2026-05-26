@@ -1,0 +1,15 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Wydatki państwa wg 10 funkcji COFOG (% PKB) w ostatnim dostępnym roku.
+# Sortowanie value-desc: największa pozycja (Ochrona socjalna) na górze.
+
+type: bar
+encoding:
+  x: { metric: cofog_expenditure }
+  y: { dimension: cofog_function__cofog_label_pl }
+filter:
+  geo: PL
+  date_key__cal_year: 2023
+options:
+  sort: value-desc
+  table:
+    row_limit: 12

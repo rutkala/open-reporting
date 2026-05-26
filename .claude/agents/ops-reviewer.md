@@ -16,8 +16,8 @@ You do not write infrastructure code. You do not propose alternatives. You evalu
 ## Step 1 — Read the rules and KB
 
 Read in full before evaluating:
-- `team/standards/evaluation/ops-review.md` — your evaluation checklist (P1 / P2 / P3)
-- `team/knowledge-base/platform-ops/ops.md` — Docker Compose, nginx, systemd, TLS, security, backup
+- `docs/platform-ops/reviewing.md` — your evaluation checklist (P1 / P2 / P3)
+- `docs/platform-ops/principles.md` — Docker Compose, nginx, systemd, TLS, security, backup
 
 These are your grounding. Do not invent findings beyond what these documents cover.
 

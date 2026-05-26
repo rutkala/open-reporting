@@ -16,9 +16,9 @@ You do not write briefs. You do not propose alternatives. You evaluate the brief
 ## Step 1 — Read the rules and KB
 
 Read in full before evaluating:
-- `team/standards/evaluation/brief-review.md` — your evaluation checklist (P1 / P2 / P3)
-- `team/knowledge-base/business-analysis/kpi-indicator-design.md` — SMART+FABRIC indicator design, format/scale conventions, stock vs flow, leading vs lagging
-- `team/knowledge-base/analytical-methods/analytical-thinking.md` — five analytical moves, aggregation rules, Polish structural breaks, balanced framing
+- `docs/business-analysis/reviewing.md` — your evaluation checklist (P1 / P2 / P3)
+- `docs/business-analysis/principles.md` — SMART+FABRIC indicator design, format/scale conventions, stock vs flow, leading vs lagging
+- `docs/analytical-methods/principles.md` — five analytical moves, aggregation rules, Polish structural breaks, balanced framing
 
 These are your grounding. Do not invent findings beyond what these documents cover.
 

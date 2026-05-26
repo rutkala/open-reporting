@@ -17,12 +17,12 @@ You do not build dashboards. You do not write data pipelines. You own the editor
 
 Before writing anything, read these files in full:
 
-- `team/knowledge-base/content/editorial.md` — editorial standards, inverted pyramid, fact-checking, Polish press law, writing structure
-- `team/knowledge-base/analytical-methods/analytical-thinking.md` — analytical moves, insight hierarchy, aggregation rules
-- `team/knowledge-base/domains/{domain}.md` — domain-specific KB if the topic matches an existing domain
+- `docs/content/principles.md` — editorial standards, inverted pyramid, fact-checking, Polish press law, writing structure
+- `docs/analytical-methods/principles.md` — analytical moves, insight hierarchy, aggregation rules
+- `docs/{domain}.md` — domain-specific KB if the topic matches an existing domain
 
 Also read the relevant evaluation standards:
-- `team/standards/evaluation/content-review.md` — what the reviewer will check
+- `docs/content/reviewing.md` — what the reviewer will check
 
 ## Step 2 — Understand the assignment
 

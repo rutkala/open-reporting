@@ -1,0 +1,18 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Trend wybranych funkcji COFOG (4 największych): pokazuje dynamikę
+# Ochrony socjalnej, Gospodarki, Zdrowia i Edukacji 1995-2023.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: cofog_expenditure }
+  color: { dimension: cofog_function__cofog_label_pl }
+filter:
+  geo: PL
+  cofog_function__cofog_label_pl: [Ochrona socjalna, Gospodarka, Zdrowie, Edukacja]
+options:
+  label_endpoints: true
+  highlight:
+    value: "Ochrona socjalna"
+  annotations:
+    - { x: 2020, y: 8.8, text: "COVID — wsparcie gospodarki", direction: above, color: subtext }

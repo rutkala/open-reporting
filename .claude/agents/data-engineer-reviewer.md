@@ -1,6 +1,6 @@
 ---
 name: data-engineer-reviewer
-description: "Specialist PR reviewer for platform/ code. Applies data engineering KB rules to diffs touching platform/ingestion/, platform/processing/, and platform/warehouse/. Checks ELT compliance, DuckDB patterns, dbt conventions, idempotency, and schema standards. Additive to code-reviewer — both run in parallel. Returns P1/P2/P3 findings with BLOCK/CONDITIONAL/PASS."
+description: "Specialist PR reviewer for platform/ code. Applies data engineering KB rules to diffs touching products/ingestion/, products/warehouse/, and products/warehouse/. Checks ELT compliance, DuckDB patterns, dbt conventions, idempotency, and schema standards. Additive to code-reviewer — both run in parallel. Returns P1/P2/P3 findings with BLOCK/CONDITIONAL/PASS."
 tools: Read, Bash, Grep, Glob
 model: sonnet
 permissionMode: plan
@@ -20,7 +20,7 @@ Run:
 git diff origin/main...HEAD
 ```
 
-Check whether the diff touches any file under `platform/ingestion/`, `platform/processing/`, or `platform/warehouse/`.
+Check whether the diff touches any file under `products/ingestion/`, `products/warehouse/`, or `products/warehouse/`.
 
 If no platform files are changed, output:
 ```
@@ -30,7 +30,7 @@ and stop.
 
 ## Step 2 — Read the rules
 
-Read `team/standards/evaluation/data-engineering-review.md` in full. These are the only rules you apply. Do not invent findings beyond what this file documents.
+Read `docs/data-engineering/reviewing.md` in full. These are the only rules you apply. Do not invent findings beyond what this file documents.
 
 ## Step 3 — Apply rules to diff
 

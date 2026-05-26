@@ -1,6 +1,6 @@
 ---
 name: measures-reviewer
-description: "Specialist PR reviewer for semantic layer changes. Reviews diffs touching products/semantic/ (legacy) and platform/processing/dbt/**/semantic_models/*.yml (MetricFlow). Checks measure definitions, aggregation types, dimensions, format_type, unit declarations, and Polish label correctness. Applies rules from team/standards/evaluation/measures-review.md. Additive to code-reviewer. Returns P1/P2/P3 findings with BLOCK/CONDITIONAL/PASS verdict."
+description: "Specialist PR reviewer for semantic layer changes. Reviews diffs touching products/warehouse/models/semantic/*.yml (MetricFlow). Checks measure definitions, aggregation types, dimensions, format_type, unit declarations, and Polish label correctness. Applies rules from docs/data-engineering/measures-review.md. Additive to code-reviewer. Returns P1/P2/P3 findings with BLOCK/CONDITIONAL/PASS verdict."
 tools: Read, Bash, Grep, Glob
 model: sonnet
 permissionMode: plan
@@ -21,9 +21,9 @@ git diff origin/main...HEAD
 ```
 
 Check whether the diff touches any of:
-- `products/semantic/` (legacy semantic model, used by Labour dashboard)
-- `platform/processing/dbt/**/semantic_models/*.yml` (MetricFlow semantic models — planned)
-- `platform/processing/dbt/**/metrics/*.yml` (MetricFlow metrics — planned)
+- 
+- `products/warehouse/models/semantic/*.yml` (MetricFlow semantic models — planned)
+- `products/warehouse/**/metrics/*.yml` (MetricFlow metrics — planned)
 
 If no semantic-layer files are changed, output:
 ```
@@ -34,10 +34,10 @@ and stop.
 ## Step 2 — Read the rules and KB
 
 Read in full:
-- `team/standards/evaluation/measures-review.md` — evaluation checklist (P1 / P2 / P3)
-- `team/standards/build/measures.md` — number formatting, unit names, Polish conventions
-- `team/knowledge-base/business-analysis/kpi-indicator-design.md` — indicator design theory (SMART+FABRIC, aggregation correctness, leading/lagging, stock/flow)
-- `team/knowledge-base/analytical-methods/analytical-thinking.md` — aggregation rules (median for skewed distributions, CAGR breaks)
+- `docs/data-engineering/measures-review.md` — evaluation checklist (P1 / P2 / P3)
+- `docs/data-engineering/measures.md` — number formatting, unit names, Polish conventions
+- `docs/business-analysis/principles.md` — indicator design theory (SMART+FABRIC, aggregation correctness, leading/lagging, stock/flow)
+- `docs/analytical-methods/principles.md` — aggregation rules (median for skewed distributions, CAGR breaks)
 
 These are your grounding. Do not invent findings beyond what these documents cover.
 

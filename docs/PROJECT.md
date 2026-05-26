@@ -7,13 +7,13 @@ Open Reporting is a one-person data media company turning Polish public data int
 ## Four Product Lines
 
 ### 1. Analytical Portal (`portal.open-reporting.dev`)
-Interactive dashboards built from Polish public datasets. Static HTML pages generated from Python + Plotly. Fast, no JavaScript frameworks, no backend at runtime.
+Interactive dashboards built from Polish public datasets. Authored declaratively in YAML using the **dbr** framework (Dash + Plotly + MetricFlow over DuckDB). One folder per domain dashboard under `products/dashboards/`.
 
 ### 2. Content Portal / Blog (`www.open-reporting.dev`)
 Data-driven articles and analyses powered by Ghost CMS. Long-form content explaining what the numbers mean, not just what they are.
 
 ### 3. Mobile App (future phase)
-Not in active development. Will likely be a PWA wrapping the portal.
+Not in active development. Future intent is mobile-responsive dashboards built on the same dbr framework — same declarative YAML targeting both desktop and mobile.
 
 ### 4. Social Media
 Short-form content derived from dashboards and articles. LinkedIn, X, Instagram. Charts adapted for vertical formats.
@@ -23,11 +23,11 @@ Short-form content derived from dashboards and articles. LinkedIn, X, Instagram.
 - **Accessible** — Polish public data explained in plain language
 - **Beautiful** — Charts that people want to share
 - **Accurate** — Source attribution always visible, methodology transparent
-- **Fast** — Static output, no complex infrastructure at runtime
+- **Declarative** — Dashboards, metrics, and pipelines authored in YAML/SQL wherever possible; Python only where genuinely required
 
-## Current Status (March 2026)
+## Current Status (May 2026)
 
-Infrastructure is live (Docker Compose on Hetzner VPS). No dashboards published yet — first domain to build: TBD based on Linear backlog.
+Infrastructure is live (Docker Compose on Hetzner VPS). First dbr dashboard published: Public Finance (`portal.open-reporting.dev/public_finance/`). Repository follows a two-plane architecture — see [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
 ## Target Audience
 

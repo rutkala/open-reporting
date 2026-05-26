@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dbr"
+version = "0.1.0"
+description = "Open Reporting dashboard framework — declarative YAML on top of dbt + MetricFlow + DuckDB."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Open Reporting" }]
+license = { text = "MIT" }
+keywords = ["dashboard", "bi", "metricflow", "duckdb", "dash", "plotly", "yaml"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial",
+    "Topic :: Scientific/Engineering :: Visualization",
+]
+
+dependencies = [
+    "dash>=2.16",
+    "plotly>=5.18",
+    "pyyaml>=6.0",
+    "pandas>=2.0",
+    "dbt-metricflow>=0.12",
+    "jsonschema>=4.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4",
+    "ruff>=0.4",
+    "mypy>=1.7",
+]
+
+[project.scripts]
+dbr = "dbr.cli:main"
+
+[tool.setuptools.package-data]
+dbr = ["theme/*.yaml", "layout/*.yaml", "schemas/*.json"]
+
+[tool.setuptools.packages.find]
+where = ["src"]

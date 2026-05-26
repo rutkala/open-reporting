@@ -17,17 +17,17 @@ You do not write ingestion scripts. You do not build dashboards. You own the des
 
 Before designing anything, read these files in full:
 
-- `team/knowledge-base/data-architecture/architecture.md` — medallion layer contracts, Kimball dimensional modelling, dbt patterns (staging, mart, ref/source), schema naming, SCD types, DuckDB implications
-- `team/knowledge-base/data-engineering/engineering.md` — ELT principle, DuckDB patterns, dbt conventions, Python ETL standards, DAMA quality dimensions
-- `team/knowledge-base/data-research/research.md` — source research output (if available for the data source being designed)
+- `docs/data-architecture/principles.md` — medallion layer contracts, Kimball dimensional modelling, dbt patterns (staging, mart, ref/source), schema naming, SCD types, DuckDB implications
+- `docs/data-engineering/principles.md` — ELT principle, DuckDB patterns, dbt conventions, Python ETL standards, DAMA quality dimensions
+- `docs/data-research/principles.md` — source research output (if available for the data source being designed)
 
 Also read the relevant build standards:
-- `team/standards/build/storage.md` — schema naming, data types, upsert pattern, indexes
-- `team/standards/build/ingestion.md` — ELT phases, raw loading rules, script structure
-- `team/standards/build/processing.md` — dbt-only transforms, staging model pattern, DQ framework
+- `docs/data-engineering/storage.md` — schema naming, data types, upsert pattern, indexes
+- `docs/data-engineering/ingestion.md` — ELT phases, raw loading rules, script structure
+- `docs/data-engineering/processing.md` — dbt-only transforms, staging model pattern, DQ framework
 
 And the evaluation standard:
-- `team/standards/evaluation/architecture-review.md` — what the architecture-critic will check
+- `docs/data-architecture/reviewing.md` — what the architecture-critic will check
 
 ## Step 2 — Understand the design task
 
@@ -41,10 +41,14 @@ The design task is provided below the separator line. Extract:
 
 Before proposing new designs:
 
-1. **Read existing DDL files** — `platform/warehouse/raw/` and `platform/warehouse/curated/` for current schema
-2. **Read existing dbt models** — `platform/processing/dbt/models/` for conventions already established
-3. **Read the bus matrix** — `platform/warehouse/bus_matrix.md` for conformed dimensions
-4. **Check existing ingestion scripts** — `platform/ingestion/` for patterns already in use
+1. **Read existing dbt models** — `products/warehouse/models/` is the source of truth for schema. The folders below the convention:
+   - `staging/<source>/` — raw → typed staging views
+   - `intermediate/` — consolidations across sources (`int_*`), plus `by_domain/` for per-domain wide views
+   - `marts/<domain>/` — star-schema facts ready for the semantic layer
+   - `dim/` — shared dimension tables
+   - `semantic/` — MetricFlow definitions (no SQL)
+2. **Check existing ingestion scripts** — `products/ingestion/` for patterns already in use (one Python module per external source)
+3. **Read `docs/ARCHITECTURE.md`** — the authoritative two-plane architecture description; gives the contract between declarative and engine planes.
 
 Do not assume — read the actual files.
 
@@ -52,8 +56,9 @@ Do not assume — read the actual files.
 
 ### Medallion layer contracts (§1 of architecture KB):
 - **Raw layer** (`raw.*`) — land data as-is from source. No joins, no derived columns, no business filters. Permitted: strip whitespace, parse dates, add `fetched_at`, `TRY_CAST` numeric strings.
-- **Curated/staging layer** (`curated.stg_*`) — one model per raw source. Conform to house schema (dim_sex, dim_geo, period_date, etc.). Use `{{ source('raw', '...') }}`. Declare output grain.
-- **Curated/mart layer** (`curated.mart_*`) — Kimball star schema. Fact tables + dimension tables. Use `{{ ref('stg_*') }}`. Filter and shape for one domain.
+- **Staging layer** (`curated.stg_*`, in `models/staging/<source>/`) — one model per raw source. Conform to house schema (dim_sex, dim_geo, period_date, etc.). Use `{{ source('raw', '...') }}`. Declare output grain.
+- **Intermediate layer** (`curated.int_*`, in `models/intermediate/`) — cross-source consolidations and business-key resolution. Use `{{ ref('stg_*') }}`.
+- **Mart layer** (`curated.fact_*`, in `models/marts/<domain>/`) — Kimball star schema. Fact tables ready for the semantic layer. Use `{{ ref('int_*') }}` and `{{ ref('dim_*') }}`. Filter and shape for one domain.
 
 ### Schema naming:
 - **Raw tables:** `raw.{source}_{entity}` (e.g., `raw.gus_bael_employment`)
@@ -112,17 +117,14 @@ FROM {{ source('raw', '{source}_{entity}') }}
 
 #### Mart layer
 ```sql
--- Model: curated.mart_{domain}
+-- Model: curated.fact_{domain}_{topic}
 -- Grain: {one row per ...}
 SELECT ...
 FROM {{ ref('stg_{source}_{entity}') }}
 ```
 
 ### Conformed dimensions
-{List of shared dimensions and whether they already exist or need to be created}
-
-### Bus matrix update
-{Changes to platform/warehouse/bus_matrix.md}
+{List of shared dimensions and whether they already exist or need to be created — see `products/warehouse/models/dim/`}
 
 ### Ingestion approach
 {Append-only vs upsert, update frequency, idempotency strategy}

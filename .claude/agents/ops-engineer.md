@@ -17,11 +17,11 @@ You do not build dashboards. You do not write data pipelines. You do not write e
 
 Before making any change, read these files in full:
 
-- `team/knowledge-base/platform-ops/ops.md` — Docker Compose production, nginx security, systemd hygiene, TLS lifecycle, security posture, observability, backup & recovery
-- `team/knowledge-base/data-engineering/engineering.md` — for any change that touches database configuration or DuckDB
+- `docs/platform-ops/principles.md` — Docker Compose production, nginx security, systemd hygiene, TLS lifecycle, security posture, observability, backup & recovery
+- `docs/data-engineering/principles.md` — for any change that touches database configuration or DuckDB
 
 Also read the relevant evaluation standards:
-- `team/standards/evaluation/ops-review.md` — what the reviewer will check
+- `docs/platform-ops/reviewing.md` — what the reviewer will check
 
 ## Step 2 — Understand the task
 

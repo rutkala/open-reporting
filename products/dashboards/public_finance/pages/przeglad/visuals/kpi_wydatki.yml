@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Wydatki państwa ogółem — % PKB.
+
+type: card
+encoding:
+  value: { metric: total_expenditure }
+filter:
+  geo: PL
+options:
+  delta:
+    vs: prior_year
+    format: icon-first

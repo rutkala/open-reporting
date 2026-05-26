@@ -1,0 +1,19 @@
+open_reporting:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "{{ env_var('DUCKDB_PATH', '/opt/open-reporting/data/warehouse.duckdb') }}"
+      threads: 4
+
+    # Read-only target used by dbr dashboards. DuckDB allows only one
+    # read-write connection per file, but unlimited read-only ones —
+    # so multiple dashboard services can keep an open MetricFlow engine
+    # against the same warehouse without lock contention. Used via
+    # `DBT_TARGET=dashboard` from dbr.semantic._get_engine().
+    dashboard:
+      type: duckdb
+      path: "{{ env_var('DUCKDB_PATH', '/opt/open-reporting/data/warehouse.duckdb') }}"
+      threads: 4
+      config_options:
+        access_mode: READ_ONLY

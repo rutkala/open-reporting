@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Dług publiczny — trend 1995-2024 z progiem Maastricht 60%.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: public_debt }
+filter:
+  geo: PL
+options:
+  reference_lines:
+    - { value: 60, label: "Próg Maastricht (60% PKB)", color: negative }
