@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/page.schema.json
+# Page 2 — unemployment deep-dive: PL vs EU trend, youth unemployment, EU-27 ranking.
+# Story it tells: Poland's structural improvement since 2013, still above EU average.
+
+title:  Bezrobocie: Polska na tle UE
+anchor: bezrobocie

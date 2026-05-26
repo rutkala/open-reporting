@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Aktywność zawodowa 15–74 — najnowsza wartość roczna z delta r/r.
+
+type: card
+encoding:
+  value: { metric: activity_rate }
+filter:
+  geo: PL
+options:
+  delta:
+    vs: prior_year
+    format: icon-first

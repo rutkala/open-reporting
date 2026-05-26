@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Stopa bezrobocia — najnowsza wartość roczna z delta r/r.
+# ascending_is_good=false: spadek jest dobry (ikona pozytywna przy ujemnej delcie).
+
+type: card
+encoding:
+  value: { metric: unemployment_rate }
+filter:
+  geo: PL
+options:
+  delta:
+    vs: prior_year
+    format: icon-first

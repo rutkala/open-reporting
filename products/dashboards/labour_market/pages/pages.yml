@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/pages.schema.json
+# Page order = citizen narrative arc:
+#   1. Scoreboard snapshot
+#   2. Unemployment deep-dive + EU comparison
+#   3. Wages and vacancies
+#   4. EU-27 cross-section ranking
+
+order:
+  - przeglad
+  - bezrobocie
+  - wynagrodzenia
+  - ue

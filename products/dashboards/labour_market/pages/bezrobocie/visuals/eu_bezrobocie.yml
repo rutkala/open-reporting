@@ -1,0 +1,24 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Stopa bezrobocia UE-27 — najnowszy rok, ranking poziomy.
+# Horizontal bar: ranking use-case (27 categories, compare across countries).
+# sort: value-asc puts lowest unemployment at top (reads top-to-bottom as best-to-worst).
+# Polska highlighted in azure_1; all others in slate_3 (colour-blind safe via label+colour pairing).
+
+type: bar
+encoding:
+  x: { metric: unemployment_rate }
+  y: { dimension: geo__country_name_pl }
+filter:
+  geo: [AT, BE, BG, CY, CZ, DE, DK, EE, EL, ES, FI, FR, HR, HU, IE, IT, LT, LU, LV, MT, NL, PL, PT, RO, SE, SI, SK]
+options:
+  sort: value-asc
+  highlight:
+    value: Polska
+    color: azure_1
+    other: slate_3
+  table:
+    row_limit: 54
+    labels:
+      geo__country_name_pl: "Kraj"
+      date_key__cal_year: "Rok"
+      unemployment_rate: "Stopa bezrobocia (%)"

@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Płaca minimalna — porównanie Polska i wybrane kraje UE (Wyszehrad + DE).
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: minimum_wage_eur }
+filter:
+  geo: [PL, CZ, HU, SK, RO, DE]

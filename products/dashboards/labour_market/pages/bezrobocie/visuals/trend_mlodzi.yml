@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Bezrobocie młodych 15–24 — Polska, 2000–2024.
+# Single series: structural decline since 2013 is the story.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: youth_unemployment_rate }
+filter:
+  geo: PL

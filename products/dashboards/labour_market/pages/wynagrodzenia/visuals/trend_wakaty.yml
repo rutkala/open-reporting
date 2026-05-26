@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Wskaźnik wakatów w Polsce — udział wolnych miejsc pracy w ogóle etatów.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: vacancy_rate }
+filter:
+  geo: PL

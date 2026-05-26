@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 3 layout — wages and vacancies:
+#   Row 1: wage growth trend PL (full width)
+#   Row 2: minimum wage multi-country Visegrad comparison (full width) with prose
+#   Row 3: vacancy rate trend PL (full width)
+
+rows:
+  - title: "Wzrost kosztów pracy — Polska r/r"
+    items:
+      - { visual: trend_koszty_pracy, width: "100%" }
+  - title: "Płaca minimalna — Polska i wybrane kraje UE"
+    prose: |
+      Polska płaca minimalna rośnie szybciej niż średnia UE — wzrost z ok. 200 EUR w 2010 r.
+      do ponad 800 EUR w 2024 r. Polska zbliża się do poziomu Czech i Węgier.
+      Kraje nordyckie nie mają ustawowej płacy minimalnej.
+    items:
+      - { visual: trend_placa_min, width: "100%" }
+  - title: "Wskaźnik wakatów — Polska"
+    items:
+      - { visual: trend_wakaty, width: "100%" }

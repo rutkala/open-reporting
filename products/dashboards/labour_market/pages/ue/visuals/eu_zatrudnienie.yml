@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Wskaźnik zatrudnienia 20-64 — przekrój UE-27. Polska wyróżniona; linia celu UE 2030.
+
+type: bar
+encoding:
+  x: { metric: employment_rate }
+  y: { dimension: geo__country_name_pl }
+filter:
+  geo: [AT, BE, BG, CY, CZ, DE, DK, EE, EL, ES, FI, FR, HR, HU, IE, IT, LT, LU, LV, MT, NL, PL, PT, RO, SE, SI, SK]
+options:
+  sort: value-desc
+  highlight:
+    value: Polska
+    color: azure_1
+    other: slate_3
+  reference_lines:
+    - { value: 78, label: "Cel UE 2030 (78%)", color: positive }
+  table:
+    row_limit: 54
+    labels:
+      geo__country_name_pl: "Kraj"
+      date_key__cal_year: "Rok"
+      employment_rate: "Wskaźnik zatrudnienia (%)"

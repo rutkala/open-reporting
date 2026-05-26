@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Stopa bezrobocia — Polska i UE-27, 2000–2024.
+# Two series: PL + EU27_2020. Within Cowan 4±1 limit (2 series).
+# Line over bar: 25-year continuous time series with natural temporal order.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: unemployment_rate }
+filter:
+  geo: [PL, EU27_2020]

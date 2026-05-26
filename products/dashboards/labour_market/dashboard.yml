@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/dashboard.schema.json
+# Labour Market dashboard for Polish citizens.
+# Audience: non-economist Polish news readers.
+# Story: unemployment trend, employment vs EU-2030 target, wages, EU benchmarking.
+
+domain: labour_market
+port:   8058
+title:  Rynek pracy w Polsce

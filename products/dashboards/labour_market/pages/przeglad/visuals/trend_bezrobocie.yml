@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Stopa bezrobocia — pełna historia 2000–2024, Polska.
+# Line chosen over bar: continuous annual time series (25 years, natural order).
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: unemployment_rate }
+filter:
+  geo: PL

@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Wzrost kosztów pracy w Polsce r/r — indeks LCI Eurostat.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: wage_growth }
+filter:
+  geo: PL
+options:
+  reference_lines:
+    - { value: 0, label: "Brak wzrostu", color: subtext }

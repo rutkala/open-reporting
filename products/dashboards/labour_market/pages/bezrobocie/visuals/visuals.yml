@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 2 layout — unemployment detail:
+#   Row 1: PL vs EU27 trend line (full width)
+#   Row 2: Youth unemployment trend + contextual prose (full width)
+#   Row 3: EU-27 ranked bar — latest year (full width)
+
+rows:
+  - title: "Polska vs UE — stopa bezrobocia 2000–2024"
+    items:
+      - { visual: trend_bezrobocie_eu, width: "100%" }
+  - title: "Bezrobocie młodych w Polsce (15–24)"
+    prose: |
+      Stopa bezrobocia młodych w Polsce systematycznie spada od 2013 roku — z ok. 28% do ok. 12%.
+      To jeden z najdynamiczniejszych spadków w UE-27 w tej dekadzie.
+    items:
+      - { visual: trend_mlodzi, width: "100%" }
+  - title: "Stopa bezrobocia w UE-27 — najnowszy rok"
+    items:
+      - { visual: eu_bezrobocie, width: "100%" }
