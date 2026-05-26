@@ -16,5 +16,7 @@ options:
     other: slate_3
   reference_lines:
     - { value: -3, label: "Próg SGP", color: negative }
+  annotations:
+    - { x: -6.5, text: "Polska wyróżniona azurowym", direction: right, color: azure_1 }
   table:
     row_limit: 27

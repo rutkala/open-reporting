@@ -7,3 +7,7 @@ encoding:
   y: { metric: interest_expenditure }
 filter:
   geo: PL
+options:
+  annotations:
+    - { x: 2021, y: 1.1, text: "Minimum historyczne", direction: below, color: subtext }
+    - { x: 2024, y: 2.2, text: "Podwojenie w 4 lata", direction: above, color: negative }

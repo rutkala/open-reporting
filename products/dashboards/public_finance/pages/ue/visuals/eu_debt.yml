@@ -16,5 +16,7 @@ options:
     other: slate_3
   reference_lines:
     - { value: 60, label: "Próg Maastricht", color: negative }
+  annotations:
+    - { x: 55.1, text: "Polska wyróżniona azurowym", direction: right, color: azure_1 }
   table:
     row_limit: 27

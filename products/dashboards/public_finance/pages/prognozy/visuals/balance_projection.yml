@@ -15,5 +15,7 @@ options:
   reference_lines:
     - { value: -3, label: "Próg SGP",  color: negative }
     - { value:  0, label: "Równowaga", color: subtext }
+  annotations:
+    - { x: 2020, y: -6.935, text: "COVID-19", direction: above, color: subtext }
   table:
     row_limit: 20
