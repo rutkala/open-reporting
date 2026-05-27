@@ -1,0 +1,123 @@
+version: 2
+
+# MetricFlow semantic model for the Environment & Energy dashboard.
+#
+# Single source: curated.fact_env_overview (wide, one column per measure).
+# Four metrics expose annual environmental indicators to the visual layer.
+#
+# Aggregation note: `agg: average` used throughout. The pivot produces at most
+# one non-null value per (geo, period_year) for annual series, so average
+# collapses identically to max — consistent with the demo/finance/labour/macro
+# convention in this project.
+#
+# Direction note: GHG emissions, municipal waste, and water abstractions are
+# "lower is better" (ascending_is_good: false). Renewable energy share is
+# "higher is better" (ascending_is_good: true).
+
+semantic_models:
+  - name: env_overview
+    description: Annual Environment & Energy KPIs — Poland (Eurostat ENV + NRG series).
+    model: ref('fact_env_overview')
+
+    defaults:
+      agg_time_dimension: period
+
+    primary_entity: env_overview_row
+
+    entities:
+      - name: geo
+        type: foreign
+        expr: geo
+      - name: date_key
+        type: foreign
+        expr: period_date
+
+    dimensions:
+      - name: period
+        type: time
+        expr: period_date
+        type_params:
+          time_granularity: year
+
+    measures:
+      - name: ghg_emissions_mio_t
+        description: >
+          Total GHG emissions excl. LULUCF, millions of tonnes CO2e
+          (env_air_gge, airpol=GHG, src_crf=TOTXMEMO, unit=MIO_T).
+        agg: average
+        expr: ghg_emissions_mio_t
+      - name: renewable_energy_pct
+        description: >
+          Renewable energy share in gross final energy consumption, percent
+          (nrg_ind_ren, nrg_bal=REN, unit=PC).
+        agg: average
+        expr: renewable_energy_pct
+      - name: waste_kg_hab
+        description: >
+          Municipal waste generated per inhabitant, kg
+          (env_wasmun, unit=KG_HAB, wst_oper=GEN).
+        agg: average
+        expr: waste_kg_hab
+      - name: water_abstractions_mio_m3
+        description: >
+          Freshwater abstractions (total), millions of cubic metres
+          (env_wat_abs, unit=MIO_M3, wat_proc=ABST, wat_src=FRW).
+        agg: average
+        expr: water_abstractions_mio_m3
+
+metrics:
+  - name: ghg_emissions
+    label: "Emisje GHG"
+    type: simple
+    type_params:
+      measure: ghg_emissions_mio_t
+    config:
+      meta:
+        format:
+          decimals: 0
+          suffix: " mln t CO₂e"
+          scale: 1
+        source_label: "Eurostat (env_air_gge), GHG bez LULUCF"
+        ascending_is_good: false
+
+  - name: renewable_energy
+    label: "Energia odnawialna"
+    type: simple
+    type_params:
+      measure: renewable_energy_pct
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: "%"
+          scale: 1
+        source_label: "Eurostat (nrg_ind_ren), udział w końcowym zużyciu energii brutto"
+        ascending_is_good: true
+
+  - name: municipal_waste
+    label: "Odpady komunalne"
+    type: simple
+    type_params:
+      measure: waste_kg_hab
+    config:
+      meta:
+        format:
+          decimals: 0
+          suffix: " kg/os."
+          scale: 1
+        source_label: "Eurostat (env_wasmun), odpady wytworzone"
+        ascending_is_good: false
+
+  - name: water_abstractions
+    label: "Pobór wody"
+    type: simple
+    type_params:
+      measure: water_abstractions_mio_m3
+    config:
+      meta:
+        format:
+          decimals: 0
+          suffix: " mln m³"
+          scale: 1
+        source_label: "Eurostat (env_wat_abs), pobór wód śródlądowych"
+        ascending_is_good: false
