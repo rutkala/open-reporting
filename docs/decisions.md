@@ -259,7 +259,7 @@ PYTHONPATH=/opt/open-reporting python3 products/blog/publish_to_ghost.py \
 
 **Status:** OR-146 draft In Progress (VPS publish pending). 
 
-**Linear:** OR-146 | **Commit:** TBD
+**Linear:** OR-146 | **Commit:** `42d7f43b`
 
 ---
 
