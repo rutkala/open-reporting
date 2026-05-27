@@ -76,7 +76,7 @@ mac.current_account_gdp,nbp,country,2000,,Derived by NBP from CA balance and GDP
 mac.current_account_gdp,eurostat,country,2004,,Eurostat BOP / GDP ratio,bop_gdp6_q?bop_item=CA&geo=PL&s_adj=NSA&stk_flow=BAL,true
 mac.current_account_gdp,ameco,country,1995,,AMECO UBCA,,false
 mac.industrial_output_growth,sdp,country,2004,,GUS monthly industrial production (sold output); SDP API,,false
-mac.industrial_output_growth,eurostat,country,2004,,Eurostat short-term business statistics NACE Rev2,sts_inpr_a?geo=PL&nace_r2=B-D&s_adj=CA&unit=PCH_PRE,true
+mac.industrial_output_growth,eurostat,country,2004,,Eurostat short-term business statistics NACE Rev2,sts_inpr_a?geo=PL&indic_bt=PROD&nace_r2=B-D&s_adj=CA&unit=PCH_PRE,true
 mac.retail_sales_growth,sdp,country,2004,,GUS monthly retail sales (constant prices),,false
 mac.retail_sales_growth,eurostat,country,2004,,Eurostat short-term statistics for retail trade,sts_trtu_a?geo=PL&indic_bt=TOVV&nace_r2=G47&s_adj=CA&unit=PCH_PRE,false
 mac.business_confidence_bcs,ec_bcs,country,2000,,EC DG ECFIN BCS composite; ESI; monthly survey,,false
@@ -157,7 +157,7 @@ bus.construction_permits_area,bdl,country|voivodeship,2005,,BDL building permits
 bus.construction_completions,gunb,country|voivodeship,2008,,GUNB monthly completed dwellings,,false
 bus.construction_completions,sdp,country,2004,,GUS construction statistics monthly,,false
 bus.industrial_output_sectoral,sdp,country,2004,,GUS sold production volume index by NACE section,,false
-bus.industrial_output_sectoral,eurostat,country,2004,,Eurostat STS industrial production NACE Rev2,sts_inpr_a?geo=PL&nace_r2=B-D&s_adj=CA&unit=PCH_PRE,true
+bus.industrial_output_sectoral,eurostat,country,2004,,Eurostat STS industrial production NACE Rev2,sts_inpr_a?geo=PL&indic_bt=PROD&nace_r2=B-D&s_adj=CA&unit=PCH_PRE,true
 bus.construction_output_value,sdp,country,2004,,GUS construction and assembly production value,,false
 bus.pmi_manufacturing,pmi_pl,country,2012,,S&P Global Poland Manufacturing PMI; press release,,false
 bus.enterprise_confidence,sdp,country,2004,,GUS monthly business climate indicator (koniunktury),,false
