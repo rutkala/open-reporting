@@ -1,0 +1,32 @@
+version: 2
+
+models:
+  - name: fact_demo_overview
+    description: >
+      Annual Population & Demographics fact. Pivots five Eurostat POP indicators
+      (population total, birth rate, death rate, life expectancy F/M) into a wide
+      (geo, period_year, period_date) grain. One row per country per year.
+      natural_increase_per1000 is a derived column (births − deaths).
+      Source: curated.pop_indicators (domain_id = 'POP').
+    columns:
+      - name: geo
+        description: ISO country/region code (e.g. 'PL', 'EU27_2020').
+        tests: [not_null]
+      - name: period_year
+        description: Calendar year (integer).
+        tests: [not_null]
+      - name: period_date
+        description: December 31 of period_year — MetricFlow time spine key.
+        tests: [not_null]
+      - name: population_mln
+        description: Population on January 1st, millions (demo_gind JAN ÷ 1 000 000).
+      - name: birth_rate_per1000
+        description: Crude birth rate per 1 000 population (demo_gind GBIRTHRT).
+      - name: death_rate_per1000
+        description: Crude death rate per 1 000 population (demo_gind GDEATHRT).
+      - name: natural_increase_per1000
+        description: Natural increase rate = birth_rate − death_rate, per 1 000 population.
+      - name: life_expectancy_f_years
+        description: Female life expectancy at birth, years (demo_mlexpec age=Y_LT1 sex=F).
+      - name: life_expectancy_m_years
+        description: Male life expectancy at birth, years (demo_mlexpec age=Y_LT1 sex=M).

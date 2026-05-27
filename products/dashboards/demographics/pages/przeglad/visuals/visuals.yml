@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 1 layout — demographics scorecard:
+#   Row 1: 3 KPI cards (population, birth rate, death rate)
+#   Row 2: 2 KPI cards (life expectancy female, life expectancy male)
+#   Row 3: line chart — population total trend (full width)
+
+rows:
+  - title: "Kluczowe wskaźniki demograficzne"
+    items:
+      - { visual: kpi_populacja,  width: "33%" }
+      - { visual: kpi_urodzenia,  width: "33%" }
+      - { visual: kpi_zgony,      width: "33%" }
+  - title: "Oczekiwana długość życia"
+    items:
+      - { visual: kpi_oczekiwane_zycie_k, width: "50%" }
+      - { visual: kpi_oczekiwane_zycie_m, width: "50%" }
+  - title: "Liczba ludności Polski — historia"
+    items:
+      - { visual: trend_populacja, width: "100%" }

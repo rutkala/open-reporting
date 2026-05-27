@@ -1,0 +1,146 @@
+version: 2
+
+# MetricFlow semantic model for the Population & Demographics dashboard.
+#
+# Single source: curated.fact_demo_overview (wide, one column per measure).
+# Six metrics expose annual demographic indicators to the visual layer.
+#
+# Aggregation note: `agg: average` used throughout. The pivot produces at most
+# one non-null value per (geo, period_year) per indicator, so average collapses
+# identically to max — consistent with the finance/labour/macro convention.
+
+semantic_models:
+  - name: demo_overview
+    description: Annual Population & Demographics KPIs — Poland (Eurostat demo_gind + demo_mlexpec).
+    model: ref('fact_demo_overview')
+
+    defaults:
+      agg_time_dimension: period
+
+    primary_entity: demo_overview_row
+
+    entities:
+      - name: geo
+        type: foreign
+        expr: geo
+      - name: date_key
+        type: foreign
+        expr: period_date
+
+    dimensions:
+      - name: period
+        type: time
+        expr: period_date
+        type_params:
+          time_granularity: year
+
+    measures:
+      - name: population_mln
+        description: Population on January 1st, millions (demo_gind JAN).
+        agg: average
+        expr: population_mln
+      - name: birth_rate_per1000
+        description: Crude birth rate per 1 000 population (demo_gind GBIRTHRT).
+        agg: average
+        expr: birth_rate_per1000
+      - name: death_rate_per1000
+        description: Crude death rate per 1 000 population (demo_gind GDEATHRT).
+        agg: average
+        expr: death_rate_per1000
+      - name: natural_increase_per1000
+        description: Natural increase rate (births − deaths) per 1 000 population.
+        agg: average
+        expr: natural_increase_per1000
+      - name: life_expectancy_f_years
+        description: Female life expectancy at birth, years (demo_mlexpec Y_LT1, F).
+        agg: average
+        expr: life_expectancy_f_years
+      - name: life_expectancy_m_years
+        description: Male life expectancy at birth, years (demo_mlexpec Y_LT1, M).
+        agg: average
+        expr: life_expectancy_m_years
+
+metrics:
+  - name: population_total
+    label: "Ludność"
+    type: simple
+    type_params:
+      measure: population_mln
+    config:
+      meta:
+        format:
+          decimals: 2
+          suffix: " mln"
+          scale: 1
+        source_label: "Eurostat (demo_gind, JAN)"
+        ascending_is_good: null
+
+  - name: birth_rate
+    label: "Współczynnik urodzeń"
+    type: simple
+    type_params:
+      measure: birth_rate_per1000
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: "‰"
+          scale: 1
+        source_label: "Eurostat (demo_gind, GBIRTHRT)"
+        ascending_is_good: true
+
+  - name: death_rate
+    label: "Współczynnik zgonów"
+    type: simple
+    type_params:
+      measure: death_rate_per1000
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: "‰"
+          scale: 1
+        source_label: "Eurostat (demo_gind, GDEATHRT)"
+        ascending_is_good: false
+
+  - name: natural_increase
+    label: "Przyrost naturalny"
+    type: simple
+    type_params:
+      measure: natural_increase_per1000
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: "‰"
+          scale: 1
+        source_label: "Eurostat (demo_gind, GBIRTHRT − GDEATHRT)"
+        ascending_is_good: true
+
+  - name: life_expectancy_f
+    label: "Oczekiwana dł. życia (kobiety)"
+    type: simple
+    type_params:
+      measure: life_expectancy_f_years
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: " lat"
+          scale: 1
+        source_label: "Eurostat (demo_mlexpec, wiek urodzenia, kobiety)"
+        ascending_is_good: true
+
+  - name: life_expectancy_m
+    label: "Oczekiwana dł. życia (mężczyźni)"
+    type: simple
+    type_params:
+      measure: life_expectancy_m_years
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: " lat"
+          scale: 1
+        source_label: "Eurostat (demo_mlexpec, wiek urodzenia, mężczyźni)"
+        ascending_is_good: true

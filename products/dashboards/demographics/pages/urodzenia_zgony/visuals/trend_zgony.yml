@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Współczynnik zgonów — historia roczna, Polska.
+# Line chosen: continuous rate time series; includes 2020-2021 COVID-19 excess mortality spike.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: death_rate }
+filter:
+  geo: PL

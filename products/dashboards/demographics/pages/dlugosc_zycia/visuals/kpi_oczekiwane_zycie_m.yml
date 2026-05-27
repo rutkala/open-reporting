@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Oczekiwana długość życia mężczyzn — najnowsza wartość z deltą r/r.
+
+type: card
+encoding:
+  value: { metric: life_expectancy_m }
+filter:
+  geo: PL
+options:
+  delta:
+    vs: prior_year
+    format: icon-first

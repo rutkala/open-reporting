@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Przyrost naturalny — historia roczna, Polska.
+# Bar chosen: discrete annual flow rate; negative bars below zero baseline naturally
+# show when deaths exceed births — the key demographic story since ~2013.
+
+type: bar
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: natural_increase }
+filter:
+  geo: PL

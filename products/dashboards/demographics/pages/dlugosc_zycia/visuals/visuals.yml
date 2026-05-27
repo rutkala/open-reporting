@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 3 layout — life expectancy:
+#   Row 1: 2 KPI cards (life expectancy female, life expectancy male)
+#   Row 2: line chart — female life expectancy trend (full width)
+#   Row 3: line chart — male life expectancy trend (full width)
+
+rows:
+  - title: "Oczekiwana długość życia w Polsce"
+    items:
+      - { visual: kpi_oczekiwane_zycie_k, width: "50%" }
+      - { visual: kpi_oczekiwane_zycie_m, width: "50%" }
+  - title: "Oczekiwana długość życia kobiet — historia"
+    items:
+      - { visual: trend_oczekiwane_zycie_k, width: "100%" }
+  - title: "Oczekiwana długość życia mężczyzn — historia"
+    items:
+      - { visual: trend_oczekiwane_zycie_m, width: "100%" }

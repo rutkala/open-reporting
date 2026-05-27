@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/page.schema.json
+# Page 2 — birth and death rate trends + natural increase.
+# Story: Poland's demographic transition — from growth to negative natural increase.
+
+title:  "Urodzenia i zgony"
+anchor: urodzenia_zgony

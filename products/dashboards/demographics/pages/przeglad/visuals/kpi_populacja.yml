@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Liczba ludności — najnowsza wartość z deltą r/r.
+# ascending_is_good=null: neutralne (zmiana populacji nie jest z góry dobra lub zła).
+
+type: card
+encoding:
+  value: { metric: population_total }
+filter:
+  geo: PL
+options:
+  delta:
+    vs: prior_year
+    format: icon-first

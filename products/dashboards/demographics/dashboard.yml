@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/dashboard.schema.json
+# Population & Demographics dashboard for Polish citizens.
+# Audience: non-economist Polish news readers.
+# Story: Is Poland's population growing or shrinking? Birth/death trends, life expectancy gains.
+
+domain: demographics
+port:   8060
+title:  "Ludność Polski"

@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/pages.schema.json
+# Narrative arc:
+#   1. Scorecard snapshot (Przegląd)
+#   2. Birth and death trends — is Poland growing or declining? (Urodzenia i zgony)
+#   3. Life expectancy progress over decades (Oczekiwana długość życia)
+order:
+  - przeglad
+  - urodzenia_zgony
+  - dlugosc_zycia

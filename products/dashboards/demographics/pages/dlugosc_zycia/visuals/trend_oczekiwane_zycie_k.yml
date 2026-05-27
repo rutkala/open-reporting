@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Oczekiwana długość życia kobiet — historia roczna, Polska.
+# Line chosen: continuous level rising over time; the upward trend since 1960s is the main story.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: life_expectancy_f }
+filter:
+  geo: PL

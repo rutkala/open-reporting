@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Współczynnik urodzeń — najnowsza wartość z deltą r/r.
+# ascending_is_good=true: wyższy wskaźnik urodzeń jest korzystny demograficznie.
+
+type: card
+encoding:
+  value: { metric: birth_rate }
+filter:
+  geo: PL
+options:
+  delta:
+    vs: prior_year
+    format: icon-first

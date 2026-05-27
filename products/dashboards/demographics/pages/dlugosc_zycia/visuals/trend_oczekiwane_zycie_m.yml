@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Oczekiwana długość życia mężczyzn — historia roczna, Polska.
+# Line chosen: continuous level; note the dip/stagnation in 1980s and the gap vs women.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: life_expectancy_m }
+filter:
+  geo: PL

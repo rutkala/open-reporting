@@ -1,0 +1,16 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 2 layout — births and deaths:
+#   Row 1: line chart — crude birth rate trend (full width)
+#   Row 2: line chart — crude death rate trend (full width)
+#   Row 3: bar chart — natural increase rate (births − deaths), can go negative (full width)
+
+rows:
+  - title: "Współczynnik urodzeń — trend roczny"
+    items:
+      - { visual: trend_urodzenia, width: "100%" }
+  - title: "Współczynnik zgonów — trend roczny"
+    items:
+      - { visual: trend_zgony, width: "100%" }
+  - title: "Przyrost naturalny — urodzenia minus zgony"
+    items:
+      - { visual: trend_przyrost_naturalny, width: "100%" }

@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Liczba ludności Polski — pełna historia, linia czasu.
+# Line chosen: population level is a continuous stock (not a flow/growth rate),
+# showing the long arc including post-1989 peak and subsequent gradual decline.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: population_total }
+filter:
+  geo: PL

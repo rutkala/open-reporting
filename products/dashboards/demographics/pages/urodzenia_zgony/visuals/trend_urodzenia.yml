@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Współczynnik urodzeń — historia roczna, Polska.
+# Line chosen: continuous rate time series; declining trend is the main story.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: birth_rate }
+filter:
+  geo: PL
