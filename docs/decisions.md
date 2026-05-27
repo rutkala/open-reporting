@@ -241,6 +241,29 @@ After deploy: verify /national_accounts/ renders data (not just 200 OK — lesso
 
 ---
 
+## 2026-05-27 08:15 UTC — #15 — PO VPS actions absorbed; all Theme 3 + Theme 2 articles now live
+
+**Decision:** PO confirmed completion of all items in the VPS action queue. Marked OR-52, OR-55, OR-145, OR-146 Done in Linear. Updated session-memory.md to reflect full production state.
+
+**What the PO deployed on VPS:**
+- `dbt run --select fact_macro_overview` + `dbr run products/dashboards/national_accounts` → OR-52 live at portal.open-reporting.dev/national_accounts/
+- `dbt run --select fact_demo_overview` + `dbr run products/dashboards/demographics` → OR-55 live at portal.open-reporting.dev/demographics/
+- `publish_to_ghost.py products/blog/drafts/or-145-labour.md --publish` → Article 2 live
+- `publish_to_ghost.py products/blog/drafts/or-146-debt-service.md --publish` → Article 3 live
+
+**Current production scorecard:**
+- 4 live domain dashboards (public_finance, labour_market, national_accounts, demographics)
+- 3 published data-journalism articles
+- Daily ingestion cron running at 22:00 UTC
+
+**Still blocked on PO (Meta portal):** OR-90 Instagram token → blocks all Theme 4 social automation.
+
+**Status:** All absorbed. VPS queue empty.
+
+**Next run priority:** Theme 2 fourth article OR Theme 5 pipeline depth OR new domain dashboard.
+
+---
+
 ## 2026-05-27 08:00 UTC — #14 — OR-146 Debt service costs article draft shipped
 
 **Decision:** Wrote and committed third blog article (OR-146) on Polish debt service costs. Pairs with live public_finance dashboard.
