@@ -241,6 +241,62 @@ After deploy: verify /national_accounts/ renders data (not just 200 OK — lesso
 
 ---
 
+## 2026-05-27 17:00 UTC — #17 — OR-148 EU fiscal article + OR-83 ENV dashboard code shipped
+
+**Decision:** Two deliverables this run: (1) fifth Theme 2 article on Poland's EDP position; (2) full OR-83 Environment & Energy dashboard code (mart + semantic + YAML + infra), deploy pending VPS.
+
+**What shipped:**
+
+- **OR-148** — `products/blog/drafts/or-148-eu-fiscal-comparison.md` — ~950-word Polish article: "Polska w procedurze nadmiernego deficytu — co to znaczy i gdzie stoją inni." EU cross-section of 2024 deficit/debt positions. Key facts updated from Eurostat April 2026 EDP notification (Poland deficit = **6.5% GDP**, not 5.4% as originally briefed — correction documented in article's verification block). All 8 EDP countries covered, debt comparison, defence spending as structural driver, correction path to 2028.
+
+- **OR-83** — Environment & Energy dashboard:
+  - `products/warehouse/models/marts/env/fact_env_overview.sql` — 4-metric annual pivot (ghg_emissions_mio_t, renewable_energy_pct, waste_kg_hab, water_abstractions_mio_m3)
+  - `products/warehouse/models/marts/env/schema.yml`
+  - `products/warehouse/models/semantic/env_overview.yml` — 4 MetricFlow metrics (ghg_emissions, renewable_energy, municipal_waste, water_abstractions)
+  - `products/dashboards/environment/` — 3 pages (przeglad, emisje, energia), 10 visuals, port 8061
+  - `infra/nginx/conf.d/dbr-routes/environment.conf` — nginx proxy to 8061
+  - `infra/systemd/or-environment.service`
+
+**Why:** Theme 2 article cadence (5th article keeps editorial drum beating). OR-83 is the next natural domain after the four Theme 3 dashboards — ENV data already seeded (4 Eurostat series), intermediate model already existed, follows exact same pattern. Both deliverables fully cloud-implementable.
+
+**Subagent count this run:** 3 (content-writer OR-148, data-engineer OR-83 mart, dashboard-dev OR-83 YAML).
+
+**VPS queue (PO action needed):**
+
+1. **OR-147 COFOG article publish** (draft committed `933d23fd`, pending since run #16):
+   ```bash
+   cd /opt/open-reporting && git pull
+   PYTHONPATH=/opt/open-reporting python3 products/blog/publish_to_ghost.py \
+       products/blog/drafts/or-147-cofog.md --status draft
+   # verify preview, then re-run with --publish
+   ```
+
+2. **OR-148 EU fiscal article publish** (draft committed this run):
+   ```bash
+   PYTHONPATH=/opt/open-reporting python3 products/blog/publish_to_ghost.py \
+       products/blog/drafts/or-148-eu-fiscal-comparison.md --publish
+   ```
+
+3. **OR-83 ENV dashboard deploy:**
+   ```bash
+   cd products/warehouse
+   DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt seed --select eurostat_series --profiles-dir .
+   DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt run --select env_indicators fact_env_overview --profiles-dir .
+   dbr validate products/dashboards/environment
+   dbr run products/dashboards/environment
+   sudo cp infra/systemd/or-environment.service /etc/systemd/system/
+   sudo systemctl daemon-reload && sudo systemctl enable or-environment && sudo systemctl start or-environment
+   sudo cp infra/nginx/conf.d/dbr-routes/environment.conf /etc/nginx/conf.d/dbr-routes/
+   sudo nginx -t && sudo nginx -s reload
+   ```
+   After deploy: verify /environment/ renders data (not just 200 OK — check all 4 KPI cards show numbers).
+
+**Status:** Shipped (code). OR-148 In Progress (VPS publish pending). OR-83 In Progress (VPS deploy pending).
+
+**Linear:** OR-148 | OR-83
+
+---
+
 ## 2026-05-27 08:15 UTC — #15 — PO VPS actions absorbed; all Theme 3 + Theme 2 articles now live
 
 **Decision:** PO confirmed completion of all items in the VPS action queue. Marked OR-52, OR-55, OR-145, OR-146 Done in Linear. Updated session-memory.md to reflect full production state.

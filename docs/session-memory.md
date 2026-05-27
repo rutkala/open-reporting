@@ -1,33 +1,35 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-05-27 13:00 UTC -->
+<!-- last-updated: 2026-05-27 17:00 UTC -->
 
 ## Current Focus
 
-AI Lead autonomous week underway. 4h cron cadence. Theme 3 fully live. Theme 2 has 3 articles published + 1 draft (OR-147 COFOG) ready for VPS publish.
+AI Lead autonomous week underway. 4h cron cadence. Theme 3 fully live (4 dashboards). Theme 2: 4 article drafts committed (OR-147 COFOG + OR-148 EU fiscal), both pending VPS publish. OR-83 ENV dashboard code committed, pending VPS deploy.
 
 ## Live production state
 
 - **Public finance:** `portal.open-reporting.dev/public_finance/` — Live ✓
 - **Labour market:** `portal.open-reporting.dev/labour_market/` — Live ✓
-- **National accounts:** `portal.open-reporting.dev/national_accounts/` — Live ✓ (deployed by PO)
-- **Demographics:** `portal.open-reporting.dev/demographics/` — Live ✓ (deployed by PO)
+- **National accounts:** `portal.open-reporting.dev/national_accounts/` — Live ✓
+- **Demographics:** `portal.open-reporting.dev/demographics/` — Live ✓
 - **Blog:** `www.open-reporting.dev` — Live ✓
   - Article 1 (SGP/Maastricht) — Live ✓
-  - Article 2 (Labour market) — Live ✓ (published by PO)
-  - Article 3 (Debt service costs) — Live ✓ (published by PO)
-  - **Article 4 (COFOG)** — Draft committed `933d23fd` — VPS publish pending
+  - Article 2 (Labour market) — Live ✓
+  - Article 3 (Debt service costs) — Live ✓
+  - Article 4 (COFOG) — Draft `933d23fd` — VPS publish pending
+  - **Article 5 (EU fiscal/EDP)** — Draft committed this run — VPS publish pending
 - **Daily ingestion:** cron `0 22 * * *` UTC
 
 ## What shipped (recent commits)
 
 | Commit | What | Linear |
 |---|---|---|
-| `933d23fd` | OR-147 COFOG article draft | OR-147 In Progress |
-| `07df7240` | OR-87 sts_inpr_a seed fix (indic_bt=PROD) | OR-87 fix committed |
-| `3f7a9e8a` | Absorb PO VPS actions — all Theme 3 live | All Done |
-| `42d7f43b` | OR-146 Debt service article draft | OR-146 Done |
-| `e65e48f7` | OR-145 Labour market article draft | OR-145 Done |
+| this run | OR-148 EU fiscal comparison article draft | OR-148 In Progress |
+| this run | OR-83 ENV dashboard (mart + semantic + YAML + infra) | OR-83 In Progress |
+| `dcacc49` | run #16 post-mortem — OR-147 COFOG article + OR-87 fix | OR-147 In Progress |
+| `933d23f` | OR-147 COFOG article draft | OR-147 In Progress |
+| `07df724` | OR-87 sts_inpr_a seed fix (indic_bt=PROD) | OR-87 fix committed |
+| `3f7a9e8` | Absorb PO VPS actions — all Theme 3 live | All Done |
 
 ## VPS queue pending PO action
 
@@ -38,10 +40,28 @@ AI Lead autonomous week underway. 4h cron cadence. Theme 3 fully live. Theme 2 h
        products/blog/drafts/or-147-cofog.md --status draft
    # Check preview, then --publish
    ```
-   Pre-publish: verify in Eurostat databrowser (gov_10a_exp, geo=PL, unit=PC_GDP, year=2023):
-   GF10=16,9%? GF07≈5,0%? GF02=3,3%?
 
-2. **OR-87 BUS/MAC industrial output fix activation:**
+2. **OR-148 EU fiscal article publish:**
+   ```bash
+   PYTHONPATH=/opt/open-reporting python3 products/blog/publish_to_ghost.py \
+       products/blog/drafts/or-148-eu-fiscal-comparison.md --publish
+   ```
+
+3. **OR-83 ENV dashboard deploy (port 8061):**
+   ```bash
+   cd products/warehouse
+   DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt seed --select eurostat_series --profiles-dir .
+   DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt run --select env_indicators fact_env_overview --profiles-dir .
+   dbr validate products/dashboards/environment
+   dbr run products/dashboards/environment
+   sudo cp infra/systemd/or-environment.service /etc/systemd/system/
+   sudo systemctl daemon-reload && sudo systemctl enable or-environment && sudo systemctl start or-environment
+   sudo cp infra/nginx/conf.d/dbr-routes/environment.conf /etc/nginx/conf.d/dbr-routes/
+   sudo nginx -t && sudo nginx -s reload
+   ```
+   After deploy: verify /environment/ shows 4 KPI cards with real data (not "No data").
+
+4. **OR-87 BUS/MAC industrial output fix activation:**
    ```bash
    PYTHONPATH=/opt/open-reporting python3 products/database/loader.py
    PYTHONPATH=/opt/open-reporting python3 products/ingestion/to_raw/eurostat_observations.py --dataset sts_inpr_a --backfill
@@ -59,16 +79,16 @@ AI Lead autonomous week underway. 4h cron cadence. Theme 3 fully live. Theme 2 h
 
 ## What's next (autonomous)
 
-1. **Theme 2 — 5th article:** regional wages / labour market depth OR EU fiscal comparison
-2. **ENV domain dashboard (OR-83):** emissions/energy — data already seeded (env.* series); natural next Theme 3-adjacent product
-3. **Theme 5 — OR-86 BDL ingestion** — cloud-implementable ingestion code; VPS to run
+1. **Theme 2 — 6th article:** "Polska na tle UE — zatrudnienie i rynek pracy" OR regional wages depth
+2. **OR-86 BDL ingestion** — cloud-implementable ingestion code (Theme 5)
+3. **OR-76 Data pipeline Phase 1** — robustness, retries, alerting
 4. **Theme 4 — blocked** on OR-90
 
 ## Architecture (current)
 
-- Port assignments: public_finance=8057, labour_market=8058, national_accounts=8059, demographics=8060
-- Next dashboard port: 8061
-- All Theme 3 dashboards live on portal
+- Port assignments: public_finance=8057, labour_market=8058, national_accounts=8059, demographics=8060, environment=8061
+- Next dashboard port: 8062
+- All Theme 3 dashboards live on portal; OR-83 ENV code committed, deploy pending
 
 ## Note: autonomous runs from cloud containers
 
@@ -79,10 +99,11 @@ AI Lead autonomous week underway. 4h cron cadence. Theme 3 fully live. Theme 2 h
 
 ## Key Technical Facts
 
-- OR-87 fix: `sts_inpr_a` needs `indic_bt=PROD` in both `eurostat_series.csv` and `domain_detail_sources.csv` — committed `07df7240`; VPS runbook in Linear OR-87
+- OR-83: `env_indicators` intermediate model pre-existed; 4 series in eurostat_series.csv; fact_env_overview pivots 4 metrics; port 8061
+- OR-87 fix: `sts_inpr_a` needs `indic_bt=PROD` — committed `07df724`; VPS runbook in Linear OR-87
+- OR-148 article: Poland 2024 deficit = **6.5% GDP** (Eurostat April 2026 EDP notification) — higher than earlier forecasts (5.1-5.4%)
 - OR-52 quarterly BOP series averaged to annual (AVG in fact_macro_overview)
 - natural_increase_per1000 derived in fact_demo_overview (births − deaths, can go negative)
-- Demographics seed dimension_keys verified correct (pop.births, pop.deaths, pop.population_total, pop.life_expectancy_f, pop.life_expectancy_m)
 
 ## Stale feature branches on origin (pre-autonomous phase — do not merge/delete without PO)
 
