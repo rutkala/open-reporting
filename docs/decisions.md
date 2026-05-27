@@ -241,6 +241,43 @@ After deploy: verify /national_accounts/ renders data (not just 200 OK — lesso
 
 ---
 
+## 2026-05-27 07:40 UTC — #13 — OR-145 Labour Market article draft shipped; git rescue
+
+**Decision:** Wrote and committed second blog article (OR-145) on Polish labour market. Also rescued 11 orphaned commits from detached HEAD state and fast-forwarded local main to match origin/main.
+
+**Incident: Detached HEAD on startup.** Every cloud container starts with local `main` pointing at `cb50837` (old), while origin/main had already advanced 11 commits to `eddd1c1`. Previous autonomous runs committed to detached HEAD (which tracked origin/main via fetch). Those commits were present in origin but not in local `main`. Fixed with `git merge --ff-only eddd1c1`. No data lost.
+
+**Root cause to fix:** Cloud containers spawn with local `main` = last fetched state at container build time. The `git pull --ff-only` in Step 0 should always be run BEFORE git status checks. Add it to the smoke check sequence. (Note: on this container, origin/main was already correct — the issue was local branch pointer only.)
+
+**What shipped (OR-145):**
+- `products/blog/drafts/or-145-labour.md` — ~900-word Polish article on record-low unemployment (3.1% in 2024). Inverted pyramid structure, all numbers cited (Eurostat LFS une_rt_a, lfsa_ergan, lfsa_argan, yth_empl_090, earn_mw_cur; GUS; BGK). Sources section + verification block. Title fixed to statement form (no question mark, per content principles §2.3).
+- Pairs with live `portal.open-reporting.dev/labour_market/` dashboard; CTA embedded.
+
+**Why article not published:** Ghost Admin API JWT requires `cryptography` package; Python cffi/Rust extension broken in cloud containers (same class of limitation as `dbr run` and `dbt run`). Draft committed — VPS publish is a one-liner (see below).
+
+**VPS publish (one-liner):**
+```bash
+cd /opt/open-reporting
+PYTHONPATH=/opt/open-reporting python3 products/blog/publish_to_ghost.py \
+    products/blog/drafts/or-145-labour.md --publish
+```
+
+**Pre-deployment verification done (no VPS deploy needed):**
+- All 5 POP dimension_keys for OR-55 demographics verified correct by cross-referencing catalogue seed + `_dimension_key()` sort logic.
+- All 5 MAC dimension_keys for OR-52 national_accounts verified correct.
+- All OR-55 and OR-52 dashboard page YAMLs: no unquoted colon syntax errors.
+
+**Status:** OR-145 draft In Progress (VPS publish pending). OR-52 / OR-55 remain In Progress (VPS deploy pending). No new blockers.
+
+**Followup:**
+- Fix Step 0 smoke check: add `git pull --ff-only` before git status
+- VPS: `git pull && python3 products/blog/publish_to_ghost.py products/blog/drafts/or-145-labour.md --publish`
+- VPS: deploy OR-52 + OR-55 dashboards per queue in session-memory
+
+**Linear:** OR-145 | **Commit:** TBD | **Target URL:** https://www.open-reporting.dev/bezrobocie-polska-2024-historyczny-rekord/
+
+---
+
 ## 2026-05-27 02:10 UTC — #12 — OR-55 Population & Demographics dashboard code shipped
 
 **Decision:** Built and committed the OR-55 Population & Demographics dashboard (Theme 3, priority #3). Code in git; deployment pending VPS.
