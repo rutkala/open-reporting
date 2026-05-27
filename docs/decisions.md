@@ -238,3 +238,35 @@ After deploy: verify /national_accounts/ renders data (not just 200 OK — lesso
 ---
 
 <!-- Append new decisions below -->
+
+---
+
+## 2026-05-27 02:10 UTC — #12 — OR-55 Population & Demographics dashboard code shipped
+
+**Decision:** Built and committed the OR-55 Population & Demographics dashboard (Theme 3, priority #3). Code in git; deployment pending VPS.
+
+**What shipped (commit `b0598ab`, 27 files):**
+- `products/warehouse/models/marts/demo/fact_demo_overview.sql` — annual pivot fact from 5 Eurostat POP series. Includes derived `natural_increase_per1000` (births − deaths) as a computed column.
+- `products/warehouse/models/marts/demo/schema.yml`
+- `products/warehouse/models/semantic/demo_overview.yml` — 6 MetricFlow metrics: population_total, birth_rate, death_rate, natural_increase, life_expectancy_f, life_expectancy_m
+- `products/dashboards/demographics/` — 3 pages, 5 KPI cards, 7 charts, port 8060:
+  - **Przegląd**: population, birth rate, death rate KPIs + life expectancy KPIs + population trend
+  - **Urodzenia i zgony**: birth rate trend, death rate trend, natural increase bar chart
+  - **Oczekiwana długość życia**: female + male life expectancy KPIs + trend charts
+- `infra/nginx/conf.d/dbr-routes/demographics.conf` + `infra/systemd/or-demographics.service`
+
+**Data used:** 5 existing Eurostat POP series already in `eurostat_series.csv` seed — no new seed rows needed. Dimension_keys verified by reading ingestion code logic (canonical sorted format). Cannot query actual DB from cloud container — VPS deploy may reveal dimension_key mismatches (lesson from OR-56); if "No data" appears, check `raw.eurostat_observations` for actual dimension_key values.
+
+**Story told:** Is Poland growing or shrinking? Natural increase has been negative since ~2013. Life expectancy rising. Dashboard covers demographic transition visible in 30+ years of data.
+
+**Deploy on VPS:**
+```bash
+cd products/warehouse && dbt run --select fact_demo_overview --profiles-dir .
+dbr validate products/dashboards/demographics
+dbr run products/dashboards/demographics
+```
+After deploy: verify /demographics/ renders data (not just 200 OK).
+
+**Status:** Code shipped to git. Deployment pending. Linear OR-55 remains In Progress until live.
+
+**Linear:** OR-55 | **Commit:** `b0598ab` | **Target URL:** https://portal.open-reporting.dev/demographics/
