@@ -352,3 +352,44 @@ After deploy: verify /demographics/ renders data (not just 200 OK).
 **Status:** Code shipped to git. Deployment pending. Linear OR-55 remains In Progress until live.
 
 **Linear:** OR-55 | **Commit:** `b0598ab` | **Target URL:** https://portal.open-reporting.dev/demographics/
+
+---
+
+## 2026-05-27 12:45 UTC — #16 — OR-147 COFOG article + OR-87 data fix
+
+**What shipped:**
+
+1. **OR-147 COFOG article draft** — `products/blog/drafts/or-147-cofog.md`, commit `933d23fd`
+   - ~900-word Polish article: "Każda trzecia złotówka z budżetu idzie na ochronę socjalną — gdzie trafia reszta"
+   - Five story beats: social protection dominance (16.9% GDP), economic affairs spike (7.5% GDP), defence surge (3.3%→4.2% GDP, NATO's biggest), health gap (5% vs EU27 7.3%), budget trade-off framing
+   - All figures cited to Eurostat gov_10a_exp + SIPRI; verification block appended with items needing Eurostat databrowser confirmation before publish
+   - Content-writer agent failed to write file (ran out of context after 8 min web research); article written directly after web search for verified data
+   - One factual error caught in self-review: defence (3.3% GDP) ≠ above education (4.4% GDP) per COFOG — corrected
+
+2. **OR-87 BUS/MAC data fix** — `products/warehouse/seeds/eurostat_series.csv` + `products/database/data/domain_detail_sources.csv`, commit `07df7240`
+   - Root cause: `sts_inpr_a` Eurostat API returns all `indic_bt` values when not filtered; `_dimension_key()` includes `indic_bt` in canonical key; seed lacked `indic_bt=PROD` → staging join zero-matches → NULL in both `bus.industrial_output_sectoral` and `mac.industrial_output_growth`
+   - Fix: added `indic_bt=PROD` to dimension_key in seed (alphabetically first → `indic_bt=PROD&nace_r2=B-D&s_adj=CA&unit=PCH_PRE`) and added `&indic_bt=PROD` to both series_ids in catalogue
+   - VPS runbook posted to OR-87 Linear comment; fix activates after `loader.py` + ingestion backfill + dbt re-run
+
+**Why:** Theme 2 4th article was highest-priority unblocked work per session memory and roadmap. OR-87 was diagnosed as a side task while content-writer ran (agent failed); fix was cloud-completable.
+
+**Status:** OR-147 draft In Progress (VPS publish pending; pre-publish: verify exact GF02/GF07/GF10 values in Eurostat databrowser). OR-87 code fix Shipped; VPS activation pending PO runbook.
+
+**VPS publish command:**
+```bash
+cd /opt/open-reporting && git pull
+PYTHONPATH=/opt/open-reporting python3 products/blog/publish_to_ghost.py \
+    products/blog/drafts/or-147-cofog.md --status draft
+# Verify draft preview, then:
+# python3 products/blog/publish_to_ghost.py products/blog/drafts/or-147-cofog.md --publish
+```
+
+**Pre-publish verification (Eurostat databrowser → gov_10a_exp, filter: geo=PL, unit=PC_GDP, year=2023):**
+- GF10 (Ochrona socjalna): article uses 16,9% — confirm
+- GF07 (Zdrowie): article uses ~5,0% — confirm exact value
+- GF02 (Obrona): article uses 3,3% for 2023 — confirm (note: SIPRI says 4,2% for 2024 — different definition)
+- GF01 (Usługi publiczne): article uses "5–6%" — confirm; article does NOT quote exact value
+
+**Followup:**
+- Next run: consider ENV domain dashboard (OR-83) as next Theme 3-adjacent product, or deeper labour market article (regional wages)
+- OR-87 VPS runbook ready in Linear comment — PO to execute
