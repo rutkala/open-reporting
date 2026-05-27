@@ -241,6 +241,28 @@ After deploy: verify /national_accounts/ renders data (not just 200 OK — lesso
 
 ---
 
+## 2026-05-27 08:00 UTC — #14 — OR-146 Debt service costs article draft shipped
+
+**Decision:** Wrote and committed third blog article (OR-146) on Polish debt service costs. Pairs with live public_finance dashboard.
+
+**What shipped (commit TBD):**
+- `products/blog/drafts/or-146-debt-service.md` — ~900-word Polish article: "Koszty obsługi długu w Polsce: jak wydatki odsetkowe podwoiły się w cztery lata." Three-part explanation (post-COVID debt expansion, NBP rate shock, FX effect). EU27 comparison (Poland 2.2% GDP vs EU27 avg 1.8%, ranked 7th). Forward section on rate cuts vs growing debt stock. All numbers web-verified (Eurostat gov_10a_main D41PAY, gov_10dd_edpt1; NBP; MF; GUS).
+- Data caveat in verification block: exact 2019 D41PAY value not found via search; article uses "ok. 1,0% PKB" conservative estimate. Confirm before VPS publish.
+
+**Why:** Theme 2 article cadence. Third article creates meaningful content depth — three topics (fiscal sustainability, labour market, debt costs) covering the main public finance stories of 2024.
+
+**VPS publish (after confirming 2019 data):**
+```bash
+PYTHONPATH=/opt/open-reporting python3 products/blog/publish_to_ghost.py \
+    products/blog/drafts/or-146-debt-service.md --publish
+```
+
+**Status:** OR-146 draft In Progress (VPS publish pending). 
+
+**Linear:** OR-146 | **Commit:** TBD
+
+---
+
 ## 2026-05-27 07:40 UTC — #13 — OR-145 Labour Market article draft shipped; git rescue
 
 **Decision:** Wrote and committed second blog article (OR-145) on Polish labour market. Also rescued 11 orphaned commits from detached HEAD state and fast-forwarded local main to match origin/main.
