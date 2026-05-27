@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Emisje GHG — pełna historia roczna 1990–dziś, Polska.
+# Line chosen: GHG emissions is a continuous stock-like level; the long-run
+# structural decline from the 1990 post-transformation peak is the analytical story.
+# Bar would fragment 30+ discrete years into vertical bars — line communicates
+# the trajectory far more clearly for a trend-first audience.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: ghg_emissions }
+filter:
+  geo: PL

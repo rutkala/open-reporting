@@ -1,0 +1,15 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 2 layout — emissions and waste deep-dive:
+#   Row 1: line chart — GHG emissions 1990–present (full width)
+#   Row 2: line chart — municipal waste per capita trend (full width)
+#
+# GHG as line: stock-like level showing long-run decline from 1990 peak.
+# Waste as line: continuous per-capita level; trend direction is the story.
+
+rows:
+  - title: "Emisje gazów cieplarnianych (1990–dziś)"
+    items:
+      - { visual: line_ghg_historia, width: "100%" }
+  - title: "Odpady komunalne na mieszkańca"
+    items:
+      - { visual: line_odpady_komunalne, width: "100%" }

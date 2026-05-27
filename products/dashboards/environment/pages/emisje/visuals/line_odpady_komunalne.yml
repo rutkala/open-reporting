@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Odpady komunalne na mieszkańca — historia roczna, Polska.
+# Line chosen: continuous annual level per capita; the story is whether
+# waste generation per person is rising or falling over time.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: municipal_waste }
+filter:
+  geo: PL

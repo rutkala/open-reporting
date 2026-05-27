@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Pobór wody — historia roczna, Polska.
+# Line chosen: continuous annual abstraction volume; the story is whether
+# freshwater pressure is declining as efficiency and policy improve over time.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: water_abstractions }
+filter:
+  geo: PL

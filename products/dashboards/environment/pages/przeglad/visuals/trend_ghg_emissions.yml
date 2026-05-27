@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Emisje GHG — skrócona historia roczna, Polska.
+# Line chosen: continuous annual level; declining trend since 1990 peak is the main story.
+# Full history shown so the structural downward trajectory is visible at a glance.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: ghg_emissions }
+filter:
+  geo: PL

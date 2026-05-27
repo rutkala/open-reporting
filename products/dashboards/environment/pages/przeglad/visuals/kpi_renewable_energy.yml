@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Energia odnawialna — udział w zużyciu końcowym, najnowsza wartość z deltą r/r.
+# ascending_is_good=true: wzrost udziału OZE jest pożądany.
+
+type: card
+encoding:
+  value: { metric: renewable_energy }
+filter:
+  geo: PL
+options:
+  delta:
+    vs: prior_year
+    format: icon-first

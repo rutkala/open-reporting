@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/pages.schema.json
+# Narrative arc:
+#   1. Scorecard snapshot (Przegląd) — 4 headline KPIs + emission and renewable trends
+#   2. Emissions & waste deep-dive (Emisje i odpady) — GHG history + waste trend
+#   3. Energy & water resources (Energia i zasoby) — renewables share + water abstractions
+order:
+  - przeglad
+  - emisje
+  - energia

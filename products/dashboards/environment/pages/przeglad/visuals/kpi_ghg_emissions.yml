@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Emisje GHG — najnowsza wartość z deltą r/r.
+# ascending_is_good=false: spadek emisji jest pożądany — ikona delta odpowiednio.
+
+type: card
+encoding:
+  value: { metric: ghg_emissions }
+filter:
+  geo: PL
+options:
+  delta:
+    vs: prior_year
+    format: icon-first

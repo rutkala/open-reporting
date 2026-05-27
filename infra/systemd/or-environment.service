@@ -1,0 +1,17 @@
+[Unit]
+Description=Open Reporting — environment dashboard (/environment/)
+After=network.target
+
+[Service]
+User=radek
+Group=radek
+WorkingDirectory=/opt/open-reporting
+Environment=DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb
+Environment=PATH=/home/radek/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+EnvironmentFile=/opt/open-reporting/.env
+ExecStart=/home/radek/.local/bin/dbr serve /opt/open-reporting/products/dashboards/environment
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

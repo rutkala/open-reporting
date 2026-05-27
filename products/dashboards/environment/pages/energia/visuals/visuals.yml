@@ -1,0 +1,15 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 3 layout — energy and water resources:
+#   Row 1: line chart — renewable energy share trend (full width)
+#   Row 2: line chart — water abstractions trend (full width)
+#
+# Both metrics shown as lines: continuous annual levels; directional
+# trend (rising renewables, steady/declining water pressure) is the story.
+
+rows:
+  - title: "Udział energii odnawialnej w zużyciu końcowym"
+    items:
+      - { visual: line_energia_odnawialna, width: "100%" }
+  - title: "Pobór wody — historia roczna"
+    items:
+      - { visual: line_pobor_wody, width: "100%" }

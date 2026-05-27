@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Energia odnawialna — udział w zużyciu końcowym, historia roczna, Polska.
+# Line chosen: continuous percentage level rising over time; the upward trend is the story.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: renewable_energy }
+filter:
+  geo: PL

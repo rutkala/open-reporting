@@ -1,0 +1,7 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/page.schema.json
+# Page 2 — GHG emissions and municipal waste deep-dive.
+# Story: long-run trajectory of Poland's greenhouse gas emissions since 1990,
+# and the separate trend in per-capita municipal waste generation.
+
+title:  "Emisje i odpady"
+anchor: emisje

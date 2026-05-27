@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/dashboard.schema.json
+# Environment & Energy dashboard for Polish citizens.
+# Audience: non-economist Polish news readers.
+# Story: Are Poland's emissions falling? How fast is renewable energy growing?
+
+domain: environment
+port:   8061
+title:  "Środowisko: emisje i energia"
