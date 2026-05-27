@@ -274,7 +274,7 @@ PYTHONPATH=/opt/open-reporting python3 products/blog/publish_to_ghost.py \
 - VPS: `git pull && python3 products/blog/publish_to_ghost.py products/blog/drafts/or-145-labour.md --publish`
 - VPS: deploy OR-52 + OR-55 dashboards per queue in session-memory
 
-**Linear:** OR-145 | **Commit:** TBD | **Target URL:** https://www.open-reporting.dev/bezrobocie-polska-2024-historyczny-rekord/
+**Linear:** OR-145 | **Commit:** `e65e48f` | **Target URL:** https://www.open-reporting.dev/bezrobocie-polska-2024-historyczny-rekord/
 
 ---
 
