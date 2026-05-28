@@ -1,8 +1,8 @@
 # yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
 # Produkcja przemysłowa — wzrost r/r, Polska.
-# Bar: discrete annual growth rate; corroborates GDP narrative with supply-side evidence.
+# Column: discrete annual growth rate; corroborates GDP narrative with supply-side evidence.
 
-type: bar
+type: column
 encoding:
   x: { dimension: date_key__cal_year }
   y: { metric: industrial_output_growth }
