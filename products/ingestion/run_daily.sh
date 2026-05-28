@@ -5,10 +5,11 @@
 # the quiet hours so the brief dbr restart is invisible. NBP publishes
 # rates around 12:15 CET; by 22:00 UTC the publish has had ~9h to settle.
 #
-# DuckDB is file-locked: the live dbr-served dashboards hold an exclusive
+# DuckDB is file-locked: any live dbr-served dashboard holds an exclusive
 # lock on warehouse.duckdb, blocking writers. We work around this by
-# stopping or-public_finance.service before ingestion and starting it
-# again after. Total downtime ~30 seconds.
+# stopping every or-*.service dashboard (discovered dynamically — telegram-bot
+# is excluded because it doesn't touch DuckDB) before ingestion and starting
+# them again after. Total downtime ~30 seconds.
 #
 # Idempotent: both upstream scripts use upsert semantics on their natural
 # keys (NBP: currency_code+rate_date; Eurostat: dataset+geo+period+dim_key).
@@ -34,15 +35,27 @@ log() { echo "[$(ts)] $*" | tee -a "$LOG"; }
 log "=== daily ingestion start ==="
 log "host: $(hostname)  user: $(whoami)  python: $(python3 --version 2>&1)"
 
-# Trap to always restart dashboard even on early exit
-ensure_dashboard_running() {
-  log "ensuring or-public_finance.service is running…"
-  sudo -n /usr/bin/systemctl start or-public_finance.service >>"$LOG" 2>&1 || log "WARN: dashboard start failed"
+# Discover dashboard services dynamically — any unit matching or-*.service
+# that holds the DuckDB lock. Excludes or-telegram-bot.service (no DuckDB).
+dashboard_services() {
+  systemctl list-unit-files --type=service --no-legend 'or-*.service' \
+    | awk '{print $1}' \
+    | grep -v '^or-telegram-bot\.service$' || true
 }
-trap ensure_dashboard_running EXIT
 
-log "stopping or-public_finance.service to release DuckDB lock…"
-sudo -n /usr/bin/systemctl stop or-public_finance.service >>"$LOG" 2>&1
+# Trap to always restart dashboards even on early exit
+ensure_dashboards_running() {
+  for svc in $(dashboard_services); do
+    log "ensuring $svc is running…"
+    sudo -n /usr/bin/systemctl start "$svc" >>"$LOG" 2>&1 || log "WARN: $svc start failed"
+  done
+}
+trap ensure_dashboards_running EXIT
+
+for svc in $(dashboard_services); do
+  log "stopping $svc to release DuckDB lock…"
+  sudo -n /usr/bin/systemctl stop "$svc" >>"$LOG" 2>&1 || log "WARN: $svc stop failed"
+done
 
 run() {
   local name=$1 script=$2
