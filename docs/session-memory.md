@@ -1,150 +1,104 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-05-28 07:15 UTC -->
+<!-- last-updated: 2026-05-28 08:45 UTC -->
 
 ## Current Focus
 
-AI Lead autonomous week underway. 4h cron cadence. Theme 3 fully live (5 dashboards, OR-83 ENV code committed). Theme 2: 7 article drafts committed (OR-147–OR-150), all pending VPS publish. OR-86 BDL ingestion code shipped (needs API key + first run on VPS). Large VPS action queue for PO.
+**Autonomous-lead schedule moved from cloud to VPS.** The cloud RemoteTrigger is disabled — it could only ship YAML/SQL but couldn't deploy, so dashboards and articles piled up unactivated. New schedule runs ON the VPS via radek's crontab, where the agent has full access to `dbt`, `dbr`, `systemctl`, `docker`, and the live URLs. Same 02/07/12/17 UTC cadence, same prompt structure (adapted), but every run can now ship complete end-to-end work.
+
+Recovery just completed: OR-52, OR-55, OR-83 dashboards deployed; all 6 article drafts pushed to Ghost (drafts, awaiting PO review). Two new bar→column bug fixes shipped (OR-52, OR-55 — same pattern bit three dashboards).
+
+## Collaboration model (current)
+
+PO does **feedback + new-idea direction only**. Claude owns all VPS development, deploy, infra, commands. Bypass-permissions is on for radek. See `~/.claude/projects/-opt-open-reporting/memory/feedback_autonomous_ops_on_vps.md`.
 
 ## Live production state
 
 - **Public finance:** `portal.open-reporting.dev/public_finance/` — Live ✓
 - **Labour market:** `portal.open-reporting.dev/labour_market/` — Live ✓
-- **National accounts:** `portal.open-reporting.dev/national_accounts/` — Live ✓
-- **Demographics:** `portal.open-reporting.dev/demographics/` — Live ✓
+- **National accounts:** `portal.open-reporting.dev/national_accounts/` — Live ✓ (deployed 2026-05-28 by PO session)
+- **Demographics:** `portal.open-reporting.dev/demographics/` — Live ✓ (deployed 2026-05-28 by PO session)
+- **Environment:** `portal.open-reporting.dev/environment/` — Live ✓ (deployed 2026-05-28 by PO session)
 - **Blog:** `www.open-reporting.dev` — Live ✓
-  - Article 1 (SGP/Maastricht) — Live ✓
-  - Article 2 (Labour market / unemployment) — Live ✓
-  - Article 3 (Debt service costs) — Live ✓
-  - Article 4 (COFOG) — Draft `933d23f` — VPS publish pending
-  - Article 5 (EU fiscal/EDP) — Draft `6fda803` — VPS publish pending
-  - Article 6 (Wages/real wage growth) — Draft `c4d210e` — VPS publish pending
-  - **Article 7 (Demographics)** — Draft `5368422` — VPS publish pending
-- **Daily ingestion:** cron `0 22 * * *` UTC
+  - Article 1 (SGP/Maastricht) — Published ✓
+  - Articles 2–7 (OR-145..OR-150) — **In Ghost as DRAFTS**, awaiting PO preview + publish approval
+- **Daily ingestion:** cron `0 22 * * *` UTC, last run exit=0
+- **Autonomous-lead cron:** `0 2,7,12,17 * * *` UTC → `infra/scheduler/autonomous-lead.sh`
 
-## What shipped (recent commits)
+## Recent commits
 
-| Commit | What | Linear |
+| Commit | What |
+|---|---|
+| `d1f2a4d` | feat(scheduler): VPS autonomous-lead launcher + prompt |
+| `83524bd` | fix(demo): bar→column for OR-55 natural-increase visual |
+| `0823cbe` | fix(macro): bar→column for OR-52 vertical-bar visuals |
+| `24612f5` | docs: cloud-run #19 post-mortem |
+| `5368422` | feat(content): OR-150 demographics article draft |
+| `4e35a28` | feat(data): OR-86 BDL ingestion module |
+| `c4d210e` | feat(content): OR-149 wages article draft |
+| `796e0eb` | feat(dashboard): OR-83 ENV dashboard YAML + infra |
+| `8f4328d` | feat(data): OR-83 ENV mart + semantic layer |
+| `6fda803` | feat(content): OR-148 EU fiscal article draft |
+| `b0598ab` | feat(demo): OR-55 dashboard mart + YAML |
+| `ad1e34a` | feat(macro): OR-52 dashboard mart + YAML |
+
+## Ghost article drafts (PO review needed)
+
+| Slug | Article | Linear |
 |---|---|---|
-| `5368422` | OR-150 demographics article — przyrost naturalny ujemny od 2013 | OR-150 In Progress |
-| `40f6e60` | OR-86 BDL line-length style fix | OR-86 In Progress |
-| `4e35a28` | OR-86 BDL ingestion — bdl_observations.py + DDL + env.example | OR-86 In Progress |
-| `7fd1ec0` | run #18 post-mortem | docs |
-| `c4d210e` | OR-149 wages article draft | OR-149 In Progress |
-| `988bc9c` | run #17 post-mortem | docs |
-| `796e0eb` | OR-83 ENV dashboard YAML + infra — port 8061 | OR-83 In Progress |
-| `6fda803` | OR-148 EU fiscal article draft | OR-148 In Progress |
-| `933d23f` | OR-147 COFOG article draft | OR-147 In Progress |
-| `07df724` | OR-87 sts_inpr_a seed fix (indic_bt=PROD) | OR-87 fix |
+| `bezrobocie-polska-2024-historyczny-rekord` | OR-145 Labour market / unemployment | OR-145 |
+| `koszty-obslugi-dlugu-polska-2024` | OR-146 Debt service costs | OR-146 |
+| `cofog-wydatki-polska-2023-gdzie-trafi-kazda-zlotowka` | OR-147 COFOG spending breakdown | OR-147 |
+| `polska-na-tle-ue-deficyt-dlug-2024` | OR-148 EU fiscal comparison | OR-148 |
+| `wzrost-plac-polska-2024` | OR-149 Real wage growth 2024 | OR-149 |
+| `polska-demografia-przyrost-naturalny-2024` | OR-150 Demographics | OR-150 |
 
-## VPS queue pending PO action
+PO reviews in Ghost admin (`www.open-reporting.dev/ghost/`). Tell Claude which to publish; flip via `publish_to_ghost.py --publish`.
 
-1. **OR-147 COFOG article publish:**
-   ```bash
-   cd /opt/open-reporting && git pull
-   PYTHONPATH=/opt/open-reporting python3 products/blog/publish_to_ghost.py \
-       products/blog/drafts/or-147-cofog.md --status draft
-   # Check preview, then --publish
-   ```
+## Open work (next autonomous slot: 12:00 UTC)
 
-2. **OR-148 EU fiscal article publish:**
-   ```bash
-   PYTHONPATH=/opt/open-reporting python3 products/blog/publish_to_ghost.py \
-       products/blog/drafts/or-148-eu-fiscal-comparison.md --publish
-   ```
-
-3. **OR-149 wages article publish:**
-   ```bash
-   PYTHONPATH=/opt/open-reporting python3 products/blog/publish_to_ghost.py \
-       products/blog/drafts/or-149-wages.md --status draft
-   # Verify: (a) nominal wage growth "ponad 11%" vs 13.7%; (b) EUR min wage ~960 EUR. Then --publish
-   ```
-
-4. **OR-83 ENV dashboard deploy (port 8061):**
-   ```bash
-   cd products/warehouse
-   DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt seed --select eurostat_series --profiles-dir .
-   DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt run --select env_indicators fact_env_overview --profiles-dir .
-   dbr validate products/dashboards/environment && dbr run products/dashboards/environment
-   sudo cp infra/systemd/or-environment.service /etc/systemd/system/
-   sudo systemctl daemon-reload && sudo systemctl enable or-environment && sudo systemctl start or-environment
-   sudo cp infra/nginx/conf.d/dbr-routes/environment.conf /etc/nginx/conf.d/dbr-routes/
-   sudo nginx -t && sudo nginx -s reload
-   ```
-
-5. **OR-87 BUS/MAC industrial output fix activation:**
-   ```bash
-   PYTHONPATH=/opt/open-reporting python3 products/database/loader.py
-   PYTHONPATH=/opt/open-reporting python3 products/ingestion/to_raw/eurostat_observations.py --dataset sts_inpr_a --backfill
-   cd products/warehouse
-   DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt seed --select eurostat_series --profiles-dir .
-   DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt run --select stg_eurostat mac_indicators fact_macro_overview bus_indicators --profiles-dir .
-   ```
-
-6. **OR-150 demographics article publish:**
-   ```bash
-   PYTHONPATH=/opt/open-reporting python3 products/blog/publish_to_ghost.py \
-       products/blog/drafts/or-150-demographics.md --status draft
-   # Verify 5-item checklist in ##Weryfikacja block, then --publish
-   ```
-
-7. **OR-86 BDL ingestion first run:**
-   ```bash
-   # Add to .env first: BDL_API_KEY=<key from api.stat.gov.pl/Home/BdlApi>
-   PYTHONPATH=/opt/open-reporting python3 products/ingestion/to_raw/bdl_observations.py --backfill
-   ```
+| # | Linear | What | Status |
+|---|---|---|---|
+| 1 | OR-87 | `sts_inpr_a` indic_bt=PROD fix | Code shipped; `sts_inpr_a` not in raw — needs `loader.py` + ingestion backfill + `dbt run` to activate |
+| 2 | OR-86 | BDL (GUS) ingestion | Code shipped; needs `BDL_API_KEY` (PO must register at api.stat.gov.pl/Home/BdlApi) |
+| 3 | — | Theme 2 article #8 | Macro/national_accounts pair article — next content slot |
+| 4 | OR-76 | Pipeline robustness | Retries, alerting |
+| 5 | OR-89 | Weekly snapshot (social) | Buildable; publish blocked on OR-90 |
 
 ## Linear blocked on PO action
 
 | Issue | What |
 |---|---|
-| OR-90 | Instagram token — Meta Developer portal (blocks all of Theme 4) |
+| OR-90 | Instagram token — Meta Developer portal (blocks all of Theme 4 publishing) |
 | OR-79 | Ghost nav link — browser admin session |
+| OR-86 | BDL_API_KEY — needs PO registration at api.stat.gov.pl |
 
-## What's next (autonomous)
+## Architecture
 
-1. **Theme 2 — 8th article:** National accounts / macroeconomics (pairs with national_accounts dashboard)
-2. **OR-76 Data pipeline Phase 1** — robustness, retries, alerting (cloud-implementable code)
-3. **OR-89 social card** — code build possible even with OR-90 blocked (Instagram publish can wait)
-4. **Theme 4 — blocked** on OR-90 for actual publishing
+**Schedule:** cron at `0 2,7,12,17 * * *` UTC fires `/opt/open-reporting/infra/scheduler/autonomous-lead.sh`, which pipes `infra/scheduler/lead-protocol-prompt.md` into `claude -p --model opus` with a 75-min timeout. Logs to `data/logs/autonomous-lead-YYYY-MM-DD-HH.log`.
 
-## Article series status (Theme 2)
+**Auth:** Claude CLI uses `~/.claude/.credentials.json` (OAuth, auto-refreshes). Permission bypass on globally via `~/.claude/settings.json` (`defaultMode: bypassPermissions`).
 
-| # | Issue | Topic | Status |
-|---|---|---|---|
-| 1 | OR-80 | SGP/Maastricht | Live ✓ |
-| 2 | OR-145 | Unemployment (3.1% record) | Live ✓ |
-| 3 | OR-146 | Debt service costs | Live ✓ |
-| 4 | OR-147 | COFOG spending breakdown | Draft — VPS pending |
-| 5 | OR-148 | EU fiscal comparison (EDP) | Draft — VPS pending |
-| 6 | OR-149 | Real wage growth 2024 | Draft — VPS pending |
-| 7 | OR-150 | Demographics / natural increase | Draft — VPS pending |
+**Sudo NOPASSWD allowlist for radek:**
+- `systemctl restart|start|stop|status|enable or-*`
+- `systemctl daemon-reload`
+- `cp /opt/open-reporting/infra/systemd/*.service /etc/systemd/system/`
 
-## Architecture (current)
+**Port assignments:** public_finance=8057, labour_market=8058, national_accounts=8059, demographics=8060, environment=8061. Next: 8062.
 
-- Port assignments: public_finance=8057, labour_market=8058, national_accounts=8059, demographics=8060, environment=8061
-- Next dashboard port: 8062
-- All Theme 3 dashboards live on portal; OR-83 ENV code committed, deploy pending
+## Cloud trigger
 
-## Note: autonomous runs from cloud containers
+`trig_01TqBcSxS3SzQn7BtSTiDmif` — DISABLED (last fired 2026-05-28 07:01 UTC, never pushed because its run errored/ran out of time). Config preserved as record. Direct delete not available via the in-session API; PO can delete via claude.ai web UI if desired (functionally a no-op now).
 
-- `dbr run`, `dbt run`, Ghost publish (JWT/crypto) NOT available from cloud
-- Production health checks return 403 (nginx allowlist) — NOT a service failure
-- `data/logs/` directory does NOT exist in cloud containers — ingest log check will always return NOT FOUND (not an error)
-- **CRITICAL on startup:** `git checkout main && git pull --ff-only origin main` (container may start on detached HEAD)
+## Key technical facts (current)
 
-## Key Technical Facts
+- DuckDB write-locked while any `dbr serve` is running. To run dbt: `sudo systemctl stop or-<name>.service`, run dbt, `sudo systemctl start`.
+- dbr `bar` is **horizontal** (metric on x, dim on y). Use `column` for vertical bars (categorical x, metric y). Has bitten OR-52 macro, OR-55 demographics; verify every vertical-bar visual before `dbr run`.
+- Seed dimension_keys are canonically sorted alphabetically and must match `raw.eurostat_observations.dimension_key` exactly — query before guessing.
+- OR-150 article: TFR 2023 = 1.16, natural increase = −3.7/1000 (verified).
+- OR-148 article: Poland 2024 deficit = 6.5% GDP (Eurostat EDP April 2026).
+- OR-87 fix: `sts_inpr_a` needs ingestion backfill — raw table has zero rows for it currently.
 
-- OR-83: `env_indicators` intermediate model pre-existed; 4 series in eurostat_series.csv; fact_env_overview pivots 4 metrics; port 8061
-- OR-87 fix: `sts_inpr_a` needs `indic_bt=PROD` — committed `07df724`; VPS runbook in Linear OR-87
-- OR-148 article: Poland 2024 deficit = **6.5% GDP** (Eurostat April 2026 EDP notification)
-- OR-149 article: Nominal wage growth 2024 uses "ponad 11%" (conservative; verify 13.7% vs GUS annual communiqué)
-- OR-150 article: TFR 2023 = **1.16** (third-lowest EU); natural increase = **-3.7 per 1000** (not -1 to -2 as estimated)
-- OR-86: BDL variable IDs 72305/76498/64428/454571/454576; needs `BDL_API_KEY` in .env; free reg at api.stat.gov.pl/Home/BdlApi
-- OR-52 quarterly BOP series averaged to annual (AVG in fact_macro_overview)
+## Stale feature branches (pre-autonomous; do not merge/delete without PO)
 
-## Stale feature branches on origin (pre-autonomous phase — do not merge/delete without PO)
-
-- `feat/OR-95-dbw-hvd-explorer`, `feat/OR-template-clustered-stacked`
-- `feat/or-114-sustainability-tab-enhancements`, `feat/or-118-analytics-competence-structure`
-- `feat/or-121-measure-reference-system`, `feat/or-122-chart-visual-config`, `feat/template-one-per-family`
+`feat/OR-95-dbw-hvd-explorer`, `feat/OR-template-clustered-stacked`, `feat/or-114-sustainability-tab-enhancements`, `feat/or-118-analytics-competence-structure`, `feat/or-121-measure-reference-system`, `feat/or-122-chart-visual-config`, `feat/template-one-per-family`
