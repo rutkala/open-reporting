@@ -566,3 +566,36 @@ PYTHONPATH=/opt/open-reporting python3 products/blog/publish_to_ghost.py \
 3. OR-149 wages article publish (draft committed this run)
 4. OR-83 ENV dashboard deploy (code committed run #17)
 5. OR-87 industrial output fix activation
+
+---
+
+## 2026-05-28 17:00 UTC — #21 — OR-76 ingestion alerting + OR-151 industrial output article
+
+**What shipped:**
+
+1. **OR-76 alerting slice** — `products/ingestion/run_daily.sh`, commit `1fd7b9dc`
+   - On non-zero exit, wrapper now writes `data/telegram-outbox/<UTC>-ingest-FAIL.md` with timestamp, exit code, log path, and last 30 log lines. `or-claude-bot` outbox poller picks it up within 30s and posts to chat.
+   - Closes the silent-fail gap that bit us on 2026-05-27. Tested in `/tmp` isolation — alert generates correctly.
+   - Verified the outbox poller is still wired in the new multi-bot `bot.py` (gated on `BOT_ROLE=claude`, line 455-456).
+   - Comment posted on OR-76 documenting the slice. Broader OR-76 scope (BDL, NUTS2) still open.
+
+2. **OR-151 article #8** — `products/blog/drafts/or-151-industrial-output.md`, commit `ca5ece47`
+   - ~1000-word Polish article: "Polska produkcja przemysłowa: jedyna duża gospodarka UE bez recesji 2024". Title 10 words.
+   - Story: PL +0.5% (2024) and +2.5% (2025) while DE crashed -4.6% (cumulative -6.4% 2023-2024); EU27 -2.4%, HU -3.9%, CZ -1.1%. Three structural factors for PL resilience (coal-heavy energy mix paradoxically helping during 2022 gas crisis, still-low labour costs vs Germany, strong domestic demand). Long view: PL averaged +5.1% industrial growth 2001-2019. Three forward risks flagged (energy transition cost, labour cost convergence, second-round DE drag on PL suppliers).
+   - All cross-country figures verified by direct Eurostat API call (`sts_inpr_a`, indic_bt=PRD, nace_r2=B-D, s_adj=CA, unit=PCH_SM). PL long-term average computed from `fact_macro_overview` (19 obs).
+   - Activates OR-87 fix — industrial output growth is finally flowing in the warehouse after the PRD/PCH_SM dimension correction.
+   - Linear OR-151 created (In Progress). Ghost draft pushed: https://www.open-reporting.dev/p/f85551c5-1f3d-4527-abd5-061f0245238a/
+   - Self-review caught one math error (PL 2001-2019 average period mismatch) and fixed before commit. Pre-publish review (content-reviewer + analytical-validator + domain-specialist Opus) NOT yet run — held as draft pending PO preview decision.
+
+**Why:** OR-76 alerting was top priority per session memory after yesterday's silent ingestion failure. Article #8 was the natural Theme 2 next step given OR-87 just activated the underlying data; the PL-vs-DE divergence is a strong narrative pivot.
+
+**Status:** Shipped (both items). OR-76 alerting end-to-end deployed. OR-151 in Ghost as draft pending PO preview.
+
+**Found but did not touch:** Uncommitted work in tree — bot.py rewrite + 7 new `or-*-bot.service` files. PO has already deployed these (claude/gemini/opencode bots running live), source uncommitted. This is PO's in-progress multi-agent bot architecture; touching it would risk disabling the comms channel (hard floor). Flagged in Telegram outbox.
+
+**Followup:**
+- Tonight's 22:00 UTC ingestion will be the first live test of both the dashboard-stop fix (cfab32ab) and the alert path (1fd7b9dc).
+- OR-151 needs full agent review (content + analytical + domain) before any `--publish`.
+- PO bot rewrite needs source-tree commit eventually — wait for PO to finish or explicitly hand off.
+
+**Commits:** `1fd7b9dc` `ca5ece47`
