@@ -449,3 +449,39 @@ PYTHONPATH=/opt/open-reporting python3 products/blog/publish_to_ghost.py \
 **Followup:**
 - Next run: consider ENV domain dashboard (OR-83) as next Theme 3-adjacent product, or deeper labour market article (regional wages)
 - OR-87 VPS runbook ready in Linear comment — PO to execute
+
+---
+
+## 2026-05-28 02:03 UTC — #18 — OR-149 wages article draft shipped
+
+**Decision:** Wrote sixth Theme 2 blog article on real wage growth in Poland 2024. Topic: minimum wage politics, 2022 inflation shock and catch-up recovery, EU ranking, labour cost competitiveness implications.
+
+**What shipped:**
+- `products/blog/drafts/or-149-wages.md` — ~900-word Polish article (6th in the series). Key findings: Poland 2nd in EU for real wage growth 2024 (+9.0%), minimum wage +145% since 2015, real wages fell -2.1% in 2022 and recovered +9.5% in 2024. Competitiveness section flags rising unit labour costs against Poland's narrowing cost-of-location advantage. All numbers verified against GUS, Eurostat earn_mw_cur/lc_lci_r2_a/prc_hicp_manr, EC DG EMPL LMWD 2024 annual review. Title corrected to 12 words before commit.
+- OR-149 created in Linear + moved to In Progress
+
+**Why:** Theme 2 article cadence. OR-145 mentioned wages in one paragraph; this article goes deep on that story. Differentiates clearly: minimum wage politics, EU ranking with exact dataset codes, catch-up framing vs boom, competitiveness impact — all absent from OR-145. Pairs with labour_market dashboard wynagrodzenia page.
+
+**Status:** Shipped (code). VPS publish pending PO action.
+
+**Linear:** OR-149 | **Commit:** `c4d210e`
+
+**VPS publish (PO action):**
+```bash
+cd /opt/open-reporting && git pull
+PYTHONPATH=/opt/open-reporting python3 products/blog/publish_to_ghost.py \
+    products/blog/drafts/or-149-wages.md --status draft
+# verify preview, then re-run with --publish
+```
+
+**Verification notes (from article):**
+- Nominal wage growth 2024: article uses "ponad 11%" (conservative; GUS monthly data shows 10.3-12.8% YoY range). The 13.7% figure in OR-145 may refer to 2023 — confirm before publication.
+- Minimum wage EUR: ~960 EUR (sources diverge 947-977 EUR; midpoint used). Verify earn_mw_cur directly before publish.
+- Headline: 12 words confirmed ✓
+
+**Pending VPS queue (all from prior runs):**
+1. OR-147 COFOG article publish (draft `933d23f`)
+2. OR-148 EU fiscal article publish (draft committed run #17)
+3. OR-149 wages article publish (draft committed this run)
+4. OR-83 ENV dashboard deploy (code committed run #17)
+5. OR-87 industrial output fix activation
