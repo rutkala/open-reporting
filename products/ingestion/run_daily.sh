@@ -81,5 +81,29 @@ if ! run "Eurostat observations" "$REPO/products/ingestion/to_raw/eurostat_obser
 fi
 
 log "=== daily ingestion end (exit=$worst) ==="
+
+# On non-zero exit, drop a Telegram outbox file so the bot pings the PO.
+# Silent failures yesterday (2026-05-27) motivated this — OR-76.
+if [ "$worst" -ne 0 ]; then
+  OUTBOX="$REPO/data/telegram-outbox"
+  mkdir -p "$OUTBOX"
+  ALERT="$OUTBOX/$(date -u +%Y%m%dT%H%M%SZ)-ingest-FAIL.md"
+  {
+    echo "## [ALERT] Daily ingestion FAILED — $(ts)"
+    echo
+    echo "Exit code: \`$worst\`"
+    echo "Log: \`$LOG\`"
+    echo
+    echo "Last 30 lines of log:"
+    echo
+    echo '```'
+    tail -30 "$LOG"
+    echo '```'
+    echo
+    echo "Dashboards have been restarted (trap)."
+    echo "Investigate: \`tail -200 $LOG\` on VPS."
+  } > "$ALERT" 2>/dev/null || true
+fi
+
 # trap will restart the dashboard
 exit $worst
