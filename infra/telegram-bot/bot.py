@@ -26,6 +26,7 @@ import asyncio
 import logging
 import os
 import re
+import shutil
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -49,7 +50,10 @@ load_dotenv(REPO / ".env", override=True)
 TELEGRAM_BOT_TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
 GEMINI_API_KEY = os.environ["GEMINI_API_KEY"]
 ALLOWED_USER_ID = int(os.environ["TELEGRAM_ALLOWED_USER_ID"])
-GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-pro")
+GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
+CLAUDE_CHAT_MODEL = os.environ.get("CLAUDE_CHAT_MODEL", "sonnet")
+CLAUDE_BIN = shutil.which("claude") or "/home/radek/.local/bin/claude"
+CLAUDE_TIMEOUT_SEC = 180
 
 INBOX_DIR = REPO / "data" / "telegram-inbox"
 OUTBOX_DIR = REPO / "data" / "telegram-outbox"
@@ -59,17 +63,31 @@ DECISIONS_FILE = REPO / "docs" / "decisions.md"
 
 OUTBOX_POLL_SEC = 30
 
-GEMINI_SYSTEM_PROMPT = """You are Gemini, working in a Telegram chat with Radek, the Product Owner of Open Reporting — a one-person data media company turning Polish public data into accessible, beautiful, useful products.
+GEMINI_SYSTEM_PROMPT = """You are Gemini, in a 3-way Telegram chat with Radek (Product Owner of Open Reporting) and Claude (autonomous Project Lead running on the production VPS).
 
-Your role: brainstorming partner for ideas, feedback, content drafts. You also have access (via Radek) to the live products at portal.open-reporting.dev (dashboards) and www.open-reporting.dev (blog).
+Open Reporting turns Polish public data into accessible, beautiful, useful products: dashboards at portal.open-reporting.dev, articles at www.open-reporting.dev.
 
-The other half of this project is Claude, who runs as the autonomous Project Lead on the production VPS. Claude builds everything: dashboards (Dash + dbt + DuckDB), articles in Polish (Ghost CMS), data ingestion (Eurostat, NBP, BDL/GUS), infra. Claude fires 4×/day on a cron and reads its inbox at data/telegram-inbox/ each run.
+Your role: brainstorming partner. You help Radek think, draft, refine — language and ideation focus. You do NOT have access to the codebase, DuckDB, Ghost CMS, or live infra — Claude does. When Radek asks anything that needs project state (what's deployed, what's in the database, what the code looks like), defer to Claude's reply in the same thread.
 
-When Radek wants Claude to actually DO something (build, deploy, ship), he will use `/queue <task>` — that message goes straight to Claude's next autonomous run, bypassing you. You don't execute project work. You help Radek think, draft, refine.
+Claude will reply alongside you on every message. Don't duplicate what Claude can do better (state checks, code knowledge). Focus on what YOU do better: free-form brainstorm, language polish, drafting, framing ideas from scratch.
 
-Default language: Polish for content (articles, KPIs, UI strings). English for technical discussion. Match Radek's language in the moment.
+Default language: Polish for content questions (articles, KPIs, UI strings). English for technical discussion. Match Radek's language in the moment.
 
-Be concise. Treat ADHD-friendly responses as the default — short, punchy, scannable. Long-form only when explicitly asked."""
+Be concise. ADHD-friendly: short, punchy, scannable. Long-form only when explicitly asked."""
+
+CLAUDE_SYSTEM_PROMPT = """You are Claude, the autonomous Project Lead for Open Reporting, in a 3-way Telegram chat with Radek (PO) and Gemini.
+
+You're running as a chat process spawned by the Telegram bot — not the 4×/day autonomous-lead run. You have full access to the codebase at /opt/open-reporting, the DuckDB warehouse, the Ghost CMS, and live infrastructure. Use your tools freely to answer with real state, not guesses.
+
+Your role in chat:
+- Answer state/code/data/infra questions with actual lookups (read files, run git log, curl URLs, query DuckDB)
+- Make project decisions when asked
+- Take action when Radek asks you to — you have bypass permissions and ownership of the project
+- For long-running work (>5 min), prefer `/queue` (Radek can re-message with that command); for quick fixes, just do it
+
+Gemini will reply in parallel on every message. Don't duplicate Gemini's strengths (free-form brainstorm, language polish). Focus on what YOU do: real project knowledge, real actions.
+
+KEEP REPLIES SHORT. This is Telegram — 1-5 sentences usually. Code blocks only when essential. Polish or English to match Radek."""
 
 # ─── Logging ─────────────────────────────────────────────────────────────────
 
@@ -114,7 +132,18 @@ def _load_chat_id() -> int | None:
 
 
 def _allowed(update: Update) -> bool:
-    return update.effective_user is not None and update.effective_user.id == ALLOWED_USER_ID
+    user = update.effective_user
+    if user is None:
+        return False
+    if user.id == ALLOWED_USER_ID:
+        return True
+    log.warning(
+        "ignoring message from non-allowlisted user id=%s username=%s text=%r",
+        user.id,
+        user.username,
+        (update.message.text if update.message else "")[:80],
+    )
+    return False
 
 
 # ─── Handlers ────────────────────────────────────────────────────────────────
@@ -134,12 +163,14 @@ async def cmd_help(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
         return
     await update.message.reply_text(
         "Commands:\n"
-        "  /queue <task>  — send to Claude's next autonomous run (4×/day at 02/07/12/17 UTC)\n"
+        "  /queue <task>  — defer to Claude's next scheduled autonomous run (4×/day, 02/07/12/17 UTC)\n"
         "  /status        — last decisions.md entry (most recent autonomous run)\n"
         "  /reset         — reset Gemini conversation context\n"
         "  /help          — this message\n"
         "\n"
-        "Anything else = Gemini conversation. Claude responses arrive automatically when an autonomous run finishes.",
+        "Anything else = both Gemini AND Claude respond in parallel.\n"
+        "  • Gemini: free-form brainstorm, language, framing\n"
+        "  • Claude: real project state, code lookups, immediate actions",
     )
 
 
@@ -195,31 +226,92 @@ async def cmd_queue(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
     )
 
 
-async def gemini_chat(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
+async def _gemini_reply(user_id: int, text: str) -> str:
+    chat = chat_sessions.get(user_id)
+    if chat is None:
+        chat = _new_chat()
+        chat_sessions[user_id] = chat
+    try:
+        resp = await asyncio.to_thread(chat.send_message, text)
+        return (resp.text or "").strip() or "(empty response)"
+    except Exception as e:
+        log.exception("gemini error")
+        chat_sessions.pop(user_id, None)
+        return f"⚠️ Gemini error: {type(e).__name__}: {str(e)[:300]}"
+
+
+async def _claude_reply(text: str) -> str:
+    """Invoke `claude -p` as a subprocess with the chat prompt fed via stdin."""
+    full_prompt = f"{CLAUDE_SYSTEM_PROMPT}\n\n---\nRadek (Telegram): {text}\n"
+    try:
+        proc = await asyncio.create_subprocess_exec(
+            CLAUDE_BIN,
+            "-p",
+            "--model", CLAUDE_CHAT_MODEL,
+            "--no-session-persistence",
+            stdin=asyncio.subprocess.PIPE,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+            cwd=str(REPO),
+            env={
+                **os.environ,
+                "HOME": "/home/radek",
+                "PATH": "/home/radek/.local/bin:/usr/local/bin:/usr/bin:/bin",
+            },
+        )
+        stdout, stderr = await asyncio.wait_for(
+            proc.communicate(full_prompt.encode()),
+            timeout=CLAUDE_TIMEOUT_SEC,
+        )
+        if proc.returncode != 0:
+            err = stderr.decode("utf-8", errors="replace")[:500]
+            return f"⚠️ Claude exited {proc.returncode}: {err}"
+        reply = stdout.decode("utf-8", errors="replace").strip()
+        return reply or "(empty response)"
+    except asyncio.TimeoutError:
+        try:
+            proc.kill()
+        except Exception:
+            pass
+        return f"⚠️ Claude timed out after {CLAUDE_TIMEOUT_SEC}s"
+    except Exception as e:
+        log.exception("claude error")
+        return f"⚠️ Claude error: {type(e).__name__}: {str(e)[:300]}"
+
+
+async def chat_handler(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> None:
+    """Fire both Gemini and Claude in parallel; post each reply when ready."""
     if not _allowed(update):
         return
     _save_chat_id(update.effective_chat.id)
     user_id = update.effective_user.id
     text = update.message.text or ""
 
-    chat = chat_sessions.get(user_id)
-    if chat is None:
-        chat = _new_chat()
-        chat_sessions[user_id] = chat
-
     await update.message.chat.send_action(ChatAction.TYPING)
-    try:
-        resp = await asyncio.to_thread(chat.send_message, text)
-        reply = (resp.text or "").strip() or "(empty response)"
-    except Exception as e:
-        log.exception("gemini error")
-        reply = f"Gemini error: {type(e).__name__}: {e}"
-        # Drop the broken session so the next message starts fresh.
-        chat_sessions.pop(user_id, None)
 
-    # Telegram caps at 4096 chars; split if needed.
-    for chunk_start in range(0, len(reply), 4000):
-        await update.message.reply_text(reply[chunk_start : chunk_start + 4000])
+    gemini_task = asyncio.create_task(_gemini_reply(user_id, text))
+    claude_task = asyncio.create_task(_claude_reply(text))
+
+    async def _send_when_ready(task: asyncio.Task, label: str) -> None:
+        try:
+            reply = await task
+        except Exception as e:
+            reply = f"⚠️ {label} crashed: {type(e).__name__}: {e}"
+        body = f"*{label}*\n{reply}"
+        for chunk_start in range(0, len(body), 4000):
+            try:
+                await update.message.reply_text(
+                    body[chunk_start : chunk_start + 4000],
+                    parse_mode="Markdown",
+                )
+            except Exception:
+                # Fallback to plain text if Markdown parsing breaks
+                await update.message.reply_text(body[chunk_start : chunk_start + 4000])
+
+    await asyncio.gather(
+        _send_when_ready(gemini_task, "Gemini"),
+        _send_when_ready(claude_task, "Claude"),
+    )
 
 
 # ─── Outbox poller ───────────────────────────────────────────────────────────
@@ -274,7 +366,7 @@ def main() -> None:
     app.add_handler(CommandHandler("status", cmd_status))
     app.add_handler(CommandHandler("reset", cmd_reset))
     app.add_handler(CommandHandler("queue", cmd_queue))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, gemini_chat))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, chat_handler))
     log.info("starting bot (long polling)")
     app.run_polling(allowed_updates=Update.ALL_TYPES)
 
