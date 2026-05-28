@@ -23,3 +23,4 @@ products/dashboards/finance_test/Test/
 # npx skills CLI — multi-agent install artifacts (we only use .claude/)
 .agents/
 .qwen/
+infra/telegram-bot/venv/
