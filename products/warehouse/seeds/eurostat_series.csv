@@ -2,7 +2,7 @@ detail_id,domain_id,dataset_code,dimension_key
 agr.agricultural_area_used,AGR,ef_m_farmleg,
 agr.crop_area_arable,AGR,ef_m_farmleg,
 agr.crop_production_cereals,AGR,apro_cpsh1,crops=C1100&strucpro=PR_HU_EU
-bus.industrial_output_sectoral,BUS,sts_inpr_a,indic_bt=PROD&nace_r2=B-D&s_adj=CA&unit=PCH_PRE
+bus.industrial_output_sectoral,BUS,sts_inpr_a,indic_bt=PRD&nace_r2=B-D&s_adj=CA&unit=PCH_SM
 clt.hotel_occupancy_rate,CLT,tour_occ_nim,c_resid=TOTAL&nace_r2=I551-I553&unit=NR
 clt.overnight_stays_domestic,CLT,tour_occ_nim,c_resid=R_DOM&nace_r2=I551-I553&unit=NR
 clt.tourist_arrivals_intl,CLT,tour_occ_arm,c_resid=FOR&nace_r2=I551-I553&unit=NR
@@ -39,7 +39,7 @@ mac.gdp_nominal,MAC,nama_10_gdp,na_item=B1GQ&unit=CP_MEUR
 mac.gdp_per_capita_regional,MAC,nama_10r_2gdp,unit=EUR_HAB
 mac.gdp_real_growth,MAC,tec00115,na_item=B1GQ&unit=CLV_PCH_PRE
 mac.gross_fixed_capital_formation_growth,MAC,tec00011,na_item=P51G&unit=PC_GDP
-mac.industrial_output_growth,MAC,sts_inpr_a,indic_bt=PROD&nace_r2=B-D&s_adj=CA&unit=PCH_PRE
+mac.industrial_output_growth,MAC,sts_inpr_a,indic_bt=PRD&nace_r2=B-D&s_adj=CA&unit=PCH_SM
 pop.births,POP,demo_gind,indic_de=GBIRTHRT
 pop.deaths,POP,demo_gind,indic_de=GDEATHRT
 pop.life_expectancy_f,POP,demo_mlexpec,age=Y_LT1&sex=F
