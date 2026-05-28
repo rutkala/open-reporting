@@ -102,7 +102,9 @@ def _get(url: str, params: dict | None = None) -> dict | None:
         if resp.status_code == 404:
             return None
         if resp.status_code == 429:
-            log.warning("Rate limited — waiting %ds (attempt %d/%d)", RETRY_WAIT, attempt + 1, MAX_RETRIES)
+            log.warning(
+                "Rate limited — waiting %ds (attempt %d/%d)", RETRY_WAIT, attempt + 1, MAX_RETRIES
+            )
             time.sleep(RETRY_WAIT)
             continue
         resp.raise_for_status()
@@ -124,7 +126,10 @@ def fetch_units(unit_level: int) -> list[dict]:
     units: list[dict] = []
     page = 0
     while True:
-        data = _get(f"{BDL_BASE}/units", params={"level": unit_level, "page": page, "pageSize": PAGE_SIZE})
+        data = _get(
+            f"{BDL_BASE}/units",
+            params={"level": unit_level, "page": page, "pageSize": PAGE_SIZE},
+        )
         if data is None:
             log.warning("Units endpoint returned 404 for level %d", unit_level)
             break
@@ -179,7 +184,9 @@ def fetch_variable_for_level(
             params={"unitLevel": unit_level, "page": page, "pageSize": PAGE_SIZE},
         )
         if data is None:
-            log.warning("Variable %d not found at unitLevel=%d (404) — skipping", variable_id, unit_level)
+            log.warning(
+                "Variable %d not found at unitLevel=%d (404) — skipping", variable_id, unit_level
+            )
             return []
 
         results = data.get("results", [])
@@ -291,7 +298,9 @@ def run(variable_filter: int | None = None, backfill: bool = False) -> None:
     ensure_table(conn)
 
     total_upserted = 0
-    mode = "backfill (full history)" if backfill else f"last {DEFAULT_YEARS} years (from {year_from})"
+    mode = (
+        "backfill (full history)" if backfill else f"last {DEFAULT_YEARS} years (from {year_from})"
+    )
     log.info("Starting BDL ingestion: %d variable(s), mode=%s", len(variables), mode)
 
     for var_id in variables:
@@ -303,7 +312,9 @@ def run(variable_filter: int | None = None, backfill: bool = False) -> None:
             try:
                 rows = fetch_variable_for_level(var_id, level, year_from=year_from)
             except requests.exceptions.HTTPError as exc:
-                log.warning("HTTP error for variable=%d level=%d: %s — skipping", var_id, level, exc)
+                log.warning(
+                    "HTTP error for variable=%d level=%d: %s — skipping", var_id, level, exc
+                )
                 continue
 
             if not rows:
