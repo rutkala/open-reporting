@@ -241,6 +241,52 @@ After deploy: verify /national_accounts/ renders data (not just 200 OK — lesso
 
 ---
 
+## 2026-05-28 07:00 UTC — #19 — OR-150 demographics article + OR-86 BDL ingestion code shipped
+
+**Decision:** Two deliverables this run: (1) seventh Theme 2 article on Poland's demographic crisis; (2) complete BDL (Bank Danych Lokalnych) REST API ingestion infrastructure for OR-86.
+
+**What shipped:**
+
+- **OR-150** — `products/blog/drafts/or-150-demographics.md`, commit `5368422`
+  - ~1,100-word Polish article: "Polska kurczy się demograficznie: przyrost naturalny ujemny od 2013 roku"
+  - Key verified facts: natural increase -3.7 per 1000 in 2023 (more severe than estimated; correct data wins), TFR 1.16 (third-lowest EU behind Malta 1.06 and Spain 1.12), birth rate 7.4 per 1000 (vs 14.9 in 1989), life expectancy women 82.1 / men 74.6, Ageing Report 2024 dependency ratio doubling to 68 by 2080
+  - All numbers cited (Eurostat demo_gind, tps00199, demo_mlexpec; GUS Rocznik Demograficzny 2024; EC Ageing Report 2024)
+  - Verification block with 5 specific items to double-check before VPS publish
+  - Pairs with live demographics dashboard; CTA at close
+
+- **OR-86** — `products/ingestion/to_raw/bdl_observations.py` + `bdl_observations.sql`, commits `4e35a28` + `40f6e60`
+  - BDL REST API client: fetches 5 regional variables (population 72305, unemployment rate 76498, average wage 64428, live births per 1000 454571, deaths per 1000 454576) at national (unitLevel=5) and voivodeship (unitLevel=2) levels
+  - Pagination, retry-on-429, graceful 404 skip, argparse (`--variable`, `--backfill`), upsert key (variable_id, unit_id, year)
+  - `raw.bdl_observations` DDL with primary key + 3 indexes
+  - `BDL_API_KEY=` added to `.env.example`; existing `DBW_API_KEY` comment corrected (was incorrectly labelled as BDL)
+  - Requires `BDL_API_KEY` in `.env` to run — free registration at api.stat.gov.pl/Home/BdlApi
+
+**Why:** Theme 2 article cadence (7th keeps editorial drum beating; demographics pairs with live dashboard). OR-86 is Theme 5 foundation for future NUTS2 regional dashboards — enables voivodeship-level breakdowns for unemployment, wages, population which will differentiate from national-only Eurostat data.
+
+**Subagent count this run:** 2 (content-writer OR-150, data-engineer OR-86).
+
+**VPS queue — new additions:**
+
+6. **OR-150 demographics article publish:**
+   ```bash
+   cd /opt/open-reporting && git pull
+   PYTHONPATH=/opt/open-reporting python3 products/blog/publish_to_ghost.py \
+       products/blog/drafts/or-150-demographics.md --status draft
+   # Verify 5-item checklist in ##Weryfikacja block, then --publish
+   ```
+
+7. **OR-86 BDL ingestion first run (after adding BDL_API_KEY to .env):**
+   ```bash
+   echo "BDL_API_KEY=<your_key>" >> /opt/open-reporting/.env
+   PYTHONPATH=/opt/open-reporting python3 products/ingestion/to_raw/bdl_observations.py --backfill
+   ```
+
+**Status:** Shipped. OR-150 In Progress (VPS publish pending). OR-86 In Progress (needs BDL_API_KEY in .env + first run on VPS).
+
+**Linear:** OR-150 | OR-86
+
+---
+
 ## 2026-05-27 17:00 UTC — #17 — OR-148 EU fiscal article + OR-83 ENV dashboard code shipped
 
 **Decision:** Two deliverables this run: (1) fifth Theme 2 article on Poland's EDP position; (2) full OR-83 Environment & Energy dashboard code (mart + semantic + YAML + infra), deploy pending VPS.
