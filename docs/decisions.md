@@ -241,6 +241,41 @@ After deploy: verify /national_accounts/ renders data (not just 200 OK — lesso
 
 ---
 
+## 2026-05-28 12:00 UTC — #20 — [P0] Daily ingestion runbook fix + OR-87 truly activated
+
+**Decision:** Recovered yesterday's failed daily ingestion and shipped two fixes:
+(1) `run_daily.sh` now stops every `or-*.service` dashboard dynamically (not just `or-public_finance`); (2) OR-87 `sts_inpr_a` Eurostat codes corrected to `indic_bt=PRD` + `unit=PCH_SM` (the prior fix guessed `PROD` / `PCH_PRE` and produced 0 rows).
+
+**Why:**
+- Yesterday's 22:00 UTC ingestion failed `exit=1` — only `or-public_finance.service` was being stopped before ingestion, but 4 more dashboard services (labour_market, national_accounts, demographics, environment) hold the DuckDB write lock now. Without the fix, every nightly ingestion from here on would silently fail.
+- OR-87 had been "shipped" twice but never produced data because nobody had run the Eurostat API against the seed values to verify. Querying the API directly was the only way to discover the codes were wrong.
+
+**What shipped:**
+
+1. **`fix(ingestion): stop all or-* dashboards before daily ingestion`** — commit `cfab32ab`
+   - Dashboard services now discovered via `systemctl list-unit-files 'or-*.service'`, excluding `or-telegram-bot.service`. Stop loop before ingest, `trap` restart loop on EXIT. Verified end-to-end via manual run: 5 dashboards stopped, NBP + Eurostat ingested cleanly (exit=0), all 5 restarted and back to 200.
+
+2. **`fix(macro): correct sts_inpr_a Eurostat codes (PRD not PROD, PCH_SM not PCH_PRE)`** — commit `c160a6ab`
+   - Probed Eurostat API directly for `sts_inpr_a?geo=PL&indic_bt=PRD&nace_r2=B-D&s_adj=CA&unit=PCH_SM` → 25 PL rows returned. Reloaded Postgres catalogue (`loader.py`), re-ingested sts_inpr_a, ran `dbt seed eurostat_series` + `dbt run` (all 37 models OK). `curated.fact_macro_overview` now shows PL industrial output growth 2025=+2.5%, 2024=+0.5%, 2023=-1.1%, 2022=+10.6%, 2021=+14.8%, 2020=-1.9% — matches widely-reported post-COVID rebound and 2023 industrial contraction.
+   - OR-87 closed in Linear.
+
+3. **Telegram bot WIP** — moved uncommitted `infra/telegram-bot/bot.py` change (parallel Claude responder alongside Gemini in chat) onto branch `feat/telegram-claude-bridge` + draft PR #62 for PO review. Cost-bearing UX change — every chat message would fire a `claude -p` subprocess. Left dirty in working tree by a previous session; without this move the next `git pull` in `autonomous-lead.sh` would conflict.
+
+**Status:** Shipped. OR-87 → Done. PR #62 draft awaiting PO review. Daily ingestion runbook hardened for tonight's 22:00 UTC fire.
+
+**Linear:** OR-85 (ingestion runbook), OR-87 (industrial output) | **Commits:** `cfab32ab`, `c160a6ab`
+
+**Lessons learned (rule):**
+- **Verify against the upstream API before trusting any code-only fix to a data ingestion bug.** OR-87 had two failed fix attempts (PROD/PCH_PRE guesses) because the codes were never validated against Eurostat's actual response — a 30s `curl` would have caught it. Adding to the autonomous-lead protocol: any seed/catalogue change that adds Eurostat dimension codes must include a real API call confirming non-zero rows.
+- **Cron scripts that mention specific service names must be reviewed when adding new dashboards.** Adding the 4 new dashboards (labour_market, national_accounts, demographics, environment) without updating `run_daily.sh` left a latent timebomb. Dynamic discovery (`systemctl list-unit-files`) fixes it for future additions.
+
+**Followup:**
+- `CLAUDE.md` example `from dbr.semantic import query` is stale — the function moved/renamed. Noted but not fixed this run; lives under the `packages/dbr/` engine plane.
+- Other `unit=PCH_PRE` rows in seeds: `lab.wage_growth` (lc_lci_r2_a) is working fine with PCH_PRE (25 PL rows present); `mac.retail_sales_growth` (sts_trtu_a) has 0 rows but is `verified=false` so deactivated. No further action.
+- PR #62 (Telegram Claude bridge) waits for PO decision on cost/UX trade-off.
+
+---
+
 ## 2026-05-28 07:00 UTC — #19 — OR-150 demographics article + OR-86 BDL ingestion code shipped
 
 **Decision:** Two deliverables this run: (1) seventh Theme 2 article on Poland's demographic crisis; (2) complete BDL (Bank Danych Lokalnych) REST API ingestion infrastructure for OR-86.
