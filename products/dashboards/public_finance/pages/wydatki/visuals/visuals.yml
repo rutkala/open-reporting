@@ -4,16 +4,16 @@
 #   Row 2: trend of top categories (multi-line)
 
 rows:
-  - title: "Struktura wydatków w 2023 r."
+  - title: "Struktura wydatków w 2024 r."
     prose: |
-      **Ochrona socjalna** dominuje strukturę wydatków — blisko 17% PKB —
+      **Ochrona socjalna** dominuje strukturę wydatków — ponad 18% PKB —
       wyprzedzając Gospodarkę, Zdrowie i Edukację. Te cztery funkcje
-      łącznie pochłaniają ok. 30% PKB.
+      łącznie pochłaniają ok. 36% PKB.
     items:
       - { visual: cofog_breakdown, width: "100%" }
-  - title: "Trend czterech największych funkcji 1995–2023"
+  - title: "Trend czterech największych funkcji 1995–2024"
     prose: |
-      Ochrona socjalna utrzymuje się stabilnie w przedziale 17–18% PKB
+      Ochrona socjalna utrzymuje się w przedziale 16–18% PKB
       przez cały okres. Skok w funkcji **Gospodarka w 2020 r.** (~5% → ~9%)
       to efekt rządowych tarcz antykryzysowych w czasie pandemii COVID-19.
     items:

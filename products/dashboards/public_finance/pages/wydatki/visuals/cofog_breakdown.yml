@@ -8,7 +8,7 @@ encoding:
   y: { dimension: cofog_function__cofog_label_pl }
 filter:
   geo: PL
-  date_key__cal_year: 2023
+  date_key__cal_year: 2024
 options:
   sort: value-desc
   table:
