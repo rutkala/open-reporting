@@ -217,17 +217,29 @@ def _run_latest_query(
     filter: dict[str, str] | None = None,
     limit: int | None = None,
 ) -> list[dict]:
-    """Latest-N rows for a metric, ordered by metric_time__year descending."""
+    """Latest-N rows for a metric, ordered by metric_time__year descending.
+
+    Skips years where the metric has no observation. A wide single-table
+    fact shares ONE metric_time spine across all its measures, so the latest
+    year present overall may be NULL for a metric whose series ends earlier
+    (e.g. env GHG ends 2023 while renewable-energy share already has 2024).
+    Without this filter a KPI card binds to the latest *spine* year and
+    renders "—" instead of the latest *actual* value. We therefore fetch the
+    full (small, annual) series, drop NULL-metric rows, then apply the limit.
+    """
     where = _build_where(filter) if filter else None
     df = _run_engine_query(
         metrics=[metric],
         group_by=["metric_time__year"],
         where=where,
         order=["-metric_time__year"],
-        limit=limit,
+        limit=None,
     )
     if df.empty or metric not in df.columns:
         return []
+    df = df[df[metric].notna()]
+    if limit is not None:
+        df = df.head(limit)
     return df.to_dict(orient="records")
 
 
