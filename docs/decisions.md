@@ -599,3 +599,45 @@ PYTHONPATH=/opt/open-reporting python3 products/blog/publish_to_ghost.py \
 - PO bot rewrite needs source-tree commit eventually — wait for PO to finish or explicitly hand off.
 
 **Commits:** `1fd7b9dc` `ca5ece47`
+
+---
+
+## 2026-05-29 02:00 UTC — #22 — [P0 production broken] Telegram bots crash-loop; public_finance dług narrative fix; branch cleanup
+
+**Smoke check at start:** all 6 production URLs returned 200; tonight's 22:00 UTC ingest succeeded (exit=0) — first live test of `cfab32ab` (dashboard-stop) and `1fd7b9dc` (alerting) passed silently (no failure → no alert, correct behaviour).
+
+**P0 found in Step 2 (not Step 0): Telegram bots ALL crash-looping since 02:00 UTC**
+
+`or-claude-bot`, `or-gemini-bot`, `or-opencode-bot` (the three installed multi-bot services from PO's in-progress architecture, listed as "active" in session-memory but actually crash-looping).
+
+**Root cause:** The systemd unit files use `Environment=TELEGRAM_BOT_TOKEN=${TELEGRAM_CLAUDE_BOT_TOKEN}` — but **systemd does NOT shell-expand `${...}` references in `Environment=` directives** (that's a shell feature, not systemd). So `TELEGRAM_BOT_TOKEN` ends up unset. The modified `bot.py` (source-tree, uncommitted) reads `os.environ["TELEGRAM_BOT_TOKEN"]` at line 58 → `KeyError` → exit 1 → systemd restarts → loop.
+
+**Action taken (per protocol — do not touch PO's uncommitted WIP):**
+- Stopped the three crash-looping services (`sudo systemctl stop or-{claude,gemini,opencode}-bot`) to silence journal churn. No file modifications.
+- Did NOT touch `infra/telegram-bot/bot.py` (PO's WIP rewrite), the new `infra/systemd/or-*-bot.service` files (PO's WIP), or `.env` (PO's secret config — and adding `TELEGRAM_BOT_TOKEN=$TELEGRAM_CLAUDE_BOT_TOKEN` only helps the Claude bot, not the others, and dotenv var-expansion behaviour is unreliable).
+- Old `or-telegram-bot.service` (committed `c3125c9b`) cannot be used as a fallback either — `.env` no longer has `TELEGRAM_BOT_TOKEN` (PO renamed it during the multi-bot migration).
+
+**Impact:** Telegram comms are DOWN both ways. PO cannot message `/queue` to inbox; my outbox alerts have nothing to deliver them. The 22:00 UTC ingest alert path (the OR-76 hardening that just passed its silent first test) cannot reach PO via chat unless a bot is running.
+
+**Fix path (PO action required — one of):**
+1. Hardcode the actual token values into each service unit: `Environment=TELEGRAM_BOT_TOKEN=<actual_token_value>`, then `systemctl daemon-reload && systemctl start or-*-bot`. Lowest-friction.
+2. Wrapper script that does `export TELEGRAM_BOT_TOKEN="$TELEGRAM_${BOT_ROLE^^}_BOT_TOKEN"; exec python bot.py` — requires source edit but generalises.
+3. Modify `bot.py` to derive the token name from `BOT_ROLE`: `TOKEN = os.environ[f"TELEGRAM_{BOT_ROLE.upper()}_BOT_TOKEN"]`.
+
+**OR-152 — public_finance dashboard narrative fix (P1 shipped, P2/P3 queued)**
+
+Visual screenshot review on `public_finance` (artifacts: `data/visual-reviews/2026-05-29-public_finance/`) caught a stale narrative in the dług section: chart subtitle said "do 55,1% w 2024 r." but warehouse has 54,8% for 2024 and 59,7% for 2025. Same drift on the interest-cost prose (said 2,2%; warehouse + KPI use 2,5% for 2025).
+
+Both narratives now anchor on 2025, matching the Przegląd KPI cards:
+- Trend długu: "z poziomu ~45% w 2019 r. do **59,7% w 2025 r.**, tuż przy progu traktatowym."
+- Koszty obsługi długu: "wzrosły ponad dwukrotnie z ~1,1% w 2021 r. do **2,5% PKB w 2025 r.**"
+
+`dbr validate` ✓ → `dbr run` ✓ → re-screenshot confirms new prose rendered (`post_fix_dlug.png`). Linear OR-152 filed with the broader P2 (year-anchor consistency across other pages) and P3 (COFOG legend label overlap on Wydatki) for next run.
+
+**Branch cleanup:** Deleted 4 local branches already merged into main (`feat/OR-144-metricflow-pilot`, `feat/or-114-przeglaد-enhancements`, `feat/or-dashboards-kit`, `feat/public-finance-redesign`). One refused (`feat/OR-139-data-research-agents` — local ahead of origin). 4 long-stale unmerged branches left for PO review.
+
+**PR #62 (telegram-claude-bridge):** Left open. Its `bot.py` ALSO reads `TELEGRAM_BOT_TOKEN` so it wouldn't work as a quick fallback either. Decision deferred until PO resolves the env-var mismatch.
+
+**Status:** Shipped (OR-152 P1 + branch cleanup). [P0 bot crash] surfaced for PO action.
+
+**Commits:** dashboard prose fix + post-mortem + outbox alert (single commit).

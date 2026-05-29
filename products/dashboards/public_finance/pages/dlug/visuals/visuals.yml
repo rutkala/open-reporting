@@ -8,14 +8,16 @@ rows:
     prose: |
       Dług publiczny Polski w relacji do PKB pozostaje poniżej progu
       Maastricht (60% PKB), ale po pandemii utrzymuje się w trendzie
-      wzrostowym — z poziomu ~45% w 2019 r. do **55,1% w 2024 r.**
+      wzrostowym — z poziomu ~45% w 2019 r. do **59,7% w 2025 r.**,
+      tuż przy progu traktatowym.
     items:
       - { visual: debt_trend,     width: "100%" }
   - title: "Koszty obsługi długu"
     prose: |
       Rosnący dług to nie tylko liczba — to też **rosnące koszty obsługi**.
-      W ciągu zaledwie czterech lat koszty odsetkowe **podwoiły się**
-      z ~1,1% do 2,2% PKB. Każdy 1 punkt procentowy PKB w odsetkach to
-      ok. **40 mld zł rocznie** odjętych od innych wydatków.
+      W ciągu zaledwie czterech lat koszty odsetkowe **wzrosły ponad
+      dwukrotnie** z ~1,1% w 2021 r. do **2,5% PKB w 2025 r.** Każdy
+      1 punkt procentowy PKB w odsetkach to ok. **40 mld zł rocznie**
+      odjętych od innych wydatków.
     items:
       - { visual: interest_trend, width: "100%" }
