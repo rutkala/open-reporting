@@ -665,3 +665,29 @@ Both narratives now anchor on 2025, matching the Przegląd KPI cards:
 - 7 article drafts still awaiting PO preview/publish — undeliverable reminder until comms restored.
 
 **Commits:** `e89360d2` (dashboard fix) + this post-mortem/outbox commit.
+
+---
+
+## 2026-05-29 12:00 UTC — #24 — OR-83 ENV dashboard closed; fixed global KPI "latest non-null" engine bug
+
+**Smoke check:** all 5 portal pages + blog 200; daily ingest 2026-05-28 exit=0; Telegram inbox empty; no Strategic items. Untracked `infra/systemd/or-*-bot.service` files left untouched (PO WIP per #23). Production healthy.
+
+**Picked:** Quality pass on the `environment` dashboard (OR-83) — newest domain dashboard, never given a rigorous multimodal review. Article queue is already 7 deep awaiting PO; BDL/social credential-blocked; comms is PO-owned (OR-153). A live-product quality pass was the highest-value, dependency-free, fully-in-my-control work.
+
+**Found (P1) + fixed:** visual-screenshot-reviewer caught two Przegląd KPI cards rendering "—": **Emisje GHG** and **Pobór wody**. Root cause was an *engine* bug, not a data gap. `fact_env_overview` is a wide single-table fact sharing one MetricFlow `metric_time` spine across all four measures. Renewable + waste series reach 2024; GHG + water end 2023. `_run_latest_query` (`packages/dbr/src/dbr/semantic/semantic.py`) bound each card to the latest *spine* year (2024) → NULL for the two shorter series → "—".
+
+Fix: fetch the full annual series (drop engine-side limit), filter out NULL-metric rows, then take latest N. Cards now show the latest *actual* observation; YoY deltas use the real consecutive prior year (the delta label already shows the actual prior period, so it stays honest even across gaps). Working cards (latest year non-null) unchanged; sanity-checked public_finance `fiscal_balance` still resolves -7,3% PKB (2025). The fix is **global** — hardens every KPI card on every dashboard against the same wide-fact end-year mismatch.
+
+Process: branch `fix/or-83-kpi-latest-nonnull` (engine-plane → PR rule) → code-reviewer **PASS** (no P1/P2/P3) → merged to main `fca7b818` → restarted `or-environment.service` (editable install picks up source) → verified live.
+
+**Verified live** (https://portal.open-reporting.dev/environment/, post-fix screenshot `data/visual-reviews/2026-05-29-environment/postfix_przeglad.png`): GHG 316 mln t CO₂e (2023, ▼ vs 2022), Pobór wody 8 693 mln m³ (2023, ▼ vs 2022); renewable 17,8% + waste 387 kg/os. (2024) unchanged. All three pages render real line data.
+
+**Why:** OR-83 met all its acceptance criteria but shipped with two silently-broken KPI cards on a public page — a credibility risk for a data-media product. The underlying engine flaw was latent across the whole fleet, so fixing it once removes a class of future bugs.
+
+**Status:** Shipped (OR-83 → Done; dbr KPI engine fix merged + deployed + verified).
+
+**Followup:**
+- The fix benefits all dashboards; no other dashboard currently shows the symptom (spot-checked), but worth a pass if a future wide fact mixes end-years.
+- Standing blockers unchanged: OR-153 (Telegram comms, PO), OR-90 (Instagram, PO), OR-86 (BDL key, PO), OR-79 (Ghost nav, PO); 7 article drafts awaiting PO preview.
+
+**Commits:** `fca7b818` (merge: dbr KPI fix) + this post-mortem/outbox commit.
