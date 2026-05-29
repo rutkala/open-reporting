@@ -691,3 +691,21 @@ Process: branch `fix/or-83-kpi-latest-nonnull` (engine-plane → PR rule) → co
 - Standing blockers unchanged: OR-153 (Telegram comms, PO), OR-90 (Instagram, PO), OR-86 (BDL key, PO), OR-79 (Ghost nav, PO); 7 article drafts awaiting PO preview.
 
 **Commits:** `fca7b818` (merge: dbr KPI fix) + this post-mortem/outbox commit.
+
+## 2026-05-29 17:00 UTC — #25 — OR-154 environment article draft (completes 5/5 dashboard↔article pairing)
+
+**Shipped (as draft):** OR-154 — "Polska środowiskowo: emisje niższe o 29%, odpady wciąż rosną". Ninth Theme 2 article. Draft `products/blog/drafts/or-154-environment.md` (~1,580 words) pushed to Ghost as **draft** (slug `polska-srodowiskowo-1990-2024`). The environment dashboard (OR-83) was the only live domain without a companion article — this closes the pairing for all five (public_finance, labour_market, national_accounts, demographics, environment).
+
+**Why:** Inbox empty, no Strategic issues, no Urgent/Infra P1. Theme 1/4 and OR-86 all blocked on PO. The unblocked, on-roadmap, high-coherence move was the missing environment article (Theme 2, "pair article with dashboard" pattern). All figures grounded in `curated.fact_env_overview`.
+
+**Quality gate:** analytical-validator (Opus) ran on the draft → initial **BLOCK** (two real factual errors). All fixed + re-verified against the warehouse:
+- Water abstractions re-anchored to the true series peak 1985 = 16,408 mln m³ (−47%); earlier draft wrongly labelled 1980 the peak.
+- Removed false "waste rose every five-year period" claim; replaced with the real U-shape (322 kg 2007 → 272 kg 2014 → 387 kg 2024; recent decade +42%).
+- 2004–2019 cumulative GHG progress corrected to ~16 Mt; softened EU-ranking OZE claim; EU comparators sourced from EU27 aggregates of the same Eurostat datasets.
+Full content-reviewer + domain-specialist publish gate intentionally NOT run — publish isn't happening this cycle (held as draft, frugal with shared rate-limit pool). The 3-reviewer gate fires when the PO greenlights publishing the draft batch.
+
+**Status:** In Progress (Ghost draft awaiting PO preview — same terminal autonomous state as OR-145..151). Not Done: publish decision belongs to PO.
+
+**Followup / standing blockers unchanged:** OR-153 (Telegram inbound, PO), OR-90 (Instagram, PO), OR-86 (BDL key, PO), OR-79 (Ghost nav, PO). Draft queue now **8 articles** (OR-145..151 + OR-154) awaiting PO preview — flag: producing further drafts is queue-deepening; PO review is the bottleneck, not production.
+
+**Commits:** this post-mortem/outbox + draft commit.

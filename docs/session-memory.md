@@ -1,12 +1,12 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-05-29 12:15 UTC -->
+<!-- last-updated: 2026-05-29 17:15 UTC -->
 
 ## Current Focus
 
 **Five domain dashboards live + correct; AI scrum team live on Discord.** The autonomous-lead cron (02/07/12/17 UTC) keeps shipping product work; the chat office is Discord (8 `claude -p` bot subprocesses). The Telegram **outbox poller still works** for delivering autonomous-run reports to PO.
 
-Run #24 (this run): closed OR-83 (ENV dashboard) and fixed a global KPI-card engine bug.
+Run #25 (this run): shipped OR-154 environment article as Ghost draft — completes the dashboard↔article pairing for all 5 live domains. analytical-validator caught + fixed two factual errors (water peak 1985 not 1980 → −47%; waste U-shape not monotonic). **Draft queue now 8** (OR-145..151 + OR-154) awaiting PO preview — production is ahead of PO review; that is the bottleneck.
 
 ## Live production state
 
@@ -15,7 +15,7 @@ Run #24 (this run): closed OR-83 (ENV dashboard) and fixed a global KPI-card eng
 - **National accounts:** `portal.open-reporting.dev/national_accounts/` — Live ✓
 - **Demographics:** `portal.open-reporting.dev/demographics/` — Live ✓
 - **Environment:** `portal.open-reporting.dev/environment/` — Live ✓ (OR-83 Done; KPI cards fixed run #24)
-- **Blog:** `www.open-reporting.dev` — Live ✓; Articles OR-145..OR-151 in Ghost as **DRAFTS**, awaiting PO preview
+- **Blog:** `www.open-reporting.dev` — Live ✓; Articles OR-145..OR-151 + OR-154 (8 total) in Ghost as **DRAFTS**, awaiting PO preview
 - **Daily ingestion:** 22:00 UTC cron; exit=0 on 2026-05-28. OR-76 outbox alert on failure.
 - **Autonomous-lead cron:** `0 2,7,12,17 * * *` UTC.
 
@@ -31,11 +31,11 @@ Each `@`-mention/DM spawns a fresh subprocess — no in-chat memory; relies on C
 
 | Commit | What |
 |---|---|
+| (this run) | feat(content): OR-154 environment article draft (9th Theme 2; completes 5/5 pairing) |
+| `74190707` | docs: run #24 post-mortem — OR-83 closed + global dbr KPI fix |
 | `fca7b818` | fix(dbr): KPI card resolves latest non-null value, not latest spine year (run #24) |
 | `c4b33f4b` | feat(infra): Discord 8-bot scrum team — framework, services, agent files |
 | `e89360d2` | fix(public_finance): OR-152 P2/P3 — Wydatki 2024 re-anchor + trend legend |
-| `8bdb235a` | docs: run #22 post-mortem + OR-152 P1 |
-| `ca5ece47` | feat(content): OR-151 industrial output article (8th Theme 2) |
 
 ## Open / blocked work
 
@@ -45,7 +45,7 @@ Each `@`-mention/DM spawns a fresh subprocess — no in-chat memory; relies on C
 | 2 | OR-86 | BDL (GUS) ingestion first run | Blocked — needs `BDL_API_KEY` from PO |
 | 3 | OR-90 | Instagram token (Meta portal) — blocks Theme 4 publishing | Blocked — PO action |
 | 4 | OR-79 | Ghost nav "Portal" link — browser admin | Blocked — PO action |
-| 5 | 7 drafts | OR-145..151 Ghost preview + publish decisions | Awaiting PO |
+| 5 | 8 drafts | OR-145..151 + OR-154 Ghost preview + publish decisions | Awaiting PO (bottleneck — production ahead of review) |
 | 6 | OR-89 | Weekly snapshot (social) | Buildable; publish blocked on OR-90 |
 | 7 | — | Discord goal-file pattern + independent-work cron + cross-bot @ | Open (PO WIP, infra in flux) |
 
