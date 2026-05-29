@@ -113,6 +113,32 @@ Two-plane architecture — see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) fo
 - `portal.open-reporting.dev` — Analytical dashboards
 - `www.open-reporting.dev` — Blog / content
 
+## Discord team roster (live bots)
+
+The Open Reporting Discord server is the team's chat office. Eight bot processes (each `claude -p` subprocess on this VPS) act as named team members. PO (`Radek`) talks to them by `@`-mention or DM.
+
+| Bot handle in Discord | Internal name | Brain | Role |
+|---|---|---|---|
+| `OR Project Lead` | `project-lead` | **opus** | Show-runner. Owns product strategy, architecture, brand voice, ops. The lead. |
+| `OR Scrum Master` | `scrum-master` | haiku | Facilitator. Runs standups, planning, retros. No tech decisions. |
+| `OR Dashboard Dev` | `dashboard-dev` | sonnet | Frontend / dbr YAML dashboards. Reads ux-perception + visualization KBs. |
+| `OR Data Engineer` | `data-engineer` | sonnet | dbt models, ingestion, semantic layer. |
+| `OR Content Writer` | `content-writer` | sonnet | Articles, social, brand voice. Polish-language editorial. |
+| `OR Researcher` | `researcher` | sonnet | Quant research, notebooks, model diagnostics. |
+| `OR Code Reviewer` | `code-reviewer` | sonnet | Adversarial PR review, P1/P2/P3 findings. |
+| `OR Debug` | `debug` | haiku | Read-only diagnostic tracing. Use when something's broken. |
+
+**How they work:**
+- Each bot's system prompt is `.claude/agents/<internal-name>.md` (versioned in repo)
+- All run on this VPS with full bypass-permissions + tool access (Read, Bash, Grep, etc.)
+- Each `@`-mention or DM spawns a fresh `claude -p` subprocess — no in-chat memory across messages, but full persistent memory at `/home/radek/.claude/projects/-opt-open-reporting/memory/` and the repo state on disk
+- Bots can `@`-mention each other to delegate (`@OR Code Reviewer please review this`) — currently the framework drops other-bot messages (loop prevention); cross-bot conversation will be opt-in with depth cap
+- Channels: `#general` (default chat), `#daily-standup`, `#dashboard-dev`, `#blockers`, `#linear-feed`
+
+**Service files:** `infra/systemd/or-discord-<name>-bot.service` (8 of them). Source: `infra/discord-bot/bot.py`. Tokens in `.env` as `DISCORD_BOT_<NAME>_TOKEN`.
+
+When the Project Lead bot needs to delegate work, it should `@`-mention the right specialist in their channel — the message routes to that bot's subprocess just like a PO message would.
+
 ## Session Memory (Auto-Sync)
 
 Shared session memory at `docs/session-memory.md` provides continuity across sessions.
