@@ -641,3 +641,27 @@ Both narratives now anchor on 2025, matching the Przegląd KPI cards:
 **Status:** Shipped (OR-152 P1 + branch cleanup). [P0 bot crash] surfaced for PO action.
 
 **Commits:** dashboard prose fix + post-mortem + outbox alert (single commit).
+
+---
+
+## 2026-05-29 07:00 UTC — #23 — OR-152 P2/P3 closed (Wydatki 2024 re-anchor + legend); Telegram comms escalated to Linear (OR-153)
+
+**Smoke check:** all 5 portal pages + blog 200; daily ingest 2026-05-28 exit=0 (both 12:00 and 22:00 runs); git tree = only PO's WIP bot files. Production healthy.
+
+**Telegram comms still down (run #22 P0, unresolved by PO).** All 7 bot services `inactive`; no new commits since #22. The run #22 failure was not "didn't fix it" but "flagged it only in the outbox + decisions.md — neither of which reaches PO while the bot is down." Corrected that: filed **OR-153** (Urgent/Infra) — the one PO-reachable channel — with confirmed root cause (`Environment=TELEGRAM_BOT_TOKEN=${TELEGRAM_CLAUDE_BOT_TOKEN}`; systemd does not shell-expand `${}` in `Environment=`) and three copy-paste fix options (shell-wrapper ExecStart recommended) + the second blocker (4 agent bots have no @BotFather tokens in `.env`).
+- Did NOT self-fix: the only sanctioned sudo path (`sudo cp infra/systemd/*.service`) forces editing PO's uncommitted WIP unit files, and the architecture is in active flux (PR #62 single-bot vs this multi-bot design). Editing in-flight WIP risks clobbering a design decision. Escalation via Linear is the respectful, deliverable resolution.
+
+**OR-152 P2/P3 — public_finance Wydatki (shipped, verified, closed):**
+- P2: COFOG 2024 is now in the warehouse (`fact_finance_cofog`, all 10 functions, 49,3% GDP). Found Wydatki breakdown still hardcoded to 2023 → re-anchored to 2024 and matched prose (Ochrona socjalna 16,8%→18,3% "ponad 18%"; top-4 "ok. 30%"→"ok. 36%"; trend 1995→2024). UE uses `dual_year` (self-updating); Prognozy WEO annotations verified correct against `fact_finance_imf` (60% crossing 2026/62,9; COVID 2020/−6,935). No "Dochody" page exists — session-memory reference was stale.
+- P3: COFOG **trend** chart endpoint labels for Gospodarka/Zdrowie/Edukacja collided at the converging ~5-6% right edge; `highlight` also muted them to one indistinct colour. Dropped `label_endpoints` + `highlight` → themed 4-colour legend (engine-side label-nudging would have been a `packages/dbr/` PR — too heavy for a P3).
+- Verified: `dbr validate` + `dbr run` ✓; https://portal.open-reporting.dev/public_finance/ → 200 + `<title>Dash</title>`; Playwright screenshot of #wydatki confirms 2024 table values + readable legend. OR-152 → Done.
+
+**Why:** Comms is the highest-impact open item but is correctly PO-owned WIP; escalating through Linear (the working channel) is the deliverable action. OR-152 P2/P3 were the next concrete, dependency-free, verifiable product work (the 7-article draft queue is already deep; BDL/social are credential-blocked).
+
+**Status:** Shipped (OR-152 P2/P3, closed). OR-153 filed for PO (Telegram comms).
+
+**Followup:**
+- OR-153: PO must apply one of the three bot fixes to restore comms; until then outbox reports (incl. OR-76 ingest alerts) cannot reach PO.
+- 7 article drafts still awaiting PO preview/publish — undeliverable reminder until comms restored.
+
+**Commits:** `e89360d2` (dashboard fix) + this post-mortem/outbox commit.
