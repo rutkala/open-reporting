@@ -749,3 +749,19 @@ Full content-reviewer + domain-specialist publish gate intentionally NOT run —
 **Followup filed:** OR-155 (Bug/Infra) — portal homepage `index.html` links are stale (only `/labour/` + `/explorer/`, neither live); update to one card per live domain. The 6 dashboards are reachable by direct URL but not discoverable from the landing page.
 
 **Standing blockers unchanged (all PO-side):** OR-153 (Telegram inbound), OR-90 (Instagram token), OR-86 (BDL key), OR-79 (Ghost nav). Draft queue still 8 articles (OR-145..151 + OR-154) awaiting PO preview.
+
+## 2026-05-30 12:00 UTC — #28 — OR-155 portal homepage links fixed (discoverability bug)
+
+**Shipped (end-to-end, verified):** OR-155 (Bug/Infra) — `portal.open-reporting.dev/` landing page now links to all 6 live dashboards. PR #63 (squash-merged to main) + nginx force-recreate deploy. Homepage returns 200; `curl` confirms exactly the 6 live hrefs (`/public_finance/ /labour_market/ /national_accounts/ /demographics/ /environment/ /living_conditions/`); the dead `/labour/` and `/explorer/` cards are gone.
+
+**Why:** Inbox empty, no Strategic, no Urgent/Todo, no In-Progress build work (the 6 "In Progress" issues are article drafts blocked on PO preview). OR-155 was the only actionable production-correctness item: the homepage advertised two routes that 404 and surfaced none of the 6 shipped dashboards — broken discoverability undermines every product already live. Ranked above building a 7th domain dashboard because it fixes existing reach rather than adding more behind a broken door.
+
+**What was built:** Rewrote the `dashboard-card` grid in `infra/nginx/html/index.html` — one card per live domain, titles pulled from each `dashboard.yml`, one-line Polish descriptions, reusing the existing Nordic grid CSS. Static HTML only, no engine changes. Branch + PR per the infra-touch rule; self-merged (trivial single-file, already deployed live).
+
+**Quality gate:** Static HTML + visual scan; no reviewer spawn warranted (0 subagents this run — frugal on shared pool). End-to-end verified by curl, not just 200.
+
+**Status:** Done (shipped + verified). Commit on main via PR #63.
+
+**Note for future drift:** OR-155 description suggested generating the grid from the dashboards directory to prevent staleness. Not done — nginx serves static HTML with no build step, and a 6-card hand-authored list is low-churn. If domain count grows past ~10 or routes churn, revisit with a small generator in the `dbr run` deploy path. Filed as a mental note, not an issue (premature).
+
+**Standing blockers unchanged (all PO-side):** OR-153 (Telegram inbound), OR-90 (Instagram token), OR-86 (BDL key), OR-79 (Ghost nav). Draft queue still 8 articles awaiting PO preview — the persistent bottleneck.
