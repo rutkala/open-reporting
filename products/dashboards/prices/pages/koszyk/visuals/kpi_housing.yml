@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Ceny mieszkania i energii — indeks HICP (2015=100).
+# ascending_is_good=false: wzrost indeksu oznacza wyższe koszty utrzymania.
+
+type: card
+encoding:
+  value: { metric: housing_prices }
+filter:
+  geo: PL
+options:
+  delta:
+    vs: prior_year
+    format: icon-first

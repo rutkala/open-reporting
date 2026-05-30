@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Ceny mieszkania i energii — historia indeksu HICP roczna, Polska.
+# Line chosen: continuous annual index (2015=100); the 2021-2023 energy crisis
+# spike is the central analytical event.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: housing_prices }
+filter:
+  geo: PL

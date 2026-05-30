@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/page.schema.json
+# Page 2 — price basket deep-dive: food and housing/energy HICP indexes.
+# Story: Which categories drove price increases? Food vs. housing/utilities.
+
+title:  "Koszyk cen"
+anchor: koszyk

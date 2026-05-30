@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Ceny żywności — indeks HICP (2015=100).
+# ascending_is_good=false: wzrost indeksu oznacza droższe zakupy.
+
+type: card
+encoding:
+  value: { metric: food_prices }
+filter:
+  geo: PL
+options:
+  delta:
+    vs: prior_year
+    format: icon-first

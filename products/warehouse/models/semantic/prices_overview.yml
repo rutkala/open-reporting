@@ -1,0 +1,102 @@
+version: 2
+
+# MetricFlow semantic model for the Prices & Inflation dashboard.
+#
+# Single source: curated.fact_prices_overview (wide, one column per measure).
+# Three metrics expose annual price indicators to the visual layer.
+#
+# Aggregation note: `agg: average` used throughout. The pivot produces at most
+# one non-null value per (geo, period_year) for annual series, so average
+# collapses identically to max — consistent with the env/demo/finance/labour/macro
+# convention in this project.
+#
+# Direction note: all three metrics are "lower is better" (ascending_is_good: false)
+# — lower inflation and lower price indexes mean lower cost of living for citizens.
+
+semantic_models:
+  - name: prices_overview
+    description: Annual Prices & Inflation KPIs — Poland (Eurostat PRC series).
+    model: ref('fact_prices_overview')
+
+    defaults:
+      agg_time_dimension: period
+
+    primary_entity: prices_overview_row
+
+    entities:
+      - name: geo
+        type: foreign
+        expr: geo
+      - name: date_key
+        type: foreign
+        expr: period_date
+
+    dimensions:
+      - name: period
+        type: time
+        expr: period_date
+        type_params:
+          time_granularity: year
+
+    measures:
+      - name: inflation_rate_pct
+        description: >
+          HICP overall rate of change, annual average, percent
+          (prc_hicp_aind, coicop=CP00, unit=RCH_A_AVG).
+        agg: average
+        expr: inflation_rate_pct
+      - name: food_hicp_idx
+        description: >
+          HICP food and non-alcoholic beverages index, 2015=100
+          (prc_hicp_aind, coicop=CP01, unit=INX_A_AVG).
+        agg: average
+        expr: food_hicp_idx
+      - name: housing_hicp_idx
+        description: >
+          HICP housing, water, electricity, gas and other fuels index, 2015=100
+          (prc_hicp_aind, coicop=CP04, unit=INX_A_AVG).
+        agg: average
+        expr: housing_hicp_idx
+
+metrics:
+  - name: inflation_rate
+    label: "Inflacja HICP"
+    type: simple
+    type_params:
+      measure: inflation_rate_pct
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: "%"
+          scale: 1
+        source_label: "Eurostat (prc_hicp_aind), HICP zmiana roczna, średnia roczna"
+        ascending_is_good: false
+
+  - name: food_prices
+    label: "Ceny żywności"
+    type: simple
+    type_params:
+      measure: food_hicp_idx
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: ""
+          scale: 1
+        source_label: "Eurostat (prc_hicp_aind), HICP żywność i napoje bezalkoholowe, indeks 2015=100"
+        ascending_is_good: false
+
+  - name: housing_prices
+    label: "Ceny mieszkania i energii"
+    type: simple
+    type_params:
+      measure: housing_hicp_idx
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: ""
+          scale: 1
+        source_label: "Eurostat (prc_hicp_aind), HICP mieszkanie, woda, energia, indeks 2015=100"
+        ascending_is_good: false

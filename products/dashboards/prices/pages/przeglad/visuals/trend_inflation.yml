@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Inflacja HICP — historia roczna, Polska, od 1997.
+# Line chosen: continuous annual % series; the 2022-2023 spike dominates the
+# 30-year picture and provides immediate context.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: inflation_rate }
+filter:
+  geo: PL

@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/dashboard.schema.json
+# Prices & Inflation dashboard for Polish citizens.
+# Audience: non-economist Polish news readers.
+# Story: How much did prices rise? Where did inflation hurt most — food or housing?
+
+domain: prices
+port:   8063
+title:  "Inflacja i ceny w Polsce"

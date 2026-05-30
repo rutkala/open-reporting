@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 2 layout — price basket deep-dive:
+#   Row 1: 2 KPI cards side-by-side (food index, housing/energy index)
+#   Row 2: line chart — food HICP index trend (full width)
+#   Row 3: line chart — housing/energy HICP index trend (full width)
+
+rows:
+  - title: "Indeksy cen HICP (2015 = 100)"
+    items:
+      - { visual: kpi_food,    width: "50%" }
+      - { visual: kpi_housing, width: "50%" }
+  - title: "Ceny żywności — historia roczna"
+    items:
+      - { visual: trend_food, width: "100%" }
+  - title: "Ceny mieszkania i energii — historia roczna"
+    items:
+      - { visual: trend_housing, width: "100%" }

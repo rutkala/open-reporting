@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/page.schema.json
+# Page 1 — inflation snapshot: current HICP rate KPI card + 30-year trend.
+# Story: Poland's 2022-2023 inflationary spike in historical context.
+
+title:  "Przegląd"
+anchor: przeglad

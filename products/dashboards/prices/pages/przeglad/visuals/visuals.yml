@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 1 layout — inflation scorecard:
+#   Row 1: KPI card — current HICP inflation rate (full width)
+#   Row 2: line chart — 30-year inflation rate history (full width)
+
+rows:
+  - title: "Inflacja HICP — bieżąca wartość"
+    items:
+      - { visual: kpi_inflation, width: "100%" }
+  - title: "Inflacja HICP — historia roczna (1997–2025)"
+    items:
+      - { visual: trend_inflation, width: "100%" }

@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Inflacja HICP — bieżąca wartość (% zmiana roczna, średnia roczna).
+# ascending_is_good=false: spadek inflacji jest pożądany.
+
+type: card
+encoding:
+  value: { metric: inflation_rate }
+filter:
+  geo: PL
+options:
+  delta:
+    vs: prior_year
+    format: icon-first

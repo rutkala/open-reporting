@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Ceny żywności — historia indeksu HICP roczna, Polska.
+# Line chosen: continuous annual index (2015=100); the post-2021 food price surge
+# reflects Ukraine war supply shocks and energy cost pass-through.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: food_prices }
+filter:
+  geo: PL
