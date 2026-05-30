@@ -1,0 +1,78 @@
+version: 2
+
+# MetricFlow semantic model for the Energy dashboard.
+#
+# Single source: curated.fact_ene_overview (wide, one column per measure).
+# Two metrics expose annual energy transition indicators to the visual layer.
+#
+# Aggregation note: `agg: average` used throughout. The pivot produces at most
+# one non-null value per (geo, period_year) for annual series, so average
+# collapses identically to max — consistent with project convention.
+#
+# Direction notes:
+#   renewable_energy_pct       — higher is better (ascending_is_good: true)
+#   energy_intensity_eur_kgoe  — higher is better (more GDP per energy unit = more efficient)
+
+semantic_models:
+  - name: energy_overview
+    description: Annual Energy Transition KPIs — Poland (Eurostat ENE series).
+    model: ref('fact_ene_overview')
+
+    defaults:
+      agg_time_dimension: period
+
+    primary_entity: energy_overview_row
+
+    entities:
+      - name: geo
+        type: foreign
+        expr: geo
+      - name: date_key
+        type: foreign
+        expr: period_date
+
+    dimensions:
+      - name: period
+        type: time
+        expr: period_date
+        type_params:
+          time_granularity: year
+
+    measures:
+      - name: ene_renewable_energy_pct
+        description: Renewable energy share in gross final energy consumption, percent.
+        agg: average
+        expr: renewable_energy_pct
+      - name: ene_energy_intensity_eur_kgoe
+        description: Energy productivity — GDP in EUR per kg oil equivalent consumed.
+        agg: average
+        expr: energy_intensity_eur_kgoe
+
+metrics:
+  - name: ene_renewable_energy
+    label: "Energia odnawialna (% końcowego zużycia)"
+    type: simple
+    type_params:
+      measure: ene_renewable_energy_pct
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: "%"
+          scale: 1
+        source_label: "Eurostat (nrg_ind_ren), udział OZE w końcowym zużyciu energii brutto"
+        ascending_is_good: true
+
+  - name: energy_productivity
+    label: "Produktywność energetyczna (EUR/kgoe)"
+    type: simple
+    type_params:
+      measure: ene_energy_intensity_eur_kgoe
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: " EUR/kgoe"
+          scale: 1
+        source_label: "Eurostat (sdg_07_30), PKB w EUR na kg ekwiwalentu ropy naftowej"
+        ascending_is_good: true

@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/dashboard.schema.json
+# Energy dashboard for Polish citizens.
+# Audience: non-specialist Polish readers.
+# Story: Poland's energy transition — renewables growing from 7% to 25%+,
+#   energy productivity rising. Coal dependence declining but transition ongoing.
+
+domain: energy
+port:   8070
+title:  "Energia w Polsce"

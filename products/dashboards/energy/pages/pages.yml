@@ -1,0 +1,5 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/pages.schema.json
+# Narrative arc:
+#   1. Przegląd — headline KPIs + trends for renewables and energy productivity
+order:
+  - przeglad

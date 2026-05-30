@@ -14,6 +14,7 @@ edu.phd_candidates,EDU,educ_uoe_enrt01,isced11=ED8&sector=TOT_SEC&sex=T&unit=NR&
 edu.school_enrolment_tertiary,EDU,educ_uoe_enrt01,isced11=ED5-8&sector=TOT_SEC&sex=T&unit=NR&worktime=TOTAL
 edu.tertiary_attainment_rate,EDU,edat_lfse_03,age=Y30-34&isced11=ED5-8&sex=T&unit=PC
 ene.energy_intensity,ENE,sdg_07_30,unit=EUR_KGOE
+ene.renewable_energy_share,ENE,nrg_ind_ren,nrg_bal=REN&unit=PC
 env.ghg_emissions_total,ENV,env_air_gge,airpol=GHG&src_crf=TOTXMEMO&unit=MIO_T
 env.municipal_waste_generated,ENV,env_wasmun,unit=KG_HAB&wst_oper=GEN
 env.renewable_energy_share,ENV,nrg_ind_ren,nrg_bal=REN&unit=PC

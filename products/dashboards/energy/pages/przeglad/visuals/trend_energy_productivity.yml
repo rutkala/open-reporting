@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Produktywność energetyczna — historia roczna (2000–2024).
+# Polska uniezależnia wzrost PKB od zużycia energii — trend wyraźnie rosnący.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: energy_productivity }
+filter:
+  geo: PL

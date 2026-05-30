@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Produktywność energetyczna (EUR/kgoe) — najnowsza wartość z deltą r/r.
+# ascending_is_good=true: rosnąca produktywność = lepsza efektywność energetyczna.
+
+type: card
+encoding:
+  value: { metric: energy_productivity }
+filter:
+  geo: PL
+options:
+  delta:
+    vs: prior_year
+    format: icon-first
