@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/pages.schema.json
+# Narrative arc:
+#   1. Przegląd — headline KPIs: life expectancy F/M, infant mortality + long-run trends
+#   2. Długość życia — deep-dive: male vs female life expectancy, COVID dip visible
+#   3. Śmiertelność niemowląt — infant mortality history (1960→2024, 15× improvement)
+order:
+  - przeglad
+  - dlugosc_zycia
+  - smiertelnosc

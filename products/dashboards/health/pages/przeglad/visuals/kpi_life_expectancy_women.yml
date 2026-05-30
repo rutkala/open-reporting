@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Oczekiwana długość życia kobiet — najnowsza wartość z deltą r/r.
+# ascending_is_good=true: wzrost długości życia jest pożądany.
+
+type: card
+encoding:
+  value: { metric: life_expectancy_women }
+filter:
+  geo: PL
+options:
+  delta:
+    vs: prior_year
+    format: icon-first

@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Umieralność niemowląt — najnowsza wartość z deltą r/r.
+
+type: card
+encoding:
+  value: { metric: infant_mortality }
+filter:
+  geo: PL
+options:
+  delta:
+    vs: prior_year
+    format: icon-first

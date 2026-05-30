@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/page.schema.json
+# Page 1 — Health snapshot: life expectancy F/M, infant mortality + trend charts.
+# Story: Poland's health transition in three headline numbers and two trend lines.
+
+title:  "Przegląd"
+anchor: przeglad

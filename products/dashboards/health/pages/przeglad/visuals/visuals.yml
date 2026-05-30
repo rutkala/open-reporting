@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 1 layout — health snapshot:
+#   Row 1: 3 KPI cards (life expectancy F, life expectancy M, infant mortality)
+#   Row 2: line chart — life expectancy trend 1990-2024 (full width)
+#   Row 3: line chart — infant mortality trend 1960-2024 (full width)
+#
+# 3 KPIs is within Cowan 4±1 limit. Two trend charts tell the dual story.
+
+rows:
+  - title: "Kluczowe wskaźniki zdrowotne"
+    items:
+      - { visual: kpi_life_expectancy_women, width: "33%" }
+      - { visual: kpi_life_expectancy_men,   width: "33%" }
+      - { visual: kpi_infant_mortality,      width: "34%" }
+  - title: "Oczekiwana długość życia — historia roczna (1990–2024)"
+    items:
+      - { visual: trend_life_expectancy, width: "100%" }
+  - title: "Umieralność niemowląt — historia roczna (1960–2024)"
+    items:
+      - { visual: trend_infant_mortality, width: "100%" }

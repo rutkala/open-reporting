@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Łóżka szpitalne na 100 tys. mieszkańców — historia roczna (2003–2019).
+# Powolny trend spadkowy — dostępność zasobów szpitalnych maleje.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: hospital_beds }
+filter:
+  geo: PL

@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Umieralność niemowląt — pełna historia roczna (1960–2024).
+# Dramatyczny spadek z ~19‰ w 1960 do 3.6‰ w 2024 — historia postępu medycyny.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: infant_mortality }
+filter:
+  geo: PL

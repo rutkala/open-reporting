@@ -1,0 +1,134 @@
+version: 2
+
+# MetricFlow semantic model for the Health dashboard.
+#
+# Single source: curated.fact_hlt_overview (wide, one column per measure).
+# Five metrics expose annual health indicators to the visual layer.
+#
+# Aggregation note: `agg: average` used throughout. The pivot produces at most
+# one non-null value per (geo, period_year) for annual series, so average
+# collapses identically to max — consistent with project convention.
+#
+# Direction notes:
+#   life_expectancy_f/m   — higher is better (ascending_is_good: true)
+#   infant_mortality       — lower is better (ascending_is_good: false)
+#   hospital_beds          — context indicator; higher generally means more resources
+#   cardiovascular_deaths  — lower is better (ascending_is_good: false)
+
+semantic_models:
+  - name: health_overview
+    description: Annual Health KPIs — Poland (Eurostat HLT series).
+    model: ref('fact_hlt_overview')
+
+    defaults:
+      agg_time_dimension: period
+
+    primary_entity: health_overview_row
+
+    entities:
+      - name: geo
+        type: foreign
+        expr: geo
+      - name: date_key
+        type: foreign
+        expr: period_date
+
+    dimensions:
+      - name: period
+        type: time
+        expr: period_date
+        type_params:
+          time_granularity: year
+
+    measures:
+      - name: hlt_life_expectancy_f_years
+        description: Female life expectancy at birth, years (demo_mlexpec, age=Y_LT1, sex=F).
+        agg: average
+        expr: life_expectancy_f_years
+      - name: hlt_life_expectancy_m_years
+        description: Male life expectancy at birth, years (demo_mlexpec, age=Y_LT1, sex=M).
+        agg: average
+        expr: life_expectancy_m_years
+      - name: infant_mortality_rt
+        description: Infant mortality rate, deaths per 1,000 live births (demo_minfind, INFMORRT).
+        agg: average
+        expr: infant_mortality_rt
+      - name: hospital_beds_per_100k
+        description: Curative hospital beds per 100,000 inhabitants (hlth_rs_bds, HBEDT).
+        agg: average
+        expr: hospital_beds_per_100k
+      - name: cardiovascular_deaths_nr
+        description: Cardiovascular disease deaths, absolute count (hlth_cd_anr, ICD-10 chapter I).
+        agg: average
+        expr: cardiovascular_deaths_nr
+
+metrics:
+  - name: life_expectancy_women
+    label: "Oczekiwana długość życia — kobiety"
+    type: simple
+    type_params:
+      measure: hlt_life_expectancy_f_years
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: " lat"
+          scale: 1
+        source_label: "Eurostat (demo_mlexpec), oczekiwana długość życia noworodka — kobiety"
+        ascending_is_good: true
+
+  - name: life_expectancy_men
+    label: "Oczekiwana długość życia — mężczyźni"
+    type: simple
+    type_params:
+      measure: hlt_life_expectancy_m_years
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: " lat"
+          scale: 1
+        source_label: "Eurostat (demo_mlexpec), oczekiwana długość życia noworodka — mężczyźni"
+        ascending_is_good: true
+
+  - name: infant_mortality
+    label: "Umieralność niemowląt"
+    type: simple
+    type_params:
+      measure: infant_mortality_rt
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: " ‰"
+          scale: 1
+        source_label: "Eurostat (demo_minfind), zgony niemowląt na 1000 żywych urodzeń"
+        ascending_is_good: false
+
+  - name: hospital_beds
+    label: "Łóżka szpitalne"
+    type: simple
+    type_params:
+      measure: hospital_beds_per_100k
+    config:
+      meta:
+        format:
+          decimals: 0
+          suffix: " /100 tys."
+          scale: 1
+        source_label: "Eurostat (hlth_rs_bds), łóżka szpitalne na 100 tys. mieszkańców"
+        ascending_is_good: true
+
+  - name: cardiovascular_deaths
+    label: "Zgony sercowo-naczyniowe"
+    type: simple
+    type_params:
+      measure: cardiovascular_deaths_nr
+    config:
+      meta:
+        format:
+          decimals: 0
+          suffix: ""
+          scale: 1
+        source_label: "Eurostat (hlth_cd_anr), zgony z przyczyn krążeniowych ogółem (ICD-10 rozdział I)"
+        ascending_is_good: false

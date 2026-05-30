@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Umieralność niemowląt — historia roczna od 1960. Polska, na 1000 żywych urodzeń.
+# Line: radykalny spadek z ~19‰ w 1960 do <4‰ dziś — jeden z największych sukcesów.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: infant_mortality }
+filter:
+  geo: PL

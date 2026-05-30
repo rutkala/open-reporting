@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/page.schema.json
+# Page 2 — Life expectancy deep-dive: male vs female, COVID dip, hospital beds.
+# Story: 34-year upward trend interrupted by COVID. Men lag women by ~7.5 years.
+
+title:  "Długość życia"
+anchor: dlugosc_zycia

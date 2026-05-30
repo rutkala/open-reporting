@@ -1,0 +1,16 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 2 layout — life expectancy detail:
+#   Row 1: women life expectancy trend (full width)
+#   Row 2: men life expectancy trend (full width)
+#   Row 3: hospital beds trend (full width)
+
+rows:
+  - title: "Oczekiwana długość życia kobiet (1990–2024)"
+    items:
+      - { visual: trend_le_women, width: "100%" }
+  - title: "Oczekiwana długość życia mężczyzn (1990–2024)"
+    items:
+      - { visual: trend_le_men, width: "100%" }
+  - title: "Łóżka szpitalne na 100 tys. mieszkańców (2003–2019)"
+    items:
+      - { visual: trend_hospital_beds, width: "100%" }

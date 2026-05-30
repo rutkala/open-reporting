@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 3 layout — infant mortality history:
+#   Row 1: KPI card with current value and delta
+#   Row 2: full history line chart (1960-2024)
+
+rows:
+  - title: "Umieralność niemowląt — wartość bieżąca"
+    items:
+      - { visual: kpi_infant, width: "33%" }
+  - title: "Umieralność niemowląt — historia roczna (1960–2024)"
+    items:
+      - { visual: trend_infant_full, width: "100%" }

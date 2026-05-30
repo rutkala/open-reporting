@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Oczekiwana długość życia — kobiety i mężczyźni, historia roczna od 1990.
+# Line: dwie serie (K i M) pokazują stały wzrost z widocznym dołkiem COVID 2020-2021.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: life_expectancy_women }
+filter:
+  geo: PL

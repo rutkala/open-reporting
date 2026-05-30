@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Oczekiwana długość życia mężczyzn — pełna historia roczna (1990–2024).
+# 1990: 66.7 lat → 2019: 74.1 → COVID dołek 71.5 (2021) → 2024: 74.8.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: life_expectancy_men }
+filter:
+  geo: PL

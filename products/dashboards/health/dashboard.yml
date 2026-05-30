@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/dashboard.schema.json
+# Health dashboard for Polish citizens.
+# Audience: non-specialist Polish readers.
+# Story: How long do Poles live? Life expectancy rose from 67→75 (men) and 75→82 (women)
+#   since 1990 — but COVID reversed a decade of progress in 2020-2021.
+#   Infant mortality fell 15× since 1960. Hospital bed density is declining.
+
+domain: health
+port:   8069
+title:  "Zdrowie Polaków"
