@@ -728,3 +728,24 @@ Full content-reviewer + domain-specialist publish gate intentionally NOT run —
 **Standing blockers unchanged (all PO-side):** OR-153 (Telegram inbound), OR-90 (Instagram token), OR-86 (BDL key), OR-79 (Ghost nav). Draft queue still **8 articles** awaiting PO preview — the persistent bottleneck is PO review, not production.
 
 **Commits:** this post-mortem + outbox + session-memory.
+
+## 2026-05-30 07:00 UTC — #27 — OR-59 Income & Living Conditions dashboard (6th live domain)
+
+**Shipped (end-to-end, verified):** OR-59 — sixth domain dashboard, live at `portal.open-reporting.dev/living_conditions/` (HTTP 200, renders Dash app, screenshot confirms all KPIs + charts show real data). "Warunki życia: dochody, nierówności i ubóstwo." First new domain dashboard since the original five — breaks a three-run maintenance/draft streak (#24 fix, #25 article, #26 quiet).
+
+**Why:** Inbox empty, no Strategic, no Urgent/Infra P1, no Todo. Six article drafts sit In Progress awaiting PO preview — a 9-deep queue where PO review (not production) is the bottleneck; deepening it is low-value (flagged runs #25/#26). Theme 3 (new dashboard) ranks above more articles on the actionable ladder. Discovered a rich set of already-ingested Eurostat datasets sitting unused (ILC, health, education, trade, transport, digital), so a 6th domain was buildable end-to-end without any PO-gated credential.
+
+**What was actually built:**
+- **Fixed broken catalogue wiring.** Two `eurostat_series` seed rows had `dimension_key`s that did not match raw (`soc.poverty_rate` missing `indic_il=LI_R_MD60`; income unresolvable) → they silently produced zero rows. Fixed poverty_rate, added `soc.median_income_eur` (ilc_di03, MED_E, EUR) + its catalogue detail. This is the exact "seed keys must match raw" trap the protocol warns about — now unblocked.
+- **Data layer:** `marts/soc/fact_soc_overview.sql` (4-indicator annual pivot, PL) + `semantic/soc_overview.yml` (4 MetricFlow metrics, Polish labels, correct directions). dbt seed + run (dashboards stopped for the write lock, restarted, all 5 re-verified 200).
+- **Dashboard:** `products/dashboards/living_conditions/` — 2 pages (Przeglad: 4 KPIs + Gini/poverty trends; Dochody i deprywacja: income + deprivation history). All line/card visuals (no bar/column). Deployed via `dbr run` (or-living_conditions.service port 8062 + nginx route).
+
+**Data story (all values verified against raw Eurostat ILC, PL):** Gini 30.8 (2014) → 24.9 (2025); at-risk-of-poverty 20.5% (2005 peak) → 13.2% (2025); severe material deprivation 33.8% (2005) → 2.6% (2020, series ends — SMD→SMSD methodology change, disclosed in chart title + handled by latest-non-null KPI); median equivalised income €2,533 (2005) → €11,921 (2024). A coherent "living conditions improved sharply" narrative.
+
+**Quality gate:** analytical-validator (Opus) → **PASS**. Confirmed every dimension_key resolves to real PL data, fact values match raw exactly on 6 spot-checks, metric directions correct, median-income labelled honestly (equivalised net EUR, not PLN/per-capita), 2020 truncation disclosed. Two cosmetic NOTED items (unqualified KPI label "Mediana dochodu"; percentage-card delta suffix) — both resolved by the rendered screenshot (KPI value shows "€"; deltas render as raw diffs with up/down icon, no bare "%"). Self multimodal screenshot review stood in for visual-screenshot-reviewer (1 spawn used total; frugal on the shared pool).
+
+**Status:** Done (shipped end-to-end + validated). Commits `408175e8` (data layer) + `4a2c2e94` (dashboard) + this post-mortem.
+
+**Followup filed:** OR-155 (Bug/Infra) — portal homepage `index.html` links are stale (only `/labour/` + `/explorer/`, neither live); update to one card per live domain. The 6 dashboards are reachable by direct URL but not discoverable from the landing page.
+
+**Standing blockers unchanged (all PO-side):** OR-153 (Telegram inbound), OR-90 (Instagram token), OR-86 (BDL key), OR-79 (Ghost nav). Draft queue still 8 articles (OR-145..151 + OR-154) awaiting PO preview.

@@ -1,64 +1,67 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-05-30 02:15 UTC -->
+<!-- last-updated: 2026-05-30 07:15 UTC -->
 
 ## Current Focus
 
-**Five domain dashboards live + correct; AI scrum team live on Discord.** The autonomous-lead cron (02/07/12/17 UTC) keeps shipping product work; the chat office is Discord (8 `claude -p` bot subprocesses). The Telegram **outbox poller still works** for delivering autonomous-run reports to PO.
+**Six domain dashboards live + correct; AI scrum team live on Discord.** The autonomous-lead cron (02/07/12/17 UTC) keeps shipping product work; the chat office is Discord (8 `claude -p` bot subprocesses). Telegram **outbox poller still works** for delivering autonomous-run reports to PO.
 
-Run #26 (this run): **[QUIET RUN]** — all roadmap items Done/Blocked/PO-gated, so no new product. (a) Warehouse data-quality pass: all 9 curated marts populated; env mart null-tail (GHG/water last=2023, renewable/waste=2024) matches the run #24 KPI fix — no regression. (b) Linear grooming: canceled 3 superseded stale In Progress items (OR-116/118 competence-CBS → superseded by `docs/` tree; OR-144 MetricFlow pilot → semantic layer delivered project-wide), moved OR-86 (BDL) In Progress→Backlog (blocked on PO key). Now only the 6 article drafts remain In Progress = honest. **Draft queue still 8** (OR-145..151 + OR-154) awaiting PO preview — PO review is the bottleneck, not production. Zero subagent spawns.
+Run #27 (this run): **Shipped OR-59 — 6th live domain dashboard**, `portal.open-reporting.dev/living_conditions/` (Income & Living Conditions). End-to-end: fixed two broken `eurostat_series` seed keys (silent zero-row trap) + added income indicator → built `fact_soc_overview` mart + `soc_overview` semantic model → 2-page dbr dashboard → deployed + verified (200, Dash app, screenshot shows real data) → analytical-validator (Opus) PASS. Breaks a 3-run maintenance/draft streak. Data already ingested (Eurostat ILC), no PO credential needed. Filed OR-155 (portal homepage links stale). 1 subagent spawn, 2 code commits.
 
 ## Live production state
 
-- **Public finance:** `portal.open-reporting.dev/public_finance/` — Live ✓
-- **Labour market:** `portal.open-reporting.dev/labour_market/` — Live ✓
-- **National accounts:** `portal.open-reporting.dev/national_accounts/` — Live ✓
-- **Demographics:** `portal.open-reporting.dev/demographics/` — Live ✓
-- **Environment:** `portal.open-reporting.dev/environment/` — Live ✓ (OR-83 Done; KPI cards fixed run #24)
-- **Blog:** `www.open-reporting.dev` — Live ✓; Articles OR-145..OR-151 + OR-154 (8 total) in Ghost as **DRAFTS**, awaiting PO preview
+- **Public finance:** `/public_finance/` — Live ✓
+- **Labour market:** `/labour_market/` — Live ✓
+- **National accounts:** `/national_accounts/` — Live ✓
+- **Demographics:** `/demographics/` — Live ✓
+- **Environment:** `/environment/` — Live ✓
+- **Income & Living Conditions:** `/living_conditions/` — Live ✓ NEW (OR-59, run #27; port 8062, service or-living_conditions)
+- **Blog:** `www.open-reporting.dev` — Live ✓; Articles OR-145..151 + OR-154 (8 total) in Ghost as **DRAFTS**, awaiting PO preview
 - **Daily ingestion:** 22:00 UTC cron; exit=0 on 2026-05-29. OR-76 outbox alert on failure.
 - **Autonomous-lead cron:** `0 2,7,12,17 * * *` UTC.
+
+## Big unused asset discovered (run #27)
+
+`raw.eurostat_observations` already holds ingested datasets for MANY domains beyond the 6 live (health hlth_*, education edat_*/educ_*, trade ext_lt_intratrd/bop_*, transport rail_*/road_*, digital isoc_*/rd_*, crime crim_*, tourism tour_*, prices prc_hicp_aind). Intermediate `*_indicators.sql` models exist for all 18 domains; only 6 have marts+semantic+dashboards. **Next domain dashboards are buildable end-to-end without PO credentials** — same pattern as OR-59. WARNING: several existing seed rows have dimension_keys that DON'T match raw (silent zero rows) — always verify against raw first.
 
 ## Discord bot fleet (live)
 
 8 bots, `infra/discord-bot/bot.py`, tokens in `.env` as `DISCORD_BOT_<NAME>_TOKEN`.
 project-lead (opus), scrum-master (haiku), dashboard-dev/data-engineer/content-writer/researcher/code-reviewer (sonnet), debug (haiku).
-Service files: `or-discord-<name>-bot.service`. Agent prompts: `.claude/agents/<name>.md`.
-Channels: `#general`, `#daily-standup`, `#dashboard-dev`, `#blockers`, `#linear-feed`.
-Each `@`-mention/DM spawns a fresh subprocess — no in-chat memory; relies on CLAUDE.md + persistent memory + this file.
+Service files: `or-discord-<name>-bot.service`. Agent prompts: `.claude/agents/<name>.md`. Channels: `#general`, `#daily-standup`, `#dashboard-dev`, `#blockers`, `#linear-feed`.
+Untracked `infra/systemd/or-*-bot.service` + modified `infra/discord-bot/bot.py` are PO WIP — leave untouched, never commit.
 
 ## Recent commits
 
 | Commit | What |
 |---|---|
-| (this run) | docs: run #26 [QUIET RUN] — data-quality pass + Linear grooming (no code) |
-| `bb736432` | feat(content): OR-154 environment article draft (9th Theme 2; completes 5/5 pairing) |
-| `74190707` | docs: run #24 post-mortem — OR-83 closed + global dbr KPI fix |
-| `fca7b818` | fix(dbr): KPI card resolves latest non-null value, not latest spine year (run #24) |
-| `c4b33f4b` | feat(infra): Discord 8-bot scrum team — framework, services, agent files |
+| `4a2c2e94` | feat(dashboards): OR-59 Income & Living Conditions dashboard (6th domain) |
+| `408175e8` | feat(warehouse): OR-59 SOC data layer — fix 2 broken seed keys + mart + semantic |
+| `970ce6ef` | docs: run #26 [QUIET RUN] — data-quality pass + Linear grooming |
+| `bb736432` | feat(content): OR-154 environment article draft |
+| `74190707` | docs: run #24 post-mortem — OR-83 + global dbr KPI latest-non-null fix |
 
 ## Open / blocked work
 
 | # | Linear | What | Status |
 |---|---|---|---|
-| 1 | OR-153 | Telegram comms inbound (systemd `${}` non-expansion) | Blocked — PO action; outbox delivery works |
-| 2 | OR-86 | BDL (GUS) ingestion first run | Backlog (run #26) — needs `BDL_API_KEY` from PO |
-| 3 | OR-90 | Instagram token (Meta portal) — blocks Theme 4 publishing | Blocked — PO action |
-| 4 | OR-79 | Ghost nav "Portal" link — browser admin | Blocked — PO action |
-| 5 | 8 drafts | OR-145..151 + OR-154 Ghost preview + publish decisions | Awaiting PO (bottleneck — production ahead of review) |
-| 6 | OR-89 | Weekly snapshot (social) | Buildable; publish blocked on OR-90 |
-| 7 | — | Discord goal-file pattern + independent-work cron + cross-bot @ | Open (PO WIP, infra in flux) |
+| 1 | OR-155 | Portal homepage links stale (only /labour//explorer/, neither live) | Backlog (filed run #27) — buildable, infra/PR |
+| 2 | OR-153 | Telegram inbound (systemd `${}` non-expansion) | Blocked — PO; outbox works |
+| 3 | OR-86 | BDL (GUS) ingestion | Backlog — needs `BDL_API_KEY` from PO |
+| 4 | OR-90 | Instagram token (Meta portal) — blocks Theme 4 | Blocked — PO action |
+| 5 | OR-79 | Ghost nav "Portal" link — browser admin | Blocked — PO action |
+| 6 | 8 drafts | OR-145..151 + OR-154 Ghost preview + publish | Awaiting PO (bottleneck) |
+| 7 | OR-89 | Weekly snapshot (social) | Buildable; publish blocked on OR-90 |
 
 ## Key technical facts (current)
 
-- **KPI cards resolve latest *non-null* value** (run #24 fix). `_run_latest_query` in `packages/dbr/src/dbr/semantic/semantic.py` now fetches the full annual series, drops NULL-metric rows, then takes latest N. Fixes wide-fact end-year mismatches (e.g. `fact_env_overview`: GHG/water end 2023, renewable/waste reach 2024). Global across all dashboards.
-- `dbr` is **editable-installed** (`~/.local/lib/.../site-packages` → `packages/dbr/src/dbr`). Source edits go live on `systemctl restart or-<name>.service`. Env service boot takes ~20s (MetricFlow engine + dbt project load) — expect a brief 502 right after restart.
-- dbr `bar` is **horizontal** (metric x, dim y); `column` for vertical bars.
-- DuckDB write-locked while any `dbr serve` runs; dashboards use read-only `dashboard` profile target. Mart builds stop dashboards first (`run_daily.sh` pattern).
-- COFOG 2024 in `curated.fact_finance_cofog` (PL: social 18,3 / economic 6,1 / health 6,1 / education 5,6 / gen-services 5,2 / defence 2,9; total 49,3% GDP).
-- systemd `Environment=FOO=${BAR}` does NOT shell-expand from `EnvironmentFile` (root cause of OR-153 Telegram inbound).
-- Untracked `infra/systemd/or-*-bot.service` (Telegram-era + test) are PO WIP — leave untouched.
-- Screenshot CLI: `screenshot <dashboard> --output <path>` (`packages/screenshot`).
+- **New-domain dashboard recipe (proven OR-59):** verify seed `dimension_key` == raw (`raw.eurostat_observations`, cols dataset_code/geo/period/dimension_key/value) → `marts/<x>/fact_<x>_overview.sql` (MAX-pivot, annual, group by geo+year) → `semantic/<x>_overview.yml` (agg: average collapses to identity for single-value cells; set ascending_is_good per metric) → `products/dashboards/<route>/` (dashboard.yml + app.py + pages/) → `dbr validate` → `dbr run` → curl 200 + `<title>Dash</title>` + `screenshot <route> --output /tmp/x.png`. Next free port after 8062.
+- **dbt write-lock dance:** stop the live dashboard services (`sudo -n /usr/bin/systemctl stop or-<name>.service`), run `dbt seed`/`dbt run` (`cd products/warehouse && DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt ... --profiles-dir .`), then start them again. Env service boot ~20s → brief 502 right after restart (wait ~25s before re-curl).
+- **KPI cards resolve latest *non-null* value** (run #24 fix in `packages/dbr/.../semantic.py`). Handles wide-fact end-year gaps (e.g. SOC material_deprivation ends 2020 while others reach 2024/25).
+- dbr `bar` is **horizontal** (metric x, dim y); `column` for vertical bars. (OR-59 used only line/card.)
+- `dbr` editable-installed; source edits go live on service restart.
+- Dashboard service + nginx route files ARE git-tracked (`infra/systemd/or-<route>.service`, `infra/nginx/conf.d/dbr-routes/<route>.conf`) — commit them with the dashboard.
+- CLAUDE.md's `from dbr.semantic import query` helper is stale — module exports `semantic_query`/`semantic_query_history`/`_run_latest_query`. Use direct read-only duckdb for QA.
 
 ## Stale feature branches
 
