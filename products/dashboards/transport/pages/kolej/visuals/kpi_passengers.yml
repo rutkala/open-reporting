@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Kolej pasażerska — roczna suma pasażero-kilometrów (mln pkm) z deltą r/r.
+# ascending_is_good=true: wyższy wolumen = większe wykorzystanie kolei.
+
+type: card
+encoding:
+  value: { metric: rail_passengers }
+filter:
+  geo: PL
+options:
+  delta:
+    vs: prior_year
+    format: icon-first

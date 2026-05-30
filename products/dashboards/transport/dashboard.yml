@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/dashboard.schema.json
+# Transport dashboard for Polish citizens.
+# Audience: non-economist Polish news readers.
+# Story: How much freight and how many passengers travel by rail? What did COVID do?
+
+domain: transport
+port:   8065
+title:  "Transport kolejowy w Polsce"

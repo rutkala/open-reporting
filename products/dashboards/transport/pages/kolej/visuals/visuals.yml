@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Layout — rail transport scorecard:
+#   Row 1: 2 KPI cards (freight tonne-km, passenger-km)
+#   Row 2: line chart — rail freight trend (full width)
+#   Row 3: line chart — rail passenger trend (full width)
+
+rows:
+  - title: "Transport kolejowy — kluczowe wskaźniki"
+    items:
+      - { visual: kpi_freight,    width: "50%" }
+      - { visual: kpi_passengers, width: "50%" }
+  - title: "Kolej towarowa — historia roczna (2004–2025)"
+    items:
+      - { visual: trend_freight, width: "100%" }
+  - title: "Kolej pasażerska — historia roczna (2004–2025)"
+    items:
+      - { visual: trend_passengers, width: "100%" }

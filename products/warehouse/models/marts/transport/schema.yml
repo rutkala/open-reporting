@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: fact_transport_overview
+    description: >
+      Annual Transport fact. Aggregates two Eurostat TRP quarterly indicators
+      (rail freight volume, rail passenger volume) to an annual grain by summing quarters.
+      One row per country per year. Source: curated.trp_indicators (domain_id = 'TRP').
+    columns:
+      - name: geo
+        description: ISO country/region code (e.g. 'PL').
+        tests: [not_null]
+      - name: period_year
+        description: Calendar year (integer).
+        tests: [not_null]
+      - name: period_date
+        description: December 31 of period_year — MetricFlow time spine key.
+        tests: [not_null]
+      - name: rail_freight_mio_tkm
+        description: >
+          Rail freight volume, annual total, million tonne-kilometres
+          (rail_go_quartal, unit=MIO_TKM, summed from quarterly data).
+      - name: rail_passengers_mio_pkm
+        description: >
+          Rail passenger volume, annual total, million passenger-kilometres
+          (rail_pa_quartal, unit=MIO_PKM, summed from quarterly data).

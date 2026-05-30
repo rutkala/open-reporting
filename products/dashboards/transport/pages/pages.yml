@@ -1,0 +1,4 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/pages.schema.json
+# Single-page dashboard — rail KPIs + trends.
+order:
+  - kolej

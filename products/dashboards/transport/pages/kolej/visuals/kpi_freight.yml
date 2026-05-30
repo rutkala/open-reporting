@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Kolej towarowa — roczna suma tono-kilometrów (mln tkm) z deltą r/r.
+# ascending_is_good=true: wyższy wolumen = większa aktywność gospodarcza.
+
+type: card
+encoding:
+  value: { metric: rail_freight }
+filter:
+  geo: PL
+options:
+  delta:
+    vs: prior_year
+    format: icon-first

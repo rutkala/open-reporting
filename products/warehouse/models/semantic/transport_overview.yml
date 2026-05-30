@@ -1,0 +1,82 @@
+version: 2
+
+# MetricFlow semantic model for the Transport dashboard.
+#
+# Single source: curated.fact_transport_overview (wide, one column per measure).
+# Two metrics expose annual rail transport volumes to the visual layer.
+#
+# Aggregation note: `agg: sum` used — the mart already holds annual totals
+# (quarterly data summed), so further SUM at semantic level is additive-safe
+# when filtered to a single geo and year.
+#
+# Direction note:
+#   rail_freight: higher is better (ascending_is_good: true — more freight = economic activity)
+#   rail_passengers: higher is better (ascending_is_good: true — more passengers = rail use)
+
+semantic_models:
+  - name: transport_overview
+    description: Annual Rail Transport KPIs — Poland (Eurostat TRP series).
+    model: ref('fact_transport_overview')
+
+    defaults:
+      agg_time_dimension: period
+
+    primary_entity: transport_overview_row
+
+    entities:
+      - name: geo
+        type: foreign
+        expr: geo
+      - name: date_key
+        type: foreign
+        expr: period_date
+
+    dimensions:
+      - name: period
+        type: time
+        expr: period_date
+        type_params:
+          time_granularity: year
+
+    measures:
+      - name: rail_freight_mio_tkm
+        description: >
+          Rail freight volume, million tonne-kilometres (annual total)
+          (rail_go_quartal, unit=MIO_TKM).
+        agg: sum
+        expr: rail_freight_mio_tkm
+      - name: rail_passengers_mio_pkm
+        description: >
+          Rail passenger volume, million passenger-kilometres (annual total)
+          (rail_pa_quartal, unit=MIO_PKM).
+        agg: sum
+        expr: rail_passengers_mio_pkm
+
+metrics:
+  - name: rail_freight
+    label: "Kolej towarowa"
+    type: simple
+    type_params:
+      measure: rail_freight_mio_tkm
+    config:
+      meta:
+        format:
+          decimals: 0
+          suffix: " mln tkm"
+          scale: 1
+        source_label: "Eurostat (rail_go_quartal), kolejowe przewozy towarowe, suma kwartałów"
+        ascending_is_good: true
+
+  - name: rail_passengers
+    label: "Kolej pasażerska"
+    type: simple
+    type_params:
+      measure: rail_passengers_mio_pkm
+    config:
+      meta:
+        format:
+          decimals: 0
+          suffix: " mln pkm"
+          scale: 1
+        source_label: "Eurostat (rail_pa_quartal), kolejowe przewozy pasażerskie, suma kwartałów"
+        ascending_is_good: true
