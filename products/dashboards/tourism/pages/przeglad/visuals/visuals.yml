@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 1 layout — tourism snapshot:
+#   Row 1: 2 KPI cards (hotel nights, international arrivals)
+#   Row 2: hotel nights trend 2003-2025 (full width)
+#   Row 3: international arrivals trend 2003-2025 (full width)
+
+rows:
+  - title: "Turystyka w Polsce — kluczowe wskaźniki"
+    items:
+      - { visual: kpi_hotel_nights,   width: "50%" }
+      - { visual: kpi_intl_arrivals,  width: "50%" }
+  - title: "Noclegi w hotelach — historia roczna (2003–2025)"
+    items:
+      - { visual: trend_hotel_nights, width: "100%" }
+  - title: "Przybycia gości zagranicznych — historia roczna (2003–2025)"
+    items:
+      - { visual: trend_intl_arrivals, width: "100%" }

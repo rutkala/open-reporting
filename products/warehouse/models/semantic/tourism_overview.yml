@@ -1,0 +1,79 @@
+version: 2
+
+# MetricFlow semantic model for the Tourism dashboard.
+#
+# Single source: curated.fact_clt_overview (wide, one column per measure).
+# Two metrics expose annual tourism indicators to the visual layer.
+#
+# Aggregation note: `agg: average` used throughout. The pivot produces at most
+# one non-null value per (geo, period_year) for annual series, so average
+# collapses identically to sum — consistent with project convention.
+#
+# Direction notes: both metrics are "higher is better" (ascending_is_good: true)
+# — more tourist arrivals and hotel nights = stronger tourism sector.
+
+semantic_models:
+  - name: tourism_overview
+    description: Annual Tourism KPIs — Poland (Eurostat CLT series, monthly summed to annual).
+    model: ref('fact_clt_overview')
+
+    defaults:
+      agg_time_dimension: period
+
+    primary_entity: tourism_overview_row
+
+    entities:
+      - name: geo
+        type: foreign
+        expr: geo
+      - name: date_key
+        type: foreign
+        expr: period_date
+
+    dimensions:
+      - name: period
+        type: time
+        expr: period_date
+        type_params:
+          time_granularity: year
+
+    measures:
+      - name: hotel_nights_total
+        description: Total hotel nights (all accommodation, all visitors), annual sum (tour_occ_nim).
+        agg: average
+        expr: hotel_nights_total
+      - name: intl_tourist_arrivals
+        description: International tourist arrivals (foreign visitors), annual sum (tour_occ_arm).
+        agg: average
+        expr: intl_tourist_arrivals
+
+metrics:
+  - name: hotel_nights
+    label: "Noclegi w hotelach ogółem"
+    type: simple
+    type_params:
+      measure: hotel_nights_total
+    config:
+      meta:
+        format:
+          decimals: 0
+          suffix: ""
+          scale: 1000000
+          scale_suffix: " mln noclegów"
+        source_label: "Eurostat (tour_occ_nim), łączna liczba noclegów w obiektach zbiorowego zakwaterowania"
+        ascending_is_good: true
+
+  - name: intl_arrivals
+    label: "Przybycia gości zagranicznych"
+    type: simple
+    type_params:
+      measure: intl_tourist_arrivals
+    config:
+      meta:
+        format:
+          decimals: 0
+          suffix: ""
+          scale: 1000000
+          scale_suffix: " mln przybyć"
+        source_label: "Eurostat (tour_occ_arm), przyjazdy zagranicznych turystów do obiektów noclegowych"
+        ascending_is_good: true

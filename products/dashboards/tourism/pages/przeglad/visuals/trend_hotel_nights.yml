@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Noclegi hotelowe — historia roczna (2003-2025). COVID dołek 2020-2021 widoczny.
+# 2019: 93.3M → 2020: 51.4M → 2025: 104.7M (rekord wszech czasów).
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: hotel_nights }
+filter:
+  geo: PL

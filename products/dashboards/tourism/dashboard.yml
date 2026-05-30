@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/dashboard.schema.json
+# Tourism dashboard for Polish citizens.
+# Audience: non-specialist Polish readers.
+# Story: Polish tourism smashed COVID — 2025 set all-time records: 104.7M hotel
+#   nights and 8.9M international arrivals. A complete recovery story.
+
+domain: tourism
+port:   8071
+title:  "Turystyka w Polsce"

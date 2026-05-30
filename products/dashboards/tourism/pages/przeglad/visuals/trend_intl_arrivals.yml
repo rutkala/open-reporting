@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Przybycia gości zagranicznych — historia roczna (2003-2025).
+# 2019: 7.5M → 2020: 2.3M (−69%) → 2025: 8.9M (nowy rekord).
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: intl_arrivals }
+filter:
+  geo: PL
