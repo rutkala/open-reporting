@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/dashboard.schema.json
+# Income & Living Conditions dashboard for Polish citizens.
+# Audience: non-economist Polish news readers.
+# Story: Is inequality falling? Is poverty receding? How fast are incomes rising?
+
+domain: living_conditions
+port:   8062
+title:  "Warunki życia: dochody, nierówności i ubóstwo"

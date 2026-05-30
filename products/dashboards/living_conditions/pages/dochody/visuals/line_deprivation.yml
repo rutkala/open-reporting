@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Poważna deprywacja materialna — historia roczna 2005–2020, Polska.
+# Line chosen: continuous rate; the collapse from ~34% (2005) to ~3% (2020)
+# is the analytical story. Series ends 2020 (SMD→SMSD methodology change).
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: material_deprivation }
+filter:
+  geo: PL

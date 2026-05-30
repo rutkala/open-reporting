@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Mediana dochodu ekwiwalentnego (EUR) — najnowsza wartość z deltą r/r.
+# ascending_is_good=true (semantic meta): wzrost dochodów jest pożądany.
+
+type: card
+encoding:
+  value: { metric: median_income }
+filter:
+  geo: PL
+options:
+  delta:
+    vs: prior_year
+    format: icon-first

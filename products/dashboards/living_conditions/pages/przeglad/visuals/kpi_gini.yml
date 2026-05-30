@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Współczynnik Giniego — najnowsza wartość z deltą r/r.
+# ascending_is_good=false (semantic meta): spadek nierówności jest pożądany.
+
+type: card
+encoding:
+  value: { metric: gini_coefficient }
+filter:
+  geo: PL
+options:
+  delta:
+    vs: prior_year
+    format: icon-first

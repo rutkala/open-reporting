@@ -1,0 +1,22 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 1 layout — living-conditions scorecard:
+#   Row 1: 4 KPI cards (Gini, at-risk-of-poverty, material deprivation, median income)
+#   Row 2: line chart — Gini coefficient trend (full width)
+#   Row 3: line chart — at-risk-of-poverty rate trend (full width)
+#
+# 4 KPIs in one row is within Cowan 4±1 limit (exactly at capacity).
+# Two full-width trend charts give the headline story above the fold.
+
+rows:
+  - title: "Kluczowe wskaźniki warunków życia"
+    items:
+      - { visual: kpi_gini,          width: "25%" }
+      - { visual: kpi_poverty,       width: "25%" }
+      - { visual: kpi_deprivation,   width: "25%" }
+      - { visual: kpi_median_income, width: "25%" }
+  - title: "Współczynnik Giniego — historia roczna"
+    items:
+      - { visual: trend_gini, width: "100%" }
+  - title: "Zagrożenie ubóstwem — historia roczna"
+    items:
+      - { visual: trend_poverty, width: "100%" }

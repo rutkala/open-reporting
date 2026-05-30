@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/pages.schema.json
+# Narrative arc:
+#   1. Scorecard snapshot (Przegląd) — 4 headline KPIs + inequality and poverty trends
+#   2. Income & deprivation deep-dive (Dochody i deprywacja) — median income +
+#      severe material deprivation history
+order:
+  - przeglad
+  - dochody

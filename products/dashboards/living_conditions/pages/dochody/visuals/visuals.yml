@@ -1,0 +1,15 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 2 layout — income and deprivation deep-dive:
+#   Row 1: line chart — median equivalised net income (EUR), full history
+#   Row 2: line chart — severe material deprivation rate (ends 2020)
+#
+# Both as line: continuous annual levels; the long-run trajectories
+# (income rising, deprivation falling) are the analytical story.
+
+rows:
+  - title: "Mediana dochodu ekwiwalentnego netto (EUR)"
+    items:
+      - { visual: line_median_income, width: "100%" }
+  - title: "Poważna deprywacja materialna (do 2020)"
+    items:
+      - { visual: line_deprivation, width: "100%" }

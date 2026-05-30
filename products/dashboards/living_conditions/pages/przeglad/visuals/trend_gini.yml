@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Współczynnik Giniego — historia roczna, Polska.
+# Line chosen: continuous annual index; the steady decline in income inequality
+# since 2014 is the analytical story.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: gini_coefficient }
+filter:
+  geo: PL

@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Mediana dochodu ekwiwalentnego netto (EUR) — pełna historia roczna, Polska.
+# Line chosen: continuous income level; the steady ~4.7x rise since 2005 is the story.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: median_income }
+filter:
+  geo: PL

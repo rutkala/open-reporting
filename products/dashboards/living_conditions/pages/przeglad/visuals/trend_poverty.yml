@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Zagrożenie ubóstwem — historia roczna, Polska.
+# Line chosen: continuous annual rate; the long-run fall from the 2005 peak
+# to a historic low is the story.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: at_risk_poverty }
+filter:
+  geo: PL
