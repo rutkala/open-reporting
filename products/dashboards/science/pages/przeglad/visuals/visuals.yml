@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 1 layout — science & R&D overview:
+#   Row 1: 2 KPI cards (R&D intensity %, researchers FTE)
+#   Row 2: line — R&D as % GDP trend (full width)
+#   Row 3: line — researcher count trend (full width)
+
+rows:
+  - title: "Kluczowe wskaźniki nauki i innowacji"
+    items:
+      - { visual: kpi_rd_intensity,  width: "50%" }
+      - { visual: kpi_researchers,   width: "50%" }
+  - title: "Nakłady na B+R (% PKB) — historia roczna (1995–2024)"
+    items:
+      - { visual: trend_rd_intensity, width: "100%" }
+  - title: "Badacze i naukowcy (EPC) — historia roczna (1994–2024)"
+    items:
+      - { visual: trend_researchers, width: "100%" }

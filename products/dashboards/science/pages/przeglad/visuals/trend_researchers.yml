@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Badacze i naukowcy (EPC) — historia roczna, Polska, 1994–2024.
+# Line chosen: continuous annual count; the strong upward trajectory reflects
+# growing university sector and private R&D investment.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: researchers }
+filter:
+  geo: PL

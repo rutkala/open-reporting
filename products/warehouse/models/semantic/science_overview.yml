@@ -1,0 +1,113 @@
+version: 2
+
+# MetricFlow semantic model for the Science & R&D dashboard.
+#
+# Single source: curated.fact_science_overview (wide, one column per measure).
+# Four metrics expose annual science and innovation indicators to the visual layer.
+#
+# Aggregation note: `agg: average` used throughout. The pivot produces at most
+# one non-null value per (geo, period_year) for annual series, so average
+# collapses identically to max — consistent with project convention.
+#
+# Direction note: all four metrics are "higher is better" (ascending_is_good: true)
+# — more R&D, more researchers, more patents = stronger innovation capacity.
+
+semantic_models:
+  - name: science_overview
+    description: Annual Science & R&D KPIs — Poland (Eurostat SCI series).
+    model: ref('fact_science_overview')
+
+    defaults:
+      agg_time_dimension: period
+
+    primary_entity: science_overview_row
+
+    entities:
+      - name: geo
+        type: foreign
+        expr: geo
+      - name: date_key
+        type: foreign
+        expr: period_date
+
+    dimensions:
+      - name: period
+        type: time
+        expr: period_date
+        type_params:
+          time_granularity: year
+
+    measures:
+      - name: rd_expenditure_pct_gdp
+        description: Total R&D expenditure (GERD) as percent of GDP.
+        agg: average
+        expr: rd_expenditure_pct_gdp
+      - name: rd_expenditure_mio_eur
+        description: Total R&D expenditure (GERD) in millions of euros.
+        agg: average
+        expr: rd_expenditure_mio_eur
+      - name: researchers_fte
+        description: Researchers in full-time equivalents.
+        agg: average
+        expr: researchers_fte
+      - name: patent_apps_per_mhab
+        description: EPO patent applications per million inhabitants.
+        agg: average
+        expr: patent_apps_per_mhab
+
+metrics:
+  - name: rd_intensity
+    label: "Nakłady na B+R (% PKB)"
+    type: simple
+    type_params:
+      measure: rd_expenditure_pct_gdp
+    config:
+      meta:
+        format:
+          decimals: 2
+          suffix: "% PKB"
+          scale: 1
+        source_label: "Eurostat (rd_e_gerdtot), GERD jako odsetek PKB"
+        ascending_is_good: true
+
+  - name: rd_total_spend
+    label: "Nakłady na B+R (mln EUR)"
+    type: simple
+    type_params:
+      measure: rd_expenditure_mio_eur
+    config:
+      meta:
+        format:
+          decimals: 0
+          suffix: " mln EUR"
+          scale: 1
+        source_label: "Eurostat (rd_e_gerdtot), całkowite nakłady na B+R"
+        ascending_is_good: true
+
+  - name: researchers
+    label: "Badacze i naukowcy"
+    type: simple
+    type_params:
+      measure: researchers_fte
+    config:
+      meta:
+        format:
+          decimals: 0
+          suffix: " EPC"
+          scale: 1
+        source_label: "Eurostat (rd_p_persocc), liczba badaczy w ekwiwalencie pełnego czasu pracy"
+        ascending_is_good: true
+
+  - name: patents
+    label: "Zgłoszenia patentowe EPO"
+    type: simple
+    type_params:
+      measure: patent_apps_per_mhab
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: " /mln os."
+          scale: 1
+        source_label: "Eurostat (pat_ep_ntot), zgłoszenia patentowe EPO na mln mieszkańców"
+        ascending_is_good: true

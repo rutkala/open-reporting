@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Nakłady na B+R (mln EUR) — historia roczna, Polska.
+# Line chosen: continuous annual; reflects both genuine R&D growth and EUR exchange
+# rate effects — context for the % GDP trend on page 1.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: rd_total_spend }
+filter:
+  geo: PL

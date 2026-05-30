@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Nakłady na B+R jako % PKB — bieżąca wartość z deltą r/r.
+# ascending_is_good=true: wyższy odsetek = silniejsza orientacja innowacyjna.
+
+type: card
+encoding:
+  value: { metric: rd_intensity }
+filter:
+  geo: PL
+options:
+  delta:
+    vs: prior_year
+    format: icon-first

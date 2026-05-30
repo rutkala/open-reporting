@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/dashboard.schema.json
+# Science & R&D dashboard for Polish citizens.
+# Audience: non-economist Polish news readers.
+# Story: Is Poland catching up on innovation? R&D spending, researchers, patents.
+
+domain: science
+port:   8066
+title:  "Nauka i innowacje w Polsce"

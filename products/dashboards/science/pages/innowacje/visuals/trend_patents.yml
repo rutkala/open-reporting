@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Zgłoszenia patentowe EPO — historia roczna, Polska (per million inhabitants).
+# Line chosen: continuous annual; data ends at 2017 — KPI card shows last available.
+# The near-5x rise (1980-2017) tracks Poland's growing innovation base.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: patents }
+filter:
+  geo: PL

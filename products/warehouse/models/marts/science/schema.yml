@@ -1,0 +1,35 @@
+version: 2
+
+models:
+  - name: fact_science_overview
+    description: >
+      Annual Science & R&D fact. Pivots four Eurostat SCI indicators
+      (R&D as % GDP, total R&D expenditure, researcher count, patent applications)
+      into a wide (geo, period_year, period_date) grain. One row per country per year.
+      Source: curated.sci_indicators (domain_id = 'SCI').
+    columns:
+      - name: geo
+        description: ISO country/region code (e.g. 'PL').
+        tests: [not_null]
+      - name: period_year
+        description: Calendar year (integer).
+        tests: [not_null]
+      - name: period_date
+        description: December 31 of period_year — MetricFlow time spine key.
+        tests: [not_null]
+      - name: rd_expenditure_pct_gdp
+        description: >
+          Total R&D expenditure (GERD) as percent of GDP
+          (rd_e_gerdtot, unit=PC_GDP).
+      - name: rd_expenditure_mio_eur
+        description: >
+          Total R&D expenditure (GERD) in millions of euros
+          (rd_e_gerdtot, unit=MIO_EUR).
+      - name: researchers_fte
+        description: >
+          Researchers in full-time equivalents
+          (rd_p_persocc, unit=FTE).
+      - name: patent_apps_per_mhab
+        description: >
+          EPO patent applications per million inhabitants
+          (pat_ep_ntot, unit=P_MHAB).

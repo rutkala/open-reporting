@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 2 layout — innovation output:
+#   Row 1: 2 KPI cards (total R&D spend mln EUR, EPO patents per million)
+#   Row 2: line — total R&D expenditure trend (full width)
+#   Row 3: line — patent applications trend (full width)
+
+rows:
+  - title: "Wydatki i wyniki innowacyjne"
+    items:
+      - { visual: kpi_rd_spend, width: "50%" }
+      - { visual: kpi_patents,  width: "50%" }
+  - title: "Nakłady na B+R (mln EUR) — historia roczna"
+    items:
+      - { visual: trend_rd_spend, width: "100%" }
+  - title: "Zgłoszenia patentowe EPO — historia roczna (na mln mieszkańców)"
+    items:
+      - { visual: trend_patents, width: "100%" }

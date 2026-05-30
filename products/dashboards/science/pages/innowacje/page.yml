@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/page.schema.json
+# Page 2 — innovation output: total R&D spending and patent applications.
+# Story: Patent filings at EPO nearly 5x since 2000; total spending tracks GDP growth.
+
+title:  "Innowacje"
+anchor: innowacje
