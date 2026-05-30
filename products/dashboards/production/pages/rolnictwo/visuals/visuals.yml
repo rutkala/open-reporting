@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+rows:
+  - title: "Produkcja zbóż"
+    items:
+      - { visual: kpi_cereals, width: "100%" }
+  - title: "Produkcja zbóż — historia roczna (2000–2025)"
+    items:
+      - { visual: trend_cereals, width: "100%" }

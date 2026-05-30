@@ -1,0 +1,76 @@
+version: 2
+
+# MetricFlow semantic model for the Production & Agriculture dashboard.
+#
+# Single source: curated.fact_production_overview (wide, two columns).
+# Two metrics: industrial output growth (%) and cereal production (kt).
+#
+# Aggregation note: `agg: average` — at most one non-null per (geo, period_year).
+#
+# Direction note:
+#   industrial_output_growth: higher is better (ascending_is_good: true)
+#   cereal_production: higher is better (ascending_is_good: true — more food production = better)
+
+semantic_models:
+  - name: production_overview
+    description: Annual Production & Agriculture KPIs — Poland (Eurostat BUS + AGR series).
+    model: ref('fact_production_overview')
+
+    defaults:
+      agg_time_dimension: period
+
+    primary_entity: production_overview_row
+
+    entities:
+      - name: geo
+        type: foreign
+        expr: geo
+      - name: date_key
+        type: foreign
+        expr: period_date
+
+    dimensions:
+      - name: period
+        type: time
+        expr: period_date
+        type_params:
+          time_granularity: year
+
+    measures:
+      - name: industrial_output_growth_pct
+        description: Industrial production, percent change vs prior year.
+        agg: average
+        expr: industrial_output_growth_pct
+      - name: cereal_production_kt
+        description: Cereal crop production, thousands of tonnes.
+        agg: average
+        expr: cereal_production_kt
+
+metrics:
+  - name: industrial_production_yoy
+    label: "Wzrost produkcji przemysłowej"
+    type: simple
+    type_params:
+      measure: industrial_output_growth_pct
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: "% r/r"
+          scale: 1
+        source_label: "Eurostat (sts_inpr_a), zmiana produkcji przemysłowej rok do roku"
+        ascending_is_good: true
+
+  - name: cereal_production
+    label: "Produkcja zbóż"
+    type: simple
+    type_params:
+      measure: cereal_production_kt
+    config:
+      meta:
+        format:
+          decimals: 0
+          suffix: " tys. t"
+          scale: 1
+        source_label: "Eurostat (apro_cpsh1), produkcja zbóż ogółem (tys. ton)"
+        ascending_is_good: true

@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+rows:
+  - title: "Produkcja przemysłowa — zmiana rok do roku"
+    items:
+      - { visual: kpi_industry, width: "100%" }
+  - title: "Produkcja przemysłowa — historia roczna (2001–2025)"
+    items:
+      - { visual: trend_industry, width: "100%" }

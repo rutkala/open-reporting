@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Produkcja zbóż — historia roczna, Polska, 2000–2025 (tys. ton).
+# Weather-driven annual volatility; 2018 drought dip (9,638 kt) is the key event.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: cereal_production }
+filter:
+  geo: PL

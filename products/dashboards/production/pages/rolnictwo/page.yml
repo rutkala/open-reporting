@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/page.schema.json
+# Agriculture: cereal crop production KPI + 25-year trend.
+# Story: Poland produces ~12-13 million tonnes of cereals annually; weather-driven volatility.
+
+title:  "Rolnictwo"
+anchor: rolnictwo

@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/dashboard.schema.json
+# Production & Agriculture dashboard for Polish citizens.
+# Audience: non-economist Polish news readers.
+# Story: How is Polish industry performing? How much grain does Poland produce?
+
+domain: production
+port:   8068
+title:  "Produkcja przemysłowa i rolnictwo"

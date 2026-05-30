@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/page.schema.json
+# Industrial output: KPI (% change vs prior year) + 25-year trend.
+# Story: 2020 COVID dip (−1.9%), 2021 bounce (+14.8%), 2023 slowdown (−1.1%), 2025 recovery.
+
+title:  "Przemysł"
+anchor: przemysl

@@ -1,0 +1,7 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/pages.schema.json
+# Narrative arc:
+#   1. Przemysł — industrial output growth % + trend
+#   2. Rolnictwo — cereal crop production + trend
+order:
+  - przemysl
+  - rolnictwo

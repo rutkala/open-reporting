@@ -1,0 +1,27 @@
+version: 2
+
+models:
+  - name: fact_production_overview
+    description: >
+      Annual Production fact. Combines two single-series domains — industrial output
+      growth (BUS) and cereal crop production (AGR) — into a wide (geo, period_year,
+      period_date) grain. One row per country per year.
+      Sources: curated.bus_indicators + curated.agr_indicators.
+    columns:
+      - name: geo
+        description: ISO country/region code (e.g. 'PL').
+        tests: [not_null]
+      - name: period_year
+        description: Calendar year (integer).
+        tests: [not_null]
+      - name: period_date
+        description: December 31 of period_year — MetricFlow time spine key.
+        tests: [not_null]
+      - name: industrial_output_growth_pct
+        description: >
+          Industrial production index, percent change vs prior year
+          (sts_inpr_a, unit=PCH_PRE).
+      - name: cereal_production_kt
+        description: >
+          Cereal crop production, thousands of tonnes
+          (apro_cpsh1, crops=C1100, strucpro=PR_HU_EU).
