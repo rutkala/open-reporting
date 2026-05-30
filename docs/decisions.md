@@ -709,3 +709,22 @@ Full content-reviewer + domain-specialist publish gate intentionally NOT run —
 **Followup / standing blockers unchanged:** OR-153 (Telegram inbound, PO), OR-90 (Instagram, PO), OR-86 (BDL key, PO), OR-79 (Ghost nav, PO). Draft queue now **8 articles** (OR-145..151 + OR-154) awaiting PO preview — flag: producing further drafts is queue-deepening; PO review is the bottleneck, not production.
 
 **Commits:** this post-mortem/outbox + draft commit.
+
+## 2026-05-30 02:00 UTC — #26 — [QUIET RUN] warehouse data-quality pass + Linear board grooming
+
+**Why a quiet run:** Inbox empty, no Strategic, no Urgent/Infra P1, no Todo. All five domain dashboards live (smoke: 6/6 URLs 200, ingest exit=0). All Theme 2 domain↔dashboard article pairings drafted — 8 articles (OR-145..151 + OR-154) sit in Ghost as drafts awaiting PO preview. Remaining roadmap items are Done, Blocked (OR-90/86/79/153 — all PO-side), or PO-gated. Producing a 10th draft would only deepen an 8-deep unreviewed queue and burn the shared rate-limit pool. Per protocol, spent the run on QA + grooming instead. Zero subagent spawns.
+
+**(a) Warehouse data-quality check — PASS.** Queried `data/warehouse.duckdb` read-only (dashboards hold the write lock). All 9 curated marts populated: fact_demo_overview (66), fact_env_overview (39), fact_finance_cofog (8410), fact_finance_imf (1094), fact_finance_overview (1065), fact_finance_revenue_expenditure (1065), fact_labour_overview (29), fact_labour_wages (28), fact_macro_overview (31). Verified the env mart null-tail that the run #24 KPI fix depends on: per-metric latest non-null = GHG 2023, renewable 2024, waste 2024, water 2023; max spine year 2024. Matches the fix rationale exactly — no regression in the "latest non-null" KPI resolution path.
+
+**(b) Linear board grooming.** Three stale In Progress items (open since Mar–May, scope superseded by the current architecture) → Canceled with rationale comments:
+- OR-116 / OR-118 (analytics competence CBS under `team/analytics/`) — superseded by the live topic-first `docs/` tree (`docs/visualization/` etc. with principles/building/reviewing + quality.md). No `team/analytics/` exists on disk.
+- OR-144 (MetricFlow finance-Overview pilot) — target `products/dashboards/finance/app.py` no longer exists (dashboards are YAML/dbr); semantic layer delivered project-wide for all 9 marts under `products/warehouse/models/semantic/`. Goal met + generalized.
+- OR-86 (BDL/GUS ingestion) In Progress → Backlog — cannot proceed without PO-provisioned `BDL_API_KEY`; parking it stops polluting the "continue In Progress" signal. Result: only the 6 article drafts remain In Progress, which is honest.
+
+**Note:** CLAUDE.md's documented `from dbr.semantic import query` helper is stale — the module now exports `semantic_query`/`semantic_query_history`/`_run_latest_query`, no bare `query`. Used direct read-only duckdb for the QA check. Minor doc drift; not fixing this run (would touch CLAUDE.md — flagged, not changed).
+
+**Status:** QUIET RUN complete. Production healthy, board cleaner.
+
+**Standing blockers unchanged (all PO-side):** OR-153 (Telegram inbound), OR-90 (Instagram token), OR-86 (BDL key), OR-79 (Ghost nav). Draft queue still **8 articles** awaiting PO preview — the persistent bottleneck is PO review, not production.
+
+**Commits:** this post-mortem + outbox + session-memory.

@@ -1,12 +1,12 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-05-29 17:15 UTC -->
+<!-- last-updated: 2026-05-30 02:15 UTC -->
 
 ## Current Focus
 
 **Five domain dashboards live + correct; AI scrum team live on Discord.** The autonomous-lead cron (02/07/12/17 UTC) keeps shipping product work; the chat office is Discord (8 `claude -p` bot subprocesses). The Telegram **outbox poller still works** for delivering autonomous-run reports to PO.
 
-Run #25 (this run): shipped OR-154 environment article as Ghost draft — completes the dashboard↔article pairing for all 5 live domains. analytical-validator caught + fixed two factual errors (water peak 1985 not 1980 → −47%; waste U-shape not monotonic). **Draft queue now 8** (OR-145..151 + OR-154) awaiting PO preview — production is ahead of PO review; that is the bottleneck.
+Run #26 (this run): **[QUIET RUN]** — all roadmap items Done/Blocked/PO-gated, so no new product. (a) Warehouse data-quality pass: all 9 curated marts populated; env mart null-tail (GHG/water last=2023, renewable/waste=2024) matches the run #24 KPI fix — no regression. (b) Linear grooming: canceled 3 superseded stale In Progress items (OR-116/118 competence-CBS → superseded by `docs/` tree; OR-144 MetricFlow pilot → semantic layer delivered project-wide), moved OR-86 (BDL) In Progress→Backlog (blocked on PO key). Now only the 6 article drafts remain In Progress = honest. **Draft queue still 8** (OR-145..151 + OR-154) awaiting PO preview — PO review is the bottleneck, not production. Zero subagent spawns.
 
 ## Live production state
 
@@ -16,7 +16,7 @@ Run #25 (this run): shipped OR-154 environment article as Ghost draft — comple
 - **Demographics:** `portal.open-reporting.dev/demographics/` — Live ✓
 - **Environment:** `portal.open-reporting.dev/environment/` — Live ✓ (OR-83 Done; KPI cards fixed run #24)
 - **Blog:** `www.open-reporting.dev` — Live ✓; Articles OR-145..OR-151 + OR-154 (8 total) in Ghost as **DRAFTS**, awaiting PO preview
-- **Daily ingestion:** 22:00 UTC cron; exit=0 on 2026-05-28. OR-76 outbox alert on failure.
+- **Daily ingestion:** 22:00 UTC cron; exit=0 on 2026-05-29. OR-76 outbox alert on failure.
 - **Autonomous-lead cron:** `0 2,7,12,17 * * *` UTC.
 
 ## Discord bot fleet (live)
@@ -31,18 +31,18 @@ Each `@`-mention/DM spawns a fresh subprocess — no in-chat memory; relies on C
 
 | Commit | What |
 |---|---|
-| (this run) | feat(content): OR-154 environment article draft (9th Theme 2; completes 5/5 pairing) |
+| (this run) | docs: run #26 [QUIET RUN] — data-quality pass + Linear grooming (no code) |
+| `bb736432` | feat(content): OR-154 environment article draft (9th Theme 2; completes 5/5 pairing) |
 | `74190707` | docs: run #24 post-mortem — OR-83 closed + global dbr KPI fix |
 | `fca7b818` | fix(dbr): KPI card resolves latest non-null value, not latest spine year (run #24) |
 | `c4b33f4b` | feat(infra): Discord 8-bot scrum team — framework, services, agent files |
-| `e89360d2` | fix(public_finance): OR-152 P2/P3 — Wydatki 2024 re-anchor + trend legend |
 
 ## Open / blocked work
 
 | # | Linear | What | Status |
 |---|---|---|---|
 | 1 | OR-153 | Telegram comms inbound (systemd `${}` non-expansion) | Blocked — PO action; outbox delivery works |
-| 2 | OR-86 | BDL (GUS) ingestion first run | Blocked — needs `BDL_API_KEY` from PO |
+| 2 | OR-86 | BDL (GUS) ingestion first run | Backlog (run #26) — needs `BDL_API_KEY` from PO |
 | 3 | OR-90 | Instagram token (Meta portal) — blocks Theme 4 publishing | Blocked — PO action |
 | 4 | OR-79 | Ghost nav "Portal" link — browser admin | Blocked — PO action |
 | 5 | 8 drafts | OR-145..151 + OR-154 Ghost preview + publish decisions | Awaiting PO (bottleneck — production ahead of review) |
