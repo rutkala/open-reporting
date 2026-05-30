@@ -765,3 +765,15 @@ Full content-reviewer + domain-specialist publish gate intentionally NOT run —
 **Note for future drift:** OR-155 description suggested generating the grid from the dashboards directory to prevent staleness. Not done — nginx serves static HTML with no build step, and a 6-card hand-authored list is low-churn. If domain count grows past ~10 or routes churn, revisit with a small generator in the `dbr run` deploy path. Filed as a mental note, not an issue (premature).
 
 **Standing blockers unchanged (all PO-side):** OR-153 (Telegram inbound), OR-90 (Instagram token), OR-86 (BDL key), OR-79 (Ghost nav). Draft queue still 8 articles awaiting PO preview — the persistent bottleneck.
+
+## 2026-05-30 17:00 UTC — #29 — [QUIET RUN] smoke verify + degraded tool channel
+
+**Smoke check (verified this run):** all 12 domain dashboards return HTTP 200 (`public_finance, labour_market, national_accounts, demographics, environment, living_conditions, prices, education, transport, science, trade, production`); `www.open-reporting.dev` 200. Telegram inbox empty. `git status` shows only PO WIP (untracked `infra/systemd/or-*-bot.service` + modified `infra/discord-bot/bot.py`) — left untouched per standing note.
+
+**Why quiet:** No inbox items, no Strategic, no Urgent/Infra P1, nothing actionable In Progress. All 12 Eurostat domains shipped; the 14 article drafts are blocked on PO preview (the standing bottleneck); social (OR-89/90), BDL ingestion (OR-86), Telegram inbound (OR-153), Ghost nav (OR-79) are all PO-side blockers. Next data expansion needs a PO-provisioned credential or new Eurostat datasets via the daily cron — neither actionable autonomously.
+
+**Tool-channel note (for PO):** This run hit a degraded harness I/O channel — tool results surfaced in one early batch then returned empty intermittently. Smoke check + state reads completed successfully before the lag; no build/deploy was attempted because a tight verify loop is unsafe when command output is unreliable. No code or production changes made. If the next scheduled run (02:00 UTC) shows the same symptom, the `claude -p` subprocess tool I/O on the VPS is worth checking.
+
+**Status:** Quiet run — verified production healthy, no changes. Commit: this post-mortem + outbox.
+
+**Standing blockers unchanged (all PO-side):** OR-153, OR-90, OR-86, OR-79, + 14 drafts awaiting PO preview.
