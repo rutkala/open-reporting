@@ -1,35 +1,36 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-05-30 21:30 UTC -->
+<!-- last-updated: 2026-05-30 22:00 UTC -->
 
 ## Current Focus
 
-**15 domain dashboards live + 17 article drafts in Ghost.**
-Interactive session (goal-mode): roadmap defined + Phase 2 delivery — 3 new dashboards (Health, Energy, Tourism), 3 new articles, 16 seed dimension_key bugs fixed, science dashboard enriched. All committed and pushed to main.
+**16 domain dashboards live + 18 article drafts in Ghost.**
+Interactive session (goal-mode): Phase 2 fully delivered — Financial Markets dashboard (port 8072) added, completing 16 domains. Exchange rate article published to Ghost as draft. Phase 2 target (16 domains by July 2026) achieved end of May 2026.
 
 ## Live production state
 
 - **Public finance:** `/public_finance/` — Live ✓
 - **Labour market:** `/labour_market/` — Live ✓
-- **National accounts:** `/national_accounts/` — Live ✓ (current account now flowing — was broken)
-- **Demographics:** `/demographics/` — Live ✓ (life expectancy now showing — was null before fix)
+- **National accounts:** `/national_accounts/` — Live ✓
+- **Demographics:** `/demographics/` — Live ✓
 - **Environment:** `/environment/` — Live ✓
 - **Income & Living Conditions:** `/living_conditions/` — Live ✓ (port 8062)
 - **Prices & Inflation:** `/prices/` — Live ✓ (port 8063)
 - **Education:** `/education/` — Live ✓ (port 8064)
 - **Transport:** `/transport/` — Live ✓ (port 8065)
-- **Science & R&D:** `/science/` — Live ✓ (port 8066) — NEW: Cyfryzacja page added
+- **Science & R&D:** `/science/` — Live ✓ (port 8066)
 - **Trade:** `/trade/` — Live ✓ (port 8067)
 - **Production:** `/production/` — Live ✓ (port 8068)
-- **Health:** `/health/` — Live ✓ (port 8069) — NEW 2026-05-30
-- **Energy:** `/energy/` — Live ✓ (port 8070) — NEW 2026-05-30
-- **Tourism:** `/tourism/` — Live ✓ (port 8071) — NEW 2026-05-30
-- **Portal homepage:** `/` — Live ✓ all 15 dashboards linked
-- **Blog:** `www.open-reporting.dev` — Live ✓; **17 articles in Ghost as DRAFTS**, awaiting PO preview
+- **Health:** `/health/` — Live ✓ (port 8069)
+- **Energy:** `/energy/` — Live ✓ (port 8070)
+- **Tourism:** `/tourism/` — Live ✓ (port 8071)
+- **Financial Markets:** `/financial_markets/` — Live ✓ (port 8072) — NEW 2026-05-30
+- **Portal homepage:** `/` — Live ✓ all 16 dashboards linked
+- **Blog:** `www.open-reporting.dev` — Live ✓; **18 articles in Ghost as DRAFTS**, awaiting PO preview
 - **Daily ingestion:** 22:00 UTC cron; exit=0 on 2026-05-29.
 - **Autonomous-lead cron:** `0 2,7,12,17 * * *` UTC.
 
-## Ghost draft inventory (17 articles, all awaiting PO review)
+## Ghost draft inventory (18 articles, all awaiting PO review)
 
 | Slug | Domain | OR |
 |---|---|---|
@@ -50,6 +51,7 @@ Interactive session (goal-mode): roadmap defined + Phase 2 delivery — 3 new da
 | polska-dlugosc-zycia-covid-rekord-2024 | Health | — |
 | turystyka-polska-rekord-noclegow-2025 | Tourism | — |
 | polska-transformacja-energetyczna-oze-2004-2024 | Energy | — |
+| kursy-walutowe-pln-historia-2002-2026 | Financial Markets | — |
 
 ## Discord bot fleet (live)
 
@@ -62,12 +64,11 @@ Untracked `infra/systemd/or-*-bot.service` + modified `infra/discord-bot/bot.py`
 
 | Commit | What |
 |---|---|
+| `b3e50ad5` | feat(content): financial markets article — exchange rate history PLN 2002-2026 |
+| `d52369a1` | feat(financial-markets): Financial Markets dashboard — port 8072, Phase 2 complete |
+| `2cfb6cde` | docs: session memory update — 15 dashboards live |
 | `a507288b` | feat(science+content): Cyfryzacja page + 3 new articles (health, energy, tourism) |
 | `34113664` | feat(tourism): Tourism dashboard — port 8071 |
-| `ea7e5233` | feat(energy): Energy dashboard — port 8070 |
-| `86af7fff` | feat(portal): Health added to homepage (13th) |
-| `befd544d` | feat(health): Health dashboard + 16 dimension_key seed fixes |
-| `61d32fd9` | docs: ROADMAP.md rewrite — grounded in May 2026 state |
 
 ## Open / blocked work
 
@@ -77,17 +78,18 @@ Untracked `infra/systemd/or-*-bot.service` + modified `infra/discord-bot/bot.py`
 | 2 | OR-86 | BDL (GUS) ingestion | Backlog — needs `BDL_API_KEY` from PO |
 | 3 | OR-90 | Instagram token (Meta portal) — blocks OR-89 publish | Blocked — PO action |
 | 4 | OR-79 | Ghost nav "Portal" link — browser admin | Blocked — PO action |
-| 5 | 17 drafts | Ghost preview + publish decisions | Awaiting PO (bottleneck) |
+| 5 | 18 drafts | Ghost preview + publish decisions | Awaiting PO (bottleneck) |
 | 6 | OR-89 | Weekly snapshot — code ready, publish blocked on OR-90 | Buildable remainder: cron entry |
-| 7 | Phase 2 remaining | BUS (1 indicator), FIN (0 indicators) — need ingestion | Needs new Eurostat datasets or BDL key |
+| 7 | Phase 3 | Data depth: BDL, Finance v2, dbt tests, freshness indicators | Next focus |
 
 ## Key technical facts (current)
 
-- **15 Eurostat domain dashboards deployed.** Next free port: 8072.
+- **16 Eurostat domain dashboards deployed.** Next free port: 8073.
+- **Phase 2 complete:** Health (8069), Energy (8070), Tourism (8071), Financial Markets (8072).
+- **Financial Markets:** fact_fin_overview mart = annual avg exchange rates from fin_indicators (NBP). Semantic: fin_overview.yml.
 - **Seed dimension_key audit:** 16 mismatches fixed in `products/warehouse/seeds/eurostat_series.csv`. Run `dbt seed --select eurostat_series` after any seed change, then `dbt run --select stg_eurostat+`.
-- **dbt write-lock dance:** stop live dashboard services (kill all `dbr serve` PIDs) → dbt run → restart with `dbr run`. Boot ~20s → brief 502.
+- **dbt write-lock dance:** kill all `dbr serve` PIDs → dbt run → restart with `dbr run`. Boot ~20s → brief 502.
 - **Weekly snapshot card:** `products/social/weekly_snapshot.py --dry-run` works. Publish needs `INSTAGRAM_ACCESS_TOKEN` (OR-90).
-- **New-domain dashboard recipe:** verify seed `dimension_key` == raw → mart → semantic → dashboard YAML → `dbr validate` → `dbr run` → verify.
 - **Portal homepage** is static `infra/nginx/html/index.html`. Deploy: `docker compose up -d --force-recreate nginx`.
 - **KPI cards resolve latest *non-null* value** (run #24 fix in `packages/dbr/.../semantic.py`).
 - dbr `bar` = horizontal (metric x, dim y); `column` = vertical bars.
@@ -96,6 +98,7 @@ Untracked `infra/systemd/or-*-bot.service` + modified `infra/discord-bot/bot.py`
 - CLAUDE.md's `from dbr.semantic import query` is stale — use `semantic_query` / `_run_latest_query`.
 - **Auto mode enabled** in `~/.claude/settings.json` (defaultMode: auto) + environment/allow rules for this VPS.
 - Monthly tourism data (CLT): sum 12 months to annual via SUM in mart. Incomplete year (current year) included but undercounts — KPI shows last complete year.
+- Line chart supports multi-metric y: `y: { metric: [metric1, metric2] }` — one trace per metric.
 
 ## Stale feature branches
 
