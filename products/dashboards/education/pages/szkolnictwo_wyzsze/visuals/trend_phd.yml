@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Doktoranci — historia roczna, Polska, 2013–2024.
+# Line chosen: continuous annual count; the sharp fall from 43k to 20k since 2019
+# reflects the 2019 reform (ustawa 2.0) which restructured doctoral schools and
+# sharply cut the number of funded doctoral positions.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: phd_candidates }
+filter:
+  geo: PL

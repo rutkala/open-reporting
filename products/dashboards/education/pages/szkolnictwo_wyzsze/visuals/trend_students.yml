@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Studenci uczelni wyższych — historia roczna, Polska, 2013–2024.
+# Line chosen: continuous annual count; the decline from 1.9M to 1.4M reflects
+# post-peak demographic contraction (smaller birth cohorts entering university).
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: tertiary_enrolment }
+filter:
+  geo: PL

@@ -1,0 +1,124 @@
+version: 2
+
+# MetricFlow semantic model for the Education dashboard.
+#
+# Single source: curated.fact_education_overview (wide, one column per measure).
+# Four metrics expose annual education indicators to the visual layer.
+#
+# Aggregation note: `agg: average` used throughout. The pivot produces at most
+# one non-null value per (geo, period_year) for annual series, so average
+# collapses identically to max — consistent with project convention.
+#
+# Direction note:
+#   early_leavers: lower is better (ascending_is_good: false)
+#   tertiary_attainment: higher is better (ascending_is_good: true)
+#   tertiary_enrolment: context-dependent (demographic decline); ascending_is_good: true
+#   phd_candidates: higher is better for research capacity (ascending_is_good: true)
+
+semantic_models:
+  - name: education_overview
+    description: Annual Education KPIs — Poland (Eurostat EDU series).
+    model: ref('fact_education_overview')
+
+    defaults:
+      agg_time_dimension: period
+
+    primary_entity: education_overview_row
+
+    entities:
+      - name: geo
+        type: foreign
+        expr: geo
+      - name: date_key
+        type: foreign
+        expr: period_date
+
+    dimensions:
+      - name: period
+        type: time
+        expr: period_date
+        type_params:
+          time_granularity: year
+
+    measures:
+      - name: early_leavers_pct
+        description: >
+          Early school leavers, percent of population aged 18-24
+          (edat_lfse_14, age=Y18-24, sex=T, unit=PC, wstatus=POP).
+        agg: average
+        expr: early_leavers_pct
+      - name: tertiary_attainment_pct
+        description: >
+          Tertiary educational attainment rate, percent of population aged 30-34
+          (edat_lfse_03, age=Y30-34, isced11=ED5-8, sex=T, unit=PC).
+        agg: average
+        expr: tertiary_attainment_pct
+      - name: tertiary_enrolment_nr
+        description: >
+          Total tertiary education enrolment, number of students
+          (educ_uoe_enrt01, isced11=ED5-8, sector=TOT_SEC, unit=NR, worktime=TOTAL).
+        agg: average
+        expr: tertiary_enrolment_nr
+      - name: phd_candidates_nr
+        description: >
+          Doctoral (PhD) candidates enrolled, number
+          (educ_uoe_enrt01, isced11=ED8, sector=TOT_SEC, unit=NR, worktime=TOTAL).
+        agg: average
+        expr: phd_candidates_nr
+
+metrics:
+  - name: early_school_leavers
+    label: "Wcześnie kończący szkołę"
+    type: simple
+    type_params:
+      measure: early_leavers_pct
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: "%"
+          scale: 1
+        source_label: "Eurostat (edat_lfse_14), odsetek os. 18–24 l. przerywających edukację"
+        ascending_is_good: false
+
+  - name: tertiary_attainment
+    label: "Wykształcenie wyższe"
+    type: simple
+    type_params:
+      measure: tertiary_attainment_pct
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: "%"
+          scale: 1
+        source_label: "Eurostat (edat_lfse_03), odsetek os. 30–34 l. z wykształceniem wyższym"
+        ascending_is_good: true
+
+  - name: tertiary_enrolment
+    label: "Studenci wyższych uczelni"
+    type: simple
+    type_params:
+      measure: tertiary_enrolment_nr
+    config:
+      meta:
+        format:
+          decimals: 0
+          suffix: ""
+          scale: 1
+        source_label: "Eurostat (educ_uoe_enrt01), łączna liczba studentów uczelni wyższych"
+        ascending_is_good: true
+
+  - name: phd_candidates
+    label: "Doktoranci"
+    type: simple
+    type_params:
+      measure: phd_candidates_nr
+    config:
+      meta:
+        format:
+          decimals: 0
+          suffix: ""
+          scale: 1
+        source_label: "Eurostat (educ_uoe_enrt01), liczba doktorantów (ISCED 8)"
+        ascending_is_good: true

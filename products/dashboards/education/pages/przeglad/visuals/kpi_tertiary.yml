@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Odsetek osób 30–34 l. z wykształceniem wyższym — bieżąca wartość z deltą r/r.
+# ascending_is_good=true: wzrost wskaźnika jest pożądany.
+
+type: card
+encoding:
+  value: { metric: tertiary_attainment }
+filter:
+  geo: PL
+options:
+  delta:
+    vs: prior_year
+    format: icon-first

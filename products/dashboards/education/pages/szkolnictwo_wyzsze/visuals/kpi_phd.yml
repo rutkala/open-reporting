@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Liczba doktorantów — bieżąca wartość z deltą r/r.
+# ascending_is_good=true: więcej doktorantów = większa zdolność badawcza.
+
+type: card
+encoding:
+  value: { metric: phd_candidates }
+filter:
+  geo: PL
+options:
+  delta:
+    vs: prior_year
+    format: icon-first

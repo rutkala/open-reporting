@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Odsetek wcześnie kończących szkołę (18–24 l.) — bieżąca wartość z deltą r/r.
+# ascending_is_good=false: spadek wskaźnika jest pożądany (mniej osób bez wykształcenia).
+
+type: card
+encoding:
+  value: { metric: early_school_leavers }
+filter:
+  geo: PL
+options:
+  delta:
+    vs: prior_year
+    format: icon-first

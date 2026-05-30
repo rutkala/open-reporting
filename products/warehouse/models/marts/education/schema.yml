@@ -1,0 +1,36 @@
+version: 2
+
+models:
+  - name: fact_education_overview
+    description: >
+      Annual Education fact. Pivots four Eurostat EDU indicators
+      (early school leavers rate, tertiary attainment rate, tertiary enrolment count,
+      PhD candidates count) into a wide (geo, period_year, period_date) grain.
+      One row per country per year.
+      Source: curated.edu_indicators (domain_id = 'EDU').
+    columns:
+      - name: geo
+        description: ISO country/region code (e.g. 'PL').
+        tests: [not_null]
+      - name: period_year
+        description: Calendar year (integer).
+        tests: [not_null]
+      - name: period_date
+        description: December 31 of period_year — MetricFlow time spine key.
+        tests: [not_null]
+      - name: early_leavers_pct
+        description: >
+          Early school leavers, percent of population aged 18-24
+          (edat_lfse_14, age=Y18-24, sex=T, unit=PC, wstatus=POP).
+      - name: tertiary_attainment_pct
+        description: >
+          Tertiary educational attainment rate, percent of population aged 30-34
+          (edat_lfse_03, age=Y30-34, isced11=ED5-8, sex=T, unit=PC).
+      - name: tertiary_enrolment_nr
+        description: >
+          Total tertiary education enrolment, number of students
+          (educ_uoe_enrt01, isced11=ED5-8, sector=TOT_SEC, sex=T, unit=NR, worktime=TOTAL).
+      - name: phd_candidates_nr
+        description: >
+          Doctoral (PhD) candidates enrolled, number
+          (educ_uoe_enrt01, isced11=ED8, sector=TOT_SEC, sex=T, unit=NR, worktime=TOTAL).

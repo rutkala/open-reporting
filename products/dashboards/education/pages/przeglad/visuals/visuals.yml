@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 1 layout — educational attainment scorecard:
+#   Row 1: 2 KPI cards (early leavers %, tertiary attainment %)
+#   Row 2: line chart — early school leavers trend (full width)
+#   Row 3: line chart — tertiary attainment trend (full width)
+
+rows:
+  - title: "Kluczowe wskaźniki edukacyjne"
+    items:
+      - { visual: kpi_early_leavers, width: "50%" }
+      - { visual: kpi_tertiary,      width: "50%" }
+  - title: "Wcześnie kończący szkołę — historia roczna (2001–2025)"
+    items:
+      - { visual: trend_early_leavers, width: "100%" }
+  - title: "Wykształcenie wyższe (30–34 l.) — historia roczna (1997–2025)"
+    items:
+      - { visual: trend_tertiary, width: "100%" }

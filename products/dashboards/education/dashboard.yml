@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/dashboard.schema.json
+# Education dashboard for Polish citizens.
+# Audience: non-economist Polish news readers.
+# Story: Is Poland becoming better educated? How is higher education changing?
+
+domain: education
+port:   8064
+title:  "Edukacja w Polsce"

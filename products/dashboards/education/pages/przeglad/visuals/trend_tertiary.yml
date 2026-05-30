@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Wykształcenie wyższe (30–34 l.) — historia roczna, Polska, 1997–2025.
+# Line chosen: continuous annual %; the dramatic rise from ~10% to 48% tells Poland's
+# education transformation story over 25 years.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: tertiary_attainment }
+filter:
+  geo: PL

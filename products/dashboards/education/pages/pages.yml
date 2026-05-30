@@ -1,0 +1,7 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/pages.schema.json
+# Narrative arc:
+#   1. Scorecard snapshot (Przegląd) — 2 attainment KPIs + trends
+#   2. Higher education deep-dive (Szkolnictwo wyższe) — student numbers & PhD decline
+order:
+  - przeglad
+  - szkolnictwo_wyzsze

@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/page.schema.json
+# Page 1 — educational attainment snapshot: early leavers + tertiary attainment KPIs + trends.
+# Story: Poland's early school leavers rate (~4%) is one of the lowest in Europe.
+
+title:  "Przegląd"
+anchor: przeglad

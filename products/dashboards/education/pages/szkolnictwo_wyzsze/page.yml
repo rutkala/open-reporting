@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/page.schema.json
+# Page 2 — higher education deep-dive: student numbers and PhD candidates.
+# Story: Total enrolment declining (demographics), doctoral candidates halving since 2020.
+
+title:  "Szkolnictwo wyższe"
+anchor: szkolnictwo_wyzsze

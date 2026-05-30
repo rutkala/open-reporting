@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 2 layout — higher education deep-dive:
+#   Row 1: 2 KPI cards (total students, PhD candidates)
+#   Row 2: line chart — student enrolment trend (full width)
+#   Row 3: line chart — PhD candidates trend (full width)
+
+rows:
+  - title: "Szkolnictwo wyższe — liczby bezwzględne"
+    items:
+      - { visual: kpi_students, width: "50%" }
+      - { visual: kpi_phd,     width: "50%" }
+  - title: "Studenci uczelni wyższych — historia roczna (2013–2024)"
+    items:
+      - { visual: trend_students, width: "100%" }
+  - title: "Doktoranci — historia roczna (2013–2024)"
+    items:
+      - { visual: trend_phd, width: "100%" }
