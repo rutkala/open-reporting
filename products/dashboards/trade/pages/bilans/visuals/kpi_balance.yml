@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Saldo handlowe (mln EUR) — bieżąca wartość z deltą r/r.
+# ascending_is_good=true: nadwyżka handlowa jest pożądana.
+
+type: card
+encoding:
+  value: { metric: trade_balance }
+filter:
+  geo: PL
+options:
+  delta:
+    vs: prior_year
+    format: icon-first

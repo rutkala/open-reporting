@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Saldo handlowe — historia roczna, Polska, 2002–2025.
+# Line chosen: continuous annual mln EUR; the structural shift from persistent
+# deficit (−26B in 2008) to surplus territory post-2015 is the central story.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: trade_balance }
+filter:
+  geo: PL

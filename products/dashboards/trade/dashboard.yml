@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/dashboard.schema.json
+# Trade dashboard for Polish citizens.
+# Audience: non-economist Polish news readers.
+# Story: How much does Poland export and import? Is Poland a trade surplus or deficit country?
+
+domain: trade
+port:   8067
+title:  "Handel zagraniczny Polski"

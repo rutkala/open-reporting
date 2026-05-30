@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/page.schema.json
+# Page 2 — trade balance: KPI + history from deficit to surplus.
+# Story: Poland ran a persistent trade deficit until 2015; by 2024 it turned to a surplus.
+
+title:  "Saldo handlowe"
+anchor: bilans

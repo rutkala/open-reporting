@@ -1,0 +1,98 @@
+version: 2
+
+# MetricFlow semantic model for the Trade dashboard.
+#
+# Single source: curated.fact_trade_overview (wide, one column per measure).
+# Three metrics expose annual goods trade indicators to the visual layer.
+#
+# Aggregation note: `agg: average` used throughout. The pivot produces at most
+# one non-null value per (geo, period_year) for annual series, so average
+# collapses identically to max — consistent with project convention.
+#
+# Direction note:
+#   exports: higher is better (ascending_is_good: true — more exports = stronger economy)
+#   imports: ascending_is_good: false (more imports may signal consumption, but is
+#            mildly negative for trade balance framing used here)
+#   trade_balance: ascending_is_good: true (surplus is preferred)
+
+semantic_models:
+  - name: trade_overview
+    description: Annual Trade KPIs — Poland (Eurostat TRD series).
+    model: ref('fact_trade_overview')
+
+    defaults:
+      agg_time_dimension: period
+
+    primary_entity: trade_overview_row
+
+    entities:
+      - name: geo
+        type: foreign
+        expr: geo
+      - name: date_key
+        type: foreign
+        expr: period_date
+
+    dimensions:
+      - name: period
+        type: time
+        expr: period_date
+        type_params:
+          time_granularity: year
+
+    measures:
+      - name: exports_goods_mio_eur
+        description: Total goods exports, millions of euros.
+        agg: average
+        expr: exports_goods_mio_eur
+      - name: imports_goods_mio_eur
+        description: Total goods imports, millions of euros.
+        agg: average
+        expr: imports_goods_mio_eur
+      - name: trade_balance_mio_eur
+        description: Goods trade balance, millions of euros.
+        agg: average
+        expr: trade_balance_mio_eur
+
+metrics:
+  - name: goods_exports
+    label: "Eksport towarów"
+    type: simple
+    type_params:
+      measure: exports_goods_mio_eur
+    config:
+      meta:
+        format:
+          decimals: 0
+          suffix: " mln EUR"
+          scale: 1
+        source_label: "Eurostat (ext_lt_intratrd), łączny eksport towarów"
+        ascending_is_good: true
+
+  - name: goods_imports
+    label: "Import towarów"
+    type: simple
+    type_params:
+      measure: imports_goods_mio_eur
+    config:
+      meta:
+        format:
+          decimals: 0
+          suffix: " mln EUR"
+          scale: 1
+        source_label: "Eurostat (ext_lt_intratrd), łączny import towarów"
+        ascending_is_good: false
+
+  - name: trade_balance
+    label: "Saldo handlowe"
+    type: simple
+    type_params:
+      measure: trade_balance_mio_eur
+    config:
+      meta:
+        format:
+          decimals: 0
+          suffix: " mln EUR"
+          scale: 1
+        source_label: "Eurostat (ext_lt_intratrd), saldo obrotów towarowych z zagranicą"
+        ascending_is_good: true

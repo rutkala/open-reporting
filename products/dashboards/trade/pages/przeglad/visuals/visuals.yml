@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 1 layout — exports & imports overview:
+#   Row 1: 2 KPI cards (exports, imports)
+#   Row 2: line — goods exports trend (full width)
+#   Row 3: line — goods imports trend (full width)
+
+rows:
+  - title: "Eksport i import towarów"
+    items:
+      - { visual: kpi_exports, width: "50%" }
+      - { visual: kpi_imports, width: "50%" }
+  - title: "Eksport towarów — historia roczna (2002–2025)"
+    items:
+      - { visual: trend_exports, width: "100%" }
+  - title: "Import towarów — historia roczna (2002–2025)"
+    items:
+      - { visual: trend_imports, width: "100%" }

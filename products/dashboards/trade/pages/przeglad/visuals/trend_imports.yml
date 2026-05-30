@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Import towarów — historia roczna, Polska, 2002–2025.
+# Line chosen: continuous annual; imports grew proportionally to exports, reflecting
+# Poland's role in global value chains as both buyer and supplier.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: goods_imports }
+filter:
+  geo: PL

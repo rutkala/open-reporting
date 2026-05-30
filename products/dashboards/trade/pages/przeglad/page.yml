@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/page.schema.json
+# Page 1 — exports and imports: KPIs + 20-year trends.
+# Story: Exports grew 8× from 43B to 366B EUR since 2002 — Poland is a trade powerhouse.
+
+title:  "Przegląd"
+anchor: przeglad

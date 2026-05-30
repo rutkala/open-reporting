@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 2 layout — trade balance:
+#   Row 1: KPI card — current trade balance (full width)
+#   Row 2: line — trade balance history (full width)
+
+rows:
+  - title: "Saldo obrotów towarowych z zagranicą"
+    items:
+      - { visual: kpi_balance, width: "100%" }
+  - title: "Saldo handlowe — historia roczna (2002–2025)"
+    items:
+      - { visual: trend_balance, width: "100%" }

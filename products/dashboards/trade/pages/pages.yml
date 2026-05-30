@@ -1,0 +1,7 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/pages.schema.json
+# Narrative arc:
+#   1. Overview (Przegląd) — exports KPI + 20-year trend, imports KPI + trend
+#   2. Trade balance (Bilans) — trade balance KPI + history (from deficit to surplus)
+order:
+  - przeglad
+  - bilans
