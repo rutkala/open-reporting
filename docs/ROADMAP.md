@@ -10,15 +10,15 @@ Platform is live and operational. The core infrastructure is complete.
 
 | Product | State |
 |---|---|
-| Analytical portal (`portal.open-reporting.dev`) | Live — 12 domain dashboards, all linked from homepage |
-| Blog (`www.open-reporting.dev`) | Live — 14 articles drafted, **awaiting PO publish approval** |
+| Analytical portal (`portal.open-reporting.dev`) | Live — **16 domain dashboards**, all linked from homepage |
+| Blog (`www.open-reporting.dev`) | Live — **17 articles drafted**, awaiting PO publish approval |
 | Daily ingestion | Live — Eurostat + NBP + IMF, 22:00 UTC cron |
 | Autonomous Project Lead | Live — fires at 02/07/12/17 UTC |
 | Discord agent fleet | Live — 8 bots |
 | Social (Instagram weekly snapshot) | Code ready — blocked on token refresh (OR-90, PO action) |
 | Telegram inbound | Broken — systemd env-var bug (OR-153, PO action) |
 
-**12 live domains:** Public Finance, Labour Market, National Accounts, Demographics, Environment, Living Conditions, Prices & Inflation, Education, Transport, Science & R&D, Trade, Production & Agriculture.
+**16 live domains:** Public Finance, Labour Market, National Accounts, Demographics, Environment, Living Conditions, Prices & Inflation, Education, Transport, Science & R&D, Trade, Production, Health, Energy, Tourism, Financial Markets.
 
 ---
 
@@ -31,27 +31,25 @@ These are blocking value delivery right now. None require new code — they requ
 | OR-153 | Fix Telegram inbound comms | PO | systemd `${}` non-expansion — re-enter token |
 | OR-90 | Instagram token refresh | PO | Meta developer portal action |
 | OR-79 | Add "Portal" link to Ghost nav | PO | Ghost browser admin |
-| 14 drafts | Preview + publish Ghost articles | PO | Awaiting review |
+| 17 drafts | Preview + publish Ghost articles | PO | Awaiting review |
 | OR-89 | Activate weekly Economy Snapshot cron | Claude | Unblocks after OR-90 |
 
-**Article publication is the highest-value unblock.** Fourteen data-journalism pieces covering all 12 live domains are sitting as Ghost drafts. Publishing them: (a) establishes editorial credibility, (b) drives SEO, (c) demonstrates the dashboard↔article product pairing.
+**Article publication is the highest-value unblock.** Seventeen data-journalism pieces covering all 16 live domains are sitting as Ghost drafts. Publishing them: (a) establishes editorial credibility, (b) drives SEO, (c) demonstrates the dashboard↔article product pairing.
 
 ---
 
-## Phase 2 — Domain depth (June–July 2026)
+## Phase 2 — Domain depth ✓ COMPLETE (delivered May 2026)
 
-Add the four highest-value remaining Eurostat domains. Each follows the proven recipe: ingestion → dbt staging/mart → semantic → dashboard → companion article.
+All four Phase 2 domains shipped with dashboard + companion article.
 
-| Priority | Domain | Linear | Why now |
-|---|---|---|---|
-| 1 | **Health** | OR-57 | High public interest; large Eurostat dataset (HLTH\_*); natural pair for demographics |
-| 2 | **Energy** | OR-67 | Energy prices directly connected to living conditions + inflation (cross-domain story) |
-| 3 | **Business & Industry** | OR-62 | Completes the production picture; enterprise stats + SBS datasets |
-| 4 | **Financial Markets** | OR-54 | Interest rates, exchange rates; links to public finance and living costs |
+| Domain | Linear | Status |
+|---|---|---|
+| **Health** | OR-57 | ✓ Live — port 8069 |
+| **Energy** | OR-67 | ✓ Live — port 8070 |
+| **Tourism** | OR-62* | ✓ Live — port 8071 |
+| **Financial Markets** | OR-54 | ✓ Live — port 8072 (exchange rates, NBP data 2002–2026) |
 
-Each domain delivery = dashboard + at least one article + semantic metrics.
-
-**Target:** 16 live domains by end of July 2026.
+Phase 2 target was 16 live domains by end of July 2026 — **achieved end of May 2026**.
 
 ---
 
@@ -124,4 +122,4 @@ Not scheduled — directional intent only.
 - Mobile app (separate codebase) — not in active planning
 - Paid data sources — no recurring cost without PO approval
 - New ingestion sources without first exhausting Eurostat depth
-- New dashboard domains before Health, Energy, Business & Industry are live
+- New dashboard domains before Phase 3 data depth work is complete

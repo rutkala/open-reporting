@@ -1,0 +1,107 @@
+version: 2
+
+# MetricFlow semantic model for the Financial Markets dashboard.
+#
+# Source: curated.fact_fin_overview — annual average exchange rates from NBP.
+# Four metrics: EUR/PLN, USD/PLN, CHF/PLN, GBP/PLN annual averages.
+#
+# Aggregation: `agg: average` — the mart already averages daily → annual;
+# MetricFlow collapses any further grouping consistently.
+#
+# Direction: no `ascending_is_good` — exchange rates are neutral (context-dependent).
+
+semantic_models:
+  - name: fin_overview
+    description: Annual average exchange rates (PLN vs EUR, USD, CHF, GBP) — NBP mid-rates.
+    model: ref('fact_fin_overview')
+
+    defaults:
+      agg_time_dimension: period
+
+    primary_entity: fin_overview_row
+
+    entities:
+      - name: geo
+        type: foreign
+        expr: geo
+      - name: date_key
+        type: foreign
+        expr: period_date
+
+    dimensions:
+      - name: period
+        type: time
+        expr: period_date
+        type_params:
+          time_granularity: year
+
+    measures:
+      - name: fin_eur_pln
+        description: EUR/PLN annual average mid-rate (NBP).
+        agg: average
+        expr: eur_pln_avg
+      - name: fin_usd_pln
+        description: USD/PLN annual average mid-rate (NBP).
+        agg: average
+        expr: usd_pln_avg
+      - name: fin_chf_pln
+        description: CHF/PLN annual average mid-rate (NBP).
+        agg: average
+        expr: chf_pln_avg
+      - name: fin_gbp_pln
+        description: GBP/PLN annual average mid-rate (NBP).
+        agg: average
+        expr: gbp_pln_avg
+
+metrics:
+  - name: fin_eur_pln_rate
+    label: "Kurs EUR/PLN (średnia roczna)"
+    type: simple
+    type_params:
+      measure: fin_eur_pln
+    config:
+      meta:
+        format:
+          decimals: 4
+          suffix: " PLN"
+          scale: 1
+        source_label: "NBP (tabela A), średni kurs EUR/PLN"
+
+  - name: fin_usd_pln_rate
+    label: "Kurs USD/PLN (średnia roczna)"
+    type: simple
+    type_params:
+      measure: fin_usd_pln
+    config:
+      meta:
+        format:
+          decimals: 4
+          suffix: " PLN"
+          scale: 1
+        source_label: "NBP (tabela A), średni kurs USD/PLN"
+
+  - name: fin_chf_pln_rate
+    label: "Kurs CHF/PLN (średnia roczna)"
+    type: simple
+    type_params:
+      measure: fin_chf_pln
+    config:
+      meta:
+        format:
+          decimals: 4
+          suffix: " PLN"
+          scale: 1
+        source_label: "NBP (tabela A), średni kurs CHF/PLN"
+
+  - name: fin_gbp_pln_rate
+    label: "Kurs GBP/PLN (średnia roczna)"
+    type: simple
+    type_params:
+      measure: fin_gbp_pln
+    config:
+      meta:
+        format:
+          decimals: 4
+          suffix: " PLN"
+          scale: 1
+        source_label: "NBP (tabela A), średni kurs GBP/PLN"

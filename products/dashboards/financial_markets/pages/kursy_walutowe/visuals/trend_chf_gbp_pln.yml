@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# CHF/PLN i GBP/PLN — roczne średnie NBP (2002-2025).
+# CHF: skok strukturalny 2015 po usunięciu podłogi kursu przez SNB (3.7→4.3 PLN).
+# GBP: najdroższy ze stałych walut; spadek Brexit 2016 widoczny.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: [fin_chf_pln_rate, fin_gbp_pln_rate] }
+filter:
+  geo: PL

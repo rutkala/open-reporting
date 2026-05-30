@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# EUR/PLN i USD/PLN — roczne średnie NBP (2002-2025).
+# EUR/PLN relatywnie stabilny 4.0-4.5 z szokami 2009, 2022.
+# USD/PLN bardziej zmienny — od 2.9 (2008) do 4.5+ (2022).
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: [fin_eur_pln_rate, fin_usd_pln_rate] }
+filter:
+  geo: PL

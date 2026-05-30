@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/dashboard.schema.json
+# Financial Markets dashboard for Polish citizens.
+# Audience: non-specialist Polish readers interested in currency exchange rates.
+# Story: PLN strengthened vs USD since 2001 peak; EUR/PLN stable around 4.2–4.3
+#   with notable pressure during 2022 energy crisis; CHF sharp jump post-2015
+#   SNB floor removal is structural break visible in the data.
+
+domain: financial_markets
+port:   8072
+title:  "Rynki finansowe w Polsce"

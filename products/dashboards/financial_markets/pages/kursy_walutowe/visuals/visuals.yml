@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 1 layout — exchange rate snapshot:
+#   Row 1: 4 KPI cards (EUR/PLN, USD/PLN, CHF/PLN, GBP/PLN current year avg)
+#   Row 2: line chart — EUR/PLN and USD/PLN annual trend 2002-2025 (full width)
+#   Row 3: line chart — CHF/PLN and GBP/PLN annual trend 2002-2025 (full width)
+
+rows:
+  - title: "Średnie kursy walutowe PLN"
+    items:
+      - { visual: kpi_eur_pln, width: "25%" }
+      - { visual: kpi_usd_pln, width: "25%" }
+      - { visual: kpi_chf_pln, width: "25%" }
+      - { visual: kpi_gbp_pln, width: "25%" }
+  - title: "Kurs EUR/PLN i USD/PLN — historia roczna (2002–2025)"
+    items:
+      - { visual: trend_eur_usd_pln, width: "100%" }
+  - title: "Kurs CHF/PLN i GBP/PLN — historia roczna (2002–2025)"
+    items:
+      - { visual: trend_chf_gbp_pln, width: "100%" }

@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# CHF/PLN annual average — latest value with year-over-year delta.
+
+type: card
+encoding:
+  value: { metric: fin_chf_pln_rate }
+filter:
+  geo: PL
+options:
+  delta:
+    vs: prior_year
+    format: icon-first
