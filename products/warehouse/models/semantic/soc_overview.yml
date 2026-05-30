@@ -1,0 +1,124 @@
+version: 2
+
+# MetricFlow semantic model for the Income & Living Conditions dashboard.
+#
+# Single source: curated.fact_soc_overview (wide, one column per measure).
+# Four metrics expose annual income & living-conditions indicators to the
+# visual layer. Poland-only (Eurostat ILC ingestion is geo='PL').
+#
+# Aggregation note: `agg: average` used throughout. The pivot produces at most
+# one non-null value per (geo, period_year) for annual series, so average
+# collapses identically to max — consistent with the env/demo/finance/labour/macro
+# convention in this project.
+#
+# Direction note: Gini, at-risk-of-poverty and material deprivation are
+# "lower is better" (ascending_is_good: false). Median income is
+# "higher is better" (ascending_is_good: true).
+
+semantic_models:
+  - name: soc_overview
+    description: Annual Income & Living Conditions KPIs — Poland (Eurostat ILC series).
+    model: ref('fact_soc_overview')
+
+    defaults:
+      agg_time_dimension: period
+
+    primary_entity: soc_overview_row
+
+    entities:
+      - name: geo
+        type: foreign
+        expr: geo
+      - name: date_key
+        type: foreign
+        expr: period_date
+
+    dimensions:
+      - name: period
+        type: time
+        expr: period_date
+        type_params:
+          time_granularity: year
+
+    measures:
+      - name: gini_coefficient
+        description: >
+          Gini coefficient of equivalised disposable income, 0–100 index
+          (ilc_di12, statinfo=GINI_HND). Lower is more equal.
+        agg: average
+        expr: gini_coefficient
+      - name: at_risk_poverty_pct
+        description: >
+          At-risk-of-poverty rate, percent of population below 60% of median
+          equivalised income (ilc_li02, indic_il=LI_R_MD60).
+        agg: average
+        expr: at_risk_poverty_pct
+      - name: material_deprivation_pct
+        description: >
+          Severe material deprivation rate, percent
+          (ilc_mddd11, unit=PC; series ends 2020, SMD→SMSD methodology change).
+        agg: average
+        expr: material_deprivation_pct
+      - name: median_income_eur
+        description: >
+          Median equivalised net income, euro
+          (ilc_di03, indic_il=MED_E, unit=EUR).
+        agg: average
+        expr: median_income_eur
+
+metrics:
+  - name: gini_coefficient
+    label: "Współczynnik Giniego"
+    type: simple
+    type_params:
+      measure: gini_coefficient
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: ""
+          scale: 1
+        source_label: "Eurostat (ilc_di12), Gini dochodu ekwiwalentnego"
+        ascending_is_good: false
+
+  - name: at_risk_poverty
+    label: "Zagrożenie ubóstwem"
+    type: simple
+    type_params:
+      measure: at_risk_poverty_pct
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: "%"
+          scale: 1
+        source_label: "Eurostat (ilc_li02), próg 60% mediany dochodu"
+        ascending_is_good: false
+
+  - name: material_deprivation
+    label: "Deprywacja materialna"
+    type: simple
+    type_params:
+      measure: material_deprivation_pct
+    config:
+      meta:
+        format:
+          decimals: 1
+          suffix: "%"
+          scale: 1
+        source_label: "Eurostat (ilc_mddd11), poważna deprywacja materialna"
+        ascending_is_good: false
+
+  - name: median_income
+    label: "Mediana dochodu"
+    type: simple
+    type_params:
+      measure: median_income_eur
+    config:
+      meta:
+        format:
+          decimals: 0
+          suffix: " €"
+          scale: 1
+        source_label: "Eurostat (ilc_di03), mediana dochodu ekwiwalentnego netto"
+        ascending_is_good: true

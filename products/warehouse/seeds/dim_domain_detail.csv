@@ -194,6 +194,7 @@ soc.childcare_coverage_0_3,SOC,Formal Childcare Coverage (0-3 years),%,annual,In
 soc.disability_benefit_recipients,SOC,Disability Benefit Recipients (PFRON),count,monthly,Income Living Conditions & Social Protection,Society,AVG
 soc.gini_coefficient,SOC,Gini Coefficient of Income Inequality,index,annual,Income Living Conditions & Social Protection,Society,AVG
 soc.household_income_avg,SOC,Average Household Disposable Income per Capita,PLN,annual,Income Living Conditions & Social Protection,Society,AVG
+soc.median_income_eur,SOC,Median Equivalised Net Income,EUR,annual,Income Living Conditions & Social Protection,Society,AVG
 soc.minimum_wage,SOC,National Minimum Wage,PLN,annual,Income Living Conditions & Social Protection,Society,AVG
 soc.pension_average,SOC,Average Monthly Pension (ZUS),PLN,quarterly,Income Living Conditions & Social Protection,Society,AVG
 soc.poverty_rate,SOC,At-Risk-of-Poverty Rate,%,annual,Income Living Conditions & Social Protection,Society,AVG

@@ -61,8 +61,9 @@ sci.researchers_count,SCI,rd_p_persocc,prof_pos=TOTAL&sectperf=TOTAL&sex=T&unit=
 soc.childcare_coverage_0_3,SOC,ilc_caindother,age=Y_LT3&unit=PC
 soc.gini_coefficient,SOC,ilc_di12,age=TOTAL&statinfo=GINI_HND
 soc.household_income_avg,SOC,ilc_di03,unit=EUR
+soc.median_income_eur,SOC,ilc_di03,age=TOTAL&indic_il=MED_E&sex=T&unit=EUR
 soc.minimum_wage,SOC,earn_mw_cur,currency=EUR
-soc.poverty_rate,SOC,ilc_li02,age=TOTAL&sex=T&unit=PC
+soc.poverty_rate,SOC,ilc_li02,age=TOTAL&indic_il=LI_R_MD60&sex=T&unit=PC
 soc.severe_material_deprivation,SOC,ilc_mddd11,age=TOTAL&sex=T&unit=PC
 trd.exports_by_country,TRD,ext_lt_intratrd,indic_et=MIO_EXP_VAL&partner=EXT_EU27_2020&sitc06=TOTAL
 trd.exports_goods_total,TRD,ext_lt_intratrd,indic_et=MIO_EXP_VAL&partner=WORLD&sitc06=TOTAL
