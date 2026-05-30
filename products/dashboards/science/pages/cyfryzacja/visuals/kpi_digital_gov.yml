@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+type: card
+encoding:
+  value: { metric: digital_public_services }
+filter:
+  geo: PL
+options:
+  delta:
+    vs: prior_year
+    format: icon-first

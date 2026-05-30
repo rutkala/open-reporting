@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Usługi publiczne online — historia roczna (2004-2025).
+# Cyfryzacja administracji publicznej jako procent populacji korzystającej z internetu.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: digital_public_services }
+filter:
+  geo: PL

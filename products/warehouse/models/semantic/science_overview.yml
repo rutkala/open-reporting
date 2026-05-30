@@ -54,6 +54,14 @@ semantic_models:
         description: EPO patent applications per million inhabitants.
         agg: average
         expr: patent_apps_per_mhab
+      - name: internet_usage_rate_pct
+        description: Individuals using internet in last 12 months, percent (isoc_ci_ifp_iu, I_ILT12).
+        agg: average
+        expr: internet_usage_rate_pct
+      - name: digital_public_services_pct
+        description: Individuals using internet for public services, percent (isoc_ci_ac_i, I_IHIF).
+        agg: average
+        expr: digital_public_services_pct
 
 metrics:
   - name: rd_intensity
@@ -110,4 +118,32 @@ metrics:
           suffix: " /mln os."
           scale: 1
         source_label: "Eurostat (pat_ep_ntot), zgłoszenia patentowe EPO na mln mieszkańców"
+        ascending_is_good: true
+
+  - name: internet_usage
+    label: "Korzystanie z internetu"
+    type: simple
+    type_params:
+      measure: internet_usage_rate_pct
+    config:
+      meta:
+        format:
+          decimals: 0
+          suffix: "%"
+          scale: 1
+        source_label: "Eurostat (isoc_ci_ifp_iu), odsetek osób korzystających z internetu w ciągu ostatnich 12 miesięcy"
+        ascending_is_good: true
+
+  - name: digital_public_services
+    label: "Usługi publiczne online"
+    type: simple
+    type_params:
+      measure: digital_public_services_pct
+    config:
+      meta:
+        format:
+          decimals: 0
+          suffix: "%"
+          scale: 1
+        source_label: "Eurostat (isoc_ci_ac_i), odsetek osób korzystających z internetu w kontakcie z administracją publiczną"
         ascending_is_good: true

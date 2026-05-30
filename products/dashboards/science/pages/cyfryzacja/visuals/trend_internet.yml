@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Korzystanie z internetu — historia roczna (2004-2025).
+# ~29% (2004) → ~87% (2025) — 3x wzrost w 21 latach.
+
+type: line
+encoding:
+  x: { dimension: date_key__cal_year }
+  y: { metric: internet_usage }
+filter:
+  geo: PL

@@ -1,0 +1,7 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/page.schema.json
+# Page 3 — Digitalization: internet usage and digital public services adoption.
+# Story: Poland's internet penetration rose from ~29% (2004) to ~87% (2025).
+#   Digital public services uptake mirrors the trend with slight lag.
+
+title:  "Cyfryzacja"
+anchor: cyfryzacja

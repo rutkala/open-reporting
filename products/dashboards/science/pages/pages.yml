@@ -2,6 +2,8 @@
 # Narrative arc:
 #   1. Overview (Przegląd) — R&D intensity KPI + trend, researchers KPI + trend
 #   2. Innovation output (Innowacje) — total R&D spending + patent applications
+#   3. Digitalization (Cyfryzacja) — internet usage + digital public services
 order:
   - przeglad
   - innowacje
+  - cyfryzacja
