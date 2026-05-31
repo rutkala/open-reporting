@@ -51,6 +51,7 @@ from dbr.visuals.small_multiples import small_multiples, SCHEMA as _SMALL_MULTIP
 from dbr.visuals.tab_group       import tab_group,       SCHEMA as _TAB_GROUP_SCHEMA
 from dbr.visuals.table           import table,           SCHEMA as _TABLE_SCHEMA
 from dbr.visuals.treemap   import treemap,   SCHEMA as _TREEMAP_SCHEMA
+from dbr.visuals.ribbon    import ribbon,    SCHEMA as _RIBBON_SCHEMA
 from dbr.visuals.slicer    import slicer,    SCHEMA as _SLICER_SCHEMA
 from dbr.visuals.waterfall import waterfall, SCHEMA as _WATERFALL_SCHEMA
 
@@ -69,6 +70,7 @@ VISUAL_REGISTRY: dict = {
     "histogram":       histogram,
     "line":            line,
     "pie":             pie,
+    "ribbon":          ribbon,
     "scatter":         scatter,
     "slicer":          slicer,
     "small_multiples": small_multiples,
@@ -93,6 +95,7 @@ VISUAL_SCHEMAS: dict = {
     "histogram":       _HISTOGRAM_SCHEMA,
     "line":            _LINE_SCHEMA,
     "pie":             _PIE_SCHEMA,
+    "ribbon":          _RIBBON_SCHEMA,
     "scatter":         _SCATTER_SCHEMA,
     "slicer":          _SLICER_SCHEMA,
     "small_multiples": _SMALL_MULTIPLES_SCHEMA,

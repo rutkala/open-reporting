@@ -24,6 +24,20 @@
       "type": "string",
       "description": "Optional smaller caption rendered below the title."
     },
+    "drill_through": {
+      "type": "object",
+      "description": "Clicking a data point navigates to target_page and applies the clicked value as a filter on linked visuals.",
+      "additionalProperties": false,
+      "required": ["target_page"],
+      "properties": {
+        "target_page": { "type": "string", "description": "Page anchor to scroll to." },
+        "pass_filter": {
+          "type": "object",
+          "description": "Map filter key → dimension column name to extract from clickData.",
+          "additionalProperties": { "type": "string" }
+        }
+      }
+    },
     "cross_filter": {
       "type": "boolean",
       "description": "When true, clicking a data point in this chart emits a filter signal to all visuals with matching filter_from bindings. The clicked value is used as the filter."

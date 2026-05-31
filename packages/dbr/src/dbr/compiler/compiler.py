@@ -77,11 +77,22 @@ class _CrossFilterSource:
 
 
 @dataclass
+class _DrillThrough:
+    """A chart that navigates to a target page anchor on click."""
+    graph_id: str            # Plotly dcc.Graph component ID
+    target_anchor: str       # page anchor to scroll to (href)
+    pass_filter: dict[str, str]  # {filter_key: dimension_col} to read from clickData
+    slicer_id: str           # virtual slicer_id for the drilled value
+
+
+@dataclass
 class BuildContext:
     """Accumulates slicer + chart bindings during the compile phase."""
     slicers: dict[str, str] = field(default_factory=dict)          # slicer_id → Dash component id
     bindings: list[_SlicerBinding] = field(default_factory=list)
     cross_sources: list[_CrossFilterSource] = field(default_factory=list)
+    drill_throughs: list[_DrillThrough] = field(default_factory=list)
+    needs_location: bool = False   # True when any drill-through is registered
 
     def register_slicer(self, slicer_id: str, component_id: str) -> None:
         self.slicers[slicer_id] = component_id
@@ -90,6 +101,11 @@ class BuildContext:
         self.cross_sources.append(_CrossFilterSource(graph_id, slicer_id, dimension))
         # Expose as a virtual slicer so filter_from can reference it
         self.slicers[slicer_id] = graph_id
+
+    def register_drill_through(self, graph_id: str, target_anchor: str, pass_filter: dict, slicer_id: str) -> None:
+        self.drill_throughs.append(_DrillThrough(graph_id, target_anchor, pass_filter, slicer_id))
+        self.slicers[slicer_id] = graph_id  # expose as virtual slicer for filter_from
+        self.needs_location = True
 
     def register_chart(
         self,
@@ -106,7 +122,7 @@ class BuildContext:
         ))
 
     def has_bindings(self) -> bool:
-        return bool(self.bindings) or bool(self.cross_sources)
+        return bool(self.bindings) or bool(self.cross_sources) or bool(self.drill_throughs)
 
     def register_callbacks(self, app) -> None:
         """Wire slicer → chart callbacks and cross-filter click → store callbacks."""
@@ -169,6 +185,41 @@ class BuildContext:
                 kwargs = {**_bk, "filter": merged or None}
                 return [_f(**kwargs)]
 
+        # Drill-through: click → store filter value + navigate to target anchor
+        for dt in self.drill_throughs:
+            _gid        = dt.graph_id
+            _pass       = dt.pass_filter   # {filter_key: dim_col}
+            _anchor     = dt.target_anchor
+            _store_id   = f"cf_store_{_gid}"
+            _loc_id     = "dbr_location"
+
+            @app.callback(
+                Output(_store_id, "data"),
+                Output(_loc_id, "hash"),
+                Input(_gid, "clickData"),
+                State(_store_id, "data"),
+            )
+            def _on_drill(click_data, current_store, _p=_pass, _a=_anchor, _gid=_gid):
+                if click_data is None:
+                    from dash import no_update
+                    return no_update, no_update
+                try:
+                    point = click_data["points"][0]
+                    val   = point.get("y") or point.get("x") or point.get("label")
+                    if val is None:
+                        from dash import no_update
+                        return no_update, no_update
+                    val_str = str(val)
+                    # Toggle deselect
+                    if val_str == (current_store or {}).get("__drill"):
+                        return {}, ""
+                    store_data = {fk: val_str for fk in _p}
+                    store_data["__drill"] = val_str
+                    return store_data, f"#{_a}"
+                except (KeyError, IndexError):
+                    from dash import no_update
+                    return no_update, no_update
+
 
 def run_dashboard(path: str | Path) -> None:
     """Build and run the dashboard at ``path``.
@@ -187,7 +238,17 @@ def run_dashboard(path: str | Path) -> None:
     sections = _load_pages(project_root / "pages", ctx)
 
     app = make_app(config["domain"])
-    app.layout = page_shell(sections=sections)
+
+    # Inject dcc.Location for drill-through URL hash navigation when needed
+    if ctx.needs_location:
+        from dash import dcc as _dcc, html as _html
+        shell = page_shell(sections=sections)
+        app.layout = _html.Div([
+            _dcc.Location(id="dbr_location", refresh=False),
+            shell,
+        ])
+    else:
+        app.layout = page_shell(sections=sections)
 
     if ctx.has_bindings():
         ctx.register_callbacks(app)
@@ -284,10 +345,14 @@ def _build_visual(
     subtitle      = spec.get("subtitle")
     filter_from   = spec.get("filter_from")    # dict[slicer_id, filter_key] | None
     cross_filter  = spec.get("cross_filter", False)
-    cross_dim     = spec.get("cross_filter_dimension")  # which dimension value to emit
+    cross_dim     = spec.get("cross_filter_dimension")
+    drill_through = spec.get("drill_through")  # {target_page, pass_filter: {dim: col}}
 
     # Strip compiler-only keys before calling factory
-    _compiler_keys = ("type", "title", "subtitle", "filter_from", "cross_filter", "cross_filter_dimension")
+    _compiler_keys = (
+        "type", "title", "subtitle", "filter_from",
+        "cross_filter", "cross_filter_dimension", "drill_through",
+    )
     kwargs = {k: v for k, v in spec.items() if k not in _compiler_keys}
 
     # If cross_filter: inject graph_id into kwargs so _render.py can tag dcc.Graph
@@ -318,6 +383,26 @@ def _build_visual(
         else:
             component.children = [store]
 
+    # ── drill_through: click → navigate to target anchor + pass filter ────────
+    if drill_through and ctx:
+        from dash import dcc as _dcc
+        dt_graph_id  = f"graph__{page_name}__{visual_name}__dt"
+        dt_slicer_id = f"__dt_{page_name}_{visual_name}"
+        target_anchor = drill_through.get("target_page", "")
+        pass_filter   = drill_through.get("pass_filter", {})  # {filter_key: dim_col}
+        ctx.register_drill_through(dt_graph_id, target_anchor, pass_filter, dt_slicer_id)
+        # Inject dcc.Store for the drill filter value
+        dt_store = _dcc.Store(id=f"cf_store_{dt_graph_id}", data={})
+        # Tag the graph inside the component with the dt_graph_id
+        # We wrap the component children with the store and assign the graph id
+        _inject_graph_id(component, dt_graph_id)
+        if isinstance(component.children, list):
+            component.children = [dt_store] + component.children
+        elif component.children is not None:
+            component.children = [dt_store, component.children]
+        else:
+            component.children = [dt_store]
+
     # ── filter_from: wrap in a named container for the callback ───────────────
     if filter_from and ctx:
         container_id = f"chart__{page_name}__{visual_name}"
@@ -325,6 +410,21 @@ def _build_visual(
         return _html.Div([component], id=container_id)
 
     return component
+
+
+def _inject_graph_id(component, graph_id: str) -> None:
+    """Walk a component tree and assign graph_id to the first dcc.Graph found."""
+    from dash import dcc as _dcc
+    children = getattr(component, "children", None)
+    if children is None:
+        return
+    if not isinstance(children, list):
+        children = [children]
+    for child in children:
+        if isinstance(child, _dcc.Graph) and not child.id:
+            child.id = graph_id
+            return
+        _inject_graph_id(child, graph_id)
 
 
 def _prepend_title(card, title: str | None, subtitle: str | None) -> None:
