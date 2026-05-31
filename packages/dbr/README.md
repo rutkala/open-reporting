@@ -5,7 +5,7 @@ Declarative YAML dashboard framework for Open Reporting.
 Authors write YAML; the engine renders Dash apps. Theme, layout, and 18 visual types are
 bundled. Connects to the MetricFlow semantic layer — no raw SQL in dashboard files.
 
-## Visual library (21 types)
+## Visual library (22 types)
 
 | Type | Description | PowerBI equivalent |
 |------|-------------|-------------------|
@@ -30,6 +30,7 @@ bundled. Connects to the MetricFlow semantic layer — no raw SQL in dashboard f
 | `choropleth` | Geographic map — EU country or custom GeoJSON regions | Map |
 | `small_multiples` | Trellis / facet grid (same chart per dimension value) | Small multiples |
 | `tab_group` | Sub-page tab navigation within a section | Tabs |
+| `ribbon` | Bump / rank chart — rank positions change over time | Ribbon chart |
 
 ## Universal visual options
 
@@ -101,6 +102,43 @@ encoding:
 
 No Python callback code is needed — the compiler wires everything declaratively.
 
+## Drill-through navigation
+
+Click a data point to scroll to a detail page with pre-applied filter:
+
+```yaml
+# overview_bar.yml — source visual
+type: bar
+drill_through:
+  target_page: kraj_detail     # page anchor to scroll to
+  pass_filter:
+    geo: geo                   # filter key → dimension column from clickData
+
+# detail_trend.yml — destination visual (on the kraj_detail page section)
+type: line
+filter_from:
+  __dt_przeglad_overview_bar: geo   # auto-assigned slicer_id
+encoding:
+  x: { dimension: metric_time, granularity: year }
+  y: { metric: unemployment_rate }
+```
+
+## Cross-filtering
+
+Click a chart element to filter all linked visuals on the same page:
+
+```yaml
+# source: emits filter signal when clicked
+type: bar
+cross_filter: true
+cross_filter_dimension: geo
+
+# receiver: updates when source is clicked
+type: line
+filter_from:
+  __cf_przeglad_country_bar: geo
+```
+
 ## Project shape
 
 ```
@@ -134,24 +172,21 @@ dbr compile <path>    # print resolved layout tree (debug)
 
 ## Status
 
-- [x] 21 visual types — matches PowerBI/Tableau/Qlik core feature sets
-- [x] Slicers: dropdown, radio, multi, **date_range**, **slider** — declarative callback wiring
-- [x] **Cross-filtering**: `cross_filter: true` on any chart → click emits filter signal
-- [x] **Axis control**: y_min/y_max/log_y/normalize on all chart types
-- [x] **Number format templates**: format_value() with Polish locale, named presets
-- [x] **Reference bands**: shaded vertical regions (GFC, COVID, policy breaks)
-- [x] **Sparklines** inside KPI cards
-- [x] **Trendline** on scatter, **smooth** on line, **error bars** on bar/column
-- [x] **Small multiples** (trellis/facet grid), **choropleth** (EU scope + custom GeoJSON)
-- [x] **Tab groups** for sub-page navigation
-- [x] Universal title/subtitle, height, format, download options
-- [x] Table: conditional formatting, totals row, data bars
-- [x] Compiler (YAML → Dash app)
-- [x] Theme YAML + loader (Nordic teal palette)
-- [x] Layout YAML + loader (sidebar position/enabled)
-- [x] MetricFlow semantic-layer binding
-- [x] CLI (init / run / serve / validate / compile)
-- [x] Schema validation (jsonschema)
-- [ ] Drill-through page navigation (OR-164)
-- [ ] Ribbon chart / rank chart (OR-163)
-- [ ] Export: print layout / PDF
+- [x] **22 visual types** — full feature parity with PowerBI / Tableau / Qlik core library
+- [x] **Slicers**: dropdown, radio, multi, date_range, slider — declarative Dash callback wiring
+- [x] **Cross-filtering**: `cross_filter: true` on any chart → click emits filter signal to linked visuals
+- [x] **Drill-through**: `drill_through: {target_page, pass_filter}` → click navigates + pre-filters destination
+- [x] **Axis control**: y_min/y_max/x_min/x_max, log_y/log_x, y_title, normalize (100% stacked)
+- [x] **Number format templates**: format_value() with Polish locale; named presets (percent_1dp, thousands…)
+- [x] **Reference bands**: shaded vertical regions on line/area (recession periods, structural breaks)
+- [x] **Sparklines** inside KPI cards — embedded mini trend line
+- [x] **Trendline** (OLS) on scatter, **smooth** (spline) on line, **error bars** on bar/column
+- [x] **Ribbon/bump chart**: rank positions change over time with crossing lines
+- [x] **Small multiples**: trellis/facet grid — same chart repeated per dimension value
+- [x] **Choropleth**: EU country map (Plotly built-in) + custom GeoJSON for regional maps
+- [x] **Tab groups**: sub-page tab navigation (dcc.Tabs) without page change
+- [x] Universal title/subtitle, height, download (CSV), data_labels options on all visuals
+- [x] Table: conditional_format, totals row, data bars per column
+- [x] Compiler (YAML → Dash app), Theme YAML, Layout YAML, MetricFlow binding
+- [x] CLI (init / run / serve / validate / compile), JSON Schema validation
+- [ ] Export: print layout / PDF (browser print media CSS workaround available)
