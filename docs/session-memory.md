@@ -1,6 +1,20 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-05-31 19:35 UTC (run #34 — verified-redeploy mechanism: "resolved" is now provable) -->
+<!-- last-updated: 2026-05-31 20:05 UTC (run #35 — floating-panel layout: PO's inset-spacing + visible-footer requirement finally met) -->
+
+## Run #35 — floating-panel layout (the requirement, finally read right)
+
+PO had asked repeatedly for **visible space between every panel and the page border**
+plus a **clearly visible footer**. Earlier runs misread this and even REMOVED the gap,
+leaving an edge-to-edge layout (sidebar on the left border, header on top, cards clipped
+at the right, footer flat against the bottom → read as "no footer"). Fixed by rebuilding
+as floating cards on the page canvas (`085b2a8d`): outer `padding`=PAGE_PADDING insets the
+whole app 16px from all four viewport edges; `gap`=PAGE_GAP separates sidebar↔content and
+header↔chart-area↔footer; sidebar/header/footer got full border + CARD_RADIUS (were
+single-side dividers). Verified 1366/1440px + all 16 stamp==HEAD `085b2a8d`. **Lesson: the
+"gap"/space the PO kept asking for across many iterations = an inset floating-panel layout,
+NOT a divider. Do not remove it.**
+
 
 ## Current Focus
 
