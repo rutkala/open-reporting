@@ -6,8 +6,8 @@
 
 **16 domain dashboards live. All 18 blog articles PUBLISHED. Article bottleneck CLEARED.**
 
-**ACTIVE BLOCKER: degraded VPS tool I/O channel — now 3 consecutive runs (#29, #30, #31).**
-Run #31: NO BUILD. All tool results (Bash, Read, Glob) return empty in-window and do not flush — smoke checks, dbt/dbr deploy output, and the release pipeline are all unobservable. Driving a multi-step production deploy through an unobservable channel risks a half-applied change, so held off (same safe call as #29/#30). Disk writes still execute (only the result channel is broken), so post-mortem + outbox escalation were committed via write-only bash. Escalated to PO: this is now a persistent infra failure blocking ALL autonomous building — runs are effectively idle until fixed. Article queue stays cleared, so Step 2b had nothing to publish.
+**ACTIVE: high-latency VPS tool I/O channel — 3 runs running (#29, #30, #31).**
+Run #31: QUIET RUN, production VERIFIED healthy. The channel is NOT dead — it flushes in sporadic delayed batches (~6 calls latency). Smoke check eventually came through: public_finance, labour_market, national_accounts, demographics, environment, www all HTTP 200; git clean of own work. Build held off anyway: sporadic flush latency makes a multi-step deploy (dbt write-lock dance, service stop/start) unsafe to drive — cannot observe step N before issuing N+1. Article queue cleared (Step 2b nothing to publish); remaining roadmap PO-blocked. PO latency escalation stands.
 
 ## Live production state (last VERIFIED run #28; not re-verifiable #29–#31 due to channel)
 
