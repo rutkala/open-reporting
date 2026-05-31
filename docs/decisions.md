@@ -795,3 +795,11 @@ Full content-reviewer + domain-specialist publish gate intentionally NOT run —
 **Standing blockers unchanged (all PO-side):** OR-153 (Telegram inbound), OR-90 (Instagram token → blocks OR-89 social publish), OR-86 (BDL/GUS key), OR-79 (Ghost nav). Article queue: cleared (all 18 live). Next substantive run (channel permitting): Phase 3 data depth or 17th domain dashboard.
 
 **Addendum (same run #30):** The channel recovered enough mid-run to query Linear. Found 9 article issues still marked **In Progress** despite all 18 articles being published (release-report 18/18 live): OR-147, OR-148, OR-149, OR-150, OR-151, OR-154, OR-156, OR-157, OR-158. Issued `save_issue → Done` for all 9 to reconcile the board with reality (the articles are live on Ghost; In Progress was stale). The degraded I/O channel prevented in-run confirmation of the state writes — the 07:00 UTC run should verify the 9 are Done and retry any that did not take. No Strategic and no Todo issues exist; In Progress (post-reconciliation) should be empty. So this run was light reconciliation, not purely quiet.
+
+## Run #31 — 2026-05-31 07:00 UTC — [QUIET RUN] [INFRA DEGRADED]
+
+- **What:** No build. Tool I/O channel degraded for the 3rd consecutive run (#29/#30/#31) — Bash/Read/Glob results return empty and never flush in-window. Smoke check, release pipeline, and any deploy output are unobservable.
+- **Action taken:** Held off all building (deploying through an unobservable channel risks a half-applied production change). Wrote outbox escalation + this entry via write-only bash (disk writes still execute; only the result channel is broken). Escalated to PO as a persistent infra failure now spanning 3 runs.
+- **Why:** Honesty + safety floors. Cannot verify production state, cannot verify deploy success → safest slice is no production mutation.
+- **Status:** Quiet run / blocked by infra.
+- **Followup:** PO must inspect claude-code harness pipe buffering / version on the VPS and the autonomous-lead.sh launcher piping. Autonomous building is idle until the result channel flushes normally. No drafts pending; no production breakage observed.
