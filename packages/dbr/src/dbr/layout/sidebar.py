@@ -5,6 +5,8 @@ Design:
   - Brand header: OR logo mark + "Open Reporting" wordmark + dashboard title.
   - Nav links: className="dbr-nav-link" + data-anchor attribute so the
     scrollspy script injected by make_app can highlight the active section.
+  - Toggle button: collapses sidebar to 52 px icon strip; state persisted
+    in localStorage under key ``dbr-sidebar-collapsed``.
   - Portal back-link at the bottom.
 
 All visual tokens (colours, fonts, widths, paddings) come from
@@ -12,6 +14,7 @@ All visual tokens (colours, fonts, widths, paddings) come from
 """
 from dash import html
 
+from dbr.layout.loader import SIDEBAR_SHOW_TOGGLE
 from dbr.theme import (
     BG_SURFACE,
     BORDER,
@@ -42,10 +45,35 @@ _SIDEBAR_STYLE = {
     "height":        "calc(100vh - 16px)",
     "overflowY":     "auto",
     "overflowX":     "hidden",
+    "transition":    "width 0.2s ease",
+}
+
+_TOGGLE_BAR_STYLE = {
+    "display":        "flex",
+    "justifyContent": "flex-end",
+    "padding":        "8px 8px 0 8px",
+    "flexShrink":     0,
+}
+
+_TOGGLE_BTN_STYLE = {
+    "width":           "26px",
+    "height":          "26px",
+    "borderRadius":    "5px",
+    "border":          f"1px solid {BORDER}",
+    "background":      BG_SURFACE,
+    "cursor":          "pointer",
+    "fontSize":        "13px",
+    "color":           SUBTEXT,
+    "padding":         "0",
+    "lineHeight":      "1",
+    "display":         "flex",
+    "alignItems":      "center",
+    "justifyContent":  "center",
+    "flexShrink":      0,
 }
 
 _BRAND_STYLE = {
-    "padding":      "20px 20px 16px 20px",
+    "padding":      "12px 20px 16px 20px",
     "borderBottom": f"1px solid {BORDER}",
     "flexShrink":   0,
 }
@@ -145,11 +173,21 @@ def build_sidebar(
     brand_children: list = [
         html.Div(style=_LOGO_ROW_STYLE, children=[
             html.Div("OR", style=_LOGO_BADGE_STYLE),
-            html.Div("Open Reporting", style=_LOGO_NAME_STYLE),
+            html.Div(
+                "Open Reporting",
+                style=_LOGO_NAME_STYLE,
+                className="dbr-brand-text",
+            ),
         ]),
     ]
     if dashboard_title:
-        brand_children.append(html.Div(dashboard_title, style=_DASH_TITLE_STYLE))
+        brand_children.append(
+            html.Div(
+                dashboard_title,
+                style=_DASH_TITLE_STYLE,
+                className="dbr-brand-text",
+            )
+        )
 
     links = [
         html.A(
@@ -162,16 +200,37 @@ def build_sidebar(
         for label, anchor in sections
     ]
 
+    sidebar_children: list = []
+
+    if SIDEBAR_SHOW_TOGGLE:
+        sidebar_children.append(
+            html.Div(
+                id="dbr-sidebar-toggle-bar",
+                style=_TOGGLE_BAR_STYLE,
+                children=[
+                    html.Button(
+                        "‹",
+                        id="dbr-sidebar-toggle",
+                        title="Zwiń / rozwiń panel",
+                        style=_TOGGLE_BTN_STYLE,
+                    )
+                ],
+            )
+        )
+
+    sidebar_children += [
+        html.Div(id="dbr-sidebar-brand", style=_BRAND_STYLE, children=brand_children),
+        html.Div(id="dbr-sidebar-nav", style=_NAV_SECTION_STYLE, children=[
+            html.Div("Nawigacja", className="dbr-nav-label", style=_NAV_LABEL_STYLE),
+            html.Nav(children=links, style=_NAV_STYLE),
+        ]),
+        html.Div(id="dbr-sidebar-footer", style=_FOOTER_STYLE, children=[
+            html.A("← Portal", href="/", style=_PORTAL_LINK_STYLE),
+        ]),
+    ]
+
     return html.Aside(
+        id="dbr-sidebar",
         style=_SIDEBAR_STYLE,
-        children=[
-            html.Div(style=_BRAND_STYLE, children=brand_children),
-            html.Div(style=_NAV_SECTION_STYLE, children=[
-                html.Div("Nawigacja", style=_NAV_LABEL_STYLE),
-                html.Nav(children=links, style=_NAV_STYLE),
-            ]),
-            html.Div(style=_FOOTER_STYLE, children=[
-                html.A("← Portal", href="/", style=_PORTAL_LINK_STYLE),
-            ]),
-        ],
+        children=sidebar_children,
     )

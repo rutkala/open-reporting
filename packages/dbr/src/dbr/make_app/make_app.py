@@ -31,6 +31,21 @@ body { margin: 0; padding: 0; }
   border-left: 3px solid #4A7FB5 !important;
   padding-left: 17px !important;
 }
+
+/* Sidebar toggle button */
+#dbr-sidebar-toggle {
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+#dbr-sidebar-toggle:hover {
+  background-color: rgba(74, 127, 181, 0.08) !important;
+  color: #4A7FB5 !important;
+}
+
+/* Collapsed sidebar: !important overrides React inline style */
+#dbr-sidebar.dbr-sidebar-collapsed {
+  width: 52px !important;
+  min-width: 52px !important;
+}
 """
 
 _SCROLLSPY_JS = """
@@ -69,6 +84,58 @@ _SCROLLSPY_JS = """
 })();
 """
 
+_SIDEBAR_TOGGLE_JS = """
+(function () {
+  var KEY = 'dbr-sidebar-collapsed';
+
+  function applyState(sidebar, btn, collapsed) {
+    if (collapsed) {
+      sidebar.classList.add('dbr-sidebar-collapsed');
+      btn.textContent = '›';   /* › */
+      btn.title = 'Rozwiń panel';
+      /* Hide brand, nav, footer — keep only the toggle bar visible */
+      var brand  = document.getElementById('dbr-sidebar-brand');
+      var nav    = document.getElementById('dbr-sidebar-nav');
+      var footer = document.getElementById('dbr-sidebar-footer');
+      if (brand)  brand.style.display  = 'none';
+      if (nav)    nav.style.display    = 'none';
+      if (footer) footer.style.display = 'none';
+    } else {
+      sidebar.classList.remove('dbr-sidebar-collapsed');
+      btn.textContent = '‹';   /* ‹ */
+      btn.title = 'Zwiń panel';
+      var brand  = document.getElementById('dbr-sidebar-brand');
+      var nav    = document.getElementById('dbr-sidebar-nav');
+      var footer = document.getElementById('dbr-sidebar-footer');
+      if (brand)  brand.style.display  = '';
+      if (nav)    nav.style.display    = '';
+      if (footer) footer.style.display = '';
+    }
+  }
+
+  function initSidebarToggle() {
+    var sidebar = document.getElementById('dbr-sidebar');
+    var btn     = document.getElementById('dbr-sidebar-toggle');
+    if (!sidebar || !btn) { setTimeout(initSidebarToggle, 400); return; }
+
+    var collapsed = localStorage.getItem(KEY) === 'true';
+    applyState(sidebar, btn, collapsed);
+
+    btn.addEventListener('click', function () {
+      collapsed = !collapsed;
+      localStorage.setItem(KEY, String(collapsed));
+      applyState(sidebar, btn, collapsed);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () { setTimeout(initSidebarToggle, 600); });
+  } else {
+    setTimeout(initSidebarToggle, 600);
+  }
+})();
+"""
+
 _INDEX_STRING = (
     "<!DOCTYPE html>\n"
     "<html>\n"
@@ -87,6 +154,7 @@ _INDEX_STRING = (
     "      {%renderer%}\n"
     "    </footer>\n"
     "    <script>" + _SCROLLSPY_JS + "</script>\n"
+    "    <script>" + _SIDEBAR_TOGGLE_JS + "</script>\n"
     "  </body>\n"
     "</html>\n"
 )

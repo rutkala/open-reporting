@@ -14,5 +14,6 @@
 #   footer.enabled, footer.show_source, footer.show_updated, footer.link
 
 sidebar:
-  enabled:  true              # if false, the sidebar is not rendered; main takes full width
-  position: left              # left | right
+  enabled:      true          # if false, the sidebar is not rendered; main takes full width
+  position:     left          # left | right
+  show_toggle:  true          # show the collapse/expand toggle button

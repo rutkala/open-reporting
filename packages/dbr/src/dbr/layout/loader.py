@@ -45,5 +45,6 @@ if _project_root:
 _SIDEBAR = _DATA["sidebar"]
 
 # ── Sidebar behaviour ──────────────────────────────────────────────────
-SIDEBAR_ENABLED  = _SIDEBAR["enabled"]
-SIDEBAR_POSITION = _SIDEBAR["position"]      # "left" | "right"
+SIDEBAR_ENABLED      = _SIDEBAR["enabled"]
+SIDEBAR_POSITION     = _SIDEBAR["position"]      # "left" | "right"
+SIDEBAR_SHOW_TOGGLE  = _SIDEBAR.get("show_toggle", True)
