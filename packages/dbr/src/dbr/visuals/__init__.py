@@ -28,6 +28,7 @@ Seventeen visuals registered, modelled on Power BI's standard library:
   combo     — combination line + column (dual y-axis)
   bullet    — IBCS bullet chart (metric vs target vs ranges)
   box       — box-and-whisker distribution chart
+  slicer    — interactive filter control (dropdown / radio / multi-select)
 """
 from dbr.visuals.area      import area,      SCHEMA as _AREA_SCHEMA
 from dbr.visuals.bar       import bar,       SCHEMA as _BAR_SCHEMA
@@ -45,6 +46,7 @@ from dbr.visuals.pie       import pie,       SCHEMA as _PIE_SCHEMA
 from dbr.visuals.scatter   import scatter,   SCHEMA as _SCATTER_SCHEMA
 from dbr.visuals.table     import table,     SCHEMA as _TABLE_SCHEMA
 from dbr.visuals.treemap   import treemap,   SCHEMA as _TREEMAP_SCHEMA
+from dbr.visuals.slicer    import slicer,    SCHEMA as _SLICER_SCHEMA
 from dbr.visuals.waterfall import waterfall, SCHEMA as _WATERFALL_SCHEMA
 
 VISUAL_REGISTRY: dict = {
@@ -62,6 +64,7 @@ VISUAL_REGISTRY: dict = {
     "line":      line,
     "pie":       pie,
     "scatter":   scatter,
+    "slicer":    slicer,
     "table":     table,
     "treemap":   treemap,
     "waterfall": waterfall,
@@ -82,6 +85,7 @@ VISUAL_SCHEMAS: dict = {
     "line":      _LINE_SCHEMA,
     "pie":       _PIE_SCHEMA,
     "scatter":   _SCATTER_SCHEMA,
+    "slicer":    _SLICER_SCHEMA,
     "table":     _TABLE_SCHEMA,
     "treemap":   _TREEMAP_SCHEMA,
     "waterfall": _WATERFALL_SCHEMA,
@@ -91,5 +95,5 @@ __all__ = [
     "VISUAL_REGISTRY", "VISUAL_SCHEMAS",
     "area", "bar", "box", "bullet", "card", "column", "combo",
     "funnel", "gauge", "heatmap", "histogram", "line", "pie",
-    "scatter", "table", "treemap", "waterfall",
+    "scatter", "slicer", "table", "treemap", "waterfall",
 ]

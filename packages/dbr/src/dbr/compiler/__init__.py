@@ -9,6 +9,6 @@ Use:
     from dbr.compiler import run_dashboard
     run_dashboard(__file__)
 """
-from dbr.compiler.compiler import run_dashboard
+from dbr.compiler.compiler import run_dashboard, BuildContext
 
-__all__ = ["run_dashboard"]
+__all__ = ["run_dashboard", "BuildContext"]

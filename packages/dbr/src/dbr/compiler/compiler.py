@@ -46,13 +46,87 @@ The compiler walks this tree, instantiates each visual via the
 ``VISUAL_REGISTRY`` exposed by ``dbr.visuals``, hands the
 resulting tree to ``page_shell``, and starts the server.
 """
+from __future__ import annotations
+
+from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any, Callable
 
 import yaml
 
 from dbr.layout import page_shell
 from dbr.make_app import make_app, run_app
 from dbr.visuals import VISUAL_REGISTRY
+
+
+@dataclass
+class _SlicerBinding:
+    """One chart ↔ slicer wiring collected during the build phase."""
+    container_id: str
+    filter_from: dict[str, str]   # {slicer_id: filter_key}
+    factory: Callable
+    base_kwargs: dict[str, Any]
+
+
+@dataclass
+class BuildContext:
+    """Accumulates slicer + chart bindings during the compile phase."""
+    slicers: dict[str, str] = field(default_factory=dict)          # slicer_id → Dash component id
+    bindings: list[_SlicerBinding] = field(default_factory=list)
+
+    def register_slicer(self, slicer_id: str, component_id: str) -> None:
+        self.slicers[slicer_id] = component_id
+
+    def register_chart(
+        self,
+        container_id: str,
+        filter_from: dict[str, str],
+        factory: Callable,
+        base_kwargs: dict[str, Any],
+    ) -> None:
+        self.bindings.append(_SlicerBinding(
+            container_id=container_id,
+            filter_from=filter_from,
+            factory=factory,
+            base_kwargs=base_kwargs,
+        ))
+
+    def has_bindings(self) -> bool:
+        return bool(self.bindings)
+
+    def register_callbacks(self, app) -> None:
+        """Wire slicer → chart callbacks. Called after app.layout is set."""
+        from dash import Input, Output
+
+        for b in self.bindings:
+            inputs = []
+            fkeys: list[str] = []
+            for sid, fkey in b.filter_from.items():
+                comp_id = self.slicers.get(sid)
+                if not comp_id:
+                    continue
+                inputs.append(Input(comp_id, "value"))
+                fkeys.append(fkey)
+            if not inputs:
+                continue
+
+            # Capture loop variables explicitly via default args
+            _cid        = b.container_id
+            _factory    = b.factory
+            _base_kwargs = dict(b.base_kwargs)
+            _fkeys      = list(fkeys)
+
+            @app.callback(Output(_cid, "children"), inputs)
+            def _rebuild(*values, _f=_factory, _bk=_base_kwargs, _k=_fkeys):
+                merged = dict(_bk.get("filter") or {})
+                for fkey, val in zip(_k, values):
+                    # radio "all" sentinel and None both mean "remove filter"
+                    if val is not None and val != "__all__":
+                        merged[fkey] = val
+                    elif fkey in merged:
+                        del merged[fkey]
+                kwargs = {**_bk, "filter": merged or None}
+                return [_f(**kwargs)]
 
 
 def run_dashboard(path: str | Path) -> None:
@@ -68,10 +142,15 @@ def run_dashboard(path: str | Path) -> None:
     project_root = p if p.is_dir() else p.parent
     config = _load_yaml(project_root / "dashboard.yml")
 
-    sections = _load_pages(project_root / "pages")
+    ctx = BuildContext()
+    sections = _load_pages(project_root / "pages", ctx)
 
     app = make_app(config["domain"])
     app.layout = page_shell(sections=sections)
+
+    if ctx.has_bindings():
+        ctx.register_callbacks(app)
+
     run_app(app, port=config["port"])
 
 
@@ -82,7 +161,7 @@ Row = tuple[str | None, str | None, list[tuple[object, str | None]]]
 Section = tuple[str, str, list[Row]]
 
 
-def _load_pages(pages_dir: Path) -> list[Section]:
+def _load_pages(pages_dir: Path, ctx: BuildContext) -> list[Section]:
     """Return ``[(title, anchor, rows), ...]`` in the declared page order."""
     if not pages_dir.exists():
         return []
@@ -91,28 +170,20 @@ def _load_pages(pages_dir: Path) -> list[Section]:
     for page_name in meta.get("order", []) or []:
         page_dir = pages_dir / page_name
         page_config = _load_yaml(page_dir / "page.yml")
-        rows = _load_page_rows(page_dir / "visuals")
+        rows = _load_page_rows(page_dir / "visuals", page_name, ctx)
         sections.append((page_config["title"], page_config["anchor"], rows))
     return sections
 
 
-def _load_page_rows(visuals_dir: Path) -> list[Row]:
-    """Parse ``visuals.yml`` into a list of rows.
-
-    Each row is ``(title-or-None, [(component, width-or-None), ...])``.
-    The optional row title renders as an H3 sub-heading above the row
-    items in ``page_shell``.
-    """
+def _load_page_rows(visuals_dir: Path, page_name: str, ctx: BuildContext) -> list[Row]:
+    """Parse ``visuals.yml`` into a list of rows."""
     if not visuals_dir.exists():
         return []
     meta = _load_yaml(visuals_dir / "visuals.yml")
 
-    # Normalize the two YAML shapes into a single internal form:
-    #   rows_spec = [{"title"?: str, "items": [<string-or-dict>, ...]}, ...]
     if "rows" in meta:
         rows_spec = meta.get("rows") or []
     elif "order" in meta:
-        # Short form: each entry becomes its own row of width 100% (no titles)
         rows_spec = [{"items": [name]} for name in (meta.get("order") or [])]
     else:
         return []
@@ -130,12 +201,19 @@ def _load_page_rows(visuals_dir: Path) -> list[Row]:
                 visual_name = item["visual"]
                 width = item.get("width")
             spec = _load_yaml(visuals_dir / f"{visual_name}.yml")
-            row_items.append((_build_visual(spec), width))
+            row_items.append((_build_visual(spec, ctx, page_name, visual_name), width))
         rows.append((row_title, row_prose, row_items))
     return rows
 
 
-def _build_visual(spec: dict):
+def _build_visual(
+    spec: dict,
+    ctx: BuildContext | None = None,
+    page_name: str = "",
+    visual_name: str = "",
+):
+    from dash import html as _html
+
     vtype = spec.get("type")
     if vtype is None:
         raise ValueError(f"Visual spec missing required 'type': {spec}")
@@ -145,12 +223,38 @@ def _build_visual(spec: dict):
             f"Unknown visual type {vtype!r}. Available: {available}"
         )
     factory = VISUAL_REGISTRY[vtype]
-    title    = spec.get("title")
-    subtitle = spec.get("subtitle")
-    kwargs = {k: v for k, v in spec.items() if k not in ("type", "title", "subtitle")}
+
+    # ── Slicer ────────────────────────────────────────────────────────────────
+    if vtype == "slicer":
+        slicer_id = spec.get("slicer_id", visual_name)
+        comp_id   = f"slicer_{slicer_id}"
+        if ctx:
+            ctx.register_slicer(slicer_id, comp_id)
+        kwargs = {k: v for k, v in spec.items()
+                  if k not in ("type", "title", "subtitle", "slicer_id")}
+        component = factory(component_id=comp_id, slicer_id=slicer_id, **kwargs)
+        title, subtitle = spec.get("title"), spec.get("subtitle")
+        if title or subtitle:
+            _prepend_title(component, title, subtitle)
+        return component
+
+    # ── Regular chart / table ─────────────────────────────────────────────────
+    title       = spec.get("title")
+    subtitle    = spec.get("subtitle")
+    filter_from = spec.get("filter_from")   # dict[slicer_id, filter_key] | None
+    kwargs = {k: v for k, v in spec.items()
+              if k not in ("type", "title", "subtitle", "filter_from")}
     component = factory(**kwargs)
+
     if title or subtitle:
         _prepend_title(component, title, subtitle)
+
+    # ── filter_from: wrap in a named container for the callback ───────────────
+    if filter_from and ctx:
+        container_id = f"chart__{page_name}__{visual_name}"
+        ctx.register_chart(container_id, filter_from, factory, kwargs)
+        return _html.Div([component], id=container_id)
+
     return component
 
 

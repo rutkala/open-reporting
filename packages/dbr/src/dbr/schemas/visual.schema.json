@@ -24,6 +24,11 @@
       "type": "string",
       "description": "Optional smaller caption rendered below the title."
     },
+    "filter_from": {
+      "type": "object",
+      "description": "Wires this visual to one or more slicer visuals on the same page. Keys are slicer_id values; values are the filter dimension key. E.g. { country_filter: geo }.",
+      "additionalProperties": { "type": "string" }
+    },
     "filter": {
       "type": "object",
       "description": "Filter passed to the semantic layer. Keys are entity/dimension names; values are scalars or arrays.",

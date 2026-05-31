@@ -13,7 +13,10 @@ from dash import Dash
 
 
 def make_app(domain: str) -> Dash:
-    return Dash(url_base_pathname=f"/{domain}/")
+    return Dash(
+        url_base_pathname=f"/{domain}/",
+        suppress_callback_exceptions=True,
+    )
 
 
 def run_app(app: Dash, port: int) -> None:
