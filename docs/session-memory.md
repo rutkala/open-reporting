@@ -1,20 +1,25 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-05-31 17:18 UTC (run #33 — fleet redeploy to HEAD dbr layout fix) -->
+<!-- last-updated: 2026-05-31 19:35 UTC (run #34 — verified-redeploy mechanism: "resolved" is now provable) -->
 
 ## Current Focus
 
 **16 domain dashboards live. 18 blog articles PUBLISHED. dbr at 22 visual types.**
 
-**Latest (run #33):** Caught + fixed production drift. Smoke check was green, but
-all 16 dashboard services were running `packages/dbr/` code from BEFORE HEAD commit
-`2922a4cf` (PO's Playwright-verified "remove sidebar gap strip + visible header chrome"
-layout fix, committed 16:38 UTC; services last restarted 16:13–16:16 UTC). dbr is
-editable-installed, so a `systemctl restart` picks up new framework code. Rolling-restarted
-all 16 → all HTTP 200, all ActiveEnterTimestamp now 17:02–17:18 UTC, fleet == HEAD.
-No code change this run; pure ops sync. Channel fully healthy (no I/O degradation).
+**Latest (run #34):** Killed the recurring "reported resolved but dashboards never
+changed" class of bug at the root. Diagnosis: `packages/dbr/` is editable-installed,
+so a live service runs the code it booted with until restarted — and a `curl` 200
+can't distinguish new code from old, so stale services silently passed every health
+check. Fix shipped (`2353c430`): (1) every page now stamps `<meta name="dbr-build"
+content=SHA>` with the git short-SHA the running framework booted from (`build_sha()`
+in `dbr.make_app`); (2) `infra/scheduler/redeploy_dashboards.py` restarts all 16
+services then POLLS each live page until its stamp == repo HEAD, exiting non-zero
+with a STALE/DOWN table if any lag. "Resolved" is now provable end-to-end. Verified:
+all 16 serve HEAD `2353c430`. The verifier already earned its keep — it caught
+demographics (slowest boot ~105s) failing the first 75s budget; budget raised to 140s.
+The prior layout fix (`2922a4cf`, gap strip + white header) is confirmed live in prod.
 
-## Live production state (verified run #33, all HTTP 200)
+## Live production state (verified run #34 — all 16 stamp == HEAD 2353c430)
 
 - **16 Eurostat domain dashboards Live, all on HEAD dbr:** public_finance (8057),
   labour_market (8058), national_accounts (8059), demographics (8060), environment (8061),
@@ -25,15 +30,21 @@ No code change this run; pure ops sync. Channel fully healthy (no I/O degradatio
   — all 18 articles published. **Daily ingestion** 22:00 UTC cron (last exit=0).
   **Autonomous-lead cron** `0 2,7,12,17 * * *` UTC. **Next free dashboard port:** 8073.
 
-## Ops note — fleet redeploy after dbr framework changes
+## Ops note — fleet redeploy after dbr framework changes (USE THE VERIFIER)
 
 When a commit touches `packages/dbr/` (editable install), the live fleet does NOT
 auto-update — each `or-<domain>.service` must be restarted to load new framework code.
-Check drift with: `git log -1 --format=%ci -- packages/dbr/` vs
-`systemctl show or-<domain>.service -p ActiveEnterTimestamp`. A plain
-`sudo systemctl restart or-<domain>.service` suffices (no nginx churn); `dbr run` is
-only needed when the dashboard's own YAML changed. Local `/` health-poll is a poor
-readiness signal — Dash answers at `/<domain>/`; verify via nginx curl instead.
+**Commit first, then run `python3 infra/scheduler/redeploy_dashboards.py`** — it
+restarts all 16 and polls each live page until its `<meta name="dbr-build">` stamp ==
+repo HEAD, exiting non-zero with a per-dashboard STALE/DOWN table if any lag behind.
+**Non-zero exit = NOT resolved; do not report success.** Targeted form:
+`redeploy_dashboards.py <domain>`; check-only: `--verify-only`. Commit dbr code
+*before* redeploying (the stamp target is HEAD); if you commit again after, redeploy
+again or the stamp trails HEAD. `dbr run` is still the path when a dashboard's own
+YAML changed (it also rewrites the nginx route). Sudo: `systemctl restart or-*` and
+`daemon-reload` are NOPASSWD-allowlisted; `is-active`/`--version` are NOT (don't rely
+on them in scripts). Local `/` health-poll is a poor readiness signal — Dash answers
+at `/<domain>/`.
 
 ## Open / blocked work
 
@@ -60,6 +71,8 @@ SDK will fail with "credit balance too low". Consider funding or removing it.
 
 | Commit | What |
 |---|---|
+| `2353c430` | fix(dbr): raise redeploy health budget to 140s for slow demographics boot |
+| `c893ca57` | feat(dbr): build-SHA stamp + verified redeploy — make "resolved" provable |
 | `2922a4cf` | fix(dbr): remove sidebar gap strip + visible header chrome (PO; deployed to fleet in #33) |
 | `82f59fad` | fix(dbr): add minHeight:0 to main scroll container — footer visible |
 | `f9f0f42e` | fix(dbr): Cache-Control no-store on all dashboard nginx routes |

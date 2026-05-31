@@ -323,6 +323,13 @@ dbr validate products/dashboards/public_finance     # JSON Schema check
 dbr run      products/dashboards/public_finance     # systemd restart + health check + nginx route + reload
 dbr serve    products/dashboards/public_finance     # foreground dev server
 
+# After ANY packages/dbr/ change: commit, then redeploy + VERIFY the whole fleet.
+# Editable install means live services keep old code until restarted; curl 200 can't
+# detect stale code. This script restarts all 16 and polls each page's <meta dbr-build>
+# stamp until it == repo HEAD. Non-zero exit = NOT resolved.
+python3 infra/scheduler/redeploy_dashboards.py                # all 16, restart + verify
+python3 infra/scheduler/redeploy_dashboards.py --verify-only  # check stamps, no restart
+
 # dbt — run all models
 cd products/warehouse && DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt run --profiles-dir .
 
