@@ -17,6 +17,7 @@ from dbr.layout.loader import SIDEBAR_ENABLED, SIDEBAR_POSITION
 from dbr.layout.sidebar import build_sidebar
 from dbr.theme import (
     BG_PAGE,
+    BORDER,
     FONT_FAMILY,
     MAIN_MAX_WIDTH,
     MAIN_PADDING,
@@ -54,7 +55,9 @@ _SECTION_HEADING_STYLE = {
     "fontWeight":   WEIGHT_SECTION_HEADING,
     "color":        TEXT,
     "marginTop":    SECTION_TOP_GAP,
-    "marginBottom": SECTION_BOTTOM_GAP,
+    "marginBottom": "16px",
+    "paddingBottom": "12px",
+    "borderBottom": f"1px solid {BORDER}",
 }
 
 _ROW_HEADING_STYLE = {
@@ -89,7 +92,10 @@ def _wrap_item(component, width: str | None) -> html.Div:
     return html.Div(component, style=style)
 
 
-def page_shell(sections: list[tuple[str, str, list[tuple[str | None, str | None, list[tuple[object, str | None]]]]]]) -> html.Div:
+def page_shell(
+    sections: list[tuple[str, str, list[tuple[str | None, str | None, list[tuple[object, str | None]]]]]],
+    dashboard_title: str = "",
+) -> html.Div:
     """Return the full page tree (sidebar + main canvas) for ``app.layout``.
 
     ``sections`` is a list of ``(title, anchor_id, rows)`` where each
@@ -98,6 +104,9 @@ def page_shell(sections: list[tuple[str, str, list[tuple[str | None, str | None,
     H3 sub-heading renders above the row; when ``row_prose`` is set a
     Markdown paragraph renders below the title and above the items
     (narrative bridge between charts per rubric dim 17).
+
+    ``dashboard_title`` is the human-readable title shown in the sidebar
+    brand area (sourced from ``dashboard.yml``).
 
     Chrome behaviour (sidebar on/off, sidebar position) comes from
     ``layout.yaml``.
@@ -120,6 +129,6 @@ def page_shell(sections: list[tuple[str, str, list[tuple[str | None, str | None,
     if not SIDEBAR_ENABLED:
         return html.Div(style=_PAGE_STYLE, children=[main])
 
-    sidebar = build_sidebar(sections=sidebar_pairs)
+    sidebar = build_sidebar(sections=sidebar_pairs, dashboard_title=dashboard_title)
     children = [sidebar, main] if SIDEBAR_POSITION == "left" else [main, sidebar]
     return html.Div(style=_PAGE_STYLE, children=children)

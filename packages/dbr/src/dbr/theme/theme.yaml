@@ -56,15 +56,15 @@ typography:
   weight_section_heading: 700
 
 spacing:
-  page_gap:           "8px"      # gap between sidebar and main canvas
-  page_padding:       "8px"      # outer padding of the page wrapper
-  main_padding:       "24px"     # inner padding of the main canvas
+  page_gap:           "16px"     # gap between sidebar and main canvas
+  page_padding:       "16px"     # outer padding of the page wrapper
+  main_padding:       "28px"     # inner padding of the main canvas
   main_max_width:     "1440px"   # cap main canvas width — beyond this, page centres
-  sidebar_width:      "240px"
-  sidebar_padding:    "20px 0"
+  sidebar_width:      "220px"
+  sidebar_padding:    "0"        # internal; each sidebar section handles its own padding
   nav_link_padding:   "8px 20px"
-  section_top_gap:    "48px"     # margin above each section heading
-  section_bottom_gap: "6px"      # margin below each section heading
+  section_top_gap:    "40px"     # margin above each section heading
+  section_bottom_gap: "6px"      # margin below each section heading (before border)
   row_gap:            "16px"     # gap between items in a visual row (and between rows)
 
 effects:
