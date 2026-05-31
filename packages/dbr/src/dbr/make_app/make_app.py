@@ -9,7 +9,43 @@ server-side route prefix and the client-side request prefix in one step.
 dashboard uses (`0.0.0.0`, so nginx can reach the upstream from the
 Docker network).
 """
+import subprocess
+from functools import lru_cache
+from pathlib import Path
+
 from dash import Dash
+
+
+@lru_cache(maxsize=1)
+def build_sha() -> str:
+    """Return the short git SHA of the repo this dbr install was loaded from.
+
+    dbr is editable-installed from the repo working tree, so the SHA of
+    HEAD at process-start time is exactly the framework code this running
+    service is executing. Embedded as a ``<meta name="dbr-build">`` tag in
+    every page (see ``_INDEX_STRING``) so a deploy can be *verified*: fetch
+    the live page, read the stamp, compare to repo HEAD. If they differ the
+    service is running stale code and the restart did not take effect.
+
+    Cached: computed once per process. Returns ``"unknown"`` if git is
+    unavailable (e.g. running outside a checkout).
+    """
+    # Walk up from this file to the repo root (dir containing .git).
+    cur = Path(__file__).resolve()
+    for parent in [cur, *cur.parents]:
+        if (parent / ".git").exists():
+            try:
+                out = subprocess.run(
+                    ["git", "rev-parse", "--short", "HEAD"],
+                    cwd=parent, capture_output=True, text=True, timeout=5,
+                )
+                if out.returncode == 0:
+                    return out.stdout.strip() or "unknown"
+            except (OSError, subprocess.SubprocessError):
+                return "unknown"
+            break
+    return "unknown"
+
 
 _CSS = """
 body { margin: 0; padding: 0; overflow: hidden; }
@@ -181,6 +217,7 @@ _INDEX_STRING = (
     "<html>\n"
     "  <head>\n"
     "    {%metas%}\n"
+    "    <!--DBR_BUILD-->\n"
     "    <title>{%title%}</title>\n"
     "    {%favicon%}\n"
     "    {%css%}\n"
@@ -206,7 +243,10 @@ def make_app(domain: str, title: str = "") -> Dash:
         suppress_callback_exceptions=True,
     )
     app.title = title or domain
-    app.index_string = _INDEX_STRING
+    # Stamp the running framework's git SHA into the page head so a deploy
+    # can be verified end-to-end (live page advertises which commit it booted).
+    build_meta = f'<meta name="dbr-build" content="{build_sha()}">'
+    app.index_string = _INDEX_STRING.replace("<!--DBR_BUILD-->", build_meta)
     return app
 
 
