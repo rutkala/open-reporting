@@ -27,6 +27,8 @@ from dbr.theme import (
     FONT_FAMILY,
     MAIN_MAX_WIDTH,
     MAIN_PADDING,
+    PAGE_GAP,
+    PAGE_PADDING,
     ROW_GAP,
     SECTION_TOP_GAP,
     SIZE_SECTION_HEADING,
@@ -35,22 +37,31 @@ from dbr.theme import (
 )
 
 # Outer row: sidebar + right column, fills the full viewport — no page scroll.
+# `padding` insets the whole app from the viewport edge on all four sides, so
+# every panel (sidebar, header, chart area, footer) floats on the page canvas
+# with a visible margin to the browser border. `gap` separates the sidebar
+# from the right column. boxSizing keeps padding inside the 100vh (no overflow).
 _PAGE_OUTER_STYLE = {
-    "display":  "flex",
-    "height":   "100vh",
-    "overflow": "hidden",
+    "display":    "flex",
+    "height":     "100vh",
+    "overflow":   "hidden",
+    "padding":    PAGE_PADDING,
+    "gap":        PAGE_GAP,
+    "boxSizing":  "border-box",
     "background": BG_PAGE,
     "color":      TEXT,
     "fontFamily": FONT_FAMILY,
 }
 
-# Right column: header (fixed) + scrollable main + footer (fixed).
+# Right column: header (fixed) + scrollable main + footer (fixed). `gap`
+# separates the three so the page canvas shows between them as breathing room.
 _PAGE_RIGHT_STYLE = {
     "display":       "flex",
     "flexDirection": "column",
     "flex":          "1",
     "minWidth":      0,
     "overflow":      "hidden",
+    "gap":           PAGE_GAP,
 }
 
 # Scrollable wrapper around the main canvas — scrollspy listens on this.

@@ -19,6 +19,7 @@ from dbr.layout.loader import SIDEBAR_SHOW_TOGGLE
 from dbr.theme import (
     BG_SURFACE,
     BORDER,
+    CARD_RADIUS,
     FONT_FAMILY,
     SIDEBAR_WIDTH,
     SIZE_BODY,
@@ -31,7 +32,8 @@ _SIDEBAR_STYLE = {
     "width":         SIDEBAR_WIDTH,
     "flexShrink":    0,
     "background":    BG_SURFACE,
-    "borderRight":   f"1px solid {BORDER}",
+    "border":        f"1px solid {BORDER}",   # full border — floating card on the page canvas
+    "borderRadius":  CARD_RADIUS,
     "boxSizing":     "border-box",
     "fontFamily":    FONT_FAMILY,
     "color":         TEXT,

@@ -9,6 +9,7 @@ from dash import html
 from dbr.theme import (
     BG_SURFACE,
     BORDER,
+    CARD_RADIUS,
     FONT_FAMILY,
     SUBTEXT,
     TEXT,
@@ -18,8 +19,9 @@ _HEADER_STYLE = {
     "display":      "flex",
     "alignItems":   "center",
     "padding":      "0 24px",
-    "background":   BG_SURFACE,   # white — matches sidebar/footer chrome, visually distinct from canvas
-    "borderBottom": f"1px solid {BORDER}",
+    "background":   BG_SURFACE,   # white — floating card, distinct from the page canvas
+    "border":       f"1px solid {BORDER}",
+    "borderRadius": CARD_RADIUS,
     "fontFamily":   FONT_FAMILY,
     "flexShrink":   0,
     "minHeight":    "56px",
