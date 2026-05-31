@@ -1,13 +1,15 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-05-31 (run #31) UTC -->
+<!-- last-updated: 2026-05-31 (interactive session post run #31) UTC -->
 
 ## Current Focus
 
-**16 domain dashboards live. All 18 blog articles PUBLISHED. Article bottleneck CLEARED.**
+**16 domain dashboards live. All 18 blog articles PUBLISHED. dbr visual library massively expanded.**
 
-**ACTIVE: high-latency VPS tool I/O channel — 3 runs running (#29, #30, #31).**
-Run #31: QUIET RUN, production VERIFIED healthy. The channel is NOT dead — it flushes in sporadic delayed batches (~6 calls latency). Smoke check eventually came through: public_finance, labour_market, national_accounts, demographics, environment, www all HTTP 200; git clean of own work. Build held off anyway: sporadic flush latency makes a multi-step deploy (dbt write-lock dance, service stop/start) unsafe to drive — cannot observe step N before issuing N+1. Article queue cleared (Step 2b nothing to publish); remaining roadmap PO-blocked. PO latency escalation stands.
+**PO-driven interactive session:** expanded dbr from 8 → 18 visual types + universal enhancements + interactive slicers. Goal: full feature parity with PowerBI/Tableau/Qlik.
+
+**ACTIVE: high-latency VPS tool I/O channel — 3 autonomous runs running (#29, #30, #31).**
+Interactive session (this one) ran cleanly. The channel issue affects `claude -p` subprocess only — interactive sessions unaffected.
 
 ## Live production state (last VERIFIED run #28; not re-verifiable #29–#31 due to channel)
 
@@ -33,6 +35,10 @@ Run #31: QUIET RUN, production VERIFIED healthy. The channel is NOT dead — it 
 | OR-79 | Ghost nav "Portal" link — browser admin | Blocked — PO action |
 | OR-89 | Weekly snapshot — code ready; publish blocked on OR-90 | Buildable remainder: cron entry |
 | Phase 3 | Data depth: BDL, Finance v2, dbt tests, freshness indicators | Next focus once channel healthy |
+| OR-159 | dbr: choropleth / geographic map visual | Backlog — needs NUTS2 GeoJSON |
+| OR-160 | dbr: cross-filtering (click → filter) | Backlog |
+| OR-161 | dbr: date-range picker + time intelligence shortcuts | Backlog |
+| OR-162 | dbr: number format templates | Backlog |
 
 **Article queue: CLEARED.** No drafts pending — all 18 live.
 
@@ -45,12 +51,12 @@ Suggested PO checks: claude-code version on VPS vs last-known-good; autonomous-l
 
 | Commit | What |
 |---|---|
-| (run #31) | docs: run #31 quiet — tool I/O channel degraded 3rd run, escalated |
+| `a3f6c9db` | docs(dbr): update README — 18 visual types + slicer architecture |
+| `3f17d9e7` | feat(dbr): add interactive slicer visual + Dash callback architecture |
+| `54769522` | feat(dbr): expand visual library from 8→17 types + universal enhancements |
+| (run #31) | docs: run #31 quiet — tool I/O channel degraded 3rd run |
 | `fe4fea8b` | docs: run #30 addendum — reconcile 9 published article issues to Done |
-| `a0d03607` | docs: run #30 quiet — health verified, ingest exit=0, channel flagged |
 | `6d7b89f4` | feat(content): publish all 18 articles — pipeline review complete |
-| `0c45be26` | docs: session memory — release pipeline shipped, protocol change flagged |
-| `cd106eb4` | feat(content): autonomous article release pipeline — 3-reviewer gate |
 
 ## Discord bot fleet (live)
 
@@ -64,6 +70,10 @@ Service files: `or-discord-<name>-bot.service`. Channels: `#general`, `#daily-st
 - **Release pipeline:** `python3 products/blog/release_pipeline.py` — must run STANDALONE. All 18 drafts published; nothing pending.
 - **Seed dimension_key must match raw** — query `raw.eurostat_observations` before adding seed rows. `dbt seed --select eurostat_series` then `dbt run --select stg_eurostat+`.
 - **dbt write-lock dance:** stop affected `or-<name>.service` → dbt run → `dbr run` to restart. Boot ~20s → brief 502.
+- **dbr now has 18 visual types:** area, bar, box, bullet, card, column, combo, funnel, gauge, heatmap, histogram, line, pie, scatter, slicer, table, treemap, waterfall.
+- **Universal visual options (all types):** `title`, `subtitle`. Chart types also: `height`, `y_format`, `x_format`, `download`, `data_labels` (bar/column).
+- **Interactive slicers:** `type: slicer` + `filter_from: {slicer_id: dimension}` on any chart. Compiler wires Dash callbacks automatically. No Python required.
+- **Table enhancements:** `conditional_format`, `totals`, `data_bars` options.
 - **dbr `bar` = horizontal** (metric x, dim y); **`column` = vertical bars.** Check every vertical-bar visual before validate.
 - **`dbr run` mandatory** after any dashboard YAML change: validate → run → curl live URL → confirm rendered Dash app (not portal index).
 - KPI cards resolve latest *non-null* value (semantic.py fix).
