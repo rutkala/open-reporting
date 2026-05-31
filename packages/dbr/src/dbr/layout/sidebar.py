@@ -1,14 +1,13 @@
-"""Sidebar — vertical nav strip, sticky-positioned on the left edge.
+"""Sidebar — vertical nav strip, full-height left column.
 
 Design:
-  - Sticky: stays visible while main content scrolls (position: sticky).
-  - Brand header: OR logo mark + "Open Reporting" wordmark + dashboard title.
-    The collapse toggle button sits at the right end of this logo row so it
-    is visually aligned with the header — not above it.
-  - Nav links: className="dbr-nav-link" + data-anchor attribute so the
-    scrollspy script injected by make_app can highlight the active section.
-  - Toggle button: collapses sidebar to 52 px icon strip; state persisted
-    in localStorage under key ``dbr-sidebar-collapsed``.
+  - Full-height: fills the outer 100vh flex row — always visible, no external scroll.
+  - Brand header: OR logo mark + "Open Reporting" wordmark. Dashboard title lives
+    in the page header (right column), not here.
+  - Nav links: className="dbr-nav-link" + data-anchor attribute so the scrollspy
+    script can highlight the active section.
+  - Toggle button: collapses sidebar to 52px icon strip; state persisted in
+    localStorage under key ``dbr-sidebar-collapsed``.
   - Portal back-link at the bottom.
 
 All visual tokens (colours, fonts, widths, paddings) come from
@@ -16,12 +15,10 @@ All visual tokens (colours, fonts, widths, paddings) come from
 """
 from dash import html
 
-from dbr.layout.loader import SIDEBAR_SHOW_TITLE, SIDEBAR_SHOW_TOGGLE
+from dbr.layout.loader import SIDEBAR_SHOW_TOGGLE
 from dbr.theme import (
     BG_SURFACE,
     BORDER,
-    CARD_RADIUS,
-    CARD_SHADOW,
     FONT_FAMILY,
     SIDEBAR_WIDTH,
     SIZE_BODY,
@@ -34,50 +31,50 @@ _SIDEBAR_STYLE = {
     "width":         SIDEBAR_WIDTH,
     "flexShrink":    0,
     "background":    BG_SURFACE,
-    "borderRadius":  CARD_RADIUS,
-    "boxShadow":     CARD_SHADOW,
+    "borderRight":   f"1px solid {BORDER}",
     "boxSizing":     "border-box",
     "fontFamily":    FONT_FAMILY,
     "color":         TEXT,
     "display":       "flex",
     "flexDirection": "column",
-    # Sticky: the sidebar stays in the viewport while the main area scrolls.
-    "position":      "sticky",
-    "top":           "8px",
-    "height":        "calc(100vh - 16px)",
+    # Full-height: outer container is height:100vh so sidebar fills it.
+    "height":        "100%",
     "overflowY":     "auto",
     "overflowX":     "hidden",
     "transition":    "width 0.2s ease",
 }
 
 _BRAND_STYLE = {
-    "padding":      "12px 20px 16px 20px",
+    "padding":      "14px 20px 14px 20px",
     "borderBottom": f"1px solid {BORDER}",
     "flexShrink":   0,
-}
-
-# Logo row: badge + wordmark on left, toggle button pushed to the right
-# via marginLeft: "auto" on the button element itself.
-_LOGO_ROW_STYLE = {
+    "minHeight":    "56px",   # match page header height for visual alignment
+    "boxSizing":    "border-box",
     "display":      "flex",
     "alignItems":   "center",
-    "gap":          "8px",
-    "marginBottom": "10px",
+}
+
+# Logo row: badge + wordmark on left, toggle button pushed to the right.
+_LOGO_ROW_STYLE = {
+    "display":    "flex",
+    "alignItems": "center",
+    "gap":        "8px",
+    "width":      "100%",
 }
 
 _LOGO_BADGE_STYLE = {
-    "width":           "28px",
-    "height":          "28px",
-    "borderRadius":    "6px",
-    "background":      TEAL_PRIMARY,
-    "display":         "flex",
-    "alignItems":      "center",
-    "justifyContent":  "center",
-    "color":           "#FFFFFF",
-    "fontSize":        "10px",
-    "fontWeight":      700,
-    "letterSpacing":   "0.5px",
-    "flexShrink":      0,
+    "width":          "28px",
+    "height":         "28px",
+    "borderRadius":   "6px",
+    "background":     TEAL_PRIMARY,
+    "display":        "flex",
+    "alignItems":     "center",
+    "justifyContent": "center",
+    "color":          "#FFFFFF",
+    "fontSize":       "10px",
+    "fontWeight":     700,
+    "letterSpacing":  "0.5px",
+    "flexShrink":     0,
 }
 
 _LOGO_NAME_STYLE = {
@@ -85,31 +82,26 @@ _LOGO_NAME_STYLE = {
     "fontWeight": 600,
     "color":      SUBTEXT,
     "lineHeight": "1.2",
+    "whiteSpace": "nowrap",
+    "overflow":   "hidden",
 }
 
 _TOGGLE_BTN_STYLE = {
-    "marginLeft":      "auto",   # pushes toggle to the right end of the logo row
-    "width":           "26px",
-    "height":          "26px",
-    "borderRadius":    "5px",
-    "border":          f"1px solid {BORDER}",
-    "background":      BG_SURFACE,
-    "cursor":          "pointer",
-    "fontSize":        "13px",
-    "color":           SUBTEXT,
-    "padding":         "0",
-    "lineHeight":      "1",
-    "display":         "flex",
-    "alignItems":      "center",
-    "justifyContent":  "center",
-    "flexShrink":      0,
-}
-
-_DASH_TITLE_STYLE = {
-    "fontSize":   "14px",
-    "fontWeight": 700,
-    "color":      TEXT,
-    "lineHeight": "1.3",
+    "marginLeft":     "auto",
+    "width":          "26px",
+    "height":         "26px",
+    "borderRadius":   "5px",
+    "border":         f"1px solid {BORDER}",
+    "background":     BG_SURFACE,
+    "cursor":         "pointer",
+    "fontSize":       "13px",
+    "color":          SUBTEXT,
+    "padding":        "0",
+    "lineHeight":     "1",
+    "display":        "flex",
+    "alignItems":     "center",
+    "justifyContent": "center",
+    "flexShrink":     0,
 }
 
 _NAV_SECTION_STYLE = {
@@ -163,12 +155,11 @@ def build_sidebar(
     sections: list[tuple[str, str]],
     dashboard_title: str = "",
 ) -> html.Aside:
-    """Return the standard left-edge sticky sidebar.
+    """Return the full-height left sidebar.
 
     ``sections`` is a list of ``(label, anchor_id)`` pairs — one nav link
-    per entry. ``dashboard_title`` is shown under the OR brand mark.
-    The collapse toggle button is embedded in the logo row so it sits flush
-    with the brand header rather than floating above it.
+    per entry. ``dashboard_title`` is unused; the title is shown in the
+    page header only.
     """
     logo_row_children: list = [
         html.Div("OR", id="dbr-logo-badge", style=_LOGO_BADGE_STYLE),
@@ -188,18 +179,6 @@ def build_sidebar(
             )
         )
 
-    brand_children: list = [
-        html.Div(id="dbr-logo-row", style=_LOGO_ROW_STYLE, children=logo_row_children),
-    ]
-    if dashboard_title and SIDEBAR_SHOW_TITLE:
-        brand_children.append(
-            html.Div(
-                dashboard_title,
-                id="dbr-dash-title",
-                style=_DASH_TITLE_STYLE,
-            )
-        )
-
     links = [
         html.A(
             label,
@@ -215,7 +194,11 @@ def build_sidebar(
         id="dbr-sidebar",
         style=_SIDEBAR_STYLE,
         children=[
-            html.Div(id="dbr-sidebar-brand", style=_BRAND_STYLE, children=brand_children),
+            html.Div(
+                id="dbr-sidebar-brand",
+                style=_BRAND_STYLE,
+                children=[html.Div(id="dbr-logo-row", style=_LOGO_ROW_STYLE, children=logo_row_children)],
+            ),
             html.Div(id="dbr-sidebar-nav", style=_NAV_SECTION_STYLE, children=[
                 html.Div("Nawigacja", className="dbr-nav-label", style=_NAV_LABEL_STYLE),
                 html.Nav(children=links, style=_NAV_STYLE),

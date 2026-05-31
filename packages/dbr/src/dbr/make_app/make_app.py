@@ -12,8 +12,7 @@ Docker network).
 from dash import Dash
 
 _CSS = """
-html { scroll-behavior: smooth; }
-body { margin: 0; padding: 0; }
+body { margin: 0; padding: 0; overflow: hidden; }
 
 /* Sidebar nav link hover + active states (augment Dash inline styles) */
 .dbr-nav-link {
@@ -55,29 +54,51 @@ body { margin: 0; padding: 0; }
 }
 """
 
+# Scrollspy that listens on the inner scrollable container (dbr-main-scroll),
+# not on window — because the page itself does not scroll in the new layout.
+# Nav link clicks are also intercepted to scroll the container smoothly.
 _SCROLLSPY_JS = """
 (function () {
+  var SCROLL_ID = 'dbr-main-scroll';
+
   function initScrollspy() {
-    var sections = document.querySelectorAll('h2[id]');
+    var container = document.getElementById(SCROLL_ID);
+    if (!container) { setTimeout(initScrollspy, 400); return; }
+
+    var sections = container.querySelectorAll('h2[id]');
     var links    = document.querySelectorAll('.dbr-nav-link');
     if (!sections.length || !links.length) {
       setTimeout(initScrollspy, 400);
       return;
     }
+
+    /* Intercept nav-link clicks to scroll the container, not the browser window. */
+    links.forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        var anchor = a.getAttribute('data-anchor');
+        var target = document.getElementById(anchor);
+        if (target && container) {
+          container.scrollTo({ top: target.offsetTop - 16, behavior: 'smooth' });
+        }
+      });
+    });
+
     var ticking = false;
     function update() {
-      var scrollY  = window.pageYOffset || document.documentElement.scrollTop;
-      var current  = sections[0] ? sections[0].id : '';
+      var scrollTop = container.scrollTop;
+      var current   = sections[0] ? sections[0].id : '';
       for (var i = 0; i < sections.length; i++) {
-        if (scrollY >= sections[i].offsetTop - 130) { current = sections[i].id; }
+        if (scrollTop >= sections[i].offsetTop - 130) { current = sections[i].id; }
       }
       links.forEach(function (a) {
         if (a.dataset.anchor === current) { a.classList.add('active'); }
-        else { a.classList.remove('active'); }
+        else                             { a.classList.remove('active'); }
       });
       ticking = false;
     }
-    window.addEventListener('scroll', function () {
+
+    container.addEventListener('scroll', function () {
       if (!ticking) { requestAnimationFrame(update); ticking = true; }
     }, { passive: true });
     update();
@@ -91,6 +112,10 @@ _SCROLLSPY_JS = """
 })();
 """
 
+# Sidebar collapse toggle. Explicitly restores display values to their
+# React-set originals (flex/block) rather than '' — resetting to '' would
+# make the browser use the CSS default (block) for elements whose inline
+# style is display:flex, breaking their internal centering.
 _SIDEBAR_TOGGLE_JS = """
 (function () {
   var KEY = 'dbr-sidebar-collapsed';
@@ -100,38 +125,31 @@ _SIDEBAR_TOGGLE_JS = """
       sidebar.classList.add('dbr-sidebar-collapsed');
       btn.textContent = '›';
       btn.title = 'Rozwiń panel';
-      /* Brand header stays visible (it holds the toggle button).
-         Hide only the OR badge, wordmark, and dashboard title so the
-         toggle button remains alone in the logo row. */
-      var badge = document.getElementById('dbr-logo-badge');
-      var name  = document.getElementById('dbr-logo-name');
-      var title = document.getElementById('dbr-dash-title');
+      var badge  = document.getElementById('dbr-logo-badge');
+      var name   = document.getElementById('dbr-logo-name');
       var nav    = document.getElementById('dbr-sidebar-nav');
       var footer = document.getElementById('dbr-sidebar-footer');
       if (badge)  badge.style.display  = 'none';
       if (name)   name.style.display   = 'none';
-      if (title)  title.style.display  = 'none';
       if (nav)    nav.style.display    = 'none';
       if (footer) footer.style.display = 'none';
-      /* Tighten brand padding so the lone toggle isn't floating in dead space */
       var brand = document.getElementById('dbr-sidebar-brand');
-      if (brand) brand.style.padding = '12px 8px';
+      if (brand) brand.style.justifyContent = 'center';
     } else {
       sidebar.classList.remove('dbr-sidebar-collapsed');
       btn.textContent = '‹';
       btn.title = 'Zwiń panel';
-      var badge = document.getElementById('dbr-logo-badge');
-      var name  = document.getElementById('dbr-logo-name');
-      var title = document.getElementById('dbr-dash-title');
+      var badge  = document.getElementById('dbr-logo-badge');
+      var name   = document.getElementById('dbr-logo-name');
       var nav    = document.getElementById('dbr-sidebar-nav');
       var footer = document.getElementById('dbr-sidebar-footer');
-      if (badge)  badge.style.display  = '';
-      if (name)   name.style.display   = '';
-      if (title)  title.style.display  = '';
-      if (nav)    nav.style.display    = '';
-      if (footer) footer.style.display = '';
+      /* Restore to their React-set inline display values, not '' (CSS default). */
+      if (badge)  badge.style.display  = 'flex';
+      if (name)   name.style.display   = 'block';
+      if (nav)    nav.style.display    = 'flex';
+      if (footer) footer.style.display = 'block';
       var brand = document.getElementById('dbr-sidebar-brand');
-      if (brand) brand.style.padding = '';
+      if (brand) brand.style.justifyContent = '';
     }
   }
 

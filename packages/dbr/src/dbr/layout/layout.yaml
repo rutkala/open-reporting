@@ -17,7 +17,7 @@ sidebar:
   enabled:      true          # if false, the sidebar is not rendered; main takes full width
   position:     left          # left | right
   show_toggle:  true          # show the collapse/expand toggle button
-  show_title:   true          # show dashboard title in the sidebar brand area
+  show_title:   false         # title lives in the page header only
 
 header:
   enabled:      true          # full-width header bar above sidebar+main

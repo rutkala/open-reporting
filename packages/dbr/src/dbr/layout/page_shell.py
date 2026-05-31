@@ -1,10 +1,8 @@
-"""page_shell — outer page wrapper that composes header + sidebar + main canvas + footer.
+"""page_shell — outer page wrapper that composes sidebar + (header + main canvas + footer).
 
-A dashboard passes a list of sections — each section is
-``(title, anchor_id, rows)`` where rows is a list of rows, and each row
-is a list of ``(component, width-or-None)`` tuples. Sections render as
-H2 headings with anchor ids; rows render as flex containers so items
-sit side by side.
+Layout: full-viewport flex row, no page scroll.
+- Sidebar: left column, fills 100vh, internal scroll if nav overflows.
+- Right column: flex column, flex:1 — header (fixed) + scrollable main + footer (fixed).
 
 Visual tokens (colours, fonts, paddings, heading sizes, row gap) come
 from ``dbr.theme`` (sourced from ``theme.yaml``).
@@ -29,41 +27,45 @@ from dbr.theme import (
     FONT_FAMILY,
     MAIN_MAX_WIDTH,
     MAIN_PADDING,
-    PAGE_GAP,
-    PAGE_PADDING,
     ROW_GAP,
-    SECTION_BOTTOM_GAP,
     SECTION_TOP_GAP,
     SIZE_SECTION_HEADING,
     TEXT,
     WEIGHT_SECTION_HEADING,
 )
 
-# Outer column: stacks header / body-row / footer vertically.
+# Outer row: sidebar + right column, fills the full viewport — no page scroll.
 _PAGE_OUTER_STYLE = {
-    "display":       "flex",
-    "flexDirection": "column",
-    "minHeight":     "100vh",
-    "background":    BG_PAGE,
-    "color":         TEXT,
-    "fontFamily":    FONT_FAMILY,
+    "display":  "flex",
+    "height":   "100vh",
+    "overflow": "hidden",
+    "background": BG_PAGE,
+    "color":      TEXT,
+    "fontFamily": FONT_FAMILY,
 }
 
-# Body row: sidebar + main, fills remaining vertical space.
-_PAGE_BODY_STYLE = {
-    "display":   "flex",
-    "flex":      "1",
-    "gap":       PAGE_GAP,
-    "padding":   PAGE_PADDING,
-    "boxSizing": "border-box",
+# Right column: header (fixed) + scrollable main + footer (fixed).
+_PAGE_RIGHT_STYLE = {
+    "display":       "flex",
+    "flexDirection": "column",
+    "flex":          "1",
+    "minWidth":      0,
+    "overflow":      "hidden",
+}
+
+# Scrollable wrapper around the main canvas — scrollspy listens on this.
+_MAIN_SCROLL_STYLE = {
+    "flex":           "1",
+    "overflowY":      "auto",
+    "overflowX":      "hidden",
+    "scrollBehavior": "smooth",
 }
 
 _MAIN_STYLE = {
-    "flex":      1,
     "padding":   MAIN_PADDING,
-    "maxWidth":  MAIN_MAX_WIDTH,    # cap on wide monitors so charts don't stretch infinitely
-    "minWidth":  0,                  # let inner content shrink instead of overflowing
-    "boxSizing": "border-box",       # padding counts inside maxWidth
+    "maxWidth":  MAIN_MAX_WIDTH,
+    "minWidth":  0,
+    "boxSizing": "border-box",
 }
 
 _SECTION_HEADING_STYLE = {
@@ -152,21 +154,23 @@ def page_shell(
 
     main = html.Main(style=_MAIN_STYLE, children=main_children)
 
-    # Build body row (sidebar + main)
-    if not SIDEBAR_ENABLED:
-        body_children = [main]
-    else:
-        sidebar = build_sidebar(sections=sidebar_pairs, dashboard_title=dashboard_title)
-        body_children = [sidebar, main] if SIDEBAR_POSITION == "left" else [main, sidebar]
-    body_row = html.Div(style=_PAGE_BODY_STYLE, children=body_children)
-
-    # Assemble outer column: optional header + body + optional footer
-    outer_children: list = []
+    # Right column: fixed header + scrollable main + fixed footer
+    right_children: list = []
     if HEADER_ENABLED:
         header_title = dashboard_title if HEADER_SHOW_TITLE else ""
-        outer_children.append(build_header(title=header_title, subtitle=dashboard_subtitle))
-    outer_children.append(body_row)
+        right_children.append(build_header(title=header_title, subtitle=dashboard_subtitle))
+    right_children.append(
+        html.Div(id="dbr-main-scroll", style=_MAIN_SCROLL_STYLE, children=[main])
+    )
     if FOOTER_ENABLED:
-        outer_children.append(build_footer(source=footer_source, updated=footer_updated))
+        right_children.append(build_footer(source=footer_source, updated=footer_updated))
+    right_col = html.Div(style=_PAGE_RIGHT_STYLE, children=right_children)
+
+    # Assemble outer row: sidebar (if enabled) + right column
+    if not SIDEBAR_ENABLED:
+        outer_children: list = [right_col]
+    else:
+        sidebar = build_sidebar(sections=sidebar_pairs, dashboard_title=dashboard_title)
+        outer_children = [sidebar, right_col] if SIDEBAR_POSITION == "left" else [right_col, sidebar]
 
     return html.Div(style=_PAGE_OUTER_STYLE, children=outer_children)
