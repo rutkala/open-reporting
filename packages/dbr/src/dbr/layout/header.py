@@ -7,7 +7,7 @@ tokens come from ``dbr.theme``; behaviour flags from ``dbr.layout.loader``.
 from dash import html
 
 from dbr.theme import (
-    BG_PAGE,
+    BG_SURFACE,
     BORDER,
     FONT_FAMILY,
     SUBTEXT,
@@ -18,7 +18,7 @@ _HEADER_STYLE = {
     "display":      "flex",
     "alignItems":   "center",
     "padding":      "0 24px",
-    "background":   BG_PAGE,      # same as canvas — header blends into content area
+    "background":   BG_SURFACE,   # white — matches sidebar/footer chrome, visually distinct from canvas
     "borderBottom": f"1px solid {BORDER}",
     "fontFamily":   FONT_FAMILY,
     "flexShrink":   0,
