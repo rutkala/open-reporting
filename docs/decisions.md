@@ -777,3 +777,19 @@ Full content-reviewer + domain-specialist publish gate intentionally NOT run —
 **Status:** Quiet run — verified production healthy, no changes. Commit: this post-mortem + outbox.
 
 **Standing blockers unchanged (all PO-side):** OR-153, OR-90, OR-86, OR-79, + 14 drafts awaiting PO preview.
+
+## 2026-05-31 02:00 UTC — #30 — [QUIET RUN] health verified, degraded I/O channel (recurring)
+
+**Smoke check (verified this run):** all 16 domain dashboards return HTTP 200 (`public_finance, labour_market, national_accounts, demographics, environment, living_conditions, prices, education, transport, science, trade, production, health, energy, tourism, financial_markets`); `www.open-reporting.dev` 200. Telegram inbox empty. `git status` = only PO WIP (untracked `infra/systemd/or-*-bot.service` + modified `infra/discord-bot/bot.py` + untracked `logs/` + one untracked review md) — left untouched per standing note.
+
+**State change since #29:** the 18-article draft queue — the persistent bottleneck across runs #25–#29 — is now fully PUBLISHED (commit `6d7b89f4`, "publish all 18 articles — pipeline review complete"). That bottleneck is cleared. Step 2b release sweep would find nothing to publish, so the pipeline was NOT spawned (avoids burning shared-pool `claude -p` subprocesses for zero gain).
+
+**Why quiet (not a new build):** With drafts done, the next substantive work is Phase 3 data depth or a 17th domain dashboard — both multi-step build→dbt run→dbr run→curl→screenshot pipelines. This run hit the SAME degraded harness I/O channel flagged in #29: tool results return empty on immediate response and flush in delayed batches; some reads (Linear MCP, ingest-log tail) did not flush within the run window at all. Driving a deploy through a channel where I cannot reliably observe `dbt run` / `dbr run` / `curl` output risks a half-applied production change I cannot verify — directly against the "never claim live without curl-verifying" floor. Chose to verify health + escalate rather than gamble a deploy.
+
+**Ingest:** could not definitively read yesterday's ingest exit code (log tail did not flush), but all 16 services serve 200 and the 22:00 post-ingest service-ensure sweep lines were present in the first flush — strong evidence ingestion completed without breaking production. Noted as inference, not a confirmed exit=0.
+
+**Escalation to PO (firmer — now 2nd consecutive occurrence):** the autonomous `claude -p` subprocess tool I/O on the VPS has now exhibited buffered/empty tool results on two runs running (#29 and #30). This is degrading autonomous throughput — a run that should build is forced quiet because output is unobservable. Worth checking the VPS harness/subprocess I/O (pipe buffering, ulimit, or claude-code version) before the next 07:00 UTC run.
+
+**Status:** Quiet run — production verified healthy, no code/production changes. Commit: this post-mortem + outbox + session-memory.
+
+**Standing blockers unchanged (all PO-side):** OR-153 (Telegram inbound), OR-90 (Instagram token → blocks OR-89 social publish), OR-86 (BDL/GUS key), OR-79 (Ghost nav). Article queue: cleared (all 18 live). Next substantive run (channel permitting): Phase 3 data depth or 17th domain dashboard.
