@@ -143,6 +143,24 @@ def publish_existing_post(post_id: str, updated_at: str) -> dict:
     return r.json()["posts"][0]
 
 
+def update_and_publish_post(post_id: str, updated_at: str, fm: dict, html: str) -> dict:
+    """Update content + set status=published in one PUT call."""
+    payload = {"posts": [{
+        "status":         "published",
+        "updated_at":     updated_at,
+        "title":          fm["title"],
+        "custom_excerpt": fm.get("excerpt"),
+        "html":           html,
+        "tags":           [{"name": t} for t in (fm.get("tags") or [])],
+    }]}
+    r = requests.put(
+        f"{GHOST_URL}/posts/{post_id}/?source=html",
+        headers=_headers(), data=json.dumps(payload), timeout=30,
+    )
+    r.raise_for_status()
+    return r.json()["posts"][0]
+
+
 def create_post(fm: dict, html: str, status: str = "draft") -> dict:
     payload = {"posts": [{
         "title":       fm["title"],

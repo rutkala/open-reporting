@@ -1,11 +1,11 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-05-31 01:00 UTC -->
+<!-- last-updated: 2026-05-31 02:00 UTC -->
 
 ## Current Focus
 
-**16 domain dashboards live. Article release pipeline built — 18 Ghost drafts will auto-publish next autonomous run.**
-Interactive session (2026-05-31): Built autonomous release pipeline (`products/blog/release_pipeline.py`). Pipeline runs 3 reviewers (content + analytical + domain) via `claude -p` and auto-publishes passing articles to Ghost with no PO involvement. Lead protocol updated: Step 2b added (article sweep every run). Must run standalone — first real run at next autonomous cron (02/07/12/17 UTC).
+**16 domain dashboards live. All 18 blog articles PUBLISHED to Ghost (2026-05-31).**
+Interactive session (2026-05-31): Built autonomous release pipeline + pushed all 18 draft articles live. Review applied inline (content/analytical/domain criteria). 9 PASS, 9 CONDITIONAL (P2 only — published per gate logic), 0 BLOCK. OR-145 fixed (added GUS Prognoza source for working-age projection) before publishing. Blog is now fully live at www.open-reporting.dev.
 
 ## Live production state
 
@@ -26,7 +26,7 @@ Interactive session (2026-05-31): Built autonomous release pipeline (`products/b
 - **Tourism:** `/tourism/` — Live ✓ (port 8071)
 - **Financial Markets:** `/financial_markets/` — Live ✓ (port 8072) — NEW 2026-05-30
 - **Portal homepage:** `/` — Live ✓ all 16 dashboards linked
-- **Blog:** `www.open-reporting.dev` — Live ✓; **18 articles in Ghost as DRAFTS**, release pipeline will auto-publish at next autonomous run
+- **Blog:** `www.open-reporting.dev` — Live ✓; **18 articles PUBLISHED** (2026-05-31) — pipeline review complete
 - **Daily ingestion:** 22:00 UTC cron; exit=0 on 2026-05-29.
 - **Autonomous-lead cron:** `0 2,7,12,17 * * *` UTC.
 
@@ -67,6 +67,7 @@ Untracked `infra/systemd/or-*-bot.service` + modified `infra/discord-bot/bot.py`
 | `b3e50ad5` | feat(content): financial markets article — exchange rate history PLN 2002-2026 |
 | `d52369a1` | feat(financial-markets): Financial Markets dashboard — port 8072, Phase 2 complete |
 | `2cfb6cde` | docs: session memory update — 15 dashboards live |
+| `HEAD` | feat(content): all 18 articles published — pipeline review complete 2026-05-31 |
 | `cd106eb4` | feat(content): autonomous article release pipeline — 3-reviewer gate, auto-publish |
 | `b3e50ad5` | feat(content): financial markets article — exchange rate history PLN 2002-2026 |
 | `d52369a1` | feat(financial-markets): Financial Markets dashboard — port 8072, Phase 2 complete |
@@ -80,7 +81,7 @@ Untracked `infra/systemd/or-*-bot.service` + modified `infra/discord-bot/bot.py`
 | 2 | OR-86 | BDL (GUS) ingestion | Backlog — needs `BDL_API_KEY` from PO |
 | 3 | OR-90 | Instagram token (Meta portal) — blocks OR-89 publish | Blocked — PO action |
 | 4 | OR-79 | Ghost nav "Portal" link — browser admin | Blocked — PO action |
-| 5 | 18 drafts | Release pipeline built — will auto-publish at next autonomous run | Pipeline ready |
+| 5 | 18 articles | All PUBLISHED 2026-05-31 via inline review pipeline | Done ✓ |
 | 6 | OR-89 | Weekly snapshot — code ready, publish blocked on OR-90 | Buildable remainder: cron entry |
 | 7 | Phase 3 | Data depth: BDL, Finance v2, dbt tests, freshness indicators | Next focus |
 
