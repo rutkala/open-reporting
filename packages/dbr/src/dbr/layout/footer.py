@@ -8,7 +8,7 @@ from dash import html
 
 from dbr.layout.loader import FOOTER_SHOW_SOURCE, FOOTER_SHOW_UPDATED
 from dbr.theme import (
-    BG_SURFACE,
+    BG_PAGE,
     BORDER,
     FONT_FAMILY,
     SUBTEXT,
@@ -19,7 +19,7 @@ _FOOTER_STYLE = {
     "display":     "flex",
     "alignItems":  "center",
     "padding":     "10px 24px",
-    "background":  BG_SURFACE,
+    "background":  BG_PAGE,       # same as canvas — footer blends into content area
     "borderTop":   f"1px solid {BORDER}",
     "fontFamily":  FONT_FAMILY,
     "flexShrink":  0,

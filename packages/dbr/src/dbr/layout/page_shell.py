@@ -39,6 +39,7 @@ _PAGE_OUTER_STYLE = {
     "display":  "flex",
     "height":   "100vh",
     "overflow": "hidden",
+    "gap":      "8px",       # visible breathing room between sidebar and canvas
     "background": BG_PAGE,
     "color":      TEXT,
     "fontFamily": FONT_FAMILY,
