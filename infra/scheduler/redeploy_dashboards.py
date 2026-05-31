@@ -44,7 +44,7 @@ import yaml
 
 REPO = Path(__file__).resolve().parents[2]
 DASHBOARDS_DIR = REPO / "products" / "dashboards"
-HEALTH_BUDGET_S = 75            # per-dashboard boot budget (MetricFlow engine warmup)
+HEALTH_BUDGET_S = 140           # per-dashboard boot budget; heaviest (demographics) boots ~105s
 POLL_INTERVAL_S = 2
 _BUILD_RE = re.compile(r'<meta name="dbr-build" content="([^"]*)">')
 
