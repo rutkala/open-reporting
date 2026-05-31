@@ -2,6 +2,19 @@
 <!-- auto-sync: true -->
 <!-- last-updated: 2026-05-31 20:05 UTC (run #35 — floating-panel layout: PO's inset-spacing + visible-footer requirement finally met) -->
 
+## Run #36 — footer was invisible due to zero card/canvas contrast
+
+PO: "footer is not showing up." It WAS rendered + in-viewport the whole time (verified
+y=808 of 864, text present) — but the floating-panel design had ~3% card/canvas contrast
+(white #FFFFFF footer on near-white #F5F7F8 canvas), so the thin 40px footer dissolved
+into the page. Fix (`67d1cef3`): darkened `bg_page` #F5F7F8 → #E4EAF0. Blast radius =
+one surface (page canvas, page_shell.py:51); bg_page does NOT touch charts (those use
+bg_surface). Now every card — sidebar/header/footer/charts — separates clearly and the
+floating-panel layout reads as intended. **Lesson: a floating-card layout REQUIRES the
+canvas visibly darker than the cards; near-white canvas makes thin cards (footer)
+invisible even when correctly rendered. When a user says "X not showing," verify it's in
+the DOM+viewport FIRST (it was) — the bug was contrast, not layout.**
+
 ## Run #35 — floating-panel layout (the requirement, finally read right)
 
 PO had asked repeatedly for **visible space between every panel and the page border**
