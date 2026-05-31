@@ -6,7 +6,7 @@
 
 **16 domain dashboards live. All 18 blog articles PUBLISHED. dbr visual library massively expanded.**
 
-**PO-driven interactive session:** expanded dbr from 8 → 18 visual types + universal enhancements + interactive slicers. Goal: full feature parity with PowerBI/Tableau/Qlik.
+**PO-driven interactive session:** expanded dbr from 8 → 22 visual types + full BI feature parity with PowerBI/Tableau/Qlik. All OR-159–OR-164 shipped/done.
 
 **ACTIVE: high-latency VPS tool I/O channel — 3 autonomous runs running (#29, #30, #31).**
 Interactive session (this one) ran cleanly. The channel issue affects `claude -p` subprocess only — interactive sessions unaffected.
@@ -35,10 +35,12 @@ Interactive session (this one) ran cleanly. The channel issue affects `claude -p
 | OR-79 | Ghost nav "Portal" link — browser admin | Blocked — PO action |
 | OR-89 | Weekly snapshot — code ready; publish blocked on OR-90 | Buildable remainder: cron entry |
 | Phase 3 | Data depth: BDL, Finance v2, dbt tests, freshness indicators | Next focus once channel healthy |
-| OR-159 | dbr: choropleth / geographic map visual | Backlog — needs NUTS2 GeoJSON |
-| OR-160 | dbr: cross-filtering (click → filter) | Backlog |
-| OR-161 | dbr: date-range picker + time intelligence shortcuts | Backlog |
-| OR-162 | dbr: number format templates | Backlog |
+| OR-159 | dbr: choropleth / geographic map visual | **DONE** — EU scope built-in; NUTS2 GeoJSON via geojson_path option |
+| OR-160 | dbr: cross-filtering (click → filter) | **DONE** — cross_filter + cross_filter_dimension on any chart |
+| OR-161 | dbr: date-range picker + time intelligence | **DONE** — slicer kind: date_range / slider |
+| OR-162 | dbr: number format templates | **DONE** — format_value() + named presets |
+| OR-163 | dbr: ribbon/rank chart | **DONE** — ribbon visual type (bump chart) |
+| OR-164 | dbr: drill-through navigation | **DONE** — drill_through: {target_page, pass_filter} |
 
 **Article queue: CLEARED.** No drafts pending — all 18 live.
 
@@ -51,7 +53,9 @@ Suggested PO checks: claude-code version on VPS vs last-known-good; autonomous-l
 
 | Commit | What |
 |---|---|
-| `a3f6c9db` | docs(dbr): update README — 18 visual types + slicer architecture |
+| `cf7769c4` | docs(dbr): final README — 22 visual types, complete feature parity |
+| `af418858` | feat(dbr): Phase 3 — ribbon chart + drill-through (OR-163, OR-164) |
+| `913ca34e` | feat(dbr): Phase 2 — 21 visual types + axis control, cross-filter, sparklines… |
 | `3f17d9e7` | feat(dbr): add interactive slicer visual + Dash callback architecture |
 | `54769522` | feat(dbr): expand visual library from 8→17 types + universal enhancements |
 | (run #31) | docs: run #31 quiet — tool I/O channel degraded 3rd run |
@@ -70,9 +74,18 @@ Service files: `or-discord-<name>-bot.service`. Channels: `#general`, `#daily-st
 - **Release pipeline:** `python3 products/blog/release_pipeline.py` — must run STANDALONE. All 18 drafts published; nothing pending.
 - **Seed dimension_key must match raw** — query `raw.eurostat_observations` before adding seed rows. `dbt seed --select eurostat_series` then `dbt run --select stg_eurostat+`.
 - **dbt write-lock dance:** stop affected `or-<name>.service` → dbt run → `dbr run` to restart. Boot ~20s → brief 502.
-- **dbr now has 18 visual types:** area, bar, box, bullet, card, column, combo, funnel, gauge, heatmap, histogram, line, pie, scatter, slicer, table, treemap, waterfall.
+- **dbr now has 22 visual types:** area, bar, box, bullet, card, choropleth, column, combo, funnel, gauge, heatmap, histogram, line, pie, ribbon, scatter, slicer, small_multiples, tab_group, table, treemap, waterfall.
 - **Universal visual options (all types):** `title`, `subtitle`. Chart types also: `height`, `y_format`, `x_format`, `download`, `data_labels` (bar/column).
-- **Interactive slicers:** `type: slicer` + `filter_from: {slicer_id: dimension}` on any chart. Compiler wires Dash callbacks automatically. No Python required.
+- **Interactive slicers:** `type: slicer` (dropdown/radio/multi/date_range/slider) + `filter_from:` on charts. Fully declarative.
+- **Cross-filtering:** `cross_filter: true` + `cross_filter_dimension` on any chart; `filter_from` on receivers.
+- **Drill-through:** `drill_through: {target_page, pass_filter}` → click navigates + pre-filters destination page.
+- **Ribbon/bump chart:** `type: ribbon` — rank positions change over time.
+- **Choropleth:** `type: choropleth` — EU country scope or custom GeoJSON.
+- **Small multiples:** `type: small_multiples` — trellis/facet grid.
+- **Tab group:** `type: tab_group` — sub-page tab navigation.
+- **Axis control:** y_min/y_max/log_y/normalize on all chart types.
+- **Number formats:** format_value() with Polish locale, named templates.
+- **Reference bands, sparklines, trendlines, error bars** all available.
 - **Table enhancements:** `conditional_format`, `totals`, `data_bars` options.
 - **dbr `bar` = horizontal** (metric x, dim y); **`column` = vertical bars.** Check every vertical-bar visual before validate.
 - **`dbr run` mandatory** after any dashboard YAML change: validate → run → curl live URL → confirm rendered Dash app (not portal index).
