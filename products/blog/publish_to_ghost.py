@@ -119,6 +119,30 @@ def insert_image_figures(md: str, insertions: list[tuple[str, str, str]]) -> str
     return out
 
 
+def get_post_by_slug(slug: str) -> dict | None:
+    """Return the Ghost post record for slug, or None if not found."""
+    r = requests.get(
+        f"{GHOST_URL}/posts/",
+        headers=_headers(),
+        params={"filter": f"slug:{slug}", "fields": "id,slug,status,updated_at"},
+        timeout=30,
+    )
+    r.raise_for_status()
+    posts = r.json().get("posts", [])
+    return posts[0] if posts else None
+
+
+def publish_existing_post(post_id: str, updated_at: str) -> dict:
+    """Change status of an existing Ghost post to published."""
+    payload = {"posts": [{"status": "published", "updated_at": updated_at}]}
+    r = requests.put(
+        f"{GHOST_URL}/posts/{post_id}/?source=html",
+        headers=_headers(), data=json.dumps(payload), timeout=30,
+    )
+    r.raise_for_status()
+    return r.json()["posts"][0]
+
+
 def create_post(fm: dict, html: str, status: str = "draft") -> dict:
     payload = {"posts": [{
         "title":       fm["title"],

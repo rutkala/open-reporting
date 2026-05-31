@@ -22,7 +22,7 @@ This is a real change from the previous cloud-trigger environment, which could n
 
 **A dashboard build is not shipped until** `dbt run` succeeds, `dbr run` succeeds, the URL returns 200, AND the rendered HTML shows the dashboard's content (e.g. `<title>Dash</title>` — not the portal static index). Code-only commits are incomplete work.
 
-**An article is not shipped until** the draft is in Ghost AND the PO has had a chance to preview. Default to `--status draft` (publisher's default). Only `--publish` when the PO has explicitly approved in Linear or a previous run's decisions.md.
+**An article is not shipped until** it has passed the three-reviewer gate (content-reviewer + analytical-validator + domain-specialist). Use the release pipeline (`products/blog/release_pipeline.py`) — it runs all three reviewers and auto-publishes those that pass. No PO preview step required; the multi-agent gate is the quality control.
 
 # Step 0 — Smoke check
 
@@ -66,6 +66,24 @@ Skip: anything `[BLOCKED]` in decisions.md; anything requiring browser-only 3rd-
 
 Move the picked issue Backlog→In Progress in Linear at start. Move to Done at end (only if truly shipped end-to-end including deploy).
 
+# Step 2b — Article release sweep (every run)
+
+Run the release pipeline on all unreviewed drafts. This is a standing task — run it EVERY autonomous run before picking new work.
+
+```bash
+python3 /opt/open-reporting/products/blog/release_pipeline.py 2>&1 | tee -a data/logs/release-pipeline-$(date -u +%Y-%m-%d).log
+```
+
+This reviews each draft article through three automated reviewers (content + analytical + domain) and auto-publishes those that pass the gate. Articles that fail stay as Ghost drafts; the findings are written to `products/blog/reviews/<slug>-review.md`.
+
+After the run:
+- Check `products/blog/reviews/release-report.md` for the summary
+- Log published articles in the post-mortem (Step 4) with their Ghost URLs
+- For BLOCKED articles, surface the blocking finding in the Telegram report (one line each)
+- Skip already-published articles automatically (the pipeline handles this)
+
+**Rate-limit note:** the pipeline calls `claude -p` as subprocesses. If the current session is active and consuming tokens concurrently, these may hit rate limits — the pipeline will retry with backoff. If it exhausts retries, note in the post-mortem and it will succeed on the next autonomous run.
+
 # Step 3 — Execute
 
 Delegate to builder agents per `docs/process/model-delegation.md`: `dashboard-dev`, `data-engineer`, `content-writer`, `researcher`. Evaluators: `code-reviewer`, `visual-screenshot-reviewer`, `architecture-critic` (Opus), `analytical-validator` (Opus), `domain-specialist` (Opus), `debug`.
@@ -77,7 +95,7 @@ Delegate to builder agents per `docs/process/model-delegation.md`: `dashboard-de
 - **dbt seed + dbt run** after any new mart or seed change. If the build needs the DuckDB write lock, stop the affected dashboard services first (`sudo systemctl stop or-<name>.service`), run dbt, then start them again. Same pattern as `run_daily.sh`.
 - **Seed dimension_keys must match raw** — query `raw.eurostat_observations` for actual `dimension_key` shapes before adding seed rows. Do not guess.
 - **End-to-end verify, not just 200 OK.** After `dbr run`: curl the URL and check the response is actually the Dash app. If you can run Playwright, take a screenshot and confirm charts render real data (not "No data" placeholders).
-- **Publish decision is yours.** You own brand voice. Articles must pass content-reviewer + analytical-validator + domain-specialist (Opus) review before publish. If all three PASS, `--publish` directly. If any blocks, hold as `--status draft` and surface the blocker in the run post-mortem so the PO sees it in the next Telegram digest.
+- **Publish decision is automated.** Use `products/blog/release_pipeline.py` — it runs all three reviews and publishes passing articles autonomously. You do NOT need to manually review or approve articles. Surface BLOCK findings in the Telegram report so the PO can see what prevented publication.
 - **Branch + PR for big changes** (touching `packages/dbr/`, `infra/`, `docker-compose.yml`). Direct-to-main only for YAML/markdown/single-file.
 - **Auto-rollback** on production 5xx: `git revert HEAD` + redeploy.
 
