@@ -55,8 +55,11 @@ _PAGE_RIGHT_STYLE = {
 }
 
 # Scrollable wrapper around the main canvas — scrollspy listens on this.
+# minHeight:0 overrides flex's default min-height:auto, which would otherwise
+# let this item grow to its full content height and push the footer off-screen.
 _MAIN_SCROLL_STYLE = {
     "flex":           "1",
+    "minHeight":      0,
     "overflowY":      "auto",
     "overflowX":      "hidden",
     "scrollBehavior": "smooth",
