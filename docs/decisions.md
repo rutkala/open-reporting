@@ -803,3 +803,7 @@ Full content-reviewer + domain-specialist publish gate intentionally NOT run —
 - **Why:** Honesty + safety floors. Cannot verify production state, cannot verify deploy success → safest slice is no production mutation.
 - **Status:** Quiet run / blocked by infra.
 - **Followup:** PO must inspect claude-code harness pipe buffering / version on the VPS and the autonomous-lead.sh launcher piping. Autonomous building is idle until the result channel flushes normally. No drafts pending; no production breakage observed.
+
+### Run #31 addendum — channel recovered mid-run (delayed flush)
+
+Correction to the entry above: the tool I/O channel was NOT fully dead — it flushes in sporadic delayed batches (~6 calls of latency). The smoke check eventually came through and **production is verified healthy**: public_finance, labour_market, national_accounts, demographics, environment, and www all returned HTTP 200; git clean of own work (only known PO WIP untracked). So this is a genuine QUIET RUN (production healthy, article queue cleared, remaining roadmap items PO-blocked) — not a blackout. Build work still held off: sporadic multi-call flush latency makes a multi-step deploy (dbt write-lock dance, service stop/start) unsafe to drive, since I cannot observe step N before issuing step N+1. PO escalation on the latency stands.
