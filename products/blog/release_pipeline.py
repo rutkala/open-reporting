@@ -219,6 +219,13 @@ def run_review(system_prompt: str, article_text: str, model: str = REVIEW_MODEL,
     an active Claude Code interactive session — nested sessions share the same rate-limit pool.
     """
     wrapped = f"Review the following article:\n\n{article_text}"
+    # `claude -p` must authenticate via the Max-subscription OAuth credentials (the same
+    # pool every bot/cron uses), NOT the pay-as-you-go ANTHROPIC_API_KEY in .env — that
+    # account is unfunded and returns "credit balance too low", which silently surfaced
+    # as false BLOCK verdicts. _load_env() pulls the key into os.environ for Ghost, so we
+    # strip it (and any auth-token override) from the subprocess env here.
+    sub_env = {k: v for k, v in os.environ.items()
+               if k not in ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN")}
     for attempt in range(1, max_retries + 1):
         result = subprocess.run(
             [CLAUDE_BIN, "--model", model, "--tools", "", "--system-prompt", system_prompt,
@@ -227,7 +234,7 @@ def run_review(system_prompt: str, article_text: str, model: str = REVIEW_MODEL,
             text=True,
             timeout=600,
             cwd=str(REPO),
-            env={**os.environ},
+            env=sub_env,
         )
         if result.returncode == 0:
             return result.stdout
