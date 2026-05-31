@@ -1,35 +1,46 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-05-31 12:00 UTC (run #32 — release-pipeline credit-bug fix) -->
+<!-- last-updated: 2026-05-31 17:18 UTC (run #33 — fleet redeploy to HEAD dbr layout fix) -->
 
 ## Current Focus
 
 **16 domain dashboards live. 18 blog articles PUBLISHED. dbr at 22 visual types.**
 
-**Latest (run #32):** Fixed the root cause behind the article-gate failures. The
-release pipeline passed `.env`'s unfunded `ANTHROPIC_API_KEY` to its `claude -p`
-reviewers → "credit balance too low" → **false BLOCK verdicts**. Commit `15b9e8eb`
-strips the key so reviewers use the Max-subscription OAuth pool. Verified in isolation
-(key present → credit error; stripped → "OK"). The #29–#31 "degraded I/O channel"
-story was at least partly this masquerading as failed reviews — channel was fully
-healthy this run.
+**Latest (run #33):** Caught + fixed production drift. Smoke check was green, but
+all 16 dashboard services were running `packages/dbr/` code from BEFORE HEAD commit
+`2922a4cf` (PO's Playwright-verified "remove sidebar gap strip + visible header chrome"
+layout fix, committed 16:38 UTC; services last restarted 16:13–16:16 UTC). dbr is
+editable-installed, so a `systemctl restart` picks up new framework code. Rolling-restarted
+all 16 → all HTTP 200, all ActiveEnterTimestamp now 17:02–17:18 UTC, fleet == HEAD.
+No code change this run; pure ops sync. Channel fully healthy (no I/O degradation).
 
-## Live production state (verified run #32, all HTTP 200)
+## Live production state (verified run #33, all HTTP 200)
 
-- **16 Eurostat domain dashboards Live:** public_finance, labour_market,
-  national_accounts, demographics, environment, living_conditions (8062),
-  prices (8063), education (8064), transport (8065), science (8066), trade (8067),
-  production (8068), health (8069), energy (8070), tourism (8071),
-  financial_markets (8072).
+- **16 Eurostat domain dashboards Live, all on HEAD dbr:** public_finance (8057),
+  labour_market (8058), national_accounts (8059), demographics (8060), environment (8061),
+  living_conditions (8062), prices (8063), education (8064), transport (8065),
+  science (8066), trade (8067), production (8068), health (8069), energy (8070),
+  tourism (8071), financial_markets (8072).
 - **Portal homepage** `/` — one card per live domain. **Blog** `www.open-reporting.dev`
-  — all 18 articles published. **Daily ingestion** 22:00 UTC cron.
+  — all 18 articles published. **Daily ingestion** 22:00 UTC cron (last exit=0).
   **Autonomous-lead cron** `0 2,7,12,17 * * *` UTC. **Next free dashboard port:** 8073.
+
+## Ops note — fleet redeploy after dbr framework changes
+
+When a commit touches `packages/dbr/` (editable install), the live fleet does NOT
+auto-update — each `or-<domain>.service` must be restarted to load new framework code.
+Check drift with: `git log -1 --format=%ci -- packages/dbr/` vs
+`systemctl show or-<domain>.service -p ActiveEnterTimestamp`. A plain
+`sudo systemctl restart or-<domain>.service` suffices (no nginx churn); `dbr run` is
+only needed when the dashboard's own YAML changed. Local `/` health-poll is a poor
+readiness signal — Dash answers at `/<domain>/`; verify via nginx curl instead.
 
 ## Open / blocked work
 
 | Linear | What | Status |
 |---|---|---|
-| — | bezrobocie article: Ghost-only draft, no committed source `.md` | content-writer to regenerate source so the (now-working) gate can publish |
+| — | release-pipeline skip guard ineffective: per-slug `reviews/<slug>-review.md` "✅ PUBLISHED" stubs never written for the 18 (published via aggregate flow) → Step 2b sweep would re-spawn 54 subprocesses. Write the 18 stubs to make the sweep a cheap no-op | next run, small |
+| — | bezrobocie article: Ghost-only draft, no committed source `.md` | content-writer to regenerate source |
 | OR-153 | Telegram inbound (systemd `${}` non-expansion) | Blocked — PO; outbox works |
 | OR-90 | Instagram token (Meta portal) — blocks OR-89 publish | Blocked — PO action |
 | OR-86 | BDL/GUS ingestion | Backlog — needs `BDL_API_KEY` from PO |
@@ -37,26 +48,24 @@ healthy this run.
 | OR-89 | Weekly snapshot — code ready; publish blocked on OR-90 | cron entry remains |
 | Phase 3 | Data depth: BDL, Finance v2, dbt tests, freshness indicators | Next build focus |
 
-In Progress + Todo Linear: empty (9 stale article issues reconciled to Done in #30).
-Article queue: cleared (all 18 live).
+In Progress + Todo Linear: empty. Article queue: cleared (all 18 live).
 
 ## Note for PO
 
-`.env`'s `ANTHROPIC_API_KEY` is an unfunded pay-as-you-go account. Now harmless for
-the release pipeline (stripped), but any other code passing it to the SDK will still
-fail with "credit balance too low". Consider funding or removing it.
+`.env`'s `ANTHROPIC_API_KEY` is an unfunded pay-as-you-go account. Harmless for the
+release pipeline now (stripped, commit `15b9e8eb`), but any other code passing it to the
+SDK will fail with "credit balance too low". Consider funding or removing it.
 
 ## Recent commits
 
 | Commit | What |
 |---|---|
+| `2922a4cf` | fix(dbr): remove sidebar gap strip + visible header chrome (PO; deployed to fleet in #33) |
+| `82f59fad` | fix(dbr): add minHeight:0 to main scroll container — footer visible |
+| `f9f0f42e` | fix(dbr): Cache-Control no-store on all dashboard nginx routes |
+| `04725888` | fix(dbr): widen sidebar gap to 16px, restore footer to white surface |
+| `81cc1dff` | fix(dbr): header/footer canvas colour + sidebar gap + full fleet redeploy |
 | `15b9e8eb` | fix(blog): strip ANTHROPIC_API_KEY from release-pipeline review subprocess |
-| `b0fc468b` | feat(dbr): page header + footer layout |
-| `3ae80900` | fix(dbr): align sidebar toggle with brand header row |
-| `ad329f39` | feat(dbr): collapsible sidebar toggle |
-| `95b2fa6a` | feat(dbr): modern dashboard layout — sticky sidebar, scrollspy |
-| `cf7769c4` | docs(dbr): final README — 22 visual types |
-| `af418858` | feat(dbr): Phase 3 — ribbon chart + drill-through (OR-163/164) |
 
 ## Discord bot fleet (live)
 
@@ -69,29 +78,20 @@ scrum-master (haiku), dashboard-dev/data-engineer/content-writer/researcher/code
 
 ## Key technical facts (current)
 
-- **Release pipeline FIXED:** `python3 products/blog/release_pipeline.py` — reviewers
-  now strip ANTHROPIC_API_KEY → use Max-subscription OAuth. Must still run STANDALONE
-  (nested `claude -p` shares the rate pool). Skips drafts whose review says PUBLISHED;
-  reviews drafts in `products/blog/drafts/` and `products/blog/`.
+- **dbr framework changes need fleet restart** (see Ops note above).
+- **Release pipeline FIXED** (`15b9e8eb`): reviewers strip ANTHROPIC_API_KEY → Max OAuth.
+  Run STANDALONE only. Skip guard needs per-slug review stubs (currently absent).
 - **Seed dimension_key must match raw** — query `raw.eurostat_observations` before adding
   seed rows. `dbt seed --select eurostat_series` then `dbt run --select stg_eurostat+`.
-- **dbt write-lock dance:** stop affected `or-<name>.service` → dbt run → `dbr run` to
-  restart. Boot ~20s → brief 502.
+- **dbt write-lock dance:** stop affected `or-<name>.service` → dbt run → restart.
 - **dbr 22 visual types:** area, bar, box, bullet, card, choropleth, column, combo,
   funnel, gauge, heatmap, histogram, line, pie, ribbon, scatter, slicer, small_multiples,
   tab_group, table, treemap, waterfall.
-- **dbr `bar` = horizontal** (metric x, dim y); **`column` = vertical bars.** Check every
-  vertical-bar visual before validate.
-- **`dbr run` mandatory** after any dashboard YAML change: validate → run → curl live URL
-  → confirm rendered Dash app (not portal index).
+- **dbr `bar` = horizontal** (metric x, dim y); **`column` = vertical bars.**
 - KPI cards resolve latest *non-null* value (semantic.py). Use `semantic_query` /
-  `_run_latest_query` (CLAUDE.md's `from dbr.semantic import query` is stale).
+  `_run_latest_query`.
 - Portal homepage = static `infra/nginx/html/index.html`; deploy via
   `docker compose up -d --force-recreate nginx`.
-- Monthly→annual marts: SUM 12 months; current incomplete year undercounts (KPI shows
-  last complete year).
-- **Write-only bash executes even when result channel is degraded** — commits/pushes land;
-  only stdout return breaks.
 
 ## Stale feature branches
 
