@@ -1,22 +1,24 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-05-31 02:00 UTC -->
+<!-- last-updated: 2026-05-31 (run #31) UTC -->
 
 ## Current Focus
 
 **16 domain dashboards live. All 18 blog articles PUBLISHED. Article bottleneck CLEARED.**
-Run #30 (2026-05-31 02:00 UTC): QUIET RUN. Verified all 16 dashboards + www = 200, inbox empty, git clean of own work. Did NOT build — VPS tool I/O channel degraded for the 2nd consecutive run (#29 + #30): tool results buffer/return empty, flush in delayed batches; some reads never flushed in-window. Driving a multi-step deploy (dbt run / dbr run / curl verify) through an unobservable channel risks a half-applied production change, so held off. Escalated the recurring I/O issue to PO. Article release queue is fully published, so Step 2b had nothing to publish (pipeline not spawned — save shared rate pool).
 
-## Live production state
+**ACTIVE BLOCKER: degraded VPS tool I/O channel — now 3 consecutive runs (#29, #30, #31).**
+Run #31: NO BUILD. All tool results (Bash, Read, Glob) return empty in-window and do not flush — smoke checks, dbt/dbr deploy output, and the release pipeline are all unobservable. Driving a multi-step production deploy through an unobservable channel risks a half-applied change, so held off (same safe call as #29/#30). Disk writes still execute (only the result channel is broken), so post-mortem + outbox escalation were committed via write-only bash. Escalated to PO: this is now a persistent infra failure blocking ALL autonomous building — runs are effectively idle until fixed. Article queue stays cleared, so Step 2b had nothing to publish.
 
-- **16 Eurostat domain dashboards — all Live ✓ (HTTP 200 verified run #30):**
+## Live production state (last VERIFIED run #28; not re-verifiable #29–#31 due to channel)
+
+- **16 Eurostat domain dashboards — all Live as of run #28:**
   public_finance, labour_market, national_accounts, demographics, environment,
   living_conditions (8062), prices (8063), education (8064), transport (8065),
   science (8066), trade (8067), production (8068), health (8069), energy (8070),
   tourism (8071), financial_markets (8072).
-- **Portal homepage:** `/` — Live ✓ (per OR-155, one card per live domain; may need refresh as count grows).
-- **Blog:** `www.open-reporting.dev` — Live ✓; **all 18 articles PUBLISHED** (commit `6d7b89f4`).
-- **Daily ingestion:** 22:00 UTC cron. Services all serving 200 (ingest exit code not definitively read run #30 due to channel, but no breakage).
+- **Portal homepage:** `/` — one card per live domain.
+- **Blog:** `www.open-reporting.dev` — all 18 articles PUBLISHED (commit `6d7b89f4`).
+- **Daily ingestion:** 22:00 UTC cron.
 - **Autonomous-lead cron:** `0 2,7,12,17 * * *` UTC.
 - **Next free dashboard port:** 8073.
 
@@ -24,28 +26,31 @@ Run #30 (2026-05-31 02:00 UTC): QUIET RUN. Verified all 16 dashboards + www = 20
 
 | Linear | What | Status |
 |---|---|---|
+| (infra) | Degraded autonomous tool I/O channel | Blocked — PO; 3 runs running |
 | OR-153 | Telegram inbound (systemd `${}` non-expansion) | Blocked — PO; outbox works |
 | OR-90 | Instagram token (Meta portal) — blocks OR-89 publish | Blocked — PO action |
 | OR-86 | BDL/GUS ingestion | Backlog — needs `BDL_API_KEY` from PO |
 | OR-79 | Ghost nav "Portal" link — browser admin | Blocked — PO action |
 | OR-89 | Weekly snapshot — code ready; publish blocked on OR-90 | Buildable remainder: cron entry |
-| Phase 3 | Data depth: BDL, Finance v2, dbt tests, freshness indicators | Next focus |
+| Phase 3 | Data depth: BDL, Finance v2, dbt tests, freshness indicators | Next focus once channel healthy |
 
 **Article queue: CLEARED.** No drafts pending — all 18 live.
 
-## Known infra issue (ACTIVE)
+## Known infra issue (ACTIVE — TOP PRIORITY FOR PO)
 
-**Degraded autonomous tool I/O — 2 runs running (#29, #30).** `claude -p` subprocess tool results buffer/return empty on immediate response, flushing in delayed batches; some reads never flush in-window. Forces quiet runs because deploy output is unobservable. PO flagged via outbox. Check VPS harness pipe buffering / claude-code version before relying on next build run.
+**Degraded autonomous tool I/O — 3 runs running (#29, #30, #31).** `claude -p` subprocess tool results return empty on response and do not flush in-window; reads never complete. Forces quiet runs because all deploy/verify output is unobservable. Autonomous building is idle until fixed.
+Suggested PO checks: claude-code version on VPS vs last-known-good; autonomous-lead.sh launcher stdout/stderr piping + any timeout/buffering wrapper; whether interactive `claude` on the VPS shows tool output normally (isolates harness vs subprocess).
 
 ## Recent commits
 
 | Commit | What |
 |---|---|
+| (run #31) | docs: run #31 quiet — tool I/O channel degraded 3rd run, escalated |
+| `fe4fea8b` | docs: run #30 addendum — reconcile 9 published article issues to Done |
+| `a0d03607` | docs: run #30 quiet — health verified, ingest exit=0, channel flagged |
 | `6d7b89f4` | feat(content): publish all 18 articles — pipeline review complete |
 | `0c45be26` | docs: session memory — release pipeline shipped, protocol change flagged |
 | `cd106eb4` | feat(content): autonomous article release pipeline — 3-reviewer gate |
-| `5c2b20f9` | docs: session memory — 16 dashboards live, Phase 2 complete |
-| `b3e50ad5` | feat(content): financial markets article — exchange rate history PLN |
 
 ## Discord bot fleet (live)
 
@@ -56,7 +61,7 @@ Service files: `or-discord-<name>-bot.service`. Channels: `#general`, `#daily-st
 
 ## Key technical facts (current)
 
-- **Release pipeline:** `python3 products/blog/release_pipeline.py` — must run STANDALONE (nesting in active session hits Max rate limits). All 18 drafts now published; nothing pending.
+- **Release pipeline:** `python3 products/blog/release_pipeline.py` — must run STANDALONE. All 18 drafts published; nothing pending.
 - **Seed dimension_key must match raw** — query `raw.eurostat_observations` before adding seed rows. `dbt seed --select eurostat_series` then `dbt run --select stg_eurostat+`.
 - **dbt write-lock dance:** stop affected `or-<name>.service` → dbt run → `dbr run` to restart. Boot ~20s → brief 502.
 - **dbr `bar` = horizontal** (metric x, dim y); **`column` = vertical bars.** Check every vertical-bar visual before validate.
@@ -66,6 +71,7 @@ Service files: `or-discord-<name>-bot.service`. Channels: `#general`, `#daily-st
 - Portal homepage is static `infra/nginx/html/index.html`; deploy via `docker compose up -d --force-recreate nginx`.
 - Line chart multi-metric: `y: { metric: [m1, m2] }` — one trace per metric.
 - Monthly→annual marts: SUM 12 months; current incomplete year undercounts (KPI shows last complete year).
+- **Write-only bash executes even when the result channel is degraded** — commits/pushes land on disk/remote; only stdout return is broken.
 
 ## Stale feature branches
 
