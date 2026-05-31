@@ -145,8 +145,36 @@ def _build_visual(spec: dict):
             f"Unknown visual type {vtype!r}. Available: {available}"
         )
     factory = VISUAL_REGISTRY[vtype]
-    kwargs = {k: v for k, v in spec.items() if k != "type"}
-    return factory(**kwargs)
+    title    = spec.get("title")
+    subtitle = spec.get("subtitle")
+    kwargs = {k: v for k, v in spec.items() if k not in ("type", "title", "subtitle")}
+    component = factory(**kwargs)
+    if title or subtitle:
+        _prepend_title(component, title, subtitle)
+    return component
+
+
+def _prepend_title(card, title: str | None, subtitle: str | None) -> None:
+    """Mutate a rendered card Div to prepend a title/subtitle header."""
+    from dash import html
+    nodes: list = []
+    if title:
+        nodes.append(html.Div(title, style={
+            "fontSize": "13px", "fontWeight": 600, "color": "#2D3339",
+            "marginBottom": "2px" if subtitle else "8px",
+            "lineHeight": "1.3",
+        }))
+    if subtitle:
+        nodes.append(html.Div(subtitle, style={
+            "fontSize": "11px", "color": "#6B7A85",
+            "marginBottom": "8px", "lineHeight": "1.3",
+        }))
+    if isinstance(card.children, list):
+        card.children = nodes + card.children
+    elif card.children is not None:
+        card.children = nodes + [card.children]
+    else:
+        card.children = nodes
 
 
 def _load_yaml(path: Path) -> dict:

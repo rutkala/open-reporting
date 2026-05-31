@@ -16,6 +16,14 @@
       "description": "Channel bindings. Each channel binds to a dimension or a metric. Allowed channels and which are mandatory depend on the visual type — see the per-visual schema (in VISUAL_SCHEMAS).",
       "additionalProperties": true
     },
+    "title": {
+      "type": "string",
+      "description": "Optional header text rendered at the top of the visual card."
+    },
+    "subtitle": {
+      "type": "string",
+      "description": "Optional smaller caption rendered below the title."
+    },
     "filter": {
       "type": "object",
       "description": "Filter passed to the semantic layer. Keys are entity/dimension names; values are scalars or arrays.",

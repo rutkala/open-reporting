@@ -32,6 +32,8 @@ SCHEMA = {
                 "value":    {"type": "object"},
             },
         },
+        "title":    {"type": "string"},
+        "subtitle": {"type": "string"},
         "filter":  {"type": "object"},
         "options": {
             "type": "object",

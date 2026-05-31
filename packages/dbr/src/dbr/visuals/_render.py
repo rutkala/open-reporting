@@ -41,16 +41,47 @@ from dbr.theme import (
 
 
 def chart_with_optional_table(fig, df: pd.DataFrame, options: dict | None, card_style: dict) -> html.Div:
-    """Wrap a Plotly figure in a card Div; append a companion table when requested.
+    """Wrap a Plotly figure in a card Div; append a companion table and/or download button when requested.
 
     Each multi-row visual calls this in place of building the wrapping
     ``html.Div(dcc.Graph(...))`` itself.
     """
+    opts = options or {}
     children: list = [dcc.Graph(figure=fig, config={"displayModeBar": False})]
-    table_opt = (options or {}).get("table")
+    table_opt = opts.get("table")
     if table_opt and df is not None and not df.empty:
         children.append(_render_companion_table(df, table_opt))
+    if opts.get("download") and df is not None and not df.empty:
+        children.append(_render_download_button(df))
     return html.Div(children, style=card_style)
+
+
+def _render_download_button(df: pd.DataFrame) -> html.Div:
+    """Render a small CSV download link using a data-URI.
+
+    Uses an anchor tag with a data-URI so no Dash callback is needed —
+    the browser handles the download entirely client-side. The entire
+    DataFrame is encoded as CSV in the href. For large DataFrames (>500
+    rows) this is still fast because it runs once at page load, not on
+    user interaction.
+    """
+    import base64
+    csv_str  = df.to_csv(index=False)
+    b64      = base64.b64encode(csv_str.encode()).decode()
+    data_uri = f"data:text/csv;base64,{b64}"
+    return html.Div(
+        html.A(
+            "↓ Pobierz CSV",
+            href=data_uri,
+            download="data.csv",
+            style={
+                "fontSize": "11px", "color": SUBTEXT, "textDecoration": "none",
+                "padding": "4px 0", "display": "inline-block",
+                "cursor": "pointer",
+            },
+        ),
+        style={"textAlign": "right", "marginTop": "4px"},
+    )
 
 
 def _render_companion_table(df: pd.DataFrame, table_opt: bool | dict) -> html.Table:
@@ -131,6 +162,33 @@ def _fmt(v) -> str:
         return f"{v:.2f}".replace(".", ",")
     return str(v)
 
+
+# ── Shared title/subtitle schema fields ───────────────────────────────────────
+# Import and spread into any per-visual SCHEMA's `properties` dict to enable
+# per-visual title/subtitle headers (handled centrally in compiler._build_visual).
+_TITLE_SCHEMA_PROPS: dict = {
+    "title":    {"type": "string", "description": "Visual header shown at top of the card."},
+    "subtitle": {"type": "string", "description": "Smaller caption below the title."},
+}
+
+# ── Shared axis/format schema fields ──────────────────────────────────────────
+_AXIS_FORMAT_PROPS: dict = {
+    "y_format": {
+        "type": "string",
+        "description": "Plotly tickformat string for the y-axis (e.g. '.1f', ',.0f', '.1%').",
+    },
+    "x_format": {
+        "type": "string",
+        "description": "Plotly tickformat string for the x-axis.",
+    },
+}
+
+_HEIGHT_PROP: dict = {
+    "height": {
+        "type": "integer", "minimum": 100, "maximum": 2000,
+        "description": "Chart height in pixels. Overrides the theme default.",
+    },
+}
 
 _TABLE_OPTION_SCHEMA = {
     "oneOf": [

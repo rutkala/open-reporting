@@ -40,6 +40,8 @@ SCHEMA = {
                 "size":  {"type": "object"},
             },
         },
+        "title":    {"type": "string"},
+        "subtitle": {"type": "string"},
         "filter":  {"type": "object"},
         "options": {"type": "object", "additionalProperties": True},
     },

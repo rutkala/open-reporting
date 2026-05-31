@@ -46,6 +46,8 @@ SCHEMA = {
                 "color": {"type": "object"},
             },
         },
+        "title":    {"type": "string"},
+        "subtitle": {"type": "string"},
         "filter":  {"type": "object"},
         "options": {
             "type": "object",
@@ -76,6 +78,13 @@ SCHEMA = {
                         },
                     },
                 },
+                "data_labels": {
+                    "type": "boolean",
+                    "description": "Show value labels on each bar. Values formatted with 1 decimal place.",
+                },
+                "height": {"type": "integer", "minimum": 100, "maximum": 2000},
+                "y_format": {"type": "string", "description": "Plotly tickformat for the x-axis (value axis)."},
+                "download": {"type": "boolean", "description": "Render a CSV download link below the chart."},
                 "table": _TABLE_OPTION_SCHEMA,
                 "annotations": _ANNOTATIONS_OPTION_SCHEMA,
                 "dual_year": {
@@ -141,11 +150,18 @@ def bar(*, encoding: dict, filter: dict | None = None, options: dict | None = No
     elif sort == "category":
         df = df.sort_values(y_col)
 
+    data_labels = opts.get("data_labels", False)
+    text_templ = "%{x:.1f}" if data_labels else None
+
     fig = go.Figure()
     if enc.color:
         color_col = dimension_column_name(enc.color)
         for series, sub in df.groupby(color_col):
-            fig.add_trace(go.Bar(x=sub[metric], y=sub[y_col], orientation="h", name=str(series)))
+            fig.add_trace(go.Bar(
+                x=sub[metric], y=sub[y_col], orientation="h", name=str(series),
+                text=[f"{v:.1f}" for v in sub[metric]] if data_labels else None,
+                textposition="outside" if data_labels else None,
+            ))
         fig.update_layout(barmode="stack" if opts.get("stack") else "group")
     else:
         marker_color = None
@@ -159,11 +175,16 @@ def bar(*, encoding: dict, filter: dict | None = None, options: dict | None = No
             x=df[metric], y=df[y_col], orientation="h",
             marker=dict(color=marker_color) if marker_color else None,
             showlegend=False,
+            text=[f"{v:.1f}" for v in df[metric]] if data_labels else None,
+            textposition="outside" if data_labels else None,
         ))
+    height = opts.get("height", int(str(BAR_CHART_HEIGHT).rstrip("px")))
     fig.update_layout(
-        height=int(str(BAR_CHART_HEIGHT).rstrip("px")),
+        height=height,
         bargap=BAR_CHART_BARGAP, xaxis_title="", yaxis_title="",
     )
+    if opts.get("y_format"):
+        fig.update_layout(xaxis_tickformat=opts["y_format"])
     apply_reference_lines(fig, opts, axis="x")
     apply_annotations(fig, opts)
     return chart_with_optional_table(fig, df, opts, _CARD_STYLE)

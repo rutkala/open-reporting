@@ -40,6 +40,8 @@ SCHEMA = {
                 "color": {"type": "object"},
             },
         },
+        "title":    {"type": "string"},
+        "subtitle": {"type": "string"},
         "filter":  {"type": "object"},
         "options": {
             "type": "object",
@@ -47,6 +49,10 @@ SCHEMA = {
             "properties": {
                 "opacity": {"type": "number", "minimum": 0.0, "maximum": 1.0},
                 "stack":   {"type": "boolean"},
+                "height":   {"type": "integer", "minimum": 100, "maximum": 2000},
+                "y_format": {"type": "string"},
+                "x_format": {"type": "string"},
+                "download": {"type": "boolean", "description": "Render a CSV download link below the chart."},
                 "table": _TABLE_OPTION_SCHEMA,
                 "annotations": _ANNOTATIONS_OPTION_SCHEMA,
             },
@@ -99,9 +105,11 @@ def area(*, encoding: dict, filter: dict | None = None, options: dict | None = N
             fill="tozeroy", opacity=opacity,
             line=dict(width=AREA_CHART_LINE_WIDTH),
         ))
-    fig.update_layout(
-        height=int(str(AREA_CHART_HEIGHT).rstrip("px")),
-        xaxis_title="", yaxis_title="",
-    )
+    height = opts.get("height", int(str(AREA_CHART_HEIGHT).rstrip("px")))
+    fig.update_layout(height=height, xaxis_title="", yaxis_title="")
+    if opts.get("y_format"):
+        fig.update_layout(yaxis_tickformat=opts["y_format"])
+    if opts.get("x_format"):
+        fig.update_layout(xaxis_tickformat=opts["x_format"])
     apply_annotations(fig, opts)
     return chart_with_optional_table(fig, df, opts, _CARD_STYLE)

@@ -9,47 +9,87 @@ The block exposes two registries:
   VISUAL_REGISTRY  — type name → factory function (used by the compiler)
   VISUAL_SCHEMAS   — type name → JSON Schema (used by `dbr validate`)
 
-Eight visuals registered today, modelled on Power BI's standard library:
+Seventeen visuals registered, modelled on Power BI's standard library:
 
-  card     — Power BI Card + KPI (consolidated via options.threshold)
-  column   — vertical bars (category x, metric y)
-  bar      — horizontal bars (metric x, category y)
-  line     — line chart (time series or category)
-  area     — filled area (single or stacked)
-  pie      — pie / donut (donut = options.hole_size > 0)
-  scatter  — scatter / bubble (bubble = size encoding channel)
-  table    — multi-row + multi-column tabular display
+  card      — KPI card (value + delta + threshold badge)
+  column    — vertical bar chart (category x, metric y)
+  bar       — horizontal bar chart (metric x, category y)
+  line      — line chart (time series or category, multi-series)
+  area      — filled area (single or stacked)
+  pie       — pie / donut
+  scatter   — scatter / bubble
+  table     — multi-row + multi-column tabular display
+  waterfall — bridge / waterfall chart (cumulative changes)
+  gauge     — speedometer gauge (go.Indicator)
+  histogram — distribution chart (metric values across categories)
+  heatmap   — matrix heatmap (two dimensions × one metric)
+  treemap   — hierarchical area chart (one or two-level)
+  funnel    — funnel / conversion chart
+  combo     — combination line + column (dual y-axis)
+  bullet    — IBCS bullet chart (metric vs target vs ranges)
+  box       — box-and-whisker distribution chart
 """
-from dbr.visuals.area     import area,     SCHEMA as _AREA_SCHEMA
-from dbr.visuals.bar      import bar,      SCHEMA as _BAR_SCHEMA
-from dbr.visuals.card     import card,     SCHEMA as _CARD_SCHEMA
-from dbr.visuals.column   import column,   SCHEMA as _COLUMN_SCHEMA
-from dbr.visuals.line     import line,     SCHEMA as _LINE_SCHEMA
-from dbr.visuals.pie      import pie,      SCHEMA as _PIE_SCHEMA
-from dbr.visuals.scatter  import scatter,  SCHEMA as _SCATTER_SCHEMA
-from dbr.visuals.table    import table,    SCHEMA as _TABLE_SCHEMA
+from dbr.visuals.area      import area,      SCHEMA as _AREA_SCHEMA
+from dbr.visuals.bar       import bar,       SCHEMA as _BAR_SCHEMA
+from dbr.visuals.box       import box,       SCHEMA as _BOX_SCHEMA
+from dbr.visuals.bullet    import bullet,    SCHEMA as _BULLET_SCHEMA
+from dbr.visuals.card      import card,      SCHEMA as _CARD_SCHEMA
+from dbr.visuals.column    import column,    SCHEMA as _COLUMN_SCHEMA
+from dbr.visuals.combo     import combo,     SCHEMA as _COMBO_SCHEMA
+from dbr.visuals.funnel    import funnel,    SCHEMA as _FUNNEL_SCHEMA
+from dbr.visuals.gauge     import gauge,     SCHEMA as _GAUGE_SCHEMA
+from dbr.visuals.heatmap   import heatmap,   SCHEMA as _HEATMAP_SCHEMA
+from dbr.visuals.histogram import histogram, SCHEMA as _HISTOGRAM_SCHEMA
+from dbr.visuals.line      import line,      SCHEMA as _LINE_SCHEMA
+from dbr.visuals.pie       import pie,       SCHEMA as _PIE_SCHEMA
+from dbr.visuals.scatter   import scatter,   SCHEMA as _SCATTER_SCHEMA
+from dbr.visuals.table     import table,     SCHEMA as _TABLE_SCHEMA
+from dbr.visuals.treemap   import treemap,   SCHEMA as _TREEMAP_SCHEMA
+from dbr.visuals.waterfall import waterfall, SCHEMA as _WATERFALL_SCHEMA
 
 VISUAL_REGISTRY: dict = {
-    "card":    card,
-    "column":  column,
-    "bar":     bar,
-    "line":    line,
-    "area":    area,
-    "pie":     pie,
-    "scatter": scatter,
-    "table":   table,
+    "area":      area,
+    "bar":       bar,
+    "box":       box,
+    "bullet":    bullet,
+    "card":      card,
+    "column":    column,
+    "combo":     combo,
+    "funnel":    funnel,
+    "gauge":     gauge,
+    "heatmap":   heatmap,
+    "histogram": histogram,
+    "line":      line,
+    "pie":       pie,
+    "scatter":   scatter,
+    "table":     table,
+    "treemap":   treemap,
+    "waterfall": waterfall,
 }
 
 VISUAL_SCHEMAS: dict = {
-    "card":    _CARD_SCHEMA,
-    "column":  _COLUMN_SCHEMA,
-    "bar":     _BAR_SCHEMA,
-    "line":    _LINE_SCHEMA,
-    "area":    _AREA_SCHEMA,
-    "pie":     _PIE_SCHEMA,
-    "scatter": _SCATTER_SCHEMA,
-    "table":   _TABLE_SCHEMA,
+    "area":      _AREA_SCHEMA,
+    "bar":       _BAR_SCHEMA,
+    "box":       _BOX_SCHEMA,
+    "bullet":    _BULLET_SCHEMA,
+    "card":      _CARD_SCHEMA,
+    "column":    _COLUMN_SCHEMA,
+    "combo":     _COMBO_SCHEMA,
+    "funnel":    _FUNNEL_SCHEMA,
+    "gauge":     _GAUGE_SCHEMA,
+    "heatmap":   _HEATMAP_SCHEMA,
+    "histogram": _HISTOGRAM_SCHEMA,
+    "line":      _LINE_SCHEMA,
+    "pie":       _PIE_SCHEMA,
+    "scatter":   _SCATTER_SCHEMA,
+    "table":     _TABLE_SCHEMA,
+    "treemap":   _TREEMAP_SCHEMA,
+    "waterfall": _WATERFALL_SCHEMA,
 }
 
-__all__ = ["VISUAL_REGISTRY", "VISUAL_SCHEMAS",
-           "area", "bar", "card", "column", "line", "pie", "scatter", "table"]
+__all__ = [
+    "VISUAL_REGISTRY", "VISUAL_SCHEMAS",
+    "area", "bar", "box", "bullet", "card", "column", "combo",
+    "funnel", "gauge", "heatmap", "histogram", "line", "pie",
+    "scatter", "table", "treemap", "waterfall",
+]

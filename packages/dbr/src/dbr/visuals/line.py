@@ -49,6 +49,8 @@ SCHEMA = {
                 "color": {"type": "object"},
             },
         },
+        "title":    {"type": "string"},
+        "subtitle": {"type": "string"},
         "filter":  {"type": "object"},
         "options": {
             "type": "object",
@@ -79,6 +81,10 @@ SCHEMA = {
                         "label_suffix":   {"type": "string"},
                     },
                 },
+                "height": {"type": "integer", "minimum": 100, "maximum": 2000},
+                "y_format": {"type": "string", "description": "Plotly tickformat for y-axis."},
+                "x_format": {"type": "string", "description": "Plotly tickformat for x-axis."},
+                "download": {"type": "boolean", "description": "Render a CSV download link below the chart."},
                 "table": _TABLE_OPTION_SCHEMA,
                 "annotations": _ANNOTATIONS_OPTION_SCHEMA,
                 "label_endpoints": _ENDPOINT_LABELS_OPTION_SCHEMA,
@@ -182,10 +188,12 @@ def line(*, encoding: dict, filter: dict | None = None, options: dict | None = N
             line=dict(width=LINE_CHART_LINE_WIDTH),
             marker=dict(size=LINE_CHART_MARKER_SIZE),
         ))
-    fig.update_layout(
-        height=int(str(LINE_CHART_HEIGHT).rstrip("px")),
-        xaxis_title="", yaxis_title="",
-    )
+    height = opts.get("height", int(str(LINE_CHART_HEIGHT).rstrip("px")))
+    fig.update_layout(height=height, xaxis_title="", yaxis_title="")
+    if opts.get("y_format"):
+        fig.update_layout(yaxis_tickformat=opts["y_format"])
+    if opts.get("x_format"):
+        fig.update_layout(xaxis_tickformat=opts["x_format"])
     apply_reference_lines(fig, opts, axis="y")
     apply_annotations(fig, opts)
     apply_endpoint_labels(fig, opts, colorway=list(COLORWAY))
