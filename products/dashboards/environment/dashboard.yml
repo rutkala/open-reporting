@@ -6,3 +6,6 @@
 domain: environment
 port:   8061
 title:  "Środowisko: emisje i energia"
+subtitle: "Emisje gazów cieplarnianych i intensywność energetyczna"
+footer_source: "Źródło: Eurostat"
+footer_updated: "Dane: 2023"

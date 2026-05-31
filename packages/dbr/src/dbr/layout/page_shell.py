@@ -1,4 +1,4 @@
-"""page_shell — outer page wrapper that composes sidebar + main canvas.
+"""page_shell — outer page wrapper that composes header + sidebar + main canvas + footer.
 
 A dashboard passes a list of sections — each section is
 ``(title, anchor_id, rows)`` where rows is a list of rows, and each row
@@ -8,12 +8,20 @@ sit side by side.
 
 Visual tokens (colours, fonts, paddings, heading sizes, row gap) come
 from ``dbr.theme`` (sourced from ``theme.yaml``).
-Chrome behaviour flags (sidebar enabled, sidebar position) come from
-``dbr.layout.loader`` (sourced from ``layout.yaml``).
+Chrome behaviour flags (sidebar enabled, sidebar position, header/footer
+enabled) come from ``dbr.layout.loader`` (sourced from ``layout.yaml``).
 """
 from dash import dcc, html
 
-from dbr.layout.loader import SIDEBAR_ENABLED, SIDEBAR_POSITION
+from dbr.layout.footer import build_footer
+from dbr.layout.header import build_header
+from dbr.layout.loader import (
+    FOOTER_ENABLED,
+    HEADER_ENABLED,
+    HEADER_SHOW_TITLE,
+    SIDEBAR_ENABLED,
+    SIDEBAR_POSITION,
+)
 from dbr.layout.sidebar import build_sidebar
 from dbr.theme import (
     BG_PAGE,
@@ -31,15 +39,23 @@ from dbr.theme import (
     WEIGHT_SECTION_HEADING,
 )
 
-_PAGE_STYLE = {
-    "display":    "flex",
-    "gap":        PAGE_GAP,
-    "padding":    PAGE_PADDING,
-    "minHeight":  "100vh",
-    "background": BG_PAGE,
-    "color":      TEXT,
-    "fontFamily": FONT_FAMILY,
-    "boxSizing":  "border-box",
+# Outer column: stacks header / body-row / footer vertically.
+_PAGE_OUTER_STYLE = {
+    "display":       "flex",
+    "flexDirection": "column",
+    "minHeight":     "100vh",
+    "background":    BG_PAGE,
+    "color":         TEXT,
+    "fontFamily":    FONT_FAMILY,
+}
+
+# Body row: sidebar + main, fills remaining vertical space.
+_PAGE_BODY_STYLE = {
+    "display":   "flex",
+    "flex":      "1",
+    "gap":       PAGE_GAP,
+    "padding":   PAGE_PADDING,
+    "boxSizing": "border-box",
 }
 
 _MAIN_STYLE = {
@@ -95,8 +111,11 @@ def _wrap_item(component, width: str | None) -> html.Div:
 def page_shell(
     sections: list[tuple[str, str, list[tuple[str | None, str | None, list[tuple[object, str | None]]]]]],
     dashboard_title: str = "",
+    dashboard_subtitle: str = "",
+    footer_source: str = "",
+    footer_updated: str = "",
 ) -> html.Div:
-    """Return the full page tree (sidebar + main canvas) for ``app.layout``.
+    """Return the full page tree (header + sidebar + main canvas + footer) for ``app.layout``.
 
     ``sections`` is a list of ``(title, anchor_id, rows)`` where each
     row is a 3-tuple of ``(row_title_or_None, row_prose_or_None,
@@ -105,11 +124,18 @@ def page_shell(
     Markdown paragraph renders below the title and above the items
     (narrative bridge between charts per rubric dim 17).
 
-    ``dashboard_title`` is the human-readable title shown in the sidebar
-    brand area (sourced from ``dashboard.yml``).
+    ``dashboard_title`` is the human-readable title (sourced from
+    ``dashboard.yml``). Shown in the sidebar brand area and, when
+    ``header.enabled`` is true, in the full-width page header.
 
-    Chrome behaviour (sidebar on/off, sidebar position) comes from
-    ``layout.yaml``.
+    ``dashboard_subtitle`` is an optional one-liner shown beneath the
+    title in the page header only.
+
+    ``footer_source`` and ``footer_updated`` populate the footer bar
+    when ``footer.enabled`` is true.
+
+    Chrome behaviour (header/sidebar/footer on/off, positions) comes
+    from ``layout.yaml``.
     """
     sidebar_pairs = [(label, anchor) for label, anchor, _ in sections]
 
@@ -126,9 +152,21 @@ def page_shell(
 
     main = html.Main(style=_MAIN_STYLE, children=main_children)
 
+    # Build body row (sidebar + main)
     if not SIDEBAR_ENABLED:
-        return html.Div(style=_PAGE_STYLE, children=[main])
+        body_children = [main]
+    else:
+        sidebar = build_sidebar(sections=sidebar_pairs, dashboard_title=dashboard_title)
+        body_children = [sidebar, main] if SIDEBAR_POSITION == "left" else [main, sidebar]
+    body_row = html.Div(style=_PAGE_BODY_STYLE, children=body_children)
 
-    sidebar = build_sidebar(sections=sidebar_pairs, dashboard_title=dashboard_title)
-    children = [sidebar, main] if SIDEBAR_POSITION == "left" else [main, sidebar]
-    return html.Div(style=_PAGE_STYLE, children=children)
+    # Assemble outer column: optional header + body + optional footer
+    outer_children: list = []
+    if HEADER_ENABLED:
+        header_title = dashboard_title if HEADER_SHOW_TITLE else ""
+        outer_children.append(build_header(title=header_title, subtitle=dashboard_subtitle))
+    outer_children.append(body_row)
+    if FOOTER_ENABLED:
+        outer_children.append(build_footer(source=footer_source, updated=footer_updated))
+
+    return html.Div(style=_PAGE_OUTER_STYLE, children=outer_children)

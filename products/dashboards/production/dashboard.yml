@@ -6,3 +6,6 @@
 domain: production
 port:   8068
 title:  "Produkcja przemysłowa i rolnictwo"
+subtitle: "Produkcja przemysłowa, rolna i wartość dodana"
+footer_source: "Źródło: Eurostat"
+footer_updated: "Dane: 2023"

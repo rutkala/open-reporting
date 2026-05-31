@@ -43,8 +43,20 @@ if _project_root:
         _DATA = _deep_merge(_PACKAGE_DEFAULTS, _override)
 
 _SIDEBAR = _DATA["sidebar"]
+_HEADER  = _DATA.get("header", {})
+_FOOTER  = _DATA.get("footer", {})
 
 # ── Sidebar behaviour ──────────────────────────────────────────────────
 SIDEBAR_ENABLED      = _SIDEBAR["enabled"]
 SIDEBAR_POSITION     = _SIDEBAR["position"]      # "left" | "right"
 SIDEBAR_SHOW_TOGGLE  = _SIDEBAR.get("show_toggle", True)
+SIDEBAR_SHOW_TITLE   = _SIDEBAR.get("show_title", True)
+
+# ── Header behaviour ───────────────────────────────────────────────────
+HEADER_ENABLED    = _HEADER.get("enabled", False)
+HEADER_SHOW_TITLE = _HEADER.get("show_title", True)
+
+# ── Footer behaviour ───────────────────────────────────────────────────
+FOOTER_ENABLED      = _FOOTER.get("enabled", False)
+FOOTER_SHOW_SOURCE  = _FOOTER.get("show_source", True)
+FOOTER_SHOW_UPDATED = _FOOTER.get("show_updated", True)

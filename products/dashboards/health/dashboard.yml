@@ -8,3 +8,6 @@
 domain: health
 port:   8069
 title:  "Zdrowie Polaków"
+subtitle: "Wydatki zdrowotne, umieralność i zasoby systemu ochrony zdrowia"
+footer_source: "Źródło: Eurostat"
+footer_updated: "Dane: 2022"

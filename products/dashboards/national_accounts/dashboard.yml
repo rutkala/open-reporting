@@ -6,3 +6,6 @@
 domain: national_accounts
 port:   8059
 title:  "Gospodarka: rachunki narodowe"
+subtitle: "PKB, konsumpcja, inwestycje i oszczędności"
+footer_source: "Źródło: Eurostat"
+footer_updated: "Dane: 2023"

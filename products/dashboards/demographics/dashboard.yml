@@ -6,3 +6,6 @@
 domain: demographics
 port:   8060
 title:  "Ludność Polski"
+subtitle: "Ludność, migracje, urodzenia, zgony i struktura wiekowa"
+footer_source: "Źródło: Eurostat"
+footer_updated: "Dane: 2023"

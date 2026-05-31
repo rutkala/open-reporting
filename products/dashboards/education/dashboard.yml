@@ -6,3 +6,6 @@
 domain: education
 port:   8064
 title:  "Edukacja w Polsce"
+subtitle: "Wykształcenie, nakłady i wyniki systemu edukacji"
+footer_source: "Źródło: Eurostat"
+footer_updated: "Dane: 2023"

@@ -17,3 +17,13 @@ sidebar:
   enabled:      true          # if false, the sidebar is not rendered; main takes full width
   position:     left          # left | right
   show_toggle:  true          # show the collapse/expand toggle button
+  show_title:   true          # show dashboard title in the sidebar brand area
+
+header:
+  enabled:      true          # full-width header bar above sidebar+main
+  show_title:   true          # display dashboard title in the header
+
+footer:
+  enabled:      true          # full-width footer bar below sidebar+main
+  show_source:  true          # show data source attribution text
+  show_updated: true          # show last-updated indicator

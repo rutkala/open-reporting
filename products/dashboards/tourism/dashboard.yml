@@ -7,3 +7,6 @@
 domain: tourism
 port:   8071
 title:  "Turystyka w Polsce"
+subtitle: "Noclegi, przyjazdy i wpływy z turystyki"
+footer_source: "Źródło: Eurostat"
+footer_updated: "Dane: 2023"

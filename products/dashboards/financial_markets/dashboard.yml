@@ -8,3 +8,6 @@
 domain: financial_markets
 port:   8072
 title:  "Rynki finansowe w Polsce"
+subtitle: "Stopy procentowe, kurs walutowy i rynki kapitałowe"
+footer_source: "Źródło: Eurostat"
+footer_updated: "Dane: 2024"

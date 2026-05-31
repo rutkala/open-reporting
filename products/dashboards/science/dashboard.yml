@@ -6,3 +6,6 @@
 domain: science
 port:   8066
 title:  "Nauka i innowacje w Polsce"
+subtitle: "Nakłady na B+R, patenty i zasoby ludzkie w nauce"
+footer_source: "Źródło: Eurostat"
+footer_updated: "Dane: 2023"

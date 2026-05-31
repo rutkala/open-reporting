@@ -237,19 +237,30 @@ def run_dashboard(path: str | Path) -> None:
     ctx = BuildContext()
     sections = _load_pages(project_root / "pages", ctx)
 
-    dashboard_title = config.get("title", "")
+    dashboard_title    = config.get("title", "")
+    dashboard_subtitle = config.get("subtitle", "")
+    footer_source      = config.get("footer_source", "")
+    footer_updated     = config.get("footer_updated", "")
     app = make_app(config["domain"], title=dashboard_title)
+
+    shell_kwargs = dict(
+        sections=sections,
+        dashboard_title=dashboard_title,
+        dashboard_subtitle=dashboard_subtitle,
+        footer_source=footer_source,
+        footer_updated=footer_updated,
+    )
 
     # Inject dcc.Location for drill-through URL hash navigation when needed
     if ctx.needs_location:
         from dash import dcc as _dcc, html as _html
-        shell = page_shell(sections=sections, dashboard_title=dashboard_title)
+        shell = page_shell(**shell_kwargs)
         app.layout = _html.Div([
             _dcc.Location(id="dbr_location", refresh=False),
             shell,
         ])
     else:
-        app.layout = page_shell(sections=sections, dashboard_title=dashboard_title)
+        app.layout = page_shell(**shell_kwargs)
 
     if ctx.has_bindings():
         ctx.register_callbacks(app)

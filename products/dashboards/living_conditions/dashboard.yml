@@ -6,3 +6,6 @@
 domain: living_conditions
 port:   8062
 title:  "Warunki życia: dochody, nierówności i ubóstwo"
+subtitle: "Dochody gospodarstw domowych, nierówności i zagrożenie ubóstwem"
+footer_source: "Źródło: Eurostat"
+footer_updated: "Dane: 2022"

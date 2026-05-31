@@ -16,7 +16,7 @@ All visual tokens (colours, fonts, widths, paddings) come from
 """
 from dash import html
 
-from dbr.layout.loader import SIDEBAR_SHOW_TOGGLE
+from dbr.layout.loader import SIDEBAR_SHOW_TITLE, SIDEBAR_SHOW_TOGGLE
 from dbr.theme import (
     BG_SURFACE,
     BORDER,
@@ -191,7 +191,7 @@ def build_sidebar(
     brand_children: list = [
         html.Div(id="dbr-logo-row", style=_LOGO_ROW_STYLE, children=logo_row_children),
     ]
-    if dashboard_title:
+    if dashboard_title and SIDEBAR_SHOW_TITLE:
         brand_children.append(
             html.Div(
                 dashboard_title,

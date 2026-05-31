@@ -7,3 +7,6 @@
 domain: energy
 port:   8070
 title:  "Energia w Polsce"
+subtitle: "Zużycie, produkcja i mix energetyczny"
+footer_source: "Źródło: Eurostat"
+footer_updated: "Dane: 2023"

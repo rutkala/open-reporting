@@ -6,3 +6,6 @@
 domain: labour_market
 port:   8058
 title:  Rynek pracy w Polsce
+subtitle: "Zatrudnienie, bezrobocie i koszty pracy"
+footer_source: "Źródło: Eurostat"
+footer_updated: "Dane: 2024"

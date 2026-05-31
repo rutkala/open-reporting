@@ -6,3 +6,6 @@
 domain: transport
 port:   8065
 title:  "Transport kolejowy w Polsce"
+subtitle: "Przewozy pasażerów i towarów, infrastruktura kolejowa"
+footer_source: "Źródło: Eurostat"
+footer_updated: "Dane: 2023"
