@@ -46,6 +46,13 @@ body { margin: 0; padding: 0; }
   width: 52px !important;
   min-width: 52px !important;
 }
+/* When collapsed the logo row contains only the toggle; center it */
+#dbr-sidebar.dbr-sidebar-collapsed #dbr-logo-row {
+  justify-content: center;
+}
+#dbr-sidebar.dbr-sidebar-collapsed #dbr-sidebar-toggle {
+  margin-left: 0 !important;
+}
 """
 
 _SCROLLSPY_JS = """
@@ -91,25 +98,40 @@ _SIDEBAR_TOGGLE_JS = """
   function applyState(sidebar, btn, collapsed) {
     if (collapsed) {
       sidebar.classList.add('dbr-sidebar-collapsed');
-      btn.textContent = '›';   /* › */
+      btn.textContent = '›';
       btn.title = 'Rozwiń panel';
-      /* Hide brand, nav, footer — keep only the toggle bar visible */
-      var brand  = document.getElementById('dbr-sidebar-brand');
+      /* Brand header stays visible (it holds the toggle button).
+         Hide only the OR badge, wordmark, and dashboard title so the
+         toggle button remains alone in the logo row. */
+      var badge = document.getElementById('dbr-logo-badge');
+      var name  = document.getElementById('dbr-logo-name');
+      var title = document.getElementById('dbr-dash-title');
       var nav    = document.getElementById('dbr-sidebar-nav');
       var footer = document.getElementById('dbr-sidebar-footer');
-      if (brand)  brand.style.display  = 'none';
+      if (badge)  badge.style.display  = 'none';
+      if (name)   name.style.display   = 'none';
+      if (title)  title.style.display  = 'none';
       if (nav)    nav.style.display    = 'none';
       if (footer) footer.style.display = 'none';
+      /* Tighten brand padding so the lone toggle isn't floating in dead space */
+      var brand = document.getElementById('dbr-sidebar-brand');
+      if (brand) brand.style.padding = '12px 8px';
     } else {
       sidebar.classList.remove('dbr-sidebar-collapsed');
-      btn.textContent = '‹';   /* ‹ */
+      btn.textContent = '‹';
       btn.title = 'Zwiń panel';
-      var brand  = document.getElementById('dbr-sidebar-brand');
+      var badge = document.getElementById('dbr-logo-badge');
+      var name  = document.getElementById('dbr-logo-name');
+      var title = document.getElementById('dbr-dash-title');
       var nav    = document.getElementById('dbr-sidebar-nav');
       var footer = document.getElementById('dbr-sidebar-footer');
-      if (brand)  brand.style.display  = '';
+      if (badge)  badge.style.display  = '';
+      if (name)   name.style.display   = '';
+      if (title)  title.style.display  = '';
       if (nav)    nav.style.display    = '';
       if (footer) footer.style.display = '';
+      var brand = document.getElementById('dbr-sidebar-brand');
+      if (brand) brand.style.padding = '';
     }
   }
 
