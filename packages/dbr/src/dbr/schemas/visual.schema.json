@@ -24,6 +24,14 @@
       "type": "string",
       "description": "Optional smaller caption rendered below the title."
     },
+    "cross_filter": {
+      "type": "boolean",
+      "description": "When true, clicking a data point in this chart emits a filter signal to all visuals with matching filter_from bindings. The clicked value is used as the filter."
+    },
+    "cross_filter_dimension": {
+      "type": "string",
+      "description": "The dimension key emitted when cross_filter is true. Must match the filter_from dimension key on receiver charts."
+    },
     "filter_from": {
       "type": "object",
       "description": "Wires this visual to one or more slicer visuals on the same page. Keys are slicer_id values; values are the filter dimension key. E.g. { country_filter: geo }.",

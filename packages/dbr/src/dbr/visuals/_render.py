@@ -40,6 +40,28 @@ from dbr.theme import (
 )
 
 
+def chart_with_graph_id(
+    fig,
+    df: pd.DataFrame,
+    options: dict | None,
+    card_style: dict,
+    *,
+    graph_id: str | None = None,
+) -> html.Div:
+    """Wrap a Plotly figure in a card; assign graph_id when cross_filter is active."""
+    opts = options or {}
+    graph_kwargs: dict = {"figure": fig, "config": {"displayModeBar": False}}
+    if graph_id:
+        graph_kwargs["id"] = graph_id
+    children: list = [dcc.Graph(**graph_kwargs)]
+    table_opt = opts.get("table")
+    if table_opt and df is not None and not df.empty:
+        children.append(_render_companion_table(df, table_opt))
+    if opts.get("download") and df is not None and not df.empty:
+        children.append(_render_download_button(df))
+    return html.Div(children, style=card_style)
+
+
 def chart_with_optional_table(fig, df: pd.DataFrame, options: dict | None, card_style: dict) -> html.Div:
     """Wrap a Plotly figure in a card Div; append a companion table and/or download button when requested.
 
@@ -189,6 +211,88 @@ _HEIGHT_PROP: dict = {
         "description": "Chart height in pixels. Overrides the theme default.",
     },
 }
+
+# ── Axis customization schema + helper ───────────────────────────────────────
+_AXIS_OPTIONS_SCHEMA: dict = {
+    "y_min":     {"type": "number", "description": "Y-axis minimum value."},
+    "y_max":     {"type": "number", "description": "Y-axis maximum value."},
+    "x_min":     {"type": "number", "description": "X-axis minimum value."},
+    "x_max":     {"type": "number", "description": "X-axis maximum value."},
+    "log_y":     {"type": "boolean", "description": "Logarithmic y-axis."},
+    "log_x":     {"type": "boolean", "description": "Logarithmic x-axis."},
+    "y_title":   {"type": "string",  "description": "Y-axis label text."},
+    "x_title":   {"type": "string",  "description": "X-axis label text."},
+    "zero_line": {"type": "boolean", "description": "Show/hide the y=0 reference line (default: true)."},
+    "normalize": {"type": "boolean", "description": "Normalize stacked bars/areas to 100%."},
+}
+
+
+def apply_axis_options(fig, opts: dict) -> None:
+    """Apply axis min/max/log/title/normalize from the options dict to a Plotly figure."""
+    if opts.get("y_min") is not None or opts.get("y_max") is not None:
+        fig.update_yaxes(range=[opts.get("y_min"), opts.get("y_max")])
+    if opts.get("x_min") is not None or opts.get("x_max") is not None:
+        fig.update_xaxes(range=[opts.get("x_min"), opts.get("x_max")])
+    if opts.get("log_y"):
+        fig.update_yaxes(type="log")
+    if opts.get("log_x"):
+        fig.update_xaxes(type="log")
+    if opts.get("y_title"):
+        fig.update_layout(yaxis_title=opts["y_title"])
+    if opts.get("x_title"):
+        fig.update_layout(xaxis_title=opts["x_title"])
+    if opts.get("zero_line") is False:
+        fig.update_yaxes(zeroline=False)
+    if opts.get("normalize"):
+        fig.update_layout(barnorm="percent")
+
+
+# ── Number format ─────────────────────────────────────────────────────────────
+_FORMAT_OPTION_SCHEMA: dict = {
+    "value_format": {
+        "type": "string",
+        "description": (
+            "Format spec for value labels and hover tooltips. "
+            "Accepts a Python format spec ('.1f', ',.0f', '.1%') or a named template: "
+            "percent_1dp | percent_0dp | thousands | thousands_1dp | index_100."
+        ),
+    },
+}
+
+_FORMAT_TEMPLATES: dict[str, str] = {
+    "percent_1dp":   ".1f",
+    "percent_0dp":   ".0f",
+    "thousands":     ",.0f",
+    "thousands_1dp": ",.1f",
+    "index_100":     ".1f",
+    "currency_bln":  ",.2f",
+}
+
+
+def format_value(v, fmt: str | None) -> str:
+    """Format a numeric value with a Python format spec (Polish decimal comma).
+
+    Accepts a format spec string (e.g. '.1f', ',.0f') or a named template
+    from _FORMAT_TEMPLATES. Falls back to 1-decimal Polish format if fmt is
+    None or the value is not numeric.
+
+    Polish convention: decimal separator = comma, thousands separator = NBSP (thin space).
+    """
+    try:
+        f = float(v)
+    except (TypeError, ValueError):
+        return str(v) if v is not None else "—"
+    if fmt is None:
+        return f"{f:.1f}".replace(".", ",")
+    spec = _FORMAT_TEMPLATES.get(fmt, fmt)
+    try:
+        raw = format(f, spec)
+        # Swap: ',' thousands → ' ' (narrow no-break space), '.' decimal → ','
+        result = raw.replace(" ", " ").replace(",", " ").replace(".", ",")
+        return result
+    except (ValueError, TypeError):
+        return f"{f:.1f}".replace(".", ",")
+
 
 _TABLE_OPTION_SCHEMA = {
     "oneOf": [

@@ -25,13 +25,16 @@ from dbr.theme import (
     LINE_CHART_HEIGHT, LINE_CHART_LINE_WIDTH, LINE_CHART_MARKER_SIZE,
 )
 from dbr.visuals._encoding import (
-    apply_annotations, apply_endpoint_labels, apply_reference_lines,
+    apply_annotations, apply_endpoint_labels, apply_reference_bands, apply_reference_lines,
     _ANNOTATIONS_OPTION_SCHEMA, _ENDPOINT_LABELS_OPTION_SCHEMA,
     postprocess_time_columns,
     dimension_column_name, group_by_from_channels, parse_encoding,
     _resolve_color,
 )
-from dbr.visuals._render import chart_with_optional_table, _TABLE_OPTION_SCHEMA
+from dbr.visuals._render import (
+    apply_axis_options, chart_with_optional_table,
+    format_value, _AXIS_OPTIONS_SCHEMA, _FORMAT_OPTION_SCHEMA, _TABLE_OPTION_SCHEMA,
+)
 
 SCHEMA = {
     "type": "object",
@@ -85,6 +88,8 @@ SCHEMA = {
                 "y_format": {"type": "string", "description": "Plotly tickformat for y-axis."},
                 "x_format": {"type": "string", "description": "Plotly tickformat for x-axis."},
                 "download": {"type": "boolean", "description": "Render a CSV download link below the chart."},
+                **_AXIS_OPTIONS_SCHEMA,
+                **_FORMAT_OPTION_SCHEMA,
                 "table": _TABLE_OPTION_SCHEMA,
                 "annotations": _ANNOTATIONS_OPTION_SCHEMA,
                 "label_endpoints": _ENDPOINT_LABELS_OPTION_SCHEMA,
@@ -98,6 +103,26 @@ SCHEMA = {
                         "other": {"type": "string"},
                     },
                     "description": "Grey-accent palette: named series gets accent colour; all other series rendered in slate-grey. value = series category to highlight; color = optional accent override (default azure_1); other = optional grey override (default slate_3).",
+                },
+                "reference_bands": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": False,
+                        "required": ["from", "to"],
+                        "properties": {
+                            "from":  {},
+                            "to":    {},
+                            "color": {"type": "string"},
+                            "label": {"type": "string"},
+                            "opacity": {"type": "number", "minimum": 0, "maximum": 1},
+                        },
+                    },
+                    "description": "Shaded vertical bands on the chart. from/to are x-axis values (years, categories). Useful for recession periods, structural breaks, etc.",
+                },
+                "smooth": {
+                    "type": "boolean",
+                    "description": "Smooth line with spline interpolation (default: false).",
                 },
             },
         },
@@ -189,14 +214,21 @@ def line(*, encoding: dict, filter: dict | None = None, options: dict | None = N
             marker=dict(size=LINE_CHART_MARKER_SIZE),
         ))
     height = opts.get("height", int(str(LINE_CHART_HEIGHT).rstrip("px")))
+    # Smooth with spline interpolation
+    if opts.get("smooth"):
+        for trace in fig.data:
+            if hasattr(trace, "line"):
+                trace.line.shape = "spline"
     fig.update_layout(height=height, xaxis_title="", yaxis_title="")
     if opts.get("y_format"):
         fig.update_layout(yaxis_tickformat=opts["y_format"])
     if opts.get("x_format"):
         fig.update_layout(xaxis_tickformat=opts["x_format"])
     apply_reference_lines(fig, opts, axis="y")
+    apply_reference_bands(fig, opts)
     apply_annotations(fig, opts)
     apply_endpoint_labels(fig, opts, colorway=list(COLORWAY))
+    apply_axis_options(fig, opts)
     return chart_with_optional_table(fig, df, opts, _CARD_STYLE)
 
 

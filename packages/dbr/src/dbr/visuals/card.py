@@ -9,7 +9,8 @@ Optional:
   options.threshold:    { rule: <name> }  — overlay a status badge from the metric's
                                             threshold metadata (e.g. SGP -3%)
 """
-from dash import html
+from dash import dcc, html
+import plotly.graph_objects as go
 
 from dbr.semantic import semantic_query, semantic_query_history
 from dbr.theme import (
@@ -20,7 +21,7 @@ from dbr.theme import (
     KPI_PERIOD_TOP_GAP, KPI_VALUE_SIZE, KPI_VALUE_WEIGHT,
     NEGATIVE, POSITIVE, SUBTEXT, TEXT, WARNING,
 )
-from dbr.visuals._encoding import parse_encoding
+from dbr.visuals._encoding import parse_encoding, _resolve_color
 
 SCHEMA = {
     "type": "object",
@@ -59,6 +60,17 @@ SCHEMA = {
                         "format":       {"enum": ["icon-first", "textual"]},
                     },
                     "description": "Render a Δ indicator below the value. vs: prior_year computes against the previous observation; vs: target uses target_value. format: icon-first (▲/▼ + value) or textual (sentence).",
+                },
+                "sparkline": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "properties": {
+                        "years":  {"type": "integer", "minimum": 2, "maximum": 30, "description": "Number of years to show in the spark line (default: 10)."},
+                        "height": {"type": "integer", "minimum": 30, "maximum": 120, "description": "Sparkline height in px (default: 48)."},
+                        "color":  {"type": "string", "description": "Line color (default: azure_1)."},
+                        "filled": {"type": "boolean", "description": "Fill area under the line (default: false)."},
+                    },
+                    "description": "Render a tiny trend sparkline below the KPI value.",
                 },
             },
         },
@@ -111,6 +123,11 @@ def _render_standard(r, opts: dict, *, metric: str, filter: dict | None) -> html
         }))
     if badge:
         children.append(badge)
+    sparkline_opts = opts.get("sparkline")
+    if sparkline_opts is not None:
+        spark = _sparkline(metric, filter, sparkline_opts)
+        if spark:
+            children.append(spark)
     return html.Div(children=children, style=style_card)
 
 
@@ -199,6 +216,52 @@ def _fmt_short(v: float) -> str:
     if isinstance(v, float) and v.is_integer():
         return str(int(v))
     return f"{v:.1f}".replace(".", ",")
+
+
+def _sparkline(metric: str, filter: dict | None, spark_opts: dict) -> html.Div | None:
+    """Render a tiny trend sparkline using the metric's history."""
+    from dbr.semantic import semantic_query_data
+    from dbr.theme import AZURE_1, AZURE_PALE
+
+    years  = spark_opts.get("years", 10)
+    height = spark_opts.get("height", 48)
+    color  = _resolve_color(spark_opts.get("color"), AZURE_1)
+    filled = spark_opts.get("filled", False)
+
+    df = semantic_query_data(
+        metric, group_by=["metric_time__year"],
+        filter=filter, order="metric_time__year", limit=years,
+    )
+    if df.empty or metric not in df.columns:
+        return None
+
+    import pandas as pd
+    x_col = "metric_time__year"
+    if x_col not in df.columns:
+        return None
+    x = pd.to_datetime(df[x_col]).dt.year.tolist()
+    y = df[metric].tolist()
+
+    trace = go.Scatter(
+        x=x, y=y, mode="lines",
+        line=dict(color=color, width=1.5),
+        fill="tozeroy" if filled else "none",
+        fillcolor=AZURE_PALE if filled else None,
+        hoverinfo="skip",
+    )
+    fig = go.Figure(trace)
+    fig.update_layout(
+        height=height, margin=dict(l=0, r=0, t=4, b=4),
+        showlegend=False,
+        xaxis=dict(visible=False),
+        yaxis=dict(visible=False),
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+    )
+    return html.Div(
+        dcc.Graph(figure=fig, config={"displayModeBar": False, "staticPlot": True}),
+        style={"marginTop": "8px"},
+    )
 
 
 def _badge(r, threshold: dict) -> html.Div | None:

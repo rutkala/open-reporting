@@ -106,4 +106,5 @@ def funnel(*, encoding: dict, filter: dict | None = None, options: dict | None =
         hovertemplate="%{y}: %{x:.1f}<extra></extra>",
     ))
     fig.update_layout(height=height, showlegend=False)
+    apply_axis_options(fig, opts)
     return html.Div(dcc.Graph(figure=fig, config={"displayModeBar": False}), style=_CARD_STYLE)

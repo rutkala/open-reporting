@@ -28,7 +28,10 @@ from dbr.visuals._encoding import (
     dimension_column_name, group_by_from_channels, parse_encoding,
     _resolve_color,
 )
-from dbr.visuals._render import chart_with_optional_table, _TABLE_OPTION_SCHEMA
+from dbr.visuals._render import (
+    apply_axis_options, chart_with_optional_table,
+    format_value, _AXIS_OPTIONS_SCHEMA, _FORMAT_OPTION_SCHEMA, _TABLE_OPTION_SCHEMA,
+)
 
 SCHEMA = {
     "type": "object",
@@ -85,6 +88,17 @@ SCHEMA = {
                 "height": {"type": "integer", "minimum": 100, "maximum": 2000},
                 "y_format": {"type": "string", "description": "Plotly tickformat for the x-axis (value axis)."},
                 "download": {"type": "boolean", "description": "Render a CSV download link below the chart."},
+                "error_bars": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["metric"],
+                    "properties": {
+                        "metric": {"type": "string"},
+                        "type":   {"enum": ["data", "percent", "constant"]},
+                    },
+                },
+                **_AXIS_OPTIONS_SCHEMA,
+                **_FORMAT_OPTION_SCHEMA,
                 "table": _TABLE_OPTION_SCHEMA,
                 "annotations": _ANNOTATIONS_OPTION_SCHEMA,
                 "dual_year": {
@@ -267,4 +281,5 @@ def _render_dual_year(*, metric, y_col, enc, filter, opts, dual) -> html.Div:
     )
     apply_reference_lines(fig, opts, axis="x")
     apply_annotations(fig, opts)
+    apply_axis_options(fig, opts)
     return chart_with_optional_table(fig, df, opts, _CARD_STYLE)

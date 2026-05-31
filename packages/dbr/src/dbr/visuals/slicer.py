@@ -72,11 +72,14 @@ SCHEMA = {
             "additionalProperties": False,
             "properties": {
                 "metric":      {"type": "string", "description": "Any metric that has the filtered dimension — used to query option values."},
-                "kind":        {"enum": ["dropdown", "radio", "multi"]},
+                "kind":        {"enum": ["dropdown", "radio", "multi", "date_range", "slider"]},
                 "label":       {"type": "string"},
                 "placeholder": {"type": "string"},
                 "default":     {},
                 "clearable":   {"type": "boolean"},
+                "min":         {"type": "number", "description": "Slider minimum value."},
+                "max":         {"type": "number", "description": "Slider maximum value."},
+                "step":        {"type": "number", "description": "Slider step size."},
             },
         },
     },
@@ -160,6 +163,26 @@ def slicer(
             placeholder=placeholder,
             multi=True,
             style={"fontSize": "13px"},
+        ))
+    elif kind == "date_range":
+        # Date range picker — emits (start_date, end_date) as a JSON string
+        # The filter_from callback interprets it as metric_time__year range.
+        children.append(dcc.DatePickerRange(
+            id=comp_id,
+            display_format="YYYY",
+            style={"fontSize": "13px"},
+        ))
+    elif kind == "slider":
+        s_min  = opts.get("min", 0)
+        s_max  = opts.get("max", 100)
+        s_step = opts.get("step", 1)
+        s_val  = default if default is not None else s_min
+        marks  = {int(s_min): str(int(s_min)), int(s_max): str(int(s_max))}
+        children.append(dcc.Slider(
+            id=comp_id,
+            min=s_min, max=s_max, step=s_step, value=s_val,
+            marks=marks,
+            tooltip={"placement": "bottom", "always_visible": True},
         ))
 
     return html.Div(children=children, style=_CARD_STYLE)

@@ -18,11 +18,14 @@ from dbr.theme import (
     BG_SURFACE, CARD_RADIUS, CARD_SHADOW,
 )
 from dbr.visuals._encoding import (
-    apply_annotations, _ANNOTATIONS_OPTION_SCHEMA,
+    apply_annotations, apply_reference_bands, _ANNOTATIONS_OPTION_SCHEMA,
     postprocess_time_columns,
     dimension_column_name, group_by_from_channels, parse_encoding,
 )
-from dbr.visuals._render import chart_with_optional_table, _TABLE_OPTION_SCHEMA
+from dbr.visuals._render import (
+    apply_axis_options, chart_with_optional_table,
+    format_value, _AXIS_OPTIONS_SCHEMA, _FORMAT_OPTION_SCHEMA, _TABLE_OPTION_SCHEMA,
+)
 
 SCHEMA = {
     "type": "object",
@@ -53,8 +56,25 @@ SCHEMA = {
                 "y_format": {"type": "string"},
                 "x_format": {"type": "string"},
                 "download": {"type": "boolean", "description": "Render a CSV download link below the chart."},
+                **_AXIS_OPTIONS_SCHEMA,
+                **_FORMAT_OPTION_SCHEMA,
                 "table": _TABLE_OPTION_SCHEMA,
                 "annotations": _ANNOTATIONS_OPTION_SCHEMA,
+                "reference_bands": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": False,
+                        "required": ["from", "to"],
+                        "properties": {
+                            "from":    {},
+                            "to":      {},
+                            "color":   {"type": "string"},
+                            "label":   {"type": "string"},
+                            "opacity": {"type": "number"},
+                        },
+                    },
+                },
             },
         },
     },
@@ -111,5 +131,7 @@ def area(*, encoding: dict, filter: dict | None = None, options: dict | None = N
         fig.update_layout(yaxis_tickformat=opts["y_format"])
     if opts.get("x_format"):
         fig.update_layout(xaxis_tickformat=opts["x_format"])
+    apply_reference_bands(fig, opts)
     apply_annotations(fig, opts)
+    apply_axis_options(fig, opts)
     return chart_with_optional_table(fig, df, opts, _CARD_STYLE)

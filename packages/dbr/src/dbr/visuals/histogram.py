@@ -27,7 +27,10 @@ from dbr.theme import (
 from dbr.visuals._encoding import (
     dimension_column_name, group_by_from_channels, parse_encoding,
 )
-from dbr.visuals._render import chart_with_optional_table, _TABLE_OPTION_SCHEMA
+from dbr.visuals._render import (
+    apply_axis_options, chart_with_optional_table,
+    format_value, _AXIS_OPTIONS_SCHEMA, _FORMAT_OPTION_SCHEMA, _TABLE_OPTION_SCHEMA,
+)
 
 SCHEMA = {
     "type": "object",
@@ -58,6 +61,8 @@ SCHEMA = {
                 "y_format":    {"type": "string"},
                 "x_format":    {"type": "string"},
                 "download": {"type": "boolean", "description": "Render a CSV download link below the chart."},
+                **_AXIS_OPTIONS_SCHEMA,
+                **_FORMAT_OPTION_SCHEMA,
                 "table": _TABLE_OPTION_SCHEMA,
             },
         },
@@ -110,4 +115,5 @@ def histogram(*, encoding: dict, filter: dict | None = None, options: dict | Non
     if opts.get("x_format"):
         fig.update_layout(xaxis_tickformat=opts["x_format"])
 
+    apply_axis_options(fig, opts)
     return chart_with_optional_table(fig, df, opts, _CARD_STYLE)

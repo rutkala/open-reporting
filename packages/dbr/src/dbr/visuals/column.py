@@ -20,7 +20,10 @@ from dbr.visuals._encoding import (
     apply_annotations, apply_reference_lines, _ANNOTATIONS_OPTION_SCHEMA, postprocess_time_columns,
     dimension_column_name, group_by_from_channels, parse_encoding,
 )
-from dbr.visuals._render import chart_with_optional_table, _TABLE_OPTION_SCHEMA
+from dbr.visuals._render import (
+    apply_axis_options, chart_with_optional_table,
+    format_value, _AXIS_OPTIONS_SCHEMA, _FORMAT_OPTION_SCHEMA, _TABLE_OPTION_SCHEMA,
+)
 
 SCHEMA = {
     "type": "object",
@@ -63,9 +66,21 @@ SCHEMA = {
                     "type": "boolean",
                     "description": "Show value labels on each column bar.",
                 },
+                "error_bars": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["metric"],
+                    "properties": {
+                        "metric": {"type": "string", "description": "Metric name providing ± error values."},
+                        "type":   {"enum": ["data", "percent", "constant"], "description": "Plotly error bar type."},
+                    },
+                    "description": "Add error bars using a second metric for the ± values.",
+                },
                 "height": {"type": "integer", "minimum": 100, "maximum": 2000},
                 "y_format": {"type": "string", "description": "Plotly tickformat for y-axis."},
                 "download": {"type": "boolean", "description": "Render a CSV download link below the chart."},
+                **_AXIS_OPTIONS_SCHEMA,
+                **_FORMAT_OPTION_SCHEMA,
                 "table": _TABLE_OPTION_SCHEMA,
                 "annotations": _ANNOTATIONS_OPTION_SCHEMA,
             },
@@ -98,6 +113,15 @@ def column(*, encoding: dict, filter: dict | None = None, options: dict | None =
     df = postprocess_time_columns(df, enc)
 
     data_labels = opts.get("data_labels", False)
+    err_opts = opts.get("error_bars")
+    err_vals = None
+    if err_opts and err_opts.get("metric"):
+        df_err = semantic_query_data(err_opts["metric"], group_by=group_by, filter=filter, order=x_col)
+        if not df_err.empty:
+            err_metric = err_opts["metric"]
+            merged = df.merge(df_err[[x_col, err_metric]], on=x_col, how="left")
+            err_vals = merged[err_metric].tolist()
+
     fig = go.Figure()
     if enc.color:
         color_col = dimension_column_name(enc.color)
@@ -109,10 +133,12 @@ def column(*, encoding: dict, filter: dict | None = None, options: dict | None =
             ))
         fig.update_layout(barmode="stack" if opts.get("stack") else "group")
     else:
+        error_y = dict(type="data", array=err_vals, visible=True) if err_vals else None
         fig.add_trace(go.Bar(
             x=df[x_col], y=df[metric],
             text=[f"{v:.1f}" for v in df[metric]] if data_labels else None,
             textposition="outside" if data_labels else None,
+            error_y=error_y,
         ))
     height = opts.get("height", int(str(BAR_CHART_HEIGHT).rstrip("px")))
     fig.update_layout(
@@ -123,4 +149,5 @@ def column(*, encoding: dict, filter: dict | None = None, options: dict | None =
         fig.update_layout(yaxis_tickformat=opts["y_format"])
     apply_reference_lines(fig, opts, axis="y")
     apply_annotations(fig, opts)
+    apply_axis_options(fig, opts)
     return chart_with_optional_table(fig, df, opts, _CARD_STYLE)

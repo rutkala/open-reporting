@@ -33,7 +33,10 @@ from dbr.visuals._encoding import (
     postprocess_time_columns,
     dimension_column_name, group_by_from_channels, parse_encoding,
 )
-from dbr.visuals._render import chart_with_optional_table, _TABLE_OPTION_SCHEMA
+from dbr.visuals._render import (
+    apply_axis_options, chart_with_optional_table,
+    format_value, _AXIS_OPTIONS_SCHEMA, _FORMAT_OPTION_SCHEMA, _TABLE_OPTION_SCHEMA,
+)
 
 SCHEMA = {
     "type": "object",
@@ -68,6 +71,8 @@ SCHEMA = {
                 "height":      {"type": "integer", "minimum": 100, "maximum": 2000},
                 "y_format":    {"type": "string"},
                 "download": {"type": "boolean", "description": "Render a CSV download link below the chart."},
+                **_AXIS_OPTIONS_SCHEMA,
+                **_FORMAT_OPTION_SCHEMA,
                 "table": _TABLE_OPTION_SCHEMA,
             },
         },
@@ -129,4 +134,5 @@ def box(*, encoding: dict, filter: dict | None = None, options: dict | None = No
         axis_key = "xaxis_tickformat" if orientation == "h" else "yaxis_tickformat"
         fig.update_layout(**{axis_key: opts["y_format"]})
 
+    apply_axis_options(fig, opts)
     return chart_with_optional_table(fig, df, opts, _CARD_STYLE)

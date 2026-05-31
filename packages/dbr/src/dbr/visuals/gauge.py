@@ -25,6 +25,7 @@ from dbr.theme import (
     NEGATIVE, POSITIVE, SLATE_2, WARNING,
 )
 from dbr.visuals._encoding import parse_encoding, _resolve_color
+from dbr.visuals._render import apply_axis_options, _AXIS_OPTIONS_SCHEMA, format_value, _FORMAT_OPTION_SCHEMA
 
 SCHEMA = {
     "type": "object",

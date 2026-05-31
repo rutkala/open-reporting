@@ -358,6 +358,41 @@ _ANNOTATIONS_OPTION_SCHEMA = {
 }
 
 
+def apply_reference_bands(fig, options: dict | None) -> None:
+    """Add shaded vertical bands from options.reference_bands to a Plotly figure.
+
+    Each band spec: {from, to, color?, label?, opacity?}. Drawn as vrect shapes
+    so they appear behind all traces. Useful for recession periods, policy changes,
+    structural breaks, Euro-zone crisis periods, etc.
+
+    YAML shape (on line / area / combo visuals):
+      reference_bands:
+        - { from: 2008, to: 2009, color: "negative", label: "GFC", opacity: 0.08 }
+        - { from: 2020, to: 2021, color: "warning", label: "COVID", opacity: 0.08 }
+    """
+    if not options:
+        return
+    bands = options.get("reference_bands") or []
+    for spec in bands:
+        if not isinstance(spec, dict):
+            continue
+        x0 = spec.get("from")
+        x1 = spec.get("to")
+        if x0 is None or x1 is None:
+            continue
+        color   = _resolve_color(spec.get("color"), SLATE_3)
+        label   = spec.get("label", "")
+        opacity = spec.get("opacity", 0.12)
+        fig.add_vrect(
+            x0=x0, x1=x1,
+            fillcolor=color, opacity=opacity,
+            layer="below", line_width=0,
+            annotation_text=label,
+            annotation_position="top left",
+            annotation_font=dict(color=color, size=10),
+        )
+
+
 def apply_reference_lines(fig, options: dict | None, axis: str) -> None:
     """Add dashed reference lines from options.reference_lines to a Plotly figure.
 

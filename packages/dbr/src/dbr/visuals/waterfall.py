@@ -30,7 +30,10 @@ from dbr.visuals._encoding import (
     dimension_column_name, group_by_from_channels, parse_encoding,
     _resolve_color,
 )
-from dbr.visuals._render import chart_with_optional_table, _TABLE_OPTION_SCHEMA
+from dbr.visuals._render import (
+    apply_axis_options, chart_with_optional_table,
+    format_value, _AXIS_OPTIONS_SCHEMA, _FORMAT_OPTION_SCHEMA, _TABLE_OPTION_SCHEMA,
+)
 
 SCHEMA = {
     "type": "object",
@@ -67,6 +70,8 @@ SCHEMA = {
                 "height":      {"type": "integer", "minimum": 100, "maximum": 2000},
                 "y_format":    {"type": "string"},
                 "download": {"type": "boolean", "description": "Render a CSV download link below the chart."},
+                **_AXIS_OPTIONS_SCHEMA,
+                **_FORMAT_OPTION_SCHEMA,
                 "table": _TABLE_OPTION_SCHEMA,
                 "annotations": _ANNOTATIONS_OPTION_SCHEMA,
             },
@@ -125,4 +130,5 @@ def waterfall(*, encoding: dict, filter: dict | None = None, options: dict | Non
     if opts.get("y_format"):
         fig.update_layout(yaxis_tickformat=opts["y_format"])
     apply_annotations(fig, opts)
+    apply_axis_options(fig, opts)
     return chart_with_optional_table(fig, df, opts, _CARD_STYLE)

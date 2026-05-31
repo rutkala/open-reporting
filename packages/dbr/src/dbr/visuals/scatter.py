@@ -21,7 +21,10 @@ from dbr.visuals._encoding import (
     apply_annotations, _ANNOTATIONS_OPTION_SCHEMA,
     dimension_column_name, group_by_from_channels, parse_encoding,
 )
-from dbr.visuals._render import chart_with_optional_table, _TABLE_OPTION_SCHEMA
+from dbr.visuals._render import (
+    apply_axis_options, chart_with_optional_table,
+    format_value, _AXIS_OPTIONS_SCHEMA, _FORMAT_OPTION_SCHEMA, _TABLE_OPTION_SCHEMA,
+)
 
 SCHEMA = {
     "type": "object",
@@ -43,7 +46,20 @@ SCHEMA = {
         "title":    {"type": "string"},
         "subtitle": {"type": "string"},
         "filter":  {"type": "object"},
-        "options": {"type": "object", "additionalProperties": True},
+        "options": {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "trendline": {
+                    "type": "boolean",
+                    "description": "Add an OLS trendline to each scatter series.",
+                },
+                **_AXIS_OPTIONS_SCHEMA,
+                **_FORMAT_OPTION_SCHEMA,
+                "table": _TABLE_OPTION_SCHEMA,
+                "annotations": _ANNOTATIONS_OPTION_SCHEMA,
+            },
+        },
     },
 }
 
@@ -93,8 +109,24 @@ def scatter(*, encoding: dict, filter: dict | None = None, options: dict | None 
         marker=dict(size=size_values if size_values is not None else 12,
                     sizemode="area", sizeref=2.0 * size_values.max() / 40**2 if size_values is not None else None),
     ))
-    fig.update_layout(
-        height=400, xaxis_title=enc.x.metric, yaxis_title=enc.y.metric,
-    )
+    # OLS trendline
+    if opts.get("trendline"):
+        import numpy as np
+        x_vals = df[enc.x.metric].astype(float)
+        y_vals = df[enc.y.metric].astype(float)
+        mask = x_vals.notna() & y_vals.notna()
+        if mask.sum() >= 2:
+            coeffs = np.polyfit(x_vals[mask], y_vals[mask], 1)
+            x_line = [float(x_vals[mask].min()), float(x_vals[mask].max())]
+            y_line = [coeffs[0] * x + coeffs[1] for x in x_line]
+            from dbr.theme import SLATE_2
+            fig.add_trace(go.Scatter(
+                x=x_line, y=y_line, mode="lines",
+                line=dict(dash="dash", color=SLATE_2, width=1.5),
+                showlegend=False, hoverinfo="skip",
+            ))
+    height = opts.get("height", 400)
+    fig.update_layout(height=height, xaxis_title=enc.x.metric, yaxis_title=enc.y.metric)
     apply_annotations(fig, opts)
+    apply_axis_options(fig, opts)
     return chart_with_optional_table(fig, df, opts, _CARD_STYLE)
