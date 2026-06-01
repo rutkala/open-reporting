@@ -74,14 +74,22 @@ _PAGE_OUTER_STYLE = {
 # declared `minmax(0, 1fr)` (see page_shell()), which explicitly permits the
 # track to shrink below its content, guaranteeing header + footer always keep
 # their `auto` (content) height pinned in the viewport regardless of body length.
-# `gap` separates the rows so the page canvas shows between them (floating panels).
+#
+# NO row gap (gap: 0): the header sits flush on top of the scroll body and the
+# footer flush beneath it, so the header's bottom border IS the line where content
+# disappears as it scrolls up (and the footer's top border the line where it
+# disappears scrolling down). A canvas gap here would detach the header from that
+# scroll-clip line, leaving a dead band. The right column is therefore one
+# contiguous panel — header | scroll | footer — mirroring the sidebar (also a single
+# panel), and its borderBottom/borderTop divider lines still align with the sidebar's
+# at the same y (the gap change moves no row edge; it only grows the scroll track).
 _PAGE_RIGHT_STYLE = {
     "display":   "grid",
     "flex":      "1",
     "minWidth":  0,
     "minHeight": 0,
     "overflow":  "hidden",
-    "gap":       PAGE_GAP,
+    "gap":       "0",
     # `gridTemplateRows` is assembled per-page in page_shell() from the
     # enabled chrome (header? scroll, footer?) — the scroll row is the only
     # `minmax(0, 1fr)` track; header/footer rows are `auto`.
