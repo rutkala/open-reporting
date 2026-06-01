@@ -1,6 +1,32 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-01 (run #43 — FIXED-canvas pages: distribute/fill/align, live-verified) -->
+<!-- last-updated: 2026-06-01 (run #44 — no internal scroll + public_finance fill-restructure) -->
+
+## Run #44 — kill internal page scroll; restructure public_finance to fill. HEAD ccd1cfe4
+
+PO: "internal page scroll is not acceptable." Removed the #43 internal-scroll fallback.
+
+**Engine (`page_shell.py`)**: dropped the 260px grow-row floor AND body `overflowY:auto` →
+body is `overflow:hidden`, grow rows shrink to whatever fits. A page is now ALWAYS exactly one
+viewport, zero internal scroll (verified body overflow 0px on all 5 pf pages). Consequence: it's
+now purely a content-density problem — too many rows ⇒ short charts; non-grow content (tables/
+KPIs) beyond one viewport ⇒ **clips** (no scroll to reach it).
+
+**public_finance restructured** to fill one viewport per page with large readable charts:
+- przeglad: dropped the redundant EU-deficit row (lives on UE page) → KPI row + one trend row
+  (~420px). wydatki/dlug/ue/prognozy: the two stacked full-width charts → ONE side-by-side row
+  that fills ~550px (the UE 27-country bars finally readable). Each chart self-labels via
+  title/subtitle (added to 10 visuals); paired prose merged to one concise lead per page.
+- Live-verified (Playwright 1600×900): all 5 pages 0px internal scroll, charts 420–565px,
+  screenshots clean and professional. All 16 serve HEAD ccd1cfe4.
+
+**⚠️ OPEN — other 15 dashboards clip on dense pages.** The no-scroll engine is global but only
+public_finance got the fill-restructure. Spot-check: labour_market `ue` page clips **+371px**
+(inline companion tables can't shrink, no scroll to reach them); `bezrobocie` +13px (trivial);
+demographics/prices clean. **The other 15 need the same content pass** (side-by-side fill rows +
+move oversized inline tables to `download: true`). Until then their table-heavy pages lose the
+clipped content. This is the next task — mechanical, same recipe as public_finance, ~one pass
+per dashboard. Flagged to PO in outbox.
 
 ## Run #43 — fixed-canvas pages (distribute, fill, align, real edge space). HEAD 4159fc6c, all 16 verified
 
