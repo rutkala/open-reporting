@@ -53,22 +53,34 @@ _PAGE_OUTER_STYLE = {
     "fontFamily": FONT_FAMILY,
 }
 
-# Right column: header (fixed) + scrollable main + footer (fixed). `gap`
-# separates the three so the page canvas shows between them as breathing room.
+# Right column: header (fixed) + scrollable main + footer (fixed). Uses CSS
+# Grid rather than flex-column because the "fixed-header / scroll-body /
+# pinned-footer" pattern is browser-fragile under flexbox: the scroll body's
+# default min-height:auto lets it grow to full content height, pushing the
+# footer past this column's `overflow:hidden` clip boundary — where it is both
+# invisible AND unreachable (you can't scroll to a clipped sibling). Flexbox's
+# `minHeight:0` is supposed to prevent that but isn't honoured consistently
+# across browsers/zoom. Grid solves it structurally: the scroll track is
+# declared `minmax(0, 1fr)` (see page_shell()), which explicitly permits the
+# track to shrink below its content, guaranteeing header + footer always keep
+# their `auto` height inside the viewport regardless of body content length.
+# `gap` separates the rows so the page canvas shows between them.
 _PAGE_RIGHT_STYLE = {
-    "display":       "flex",
-    "flexDirection": "column",
-    "flex":          "1",
-    "minWidth":      0,
-    "overflow":      "hidden",
-    "gap":           PAGE_GAP,
+    "display":   "grid",
+    "flex":      "1",
+    "minWidth":  0,
+    "minHeight": 0,
+    "overflow":  "hidden",
+    "gap":       PAGE_GAP,
+    # `gridTemplateRows` is assembled per-page in page_shell() from the
+    # enabled chrome (header? scroll, footer?) — the scroll row is the only
+    # `minmax(0, 1fr)` track; header/footer rows are `auto`.
 }
 
 # Scrollable wrapper around the main canvas — scrollspy listens on this.
-# minHeight:0 overrides flex's default min-height:auto, which would otherwise
-# let this item grow to its full content height and push the footer off-screen.
+# It occupies the grid's `minmax(0, 1fr)` track; minHeight:0 is belt-and-braces
+# so the element itself never imposes a min-content floor on that track.
 _MAIN_SCROLL_STYLE = {
-    "flex":           "1",
     "minHeight":      0,
     "overflowY":      "auto",
     "overflowX":      "hidden",
@@ -168,17 +180,25 @@ def page_shell(
 
     main = html.Main(style=_MAIN_STYLE, children=main_children)
 
-    # Right column: fixed header + scrollable main + fixed footer
+    # Right column: fixed header + scrollable main + fixed footer.
+    # Build the children and the matching grid-row tracks in lockstep so the
+    # `minmax(0, 1fr)` scroll track always lines up with the scroll element and
+    # header/footer keep their `auto` (content) height pinned in the viewport.
     right_children: list = []
+    grid_rows: list[str] = []
     if HEADER_ENABLED:
         header_title = dashboard_title if HEADER_SHOW_TITLE else ""
         right_children.append(build_header(title=header_title, subtitle=dashboard_subtitle))
+        grid_rows.append("auto")
     right_children.append(
         html.Div(id="dbr-main-scroll", style=_MAIN_SCROLL_STYLE, children=[main])
     )
+    grid_rows.append("minmax(0, 1fr)")
     if FOOTER_ENABLED:
         right_children.append(build_footer(source=footer_source, updated=footer_updated))
-    right_col = html.Div(style=_PAGE_RIGHT_STYLE, children=right_children)
+        grid_rows.append("auto")
+    right_style = {**_PAGE_RIGHT_STYLE, "gridTemplateRows": " ".join(grid_rows)}
+    right_col = html.Div(style=right_style, children=right_children)
 
     # Assemble outer row: sidebar (if enabled) + right column
     if not SIDEBAR_ENABLED:
