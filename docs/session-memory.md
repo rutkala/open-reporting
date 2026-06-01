@@ -1,6 +1,17 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-01 12:50 UTC (run #39 — flagship freshness 2024→2025, live-verified) -->
+<!-- last-updated: 2026-06-01 13:56 UTC (run #40 — first-anchor dead-band fix, live-verified) -->
+
+## Run #40 — kill the dead band between page header and first section anchor
+
+Chrome polish on the whole fleet. The first section `<h2>` carried `section_top_gap` (40px)
+as `marginTop` on top of the main canvas's `main_padding` (28px top inset) — stacking into a
+~68px gap below the page header (the "strange space"). `section_top_gap` is for separating
+sections from each other; on the first section it double-counts. **Fix (`c3c7329e`):** in
+`page_shell.py`, zero `marginTop` on the first heading only (`idx == 0`); later sections keep
+their gap. Verified live (Playwright, hydrated): header-bottom 72 → first-`<h2>` top 116 =
+**44px** (= page_gap 16 + main_padding 28, the natural floating-panel inset; was 84px). Fleet
+redeployed + verified all 16 on HEAD. Framework-wide — applies to every current/future dashboard.
 
 ## Run #39 — flagship public_finance freshness 2024→2025 (caught by a visual pass)
 
