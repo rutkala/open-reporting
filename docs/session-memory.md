@@ -1,111 +1,100 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-05-31 20:05 UTC (run #35 — floating-panel layout: PO's inset-spacing + visible-footer requirement finally met) -->
+<!-- last-updated: 2026-06-01 02:05 UTC (run #37 — release-sweep no-op stubs + Linear board reconciliation) -->
 
-## Run #36 — footer was invisible due to zero card/canvas contrast
+## Run #37 — cleared two pieces of standing debt (housekeeping run)
 
-PO: "footer is not showing up." It WAS rendered + in-viewport the whole time (verified
-y=808 of 864, text present) — but the floating-panel design had ~3% card/canvas contrast
-(white #FFFFFF footer on near-white #F5F7F8 canvas), so the thin 40px footer dissolved
-into the page. Fix (`67d1cef3`): darkened `bg_page` #F5F7F8 → #E4EAF0. Blast radius =
-one surface (page canvas, page_shell.py:51); bg_page does NOT touch charts (those use
-bg_surface). Now every card — sidebar/header/footer/charts — separates clearly and the
-floating-panel layout reads as intended. **Lesson: a floating-card layout REQUIRES the
-canvas visibly darker than the cards; near-white canvas makes thin cards (footer)
-invisible even when correctly rendered. When a user says "X not showing," verify it's in
-the DOM+viewport FIRST (it was) — the bug was contrast, not layout.**
+Production fully healthy (all 16 dashboards + www 200, ingest exit=0, channel healthy).
+Inbox empty; no Strategic/Todo/In-Progress; no safe unblocked build right after the
+#34–#36 layout stabilization. Spent the run clearing two deferred-debt items, both
+complete and verifiable:
 
-## Run #35 — floating-panel layout (the requirement, finally read right)
+1. **Step 2b sweep is now a sub-second no-op** (commit `313a6781`). The release-pipeline
+   skip guard checks `reviews/<slug>-review.md` for "✅ PUBLISHED"; those per-slug files
+   never existed (the 18 were published via the aggregate flow), so every run's Step 2b
+   would re-spawn 18×3 reviewer subprocesses for zero gain. Verified all 18 article URLs
+   HTTP 200, then wrote a stub per slug. Pipeline now skips all 18 in <1s, 0 subprocesses.
+   **Also resolved:** the bezrobocie/or-145 "Ghost-only draft, regenerate" followup from
+   #32 — it's actually live (200) with a committed source `drafts/or-145-labour.md`.
+2. **Linear board reconciliation** — moved 10 stale shipped dashboard tickets Backlog→Done
+   (OR-53/54/58/64/65/66/68/81/82 + OR-75 epic), each 1:1 to a live domain. Comment on
+   OR-75. Left open: OR-60 Crime, OR-63 Agriculture (not built); OR-62 Business/Industry
+   (mapping uncertain).
 
-PO had asked repeatedly for **visible space between every panel and the page border**
-plus a **clearly visible footer**. Earlier runs misread this and even REMOVED the gap,
-leaving an edge-to-edge layout (sidebar on the left border, header on top, cards clipped
-at the right, footer flat against the bottom → read as "no footer"). Fixed by rebuilding
-as floating cards on the page canvas (`085b2a8d`): outer `padding`=PAGE_PADDING insets the
-whole app 16px from all four viewport edges; `gap`=PAGE_GAP separates sidebar↔content and
-header↔chart-area↔footer; sidebar/header/footer got full border + CARD_RADIUS (were
-single-side dividers). Verified 1366/1440px + all 16 stamp==HEAD `085b2a8d`. **Lesson: the
-"gap"/space the PO kept asking for across many iterations = an inset floating-panel layout,
-NOT a divider. Do not remove it.**
-
+**Lesson:** when a "standing followup" recurs across 3+ post-mortems and is small +
+verifiable, just do it on the next quiet run instead of re-flagging it.
 
 ## Current Focus
 
 **16 domain dashboards live. 18 blog articles PUBLISHED. dbr at 22 visual types.**
+Floating-panel layout (#34–#36) verified live, all 16 on HEAD. No open build in flight.
 
-**Latest (run #34):** Killed the recurring "reported resolved but dashboards never
-changed" class of bug at the root. Diagnosis: `packages/dbr/` is editable-installed,
-so a live service runs the code it booted with until restarted — and a `curl` 200
-can't distinguish new code from old, so stale services silently passed every health
-check. Fix shipped (`2353c430`): (1) every page now stamps `<meta name="dbr-build"
-content=SHA>` with the git short-SHA the running framework booted from (`build_sha()`
-in `dbr.make_app`); (2) `infra/scheduler/redeploy_dashboards.py` restarts all 16
-services then POLLS each live page until its stamp == repo HEAD, exiting non-zero
-with a STALE/DOWN table if any lag. "Resolved" is now provable end-to-end. Verified:
-all 16 serve HEAD `2353c430`. The verifier already earned its keep — it caught
-demographics (slowest boot ~105s) failing the first 75s budget; budget raised to 140s.
-The prior layout fix (`2922a4cf`, gap strip + white header) is confirmed live in prod.
+**Next real build** (none unblocked-and-safe this run): Phase 3 data depth — OR-86 BDL
+ingestion (needs PO `BDL_API_KEY`), or a dbr engine feature (OR-159 choropleth [already a
+visual type]/OR-160 cross-filter/OR-161 date-range slicer — all `packages/dbr/`, branch+PR,
+do NOT destabilize the just-stabilized fleet). New domain dashboards OR-62/60/63 if wanted.
 
-## Live production state (verified run #34 — all 16 stamp == HEAD 2353c430)
+## Live production state (verified run #37 — all 16 HTTP 200)
 
-- **16 Eurostat domain dashboards Live, all on HEAD dbr:** public_finance (8057),
-  labour_market (8058), national_accounts (8059), demographics (8060), environment (8061),
-  living_conditions (8062), prices (8063), education (8064), transport (8065),
-  science (8066), trade (8067), production (8068), health (8069), energy (8070),
-  tourism (8071), financial_markets (8072).
-- **Portal homepage** `/` — one card per live domain. **Blog** `www.open-reporting.dev`
-  — all 18 articles published. **Daily ingestion** 22:00 UTC cron (last exit=0).
-  **Autonomous-lead cron** `0 2,7,12,17 * * *` UTC. **Next free dashboard port:** 8073.
+- **16 Eurostat domain dashboards Live:** public_finance (8057), labour_market (8058),
+  national_accounts (8059), demographics (8060), environment (8061), living_conditions
+  (8062), prices (8063), education (8064), transport (8065), science (8066), trade (8067),
+  production (8068), health (8069), energy (8070), tourism (8071), financial_markets (8072).
+- **Portal** `/` one card per domain. **Blog** all 18 articles live. **Daily ingestion**
+  22:00 UTC (last exit=0). **Autonomous-lead cron** `0 2,7,12,17 * * *` UTC.
+  **Next free dashboard port:** 8073.
 
 ## Ops note — fleet redeploy after dbr framework changes (USE THE VERIFIER)
 
-When a commit touches `packages/dbr/` (editable install), the live fleet does NOT
-auto-update — each `or-<domain>.service` must be restarted to load new framework code.
-**Commit first, then run `python3 infra/scheduler/redeploy_dashboards.py`** — it
-restarts all 16 and polls each live page until its `<meta name="dbr-build">` stamp ==
-repo HEAD, exiting non-zero with a per-dashboard STALE/DOWN table if any lag behind.
-**Non-zero exit = NOT resolved; do not report success.** Targeted form:
-`redeploy_dashboards.py <domain>`; check-only: `--verify-only`. Commit dbr code
-*before* redeploying (the stamp target is HEAD); if you commit again after, redeploy
-again or the stamp trails HEAD. `dbr run` is still the path when a dashboard's own
-YAML changed (it also rewrites the nginx route). Sudo: `systemctl restart or-*` and
-`daemon-reload` are NOPASSWD-allowlisted; `is-active`/`--version` are NOT (don't rely
-on them in scripts). Local `/` health-poll is a poor readiness signal — Dash answers
-at `/<domain>/`.
+A commit touching `packages/dbr/` (editable install) does NOT auto-update the live fleet —
+each `or-<domain>.service` must restart to load new framework code, and a `curl` 200 cannot
+tell new code from old. **Commit dbr code first, then `python3
+infra/scheduler/redeploy_dashboards.py`** — restarts all 16, polls each page's
+`<meta name="dbr-build">` stamp until == repo HEAD, exits non-zero with a STALE/DOWN table
+if any lag. **Non-zero exit = NOT resolved.** Targeted: `redeploy_dashboards.py <domain>`;
+check-only: `--verify-only`. `dbr run` is the path when a dashboard's own YAML changed (it
+also rewrites the nginx route). Sudo `systemctl restart or-*` + `daemon-reload` are
+NOPASSWD; `is-active`/`--version` are NOT. Dash answers at `/<domain>/`, not `/`.
+
+## Release pipeline (FIXED + now cheap)
+
+- `15b9e8eb`: reviewers strip `ANTHROPIC_API_KEY` → authenticate via Max OAuth. Run
+  STANDALONE only (concurrent token use can rate-limit the nested `claude -p` calls).
+- `313a6781`: 18 per-slug PUBLISHED stubs written → Step 2b sweep skips all in <1s, 0
+  subprocesses. Use `--force` to re-review. New drafts (no stub) still get full review.
 
 ## Open / blocked work
 
 | Linear | What | Status |
 |---|---|---|
-| — | release-pipeline skip guard ineffective: per-slug `reviews/<slug>-review.md` "✅ PUBLISHED" stubs never written for the 18 (published via aggregate flow) → Step 2b sweep would re-spawn 54 subprocesses. Write the 18 stubs to make the sweep a cheap no-op | next run, small |
-| — | bezrobocie article: Ghost-only draft, no committed source `.md` | content-writer to regenerate source |
 | OR-153 | Telegram inbound (systemd `${}` non-expansion) | Blocked — PO; outbox works |
 | OR-90 | Instagram token (Meta portal) — blocks OR-89 publish | Blocked — PO action |
 | OR-86 | BDL/GUS ingestion | Backlog — needs `BDL_API_KEY` from PO |
 | OR-79 | Ghost nav "Portal" link — browser admin | Blocked — PO action |
 | OR-89 | Weekly snapshot — code ready; publish blocked on OR-90 | cron entry remains |
-| Phase 3 | Data depth: BDL, Finance v2, dbt tests, freshness indicators | Next build focus |
+| OR-159/160/161/162 | dbr features (choropleth/cross-filter/date-slicer/num-format) | Backlog — engine plane, branch+PR |
+| OR-62/60/63 | Business/Industry, Crime, Agriculture dashboards | Backlog — not built |
 
 In Progress + Todo Linear: empty. Article queue: cleared (all 18 live).
 
 ## Note for PO
 
-`.env`'s `ANTHROPIC_API_KEY` is an unfunded pay-as-you-go account. Harmless for the
-release pipeline now (stripped, commit `15b9e8eb`), but any other code passing it to the
-SDK will fail with "credit balance too low". Consider funding or removing it.
+`.env`'s `ANTHROPIC_API_KEY` is an unfunded pay-as-you-go account. Harmless for the release
+pipeline now (stripped, `15b9e8eb`), but any other code passing it to the SDK fails with
+"credit balance too low". Consider funding or removing it.
 
 ## Recent commits
 
 | Commit | What |
 |---|---|
+| `313a6781` | chore(blog): 18 per-slug PUBLISHED review stubs — Step 2b sweep is a no-op |
+| `48fee2ad` | docs: run #36 — footer contrast fix note + layout lesson |
+| `67d1cef3` | fix(dbr): darken page canvas so footer (and all cards) are clearly visible |
+| `c93bbee7` | docs: run #35 — floating-panel layout note + lesson |
+| `085b2a8d` | feat(dbr): floating-panel layout — uniform inset + visible footer |
+| `83bf2e29` | docs: codify verified-redeploy discipline |
 | `2353c430` | fix(dbr): raise redeploy health budget to 140s for slow demographics boot |
-| `c893ca57` | feat(dbr): build-SHA stamp + verified redeploy — make "resolved" provable |
-| `2922a4cf` | fix(dbr): remove sidebar gap strip + visible header chrome (PO; deployed to fleet in #33) |
-| `82f59fad` | fix(dbr): add minHeight:0 to main scroll container — footer visible |
-| `f9f0f42e` | fix(dbr): Cache-Control no-store on all dashboard nginx routes |
-| `04725888` | fix(dbr): widen sidebar gap to 16px, restore footer to white surface |
-| `81cc1dff` | fix(dbr): header/footer canvas colour + sidebar gap + full fleet redeploy |
-| `15b9e8eb` | fix(blog): strip ANTHROPIC_API_KEY from release-pipeline review subprocess |
+| `c893ca57` | feat(dbr): build-SHA stamp + verified redeploy |
 
 ## Discord bot fleet (live)
 
@@ -119,8 +108,6 @@ scrum-master (haiku), dashboard-dev/data-engineer/content-writer/researcher/code
 ## Key technical facts (current)
 
 - **dbr framework changes need fleet restart** (see Ops note above).
-- **Release pipeline FIXED** (`15b9e8eb`): reviewers strip ANTHROPIC_API_KEY → Max OAuth.
-  Run STANDALONE only. Skip guard needs per-slug review stubs (currently absent).
 - **Seed dimension_key must match raw** — query `raw.eurostat_observations` before adding
   seed rows. `dbt seed --select eurostat_series` then `dbt run --select stg_eurostat+`.
 - **dbt write-lock dance:** stop affected `or-<name>.service` → dbt run → restart.
@@ -128,8 +115,7 @@ scrum-master (haiku), dashboard-dev/data-engineer/content-writer/researcher/code
   funnel, gauge, heatmap, histogram, line, pie, ribbon, scatter, slicer, small_multiples,
   tab_group, table, treemap, waterfall.
 - **dbr `bar` = horizontal** (metric x, dim y); **`column` = vertical bars.**
-- KPI cards resolve latest *non-null* value (semantic.py). Use `semantic_query` /
-  `_run_latest_query`.
+- KPI cards resolve latest *non-null* value (semantic.py).
 - Portal homepage = static `infra/nginx/html/index.html`; deploy via
   `docker compose up -d --force-recreate nginx`.
 
