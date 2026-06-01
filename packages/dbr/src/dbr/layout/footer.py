@@ -10,7 +10,6 @@ from dbr.layout.loader import FOOTER_SHOW_SOURCE, FOOTER_SHOW_UPDATED
 from dbr.theme import (
     BG_PAGE,
     BORDER,
-    CARD_RADIUS,
     FONT_FAMILY,
     SUBTEXT,
     TEAL_PRIMARY,
@@ -21,8 +20,7 @@ _FOOTER_STYLE = {
     "alignItems":   "center",
     "padding":      "10px 24px",
     "background":   BG_PAGE,
-    "border":       f"1px solid {BORDER}",
-    "borderRadius": CARD_RADIUS,
+    "borderTop":    f"1px solid {BORDER}",
     "fontFamily":   FONT_FAMILY,
     "flexShrink":   0,
     "boxSizing":    "border-box",

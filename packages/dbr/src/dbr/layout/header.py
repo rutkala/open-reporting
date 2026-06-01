@@ -9,23 +9,21 @@ from dash import html
 from dbr.theme import (
     BG_PAGE,
     BORDER,
-    CARD_RADIUS,
     FONT_FAMILY,
     SUBTEXT,
     TEXT,
 )
 
 _HEADER_STYLE = {
-    "display":      "flex",
-    "alignItems":   "center",
-    "padding":      "0 24px",
-    "background":   BG_PAGE,
-    "border":       f"1px solid {BORDER}",
-    "borderRadius": CARD_RADIUS,
-    "fontFamily":   FONT_FAMILY,
-    "flexShrink":   0,
-    "minHeight":    "56px",
-    "boxSizing":    "border-box",
+    "display":         "flex",
+    "alignItems":      "center",
+    "padding":         "0 24px",
+    "background":      BG_PAGE,
+    "borderBottom":    f"1px solid {BORDER}",
+    "fontFamily":      FONT_FAMILY,
+    "flexShrink":      0,
+    "minHeight":       "56px",
+    "boxSizing":       "border-box",
 }
 
 _TITLE_STYLE = {
