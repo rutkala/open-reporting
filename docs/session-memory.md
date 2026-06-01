@@ -1,6 +1,20 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-01 14:10 UTC (run #40 — chrome spacing: first-anchor + flush header, live-verified) -->
+<!-- last-updated: 2026-06-01 16:25 UTC (run #40c — scroll-edge fade, live-verified) -->
+
+## Run #40c — soft-fade scroll edges so content doesn't slam into header/footer
+
+Follow-up to #40b: with header/footer flush (gap 0), mid-scroll content touched the divider
+lines. **Empirically ruled out** scroll-container padding (overflow clips at the padding box —
+content paints over the padding; screenshot-verified) and a plain canvas gap (header bg ==
+canvas grey → the divider line floats in a same-colour field with an abrupt content slice;
+A/B screenshot confirmed it looks worse). **Fix (`38cab4a9`):** `mask-image` linear-gradient
+on `#dbr-main-scroll` — content dissolves over the top/bottom 16px (`PAGE_GAP`). Mask is on the
+fixed scroll viewport so the fade band stays pinned at the edges; divider lines don't move
+(still sidebar-aligned). Verified live (deployed computed `mask-image` + mid-scroll screenshots
+on public_finance + demographics — text and charts fade into the chrome, no hard touch). All 16
+on HEAD. **Lesson:** overflow containers clip at the padding box, so container padding gives no
+mid-scroll inset — use a mask fade for edge breathing room.
 
 ## Run #40b — header/footer flush against scroll body (no right-column row gap)
 
