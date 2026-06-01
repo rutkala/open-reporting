@@ -11,7 +11,7 @@ rows:
       - { visual: kpi_dlug,     width: "25%" }
       - { visual: kpi_wydatki,  width: "25%" }
       - { visual: kpi_odsetki,  width: "25%" }
-  - title: "Tendencja długoterminowa 1995–2024"
+  - title: "Tendencja długoterminowa 1995–2025"
     items:
       - { visual: trend_saldo,  width: "50%" }
       - { visual: trend_dlug,   width: "50%" }
