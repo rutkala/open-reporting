@@ -51,10 +51,14 @@ _SIDEBAR_STYLE = {
 }
 
 _BRAND_STYLE = {
-    "padding":      "14px 20px 14px 20px",
+    # 13px (not 14) vertical padding: the 28px logo badge + 2×14 padding + 1px
+    # borderBottom = 57px, overflowing the 56px min-height by 1px and pushing the
+    # brand divider line 1px below the header line. 13px keeps the box at exactly
+    # 56px so brand.borderBottom and header.borderBottom share the same y.
+    "padding":      "13px 20px 13px 20px",
     "borderBottom": f"1px solid {BORDER}",
     "flexShrink":   0,
-    "minHeight":    "56px",   # match page header height for visual alignment
+    "minHeight":    "56px",   # == page header min-height — top divider lines align
     "boxSizing":    "border-box",
     "display":      "flex",
     "alignItems":   "center",
