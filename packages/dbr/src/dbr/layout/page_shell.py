@@ -34,12 +34,10 @@ from dbr.theme import (
     BG_PAGE,
     BORDER,
     FONT_FAMILY,
-    MAIN_MAX_WIDTH,
     MAIN_PADDING,
     PAGE_GAP,
     PAGE_PADDING,
     ROW_GAP,
-    SECTION_TOP_GAP,
     SIZE_SECTION_HEADING,
     TEXT,
     WEIGHT_SECTION_HEADING,
@@ -95,9 +93,17 @@ _PAGE_RIGHT_STYLE = {
     # `minmax(0, 1fr)` track; header/footer rows are `auto`.
 }
 
-# Scrollable wrapper around the main canvas — scrollspy listens on this.
-# It occupies the grid's `minmax(0, 1fr)` track; minHeight:0 is belt-and-braces
-# so the element itself never imposes a min-content floor on that track.
+# Scrollable wrapper around the page stack — scrollspy listens on this.
+# It occupies the grid's `minmax(0, 1fr)` track (a definite height), so its direct
+# children can size against that viewport via `min-height: 100%` (see _PAGE_SECTION_STYLE).
+# minHeight:0 is belt-and-braces so the element itself never imposes a min-content
+# floor on that track.
+#
+# Page model: each section is a full-viewport "page" (like a Power BI report page)
+# stacked one below another. `scrollSnapType: y proximity` makes manual scrolling
+# gently settle on a page top, and clicking a nav anchor scrolls that page to the top
+# so it shows fully. `proximity` (not `mandatory`) is deliberate — a page taller than
+# the viewport must stay freely scrollable, never trapped by a hard snap.
 #
 # Edge fade: the header/footer are flush against this scroll body (zero row gap),
 # so mid-scroll the content slid right up to the divider lines and touched them.
@@ -114,29 +120,43 @@ _FADE_MASK = (
     f"#000 calc(100% - {_FADE}), transparent 100%)"
 )
 _MAIN_SCROLL_STYLE = {
-    "minHeight":       0,
-    "overflowY":       "auto",
-    "overflowX":       "hidden",
-    "scrollBehavior":  "smooth",
-    "maskImage":       _FADE_MASK,
-    "WebkitMaskImage": _FADE_MASK,
+    "minHeight":        0,
+    "overflowY":        "auto",
+    "overflowX":        "hidden",
+    "scrollBehavior":   "smooth",
+    "scrollSnapType":   "y proximity",
+    "maskImage":        _FADE_MASK,
+    "WebkitMaskImage":  _FADE_MASK,
 }
 
-_MAIN_STYLE = {
-    "padding":   MAIN_PADDING,
-    "maxWidth":  MAIN_MAX_WIDTH,
-    "minWidth":  0,
-    "boxSizing": "border-box",
+# One "page": a full-viewport block holding a section's heading + rows. `minHeight: 100%`
+# resolves against the scroll container's definite height (the visible track), so every
+# page is at least one screen tall — the next page starts at a clean viewport boundary.
+# Full width (no max-width cap): content spans the whole canvas, leaving only MAIN_PADDING
+# as the inset to the chrome — symmetric with the sidebar↔canvas gap. `scrollSnapAlign:
+# start` pairs with the container's snap type so each page settles flush to the top.
+_PAGE_SECTION_STYLE = {
+    "minHeight":       "100%",
+    "padding":         MAIN_PADDING,
+    "minWidth":        0,
+    "boxSizing":       "border-box",
+    "display":         "flex",
+    "flexDirection":   "column",
+    "scrollSnapAlign": "start",
 }
 
+# Every heading now sits at the top of its own full-viewport page, so there is no
+# inter-section gap to open — marginTop is always 0 (the page's top padding provides
+# the breathing room beneath the header / above the heading).
 _SECTION_HEADING_STYLE = {
     "fontSize":     SIZE_SECTION_HEADING,
     "fontWeight":   WEIGHT_SECTION_HEADING,
     "color":        TEXT,
-    "marginTop":    SECTION_TOP_GAP,
+    "marginTop":    "0",
     "marginBottom": "16px",
     "paddingBottom": "12px",
     "borderBottom": f"1px solid {BORDER}",
+    "flexShrink":   0,
 }
 
 _ROW_HEADING_STYLE = {
@@ -202,28 +222,25 @@ def page_shell(
     """
     sidebar_pairs = [(label, anchor) for label, anchor, _ in sections]
 
-    main_children: list = []
-    for idx, (label, anchor, rows) in enumerate(sections):
-        # The first section heading sits directly under the page header, so its
-        # SECTION_TOP_GAP would stack with the main canvas's top padding and open a
-        # ~68px dead band between the header and the first anchor. section_top_gap
-        # exists to separate sections FROM EACH OTHER — kill it on the first one so
-        # the first anchor hugs the header at the normal canvas padding.
-        heading_style = _SECTION_HEADING_STYLE
-        if idx == 0:
-            heading_style = {**_SECTION_HEADING_STYLE, "marginTop": "0"}
-        main_children.append(html.H2(label, id=anchor, style=heading_style))
+    # Each section is rendered as its own full-viewport "page" (Power BI–style),
+    # stacked vertically inside the scroll container. The page wrapper carries
+    # id ``dbr-page-<anchor>`` so the nav-click handler can snap-scroll the whole
+    # page to the top; the H2 keeps id=anchor for the scrollspy active-state.
+    page_children: list = []
+    for label, anchor, rows in sections:
+        section_children: list = [html.H2(label, id=anchor, style=_SECTION_HEADING_STYLE)]
         for row_title, row_prose, row_items in rows:
             if row_title:
-                main_children.append(html.H3(row_title, style=_ROW_HEADING_STYLE))
+                section_children.append(html.H3(row_title, style=_ROW_HEADING_STYLE))
             if row_prose:
-                main_children.append(dcc.Markdown(row_prose, style=_ROW_PROSE_STYLE))
+                section_children.append(dcc.Markdown(row_prose, style=_ROW_PROSE_STYLE))
             flex_items = [_wrap_item(component, width) for component, width in row_items]
-            main_children.append(html.Div(flex_items, style=_ROW_STYLE))
+            section_children.append(html.Div(flex_items, style=_ROW_STYLE))
+        page_children.append(
+            html.Div(id=f"dbr-page-{anchor}", style=_PAGE_SECTION_STYLE, children=section_children)
+        )
 
-    main = html.Main(style=_MAIN_STYLE, children=main_children)
-
-    # Right column: fixed header + scrollable main + fixed footer.
+    # Right column: fixed header + scrollable page stack + fixed footer.
     # Build the children and the matching grid-row tracks in lockstep so the
     # `minmax(0, 1fr)` scroll track always lines up with the scroll element and
     # header/footer keep their `auto` (content) height pinned in the viewport.
@@ -234,7 +251,7 @@ def page_shell(
         right_children.append(build_header(title=header_title, subtitle=dashboard_subtitle))
         grid_rows.append("auto")
     right_children.append(
-        html.Div(id="dbr-main-scroll", style=_MAIN_SCROLL_STYLE, children=[main])
+        html.Div(id="dbr-main-scroll", style=_MAIN_SCROLL_STYLE, children=page_children)
     )
     grid_rows.append("minmax(0, 1fr)")
     if FOOTER_ENABLED:

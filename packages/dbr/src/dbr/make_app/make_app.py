@@ -108,14 +108,20 @@ _SCROLLSPY_JS = """
       return;
     }
 
-    /* Intercept nav-link clicks to scroll the container, not the browser window. */
+    /* Intercept nav-link clicks: snap the WHOLE page (not just the heading) flush
+       to the top of the scroll container so it shows fully, like opening a Power BI
+       page. Prefer the page wrapper (dbr-page-<anchor>); fall back to the heading.
+       getBoundingClientRect math is robust regardless of offsetParent chain. */
     links.forEach(function (a) {
       a.addEventListener('click', function (e) {
         e.preventDefault();
         var anchor = a.getAttribute('data-anchor');
-        var target = document.getElementById(anchor);
+        var target = document.getElementById('dbr-page-' + anchor) ||
+                     document.getElementById(anchor);
         if (target && container) {
-          container.scrollTo({ top: target.offsetTop - 16, behavior: 'smooth' });
+          var top = container.scrollTop +
+                    (target.getBoundingClientRect().top - container.getBoundingClientRect().top);
+          container.scrollTo({ top: top, behavior: 'smooth' });
         }
       });
     });
