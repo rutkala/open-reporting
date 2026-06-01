@@ -1,47 +1,26 @@
-# Release Pipeline Report — 2026-05-31
+# Release Pipeline Report — 2026-06-01T02:03 UTC
+Mode: LIVE
 
-Mode: LIVE — inline review by Project Lead against three criteria sets
-(content-reviewer P1/P2/P3, analytical-validator, domain-specialist)
-
-## Results
-
-| Article | Verdict | Status | URL |
-|---|---|---|---|
-| Bezrobocie 2024 — historyczny rekord | CONDITIONAL | ✅ Published | [link](https://www.open-reporting.dev/bezrobocie-polska-2024-historyczny-rekord/) |
-| Koszty obsługi długu 2024 | CONDITIONAL | ✅ Published | [link](https://www.open-reporting.dev/koszty-obslugi-dlugu-polska-2024/) |
-| COFOG — wydatki 2023 | CONDITIONAL | ✅ Published | [link](https://www.open-reporting.dev/cofog-wydatki-polska-2023-gdzie-trafi-kazda-zlotowka/) |
-| Polska vs UE — deficyt i dług 2024 | PASS | ✅ Published | [link](https://www.open-reporting.dev/polska-na-tle-ue-deficyt-dlug-2024/) |
-| Wzrost płac 2024 | CONDITIONAL | ✅ Published | [link](https://www.open-reporting.dev/wzrost-plac-polska-2024/) |
-| Demografia — przyrost naturalny | CONDITIONAL | ✅ Published | [link](https://www.open-reporting.dev/polska-demografia-przyrost-naturalny-2024/) |
-| Produkcja przemysłowa 2024 | PASS | ✅ Published | [link](https://www.open-reporting.dev/polska-produkcja-przemyslowa-2024/) |
-| Środowisko 1990–2024 | PASS | ✅ Published | [link](https://www.open-reporting.dev/polska-srodowiskowo-1990-2024/) |
-| Inflacja 2022–2025 | CONDITIONAL | ✅ Published | [link](https://www.open-reporting.dev/polska-inflacja-2022-2025/) |
-| Handel zagraniczny 2002–2025 | PASS | ✅ Published | [link](https://www.open-reporting.dev/handel-zagraniczny-polski-2002-2025/) |
-| Edukacja wyższa 1997–2025 | PASS | ✅ Published | [link](https://www.open-reporting.dev/polska-edukacja-wyzsza-1997-2025/) |
-| Warunki życia 2005–2025 | PASS | ✅ Published | [link](https://www.open-reporting.dev/polska-warunki-zycia-nierownosci-2005-2025/) |
-| Kolej — rekord pasażerów 2025 | PASS | ✅ Published | [link](https://www.open-reporting.dev/polska-kolej-covid-rekord-pasazerow-2025/) |
-| Nauka i R&D 2003–2024 | CONDITIONAL | ✅ Published | [link](https://www.open-reporting.dev/polska-nauka-rd-wydatki-2003-2024/) |
-| Transformacja energetyczna OZE | CONDITIONAL | ✅ Published | [link](https://www.open-reporting.dev/polska-transformacja-energetyczna-oze-2004-2024/) |
-| Kursy walutowe PLN 2002–2026 | PASS | ✅ Published | [link](https://www.open-reporting.dev/kursy-walutowe-pln-historia-2002-2026/) |
-| Długość życia — COVID i rekord | PASS | ✅ Published | [link](https://www.open-reporting.dev/polska-dlugosc-zycia-covid-rekord-2024/) |
-| Turystyka — rekord noclegów 2025 | PASS | ✅ Published | [link](https://www.open-reporting.dev/turystyka-polska-rekord-noclegow-2025/) |
+| Article | Status |
+|---|---|
+| Energia odnawialna w Polsce: z 6,9% do 17,8% w 20 lat, cel UE wciąż dwa razy wyżej | ✅ Already published |
+| Frank po 4,68 zł, dolar po 4,46 zł — cztery szoki, które zmieniły kursy walut w Polsce | ✅ Already published |
+| Bezrobocie w Polsce na historycznym minimum: 3,1% to tylko część obrazu | ✅ Already published |
+| Koszty obsługi długu w Polsce: jak wydatki odsetkowe podwoiły się w cztery lata | ✅ Already published |
+| Każda trzecia złotówka z budżetu idzie na ochronę socjalną — gdzie trafia reszta | ✅ Already published |
+| Polska w procedurze nadmiernego deficytu — co to znaczy i gdzie stoją inni | ✅ Already published |
+| Płace w Polsce rosną najszybciej w UE — realne zarobki wróciły do normy | ✅ Already published |
+| Polska kurczy się demograficznie: przyrost naturalny ujemny od 2013 roku | ✅ Already published |
+| Polska produkcja przemysłowa: jedyna duża gospodarka UE bez recesji 2024 | ✅ Already published |
+| Polska środowiskowo: emisje niższe o 29%, odpady wciąż rosną | ✅ Already published |
+| Polska inflacja 2022–2025: szczyt w 13,2%, normalizacja do 3,3% | ✅ Already published |
+| Handel zagraniczny Polski: eksport 8× wyższy niż w 2002 r., nadwyżka po dekadach deficytu | ✅ Already published |
+| Polska edukacja: od 10% do 48% absolwentów uczelni w 25 lat, teraz cofka doktorantów | ✅ Already published |
+| Polska wyszła z biedy: deprywacja materialna spadła z 34% do 2,6% w 15 lat | ✅ Already published |
+| Polska kolej bije rekordy pasażerskie, ale towar ucieka z torów | ✅ Already published |
+| Polska potroiła wydatki na R&D, lecz cel UE wciąż jest dwukrotnie dalej | ✅ Already published |
+| Polska 2024: kobiety żyją 82 lata, mężczyźni 75 — COVID cofnął dekadę, ale rekord odbudowany | ✅ Already published |
+| Turystyka w Polsce 2025: 104,7 mln noclegów — rekord wszech czasów po COVID-owym krachu | ✅ Already published |
 
 ## Summary
-
-- **Published: 18 / 18**
-- PASS: 9 articles (no findings)
-- CONDITIONAL: 9 articles (P2 findings only — per gate logic, published)
-- BLOCK: 0 (OR-145 was originally BLOCK for unsourced projection; source added → published)
-
-## CONDITIONAL findings (logged, not blocking)
-
-| Article | Finding |
-|---|---|
-| OR-145 | P1→fixed: "working-age pop -1.1M by 2030" projection had no source; added `(GUS, Prognoza ludności 2023–2060)` |
-| OR-146 | P2: 2019 debt service baseline (~1% PKB) estimated from press, not directly from Eurostat API |
-| OR-147 | P2: healthcare expenditure 5% PKB in range 4.7–5.2%; writer flagged for Eurostat databrowser verification |
-| OR-149 | P2: "napędzana wojną w Ukrainie" — causal language for inflation attribution |
-| OR-150 | P2: "napędzane programem Rodzina 500+" — causal language for TFR rebound |
-| OR-156 | P2: section heading "Co napędzało szczyt?" uses causal framing |
-| OR-161 | P2: headline "potroiła" vs actual 2.89x (nearly tripled; acceptable rounding per §2.2) |
-| Energy | P2: "napędza fotowoltaika" — causal in OZE context; defensible (direct mechanism, not correlation) |
+- already_published: 18
