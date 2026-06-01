@@ -224,8 +224,10 @@ def page_shell(
 
     # Each section is rendered as its own full-viewport "page" (Power BI–style),
     # stacked vertically inside the scroll container. The page wrapper carries
-    # id ``dbr-page-<anchor>`` so the nav-click handler can snap-scroll the whole
+    # id ``dbr-section-<anchor>`` so the nav-click handler can snap-scroll the whole
     # page to the top; the H2 keeps id=anchor for the scrollspy active-state.
+    # (Prefix is ``dbr-section-`` not ``dbr-page-`` — the latter is owned by the
+    # header/footer chrome elements; keeping them distinct avoids any id collision.)
     page_children: list = []
     for label, anchor, rows in sections:
         section_children: list = [html.H2(label, id=anchor, style=_SECTION_HEADING_STYLE)]
@@ -237,7 +239,7 @@ def page_shell(
             flex_items = [_wrap_item(component, width) for component, width in row_items]
             section_children.append(html.Div(flex_items, style=_ROW_STYLE))
         page_children.append(
-            html.Div(id=f"dbr-page-{anchor}", style=_PAGE_SECTION_STYLE, children=section_children)
+            html.Div(id=f"dbr-section-{anchor}", style=_PAGE_SECTION_STYLE, children=section_children)
         )
 
     # Right column: fixed header + scrollable page stack + fixed footer.

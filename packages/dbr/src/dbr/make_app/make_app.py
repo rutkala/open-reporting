@@ -110,13 +110,13 @@ _SCROLLSPY_JS = """
 
     /* Intercept nav-link clicks: snap the WHOLE page (not just the heading) flush
        to the top of the scroll container so it shows fully, like opening a Power BI
-       page. Prefer the page wrapper (dbr-page-<anchor>); fall back to the heading.
+       page. Prefer the page wrapper (dbr-section-<anchor>); fall back to the heading.
        getBoundingClientRect math is robust regardless of offsetParent chain. */
     links.forEach(function (a) {
       a.addEventListener('click', function (e) {
         e.preventDefault();
         var anchor = a.getAttribute('data-anchor');
-        var target = document.getElementById('dbr-page-' + anchor) ||
+        var target = document.getElementById('dbr-section-' + anchor) ||
                      document.getElementById(anchor);
         if (target && container) {
           var top = container.scrollTop +
