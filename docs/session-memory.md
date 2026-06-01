@@ -1,146 +1,119 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-01 02:35 UTC (footer grid fix — verified live; supersedes the #33–#36 footer attempts) -->
+<!-- last-updated: 2026-06-01 07:10 UTC (run #38 — flagship footer fix + OR-165 + data-block triage) -->
 
-## /goal footer fix — root-caused at last: flexbox minHeight:0 was the fragile link
+## Run #38 — shipped a verified product fix + tracked a real fleet-wide finding
 
-PO: "footer not showing up properly, should be always visible independent of scrolling"
-— then the decisive detail: **"it is not visible AND I cannot scroll down to see if it's
-there."** That symptom (footer below the fold *and* unreachable) is NOT the contrast bug
-#36 chased. Root cause: the right column was a flex-column whose scroll body relied on
-`minHeight:0` to stay constrained. That trick passes in headless Chromium — which is why
-every prior screenshot/verify "passed" — but is browser/zoom-fragile; when it fails the
-scroll body grows to full content height and pushes the footer past the column's
-`overflow:hidden` boundary, where it's invisible and impossible to scroll to (it's a
-clipped sibling, not in the scroll area). Fix (`c8daab16`): right column is now **CSS
-Grid**, `gridTemplateRows` = header `auto` / scroll `minmax(0, 1fr)` / footer `auto`,
-assembled per-page from enabled chrome. `minmax(0, …)` structurally permits the scroll
-track to shrink below content, so the auto header/footer tracks always keep their height
-in the viewport regardless of body length. Verified LIVE through prod nginx: footer
-pinned (scrolled_y == top_y) and fully in-viewport at 1440×900, 1366×600, and on
-demographics 1440×768. **Lesson: when "X is invisible" comes with "and I can't scroll to
-it," the bug is a clip boundary + an unconstrained scroll track, not colour. The
-canonical fix for fixed-header/scroll-body/pinned-footer is GRID with `minmax(0,1fr)` on
-the body — flex `minHeight:0` is the fragile version that passes headless and breaks in
-real browsers.** Fleet booted from `313a6781` (cron run #37 committed blog/docs on top of
-c8daab16, no dbr code change) — grid fix confirmed an ancestor of the live code.
+Production healthy (5 dashboards + www 200, ingest exit=0, inbox empty, no
+Strategic/Todo/In-Progress). Step 2b sweep = 18/18 skip in <1s (no-op as designed).
 
-## Run #37 — cleared two pieces of standing debt (housekeeping run)
+**Investigated 17th-domain dashboard, correctly rejected it.** The unbuilt domains are
+**data-blocked, not effort-blocked**: Eurostat PL coverage is far too thin — CRM 33 obs
+(violent_crime & prison_population END IN 2007; crime_rate only 2022–2024), AGR 26, BUS 25
+— vs hundreds-to-hundreds-of-thousands for every live domain. OR-60/62/63 themselves name
+GUS BDL/DBW/MS/Policja/MRiRW as sources (never Eurostat). Building on Eurostat = thin,
+stale product. Correctly blocked on **OR-86** (`BDL_API_KEY`, PO action). **Lesson: the
+remaining enumerated domains are gated on BDL ingestion, not on build effort — do not
+re-investigate building them on Eurostat each quiet run.**
 
-Production fully healthy (all 16 dashboards + www 200, ingest exit=0, channel healthy).
-Inbox empty; no Strategic/Todo/In-Progress; no safe unblocked build right after the
-#34–#36 layout stabilization. Spent the run clearing two deferred-debt items, both
-complete and verifiable:
+**Shipped (product):** public_finance footer `Dane: 2023` → `Dane: 2024` (strictly-true;
+2024 fiscal actuals are displayed, page titled "Polska 2024 w skrócie"). dbr validate +
+run + verified LIVE (`_dash-layout` serves `Dane: 2024`, 200). Single-dashboard, no dbr
+framework change, fleet untouched.
 
-1. **Step 2b sweep is now a sub-second no-op** (commit `313a6781`). The release-pipeline
-   skip guard checks `reviews/<slug>-review.md` for "✅ PUBLISHED"; those per-slug files
-   never existed (the 18 were published via the aggregate flow), so every run's Step 2b
-   would re-spawn 18×3 reviewer subprocesses for zero gain. Verified all 18 article URLs
-   HTTP 200, then wrote a stub per slug. Pipeline now skips all 18 in <1s, 0 subprocesses.
-   **Also resolved:** the bezrobocie/or-145 "Ghost-only draft, regenerate" followup from
-   #32 — it's actually live (200) with a committed source `drafts/or-145-labour.md`.
-2. **Linear board reconciliation** — moved 10 stale shipped dashboard tickets Backlog→Done
-   (OR-53/54/58/64/65/66/68/81/82 + OR-75 epic), each 1:1 to a live domain. Comment on
-   OR-75. Left open: OR-60 Crime, OR-63 Agriculture (not built); OR-62 Business/Industry
-   (mapping uncertain).
+**Tracked (backlog) OR-165** (Improvement+Infra, Low): the WHOLE fleet's `footer_updated`
+is hand-set and drifting stale (most say 2023 but have 2025 actuals). Conservative-but-true
+so not urgent. Naive max(year) is WRONG — IMF WEO → 2029 forecasts; monthly series → 2026
+(it's 2026-06). Fix = engine auto-derive from each page's displayed *actual* (non-forecast)
+data; branch+PR+fleet-redeploy when picked.
 
-**Lesson:** when a "standing followup" recurs across 3+ post-mortems and is small +
-verifiable, just do it on the next quiet run instead of re-flagging it.
+**Note:** OR-60/62/63 are ARCHIVED (archivedAt 2026-03-20) → `save_comment` rejects them.
+Finding recorded in decisions.md + OR-165 description instead.
 
 ## Current Focus
 
 **16 domain dashboards live. 18 blog articles PUBLISHED. dbr at 22 visual types.**
-Floating-panel layout (#34–#36) verified live, all 16 on HEAD. No open build in flight.
+Fleet stable (floating-panel layout #34–#36 verified live). No open build in flight.
 
-**Next real build** (none unblocked-and-safe this run): Phase 3 data depth — OR-86 BDL
-ingestion (needs PO `BDL_API_KEY`), or a dbr engine feature (OR-159 choropleth [already a
-visual type]/OR-160 cross-filter/OR-161 date-range slicer — all `packages/dbr/`, branch+PR,
-do NOT destabilize the just-stabilized fleet). New domain dashboards OR-62/60/63 if wanted.
+**Next real build options (none unblocked-and-safe-and-high-value right now):**
+- New domain dashboards (crime/agri/business) → BLOCKED on OR-86 BDL key (PO).
+- dbr engine features → branch+PR, don't destabilize fleet: OR-165 (footer auto-derive),
+  OR-160 (cross-filter), OR-161 (date-range slicer), OR-162 (number formatting).
+- Quality passes on live dashboards (visual-screenshot-reviewer) — declarative fixes only.
 
-## Live production state (verified run #37 — all 16 HTTP 200)
+## Live production state (verified run #38)
 
-- **16 Eurostat domain dashboards Live:** public_finance (8057), labour_market (8058),
-  national_accounts (8059), demographics (8060), environment (8061), living_conditions
-  (8062), prices (8063), education (8064), transport (8065), science (8066), trade (8067),
-  production (8068), health (8069), energy (8070), tourism (8071), financial_markets (8072).
+- **16 Eurostat domain dashboards Live (HTTP 200):** public_finance (8057), labour_market
+  (8058), national_accounts (8059), demographics (8060), environment (8061),
+  living_conditions (8062), prices (8063), education (8064), transport (8065), science
+  (8066), trade (8067), production (8068), health (8069), energy (8070), tourism (8071),
+  financial_markets (8072). **Next free port: 8073.**
 - **Portal** `/` one card per domain. **Blog** all 18 articles live. **Daily ingestion**
   22:00 UTC (last exit=0). **Autonomous-lead cron** `0 2,7,12,17 * * *` UTC.
-  **Next free dashboard port:** 8073.
 
 ## Ops note — fleet redeploy after dbr framework changes (USE THE VERIFIER)
 
-A commit touching `packages/dbr/` (editable install) does NOT auto-update the live fleet —
-each `or-<domain>.service` must restart to load new framework code, and a `curl` 200 cannot
-tell new code from old. **Commit dbr code first, then `python3
-infra/scheduler/redeploy_dashboards.py`** — restarts all 16, polls each page's
-`<meta name="dbr-build">` stamp until == repo HEAD, exits non-zero with a STALE/DOWN table
-if any lag. **Non-zero exit = NOT resolved.** Targeted: `redeploy_dashboards.py <domain>`;
-check-only: `--verify-only`. `dbr run` is the path when a dashboard's own YAML changed (it
-also rewrites the nginx route). Sudo `systemctl restart or-*` + `daemon-reload` are
-NOPASSWD; `is-active`/`--version` are NOT. Dash answers at `/<domain>/`, not `/`.
+Commit touching `packages/dbr/` (editable install) does NOT auto-update the live fleet — each
+`or-<domain>.service` must restart to load new framework code, and `curl` 200 cannot tell new
+code from old. **Commit dbr code first, then `python3 infra/scheduler/redeploy_dashboards.py`**
+— restarts all 16, polls each page's `<meta name="dbr-build">` stamp until == repo HEAD, exits
+non-zero with STALE/DOWN table if any lag. **Non-zero = NOT resolved.** Targeted:
+`redeploy_dashboards.py <domain>`; check-only `--verify-only`. `dbr run` is the path when a
+dashboard's own YAML changed (also rewrites nginx route). `systemctl restart or-*` +
+`daemon-reload` NOPASSWD; `is-active`/`--version` NOT. Dash answers at `/<domain>/`, not `/`.
 
-## Release pipeline (FIXED + now cheap)
+## Release pipeline (FIXED + cheap)
 
-- `15b9e8eb`: reviewers strip `ANTHROPIC_API_KEY` → authenticate via Max OAuth. Run
-  STANDALONE only (concurrent token use can rate-limit the nested `claude -p` calls).
-- `313a6781`: 18 per-slug PUBLISHED stubs written → Step 2b sweep skips all in <1s, 0
-  subprocesses. Use `--force` to re-review. New drafts (no stub) still get full review.
+- `15b9e8eb`: reviewers strip `ANTHROPIC_API_KEY` → authenticate via Max OAuth. Run STANDALONE
+  only (concurrent token use can rate-limit nested `claude -p`).
+- `313a6781`: 18 per-slug PUBLISHED stubs → Step 2b sweep skips all in <1s. `--force` to
+  re-review. New drafts (no stub) still get full review.
 
 ## Open / blocked work
 
 | Linear | What | Status |
 |---|---|---|
+| OR-165 | dbr auto-derive footer_updated (forecast-aware) | Backlog — engine, branch+PR |
+| OR-86 | BDL/GUS ingestion — gates OR-60/62/63 + regional depth | Backlog — needs `BDL_API_KEY` (PO) |
+| OR-60/62/63 | Crime / Business / Agriculture dashboards (ARCHIVED) | Blocked on OR-86; thin Eurostat data |
+| OR-159/160/161/162 | dbr features (choropleth[done]/cross-filter/date-slicer/num-fmt) | Backlog — engine, branch+PR |
 | OR-153 | Telegram inbound (systemd `${}` non-expansion) | Blocked — PO; outbox works |
 | OR-90 | Instagram token (Meta portal) — blocks OR-89 publish | Blocked — PO action |
-| OR-86 | BDL/GUS ingestion | Backlog — needs `BDL_API_KEY` from PO |
 | OR-79 | Ghost nav "Portal" link — browser admin | Blocked — PO action |
 | OR-89 | Weekly snapshot — code ready; publish blocked on OR-90 | cron entry remains |
-| OR-159/160/161/162 | dbr features (choropleth/cross-filter/date-slicer/num-format) | Backlog — engine plane, branch+PR |
-| OR-62/60/63 | Business/Industry, Crime, Agriculture dashboards | Backlog — not built |
 
 In Progress + Todo Linear: empty. Article queue: cleared (all 18 live).
 
 ## Note for PO
 
 `.env`'s `ANTHROPIC_API_KEY` is an unfunded pay-as-you-go account. Harmless for the release
-pipeline now (stripped, `15b9e8eb`), but any other code passing it to the SDK fails with
-"credit balance too low". Consider funding or removing it.
-
-## Recent commits
-
-| Commit | What |
-|---|---|
-| `313a6781` | chore(blog): 18 per-slug PUBLISHED review stubs — Step 2b sweep is a no-op |
-| `48fee2ad` | docs: run #36 — footer contrast fix note + layout lesson |
-| `67d1cef3` | fix(dbr): darken page canvas so footer (and all cards) are clearly visible |
-| `c93bbee7` | docs: run #35 — floating-panel layout note + lesson |
-| `085b2a8d` | feat(dbr): floating-panel layout — uniform inset + visible footer |
-| `83bf2e29` | docs: codify verified-redeploy discipline |
-| `2353c430` | fix(dbr): raise redeploy health budget to 140s for slow demographics boot |
-| `c893ca57` | feat(dbr): build-SHA stamp + verified redeploy |
-
-## Discord bot fleet (live)
-
-8 bots, `infra/discord-bot/bot.py`, tokens in `.env`. project-lead (opus),
-scrum-master (haiku), dashboard-dev/data-engineer/content-writer/researcher/code-reviewer
-(sonnet), debug (haiku). Channels: `#general`, `#daily-standup`, `#dashboard-dev`,
-`#blockers`, `#linear-feed`.
-**Untracked `infra/systemd/or-*-bot.service` + modified `infra/discord-bot/bot.py` +
-`logs/` are PO WIP — leave untouched, never commit.**
+pipeline (stripped, `15b9e8eb`), but any other code passing it to the SDK fails "credit
+balance too low". Consider funding or removing it.
 
 ## Key technical facts (current)
 
+- **Footer freshness:** `footer_updated` is hand-set per dashboard, drifting stale; OR-165
+  tracks the engine auto-derive fix. Most footers conservative-but-true (year ≤ actual).
+- **Unbuilt domains gated on BDL (OR-86), not effort** — Eurostat PL too thin for CRM/AGR/BUS.
 - **dbr framework changes need fleet restart** (see Ops note above).
-- **Seed dimension_key must match raw** — query `raw.eurostat_observations` before adding
-  seed rows. `dbt seed --select eurostat_series` then `dbt run --select stg_eurostat+`.
+- **Seed dimension_key must match raw** — query `raw.eurostat_observations` before adding seed
+  rows. `dbt seed --select eurostat_series` then `dbt run --select stg_eurostat+`.
 - **dbt write-lock dance:** stop affected `or-<name>.service` → dbt run → restart.
-- **dbr 22 visual types:** area, bar, box, bullet, card, choropleth, column, combo,
-  funnel, gauge, heatmap, histogram, line, pie, ribbon, scatter, slicer, small_multiples,
-  tab_group, table, treemap, waterfall.
+- **dbr 22 visual types:** area, bar, box, bullet, card, choropleth, column, combo, funnel,
+  gauge, heatmap, histogram, line, pie, ribbon, scatter, slicer, small_multiples, tab_group,
+  table, treemap, waterfall.
 - **dbr `bar` = horizontal** (metric x, dim y); **`column` = vertical bars.**
 - KPI cards resolve latest *non-null* value (semantic.py).
 - Portal homepage = static `infra/nginx/html/index.html`; deploy via
   `docker compose up -d --force-recreate nginx`.
+
+## Discord bot fleet (live)
+
+8 bots, `infra/discord-bot/bot.py`, tokens in `.env`. project-lead (opus), scrum-master
+(haiku), dashboard-dev/data-engineer/content-writer/researcher/code-reviewer (sonnet), debug
+(haiku). Channels: `#general`, `#daily-standup`, `#dashboard-dev`, `#blockers`, `#linear-feed`.
+**Untracked `infra/systemd/or-*-bot.service` + modified `infra/discord-bot/bot.py` + `logs/`
+are PO WIP — leave untouched, never commit.**
 
 ## Stale feature branches
 
