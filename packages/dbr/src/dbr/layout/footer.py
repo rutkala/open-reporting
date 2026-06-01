@@ -18,11 +18,12 @@ from dbr.theme import (
 _FOOTER_STYLE = {
     "display":      "flex",
     "alignItems":   "center",
-    "padding":      "10px 24px",
+    "padding":      "0 24px",
     "background":   BG_PAGE,
     "borderTop":    f"1px solid {BORDER}",
     "fontFamily":   FONT_FAMILY,
     "flexShrink":   0,
+    "minHeight":    "48px",     # == sidebar footer height so the two top lines align
     "boxSizing":    "border-box",
     "gap":          "12px",
 }

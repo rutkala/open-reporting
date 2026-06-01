@@ -19,7 +19,6 @@ from dbr.layout.loader import SIDEBAR_SHOW_TOGGLE
 from dbr.theme import (
     BG_SURFACE,
     BORDER,
-    CARD_RADIUS,
     FONT_FAMILY,
     SIDEBAR_WIDTH,
     SIZE_BODY,
@@ -28,12 +27,17 @@ from dbr.theme import (
     TEAL_PRIMARY,
 )
 
+# No outer border/radius: the sidebar is a flat white surface distinguished from the
+# page canvas by its BG_SURFACE fill + the PAGE_GAP of canvas around it. Carrying no
+# border is deliberate — it keeps the sidebar's internal divider lines (brand
+# borderBottom, portal-footer borderTop) at exactly the same y as the right column's
+# header/footer divider lines, so all four read as two continuous rules across the page
+# gap. Re-adding a border would offset those internal lines by 1px (top + bottom) and
+# break the alignment contract documented in page_shell.py.
 _SIDEBAR_STYLE = {
     "width":         SIDEBAR_WIDTH,
     "flexShrink":    0,
     "background":    BG_SURFACE,
-    "border":        f"1px solid {BORDER}",   # full border — floating card on the page canvas
-    "borderRadius":  CARD_RADIUS,
     "boxSizing":     "border-box",
     "fontFamily":    FONT_FAMILY,
     "color":         TEXT,
@@ -138,9 +142,13 @@ _LINK_STYLE = {
 }
 
 _FOOTER_STYLE = {
-    "padding":    "12px 20px",
+    "padding":    "0 20px",
     "borderTop":  f"1px solid {BORDER}",
     "flexShrink": 0,
+    "minHeight":  "48px",     # == page footer height so the two top lines align
+    "boxSizing":  "border-box",
+    "display":    "flex",
+    "alignItems": "center",
 }
 
 _PORTAL_LINK_STYLE = {

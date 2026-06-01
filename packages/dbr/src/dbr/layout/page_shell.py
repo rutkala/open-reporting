@@ -1,10 +1,17 @@
-"""page_shell — outer page wrapper that composes header + (sidebar + main canvas) + footer.
+"""page_shell — outer page wrapper that composes sidebar + (header + main canvas + footer).
 
-Layout: full-viewport flex column, no page scroll.
-- Header: full-width top bar — spans sidebar + content column so its borderBottom forms
-  one continuous horizontal rule across the entire page.
-- Middle row: flex row — sidebar (left) + scrollable main canvas (right, flex:1).
-- Footer: full-width bottom bar — same full-width treatment as header.
+Layout: full-viewport flex row, no page scroll.
+- Sidebar: left column, fills 100vh, internal scroll if nav overflows. Its internal
+  divider lines (brand borderBottom, portal-footer borderTop) sit at the SAME y as the
+  right column's header borderBottom and footer borderTop — see the alignment note below.
+- Right column: CSS-Grid column — header (fixed) + scrollable main + footer (fixed).
+
+Line alignment (the contract this layout exists to honour):
+  The sidebar carries NO outer border (see sidebar.py), so its first child (brand) and
+  last child (portal-footer) start/end at exactly the same y as the right column's header
+  and footer. With brand height == header height and sidebar-footer height == page-footer
+  height, the four horizontal divider lines line up across the page gap as two continuous
+  rules. Do not re-add an outer border to the sidebar without compensating both offsets.
 
 Visual tokens (colours, fonts, paddings, heading sizes, row gap) come
 from ``dbr.theme`` (sourced from ``theme.yaml``).
@@ -38,36 +45,52 @@ from dbr.theme import (
     WEIGHT_SECTION_HEADING,
 )
 
-# Outer column: header (auto) → middle row (flex:1) → footer (auto).
-# Fills the full viewport; `padding` insets everything from the browser edge.
-# No gap between rows — header/footer separator lines directly abut the middle row.
+# Outer row: sidebar + right column, fills the full viewport — no page scroll.
+# `padding` insets the whole app from the viewport edge on all four sides so every
+# panel floats on the page canvas with a visible margin to the browser border.
+# `gap` separates the sidebar from the right column. Sidebar and right column are
+# both align-stretch children, so their TOP and BOTTOM edges are identical — this
+# is what lets their respective divider lines align (see module docstring).
 _PAGE_OUTER_STYLE = {
-    "display":       "flex",
-    "flexDirection": "column",
-    "height":        "100vh",
-    "overflow":      "hidden",
-    "padding":       PAGE_PADDING,
-    "boxSizing":     "border-box",
-    "background":    BG_PAGE,
-    "color":         TEXT,
-    "fontFamily":    FONT_FAMILY,
+    "display":    "flex",
+    "height":     "100vh",
+    "overflow":   "hidden",
+    "padding":    PAGE_PADDING,
+    "gap":        PAGE_GAP,
+    "boxSizing":  "border-box",
+    "background": BG_PAGE,
+    "color":      TEXT,
+    "fontFamily": FONT_FAMILY,
 }
 
-# Middle row: sidebar (fixed width) + scrollable main canvas (flex:1).
-# `gap` provides visual separation between sidebar and content column.
-_PAGE_MIDDLE_STYLE = {
-    "display":   "flex",
+# Right column: header (fixed) + scrollable main + footer (fixed). Uses CSS
+# Grid rather than flex-column because the "fixed-header / scroll-body /
+# pinned-footer" pattern is browser-fragile under flexbox: the scroll body's
+# default min-height:auto lets it grow to full content height, pushing the
+# footer past this column's `overflow:hidden` clip boundary — where it is both
+# invisible AND unreachable (you can't scroll to a clipped sibling). Flexbox's
+# `minHeight:0` is supposed to prevent that but isn't honoured consistently
+# across browsers/zoom. Grid solves it structurally: the scroll track is
+# declared `minmax(0, 1fr)` (see page_shell()), which explicitly permits the
+# track to shrink below its content, guaranteeing header + footer always keep
+# their `auto` (content) height pinned in the viewport regardless of body length.
+# `gap` separates the rows so the page canvas shows between them (floating panels).
+_PAGE_RIGHT_STYLE = {
+    "display":   "grid",
     "flex":      "1",
+    "minWidth":  0,
     "minHeight": 0,
     "overflow":  "hidden",
     "gap":       PAGE_GAP,
+    # `gridTemplateRows` is assembled per-page in page_shell() from the
+    # enabled chrome (header? scroll, footer?) — the scroll row is the only
+    # `minmax(0, 1fr)` track; header/footer rows are `auto`.
 }
 
 # Scrollable wrapper around the main canvas — scrollspy listens on this.
-# flex:1 + minWidth/Height:0 lets it fill the remaining space in the middle row.
+# It occupies the grid's `minmax(0, 1fr)` track; minHeight:0 is belt-and-braces
+# so the element itself never imposes a min-content floor on that track.
 _MAIN_SCROLL_STYLE = {
-    "flex":           "1",
-    "minWidth":       0,
     "minHeight":      0,
     "overflowY":      "auto",
     "overflowX":      "hidden",
@@ -167,26 +190,31 @@ def page_shell(
 
     main = html.Main(style=_MAIN_STYLE, children=main_children)
 
-    scroll_body = html.Div(id="dbr-main-scroll", style=_MAIN_SCROLL_STYLE, children=[main])
-
-    # Middle row: sidebar (if enabled) + scrollable main area.
-    if SIDEBAR_ENABLED:
-        sidebar = build_sidebar(sections=sidebar_pairs, dashboard_title=dashboard_title)
-        middle_children = [sidebar, scroll_body] if SIDEBAR_POSITION == "left" else [scroll_body, sidebar]
-    else:
-        middle_children = [scroll_body]
-    middle_row = html.Div(style=_PAGE_MIDDLE_STYLE, children=middle_children)
-
-    # Outer column: full-width header → middle row → full-width footer.
-    # Header and footer span across both the sidebar and the content column so
-    # their separator lines form one continuous horizontal rule — no horizontal
-    # gap between sidebar and content breaks the alignment.
-    outer_children: list = []
+    # Right column: fixed header + scrollable main + fixed footer.
+    # Build the children and the matching grid-row tracks in lockstep so the
+    # `minmax(0, 1fr)` scroll track always lines up with the scroll element and
+    # header/footer keep their `auto` (content) height pinned in the viewport.
+    right_children: list = []
+    grid_rows: list[str] = []
     if HEADER_ENABLED:
         header_title = dashboard_title if HEADER_SHOW_TITLE else ""
-        outer_children.append(build_header(title=header_title, subtitle=dashboard_subtitle))
-    outer_children.append(middle_row)
+        right_children.append(build_header(title=header_title, subtitle=dashboard_subtitle))
+        grid_rows.append("auto")
+    right_children.append(
+        html.Div(id="dbr-main-scroll", style=_MAIN_SCROLL_STYLE, children=[main])
+    )
+    grid_rows.append("minmax(0, 1fr)")
     if FOOTER_ENABLED:
-        outer_children.append(build_footer(source=footer_source, updated=footer_updated))
+        right_children.append(build_footer(source=footer_source, updated=footer_updated))
+        grid_rows.append("auto")
+    right_style = {**_PAGE_RIGHT_STYLE, "gridTemplateRows": " ".join(grid_rows)}
+    right_col = html.Div(style=right_style, children=right_children)
+
+    # Assemble outer row: sidebar (if enabled) + right column
+    if not SIDEBAR_ENABLED:
+        outer_children: list = [right_col]
+    else:
+        sidebar = build_sidebar(sections=sidebar_pairs, dashboard_title=dashboard_title)
+        outer_children = [sidebar, right_col] if SIDEBAR_POSITION == "left" else [right_col, sidebar]
 
     return html.Div(style=_PAGE_OUTER_STYLE, children=outer_children)
