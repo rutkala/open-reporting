@@ -1,71 +1,52 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-01 10:50 UTC (chrome line-alignment fix — VERIFIED pixel-exact via Playwright) -->
+<!-- last-updated: 2026-06-01 12:50 UTC (run #39 — flagship freshness 2024→2025, live-verified) -->
 
-## Header/footer ↔ sidebar line alignment — DONE, verified pixel-exact (`1acfc1a3`)
+## Run #39 — flagship public_finance freshness 2024→2025 (caught by a visual pass)
 
-Four-iteration saga, finally resolved. PO wanted the header's bottom divider line and the
-footer's top divider line to align with the sidebar's two internal divider lines (brand
-borderBottom, portal-footer borderTop). Two earlier attempts made it WORSE: `2ccc8e9a`
-(removed right-col grid gap — broke the floating look, didn't fix alignment) and `2d84962c`
-(full-width header/footer ABOVE/BELOW the sidebar — put the brand line 56px below the header
-line: gross misalignment). **Both reverted.**
+Quiet run (inbox empty, no Strategic/Todo/In-Progress, 18/18 articles published, 16
+dashboards + www 200). Spent it on a visual quality pass of the flagship — and it paid off:
+found and fixed a real content bug.
 
-**Final fix (`0faf543b` + `1acfc1a3`):** back to side-by-side `[sidebar | right-col]`, right-col
-= the robust pinned-footer Grid `auto/minmax(0,1fr)/auto` WITH the floating gap restored
-(pinned-footer lesson preserved, NOT regressed). Three pixel sources of misalignment killed at
-root: (1) sidebar's 1px outer **border** offset its internal lines — removed border+radius, now
-a flat BG_SURFACE panel separated by the page gap; (2) brand box was 57px (28px badge + 2×14
-padding + 1px border) vs header 56px — trimmed brand padding 14→13px; (3) footer/​sidebar-footer
-heights unified to minHeight 48px, both bottom-anchored.
+**Bug:** public_finance overview KPI cards have no year filter → resolve **latest-non-null**,
+and the warehouse now holds **2025** actuals (balance −7.3 / debt 59.7 / expenditure 50.9 /
+interest 2.5 % GDP — all match the rendered cards; body prose already said 2025). But the page
+title "Polska 2024 w skrócie", footer "Dane: 2024" and the PL trend section title "1995–2024"
+still said **2024**. Run #38 set footer=2024 on the wrong premise the cards showed 2024.
 
-**Lesson — the decisive move that ended the loop: MEASURE, don't trust CSS.** Wrote a Playwright
-script (`/tmp/measure_lines.py`) that reads the live rendered `getBoundingClientRect().y` of all
-four lines through prod nginx. Result: header-bottom 72 == brand-bottom 72 (Δ0); footer-top 836
-== sb-footer-top 836 (Δ0), identical on public_finance + demographics. The 3 prior attempts all
-"passed" on eyeballing/geometry-in-my-head and were wrong by 1–56px. For pixel-alignment work,
-bounding-box measurement is the only real verification.
+**Fix (`976b1acb`, live-verified):** title + footer + PL trend title → 2025. Verified via
+DuckDB (`fact_finance_overview`, `fact_finance_revenue_expenditure` max PL year = 2025) and
+live (`_dash-layout` serves all three 2025 strings + hydrated screenshot, 33 charts). **Left at
+2024 deliberately (still true):** EU-27 cross-section (most-complete year, 34 vs 33 countries;
+2024-specific prose) + COFOG (max PL COFOG year = 2024). Commented correction on **OR-165**.
 
-## Run #38 — shipped a verified product fix + tracked a real fleet-wide finding
-
-Production healthy (5 dashboards + www 200, ingest exit=0, inbox empty, no
-Strategic/Todo/In-Progress). Step 2b sweep = 18/18 skip in <1s (no-op as designed).
-
-**Investigated 17th-domain dashboard, correctly rejected it.** The unbuilt domains are
-**data-blocked, not effort-blocked**: Eurostat PL coverage is far too thin — CRM 33 obs
-(violent_crime & prison_population END IN 2007; crime_rate only 2022–2024), AGR 26, BUS 25
-— vs hundreds-to-hundreds-of-thousands for every live domain. OR-60/62/63 themselves name
-GUS BDL/DBW/MS/Policja/MRiRW as sources (never Eurostat). Building on Eurostat = thin,
-stale product. Correctly blocked on **OR-86** (`BDL_API_KEY`, PO action). **Lesson: the
-remaining enumerated domains are gated on BDL ingestion, not on build effort — do not
-re-investigate building them on Eurostat each quiet run.**
-
-**Shipped (product):** public_finance footer `Dane: 2023` → `Dane: 2024` (strictly-true;
-2024 fiscal actuals are displayed, page titled "Polska 2024 w skrócie"). dbr validate +
-run + verified LIVE (`_dash-layout` serves `Dane: 2024`, 200). Single-dashboard, no dbr
-framework change, fleet untouched.
-
-**Tracked (backlog) OR-165** (Improvement+Infra, Low): the WHOLE fleet's `footer_updated`
-is hand-set and drifting stale (most say 2023 but have 2025 actuals). Conservative-but-true
-so not urgent. Naive max(year) is WRONG — IMF WEO → 2029 forecasts; monthly series → 2026
-(it's 2026-06). Fix = engine auto-derive from each page's displayed *actual* (non-forecast)
-data; branch+PR+fleet-redeploy when picked.
-
-**Note:** OR-60/62/63 are ARCHIVED (archivedAt 2026-03-20) → `save_comment` rejects them.
-Finding recorded in decisions.md + OR-165 description instead.
+**Two lessons this run:**
+1. **Screenshot the HYDRATED page, not the splash.** The visual-screenshot-reviewer subagent
+   returned no verdict — it captured a blank "Loading…" Dash splash (premature) and prod
+   chromium crashed on the heavy page (OOM). Working recipe: hit **localhost:<port>** (not
+   prod TLS), launch chromium with `--no-sandbox --disable-dev-shm-usage --single-process`,
+   `wait_until=domcontentloaded` + a ~3.5s settle, `full_page=False`. `svgs>0` = hydrated.
+   Script at `/tmp/shot_pf.py`.
+2. **A docs/YAML-only HEAD advance makes the fleet read STALE by stamp though no framework
+   code changed.** `redeploy_dashboards.py --verify-only` spins because HEAD `25bcf64e` is
+   docs-only and landed after the last restart; live fleet runs `1acfc1a3` (last dbr code
+   commit). Don't restart the fleet to chase a docs-only stamp bump — confirm code via direct
+   curl of `<meta name="dbr-build">`.
 
 ## Current Focus
 
 **16 domain dashboards live. 18 blog articles PUBLISHED. dbr at 22 visual types.**
-Fleet stable (floating-panel layout #34–#36 verified live). No open build in flight.
+Fleet stable. Flagship public_finance now freshness-consistent at 2025. No open build in flight.
 
 **Next real build options (none unblocked-and-safe-and-high-value right now):**
 - New domain dashboards (crime/agri/business) → BLOCKED on OR-86 BDL key (PO).
-- dbr engine features → branch+PR, don't destabilize fleet: OR-165 (footer auto-derive),
-  OR-160 (cross-filter), OR-161 (date-range slicer), OR-162 (number formatting).
-- Quality passes on live dashboards (visual-screenshot-reviewer) — declarative fixes only.
+- dbr engine features → branch+PR, don't destabilize fleet: OR-165 (footer auto-derive — the
+  per-page manual fix keeps recurring; this is the real solution), OR-160 (cross-filter),
+  OR-161 (date-range slicer), OR-162 (number formatting).
+- Quality passes on live dashboards (hydrated screenshots) — declarative fixes only. The other
+  15 dashboards likely have the same footer-understatement OR-165 tracks.
 
-## Live production state (verified run #38)
+## Live production state (verified run #39)
 
 - **16 Eurostat domain dashboards Live (HTTP 200):** public_finance (8057), labour_market
   (8058), national_accounts (8059), demographics (8060), environment (8061),
@@ -78,13 +59,14 @@ Fleet stable (floating-panel layout #34–#36 verified live). No open build in f
 ## Ops note — fleet redeploy after dbr framework changes (USE THE VERIFIER)
 
 Commit touching `packages/dbr/` (editable install) does NOT auto-update the live fleet — each
-`or-<domain>.service` must restart to load new framework code, and `curl` 200 cannot tell new
-code from old. **Commit dbr code first, then `python3 infra/scheduler/redeploy_dashboards.py`**
-— restarts all 16, polls each page's `<meta name="dbr-build">` stamp until == repo HEAD, exits
-non-zero with STALE/DOWN table if any lag. **Non-zero = NOT resolved.** Targeted:
-`redeploy_dashboards.py <domain>`; check-only `--verify-only`. `dbr run` is the path when a
-dashboard's own YAML changed (also rewrites nginx route). `systemctl restart or-*` +
-`daemon-reload` NOPASSWD; `is-active`/`--version` NOT. Dash answers at `/<domain>/`, not `/`.
+`or-<domain>.service` must restart, and `curl` 200 can't tell new code from old. **Commit dbr
+code first, then `python3 infra/scheduler/redeploy_dashboards.py`** — restarts all 16, polls
+each page's `<meta name="dbr-build">` until == repo HEAD, exits non-zero with STALE/DOWN if any
+lag. **Caveat (run #39):** a docs/YAML-only HEAD advance makes the verifier report STALE for
+all 16 though no framework code changed — that's expected, don't restart to chase it. `dbr run`
+is the path when a dashboard's own YAML changed (rewrites nginx route too; reads YAML from disk
+on restart). `systemctl restart or-*` + `daemon-reload` NOPASSWD; `is-active`/`--version` NOT.
+Dash answers at `/<domain>/`, not `/`.
 
 ## Release pipeline (FIXED + cheap)
 
@@ -97,7 +79,7 @@ dashboard's own YAML changed (also rewrites nginx route). `systemctl restart or-
 
 | Linear | What | Status |
 |---|---|---|
-| OR-165 | dbr auto-derive footer_updated (forecast-aware) | Backlog — engine, branch+PR |
+| OR-165 | dbr auto-derive footer_updated (forecast-aware) | Backlog — engine, branch+PR. Flagship manually fixed to 2025 (#39); rest of fleet still understates |
 | OR-86 | BDL/GUS ingestion — gates OR-60/62/63 + regional depth | Backlog — needs `BDL_API_KEY` (PO) |
 | OR-60/62/63 | Crime / Business / Agriculture dashboards (ARCHIVED) | Blocked on OR-86; thin Eurostat data |
 | OR-159/160/161/162 | dbr features (choropleth[done]/cross-filter/date-slicer/num-fmt) | Backlog — engine, branch+PR |
@@ -116,18 +98,18 @@ balance too low". Consider funding or removing it.
 
 ## Key technical facts (current)
 
-- **Footer freshness:** `footer_updated` is hand-set per dashboard, drifting stale; OR-165
-  tracks the engine auto-derive fix. Most footers conservative-but-true (year ≤ actual).
+- **Footer freshness:** `footer_updated` is hand-set per dashboard, drifts stale; OR-165 tracks
+  the engine auto-derive fix. public_finance now at 2025 (#39). KPI cards resolve latest *non-null*.
 - **Unbuilt domains gated on BDL (OR-86), not effort** — Eurostat PL too thin for CRM/AGR/BUS.
-- **dbr framework changes need fleet restart** (see Ops note above).
-- **Seed dimension_key must match raw** — query `raw.eurostat_observations` before adding seed
-  rows. `dbt seed --select eurostat_series` then `dbt run --select stg_eurostat+`.
+- **dbr framework changes need fleet restart** (see Ops note above; docs-only HEAD = false STALE).
+- **Hydrated screenshot recipe:** localhost:<port>, chromium `--no-sandbox --disable-dev-shm-usage
+  --single-process`, settle ~3.5s, `full_page=False`, check `svgs>0`. (`/tmp/shot_pf.py`.)
+- **Seed dimension_key must match raw** — query `raw.eurostat_observations` before adding rows.
 - **dbt write-lock dance:** stop affected `or-<name>.service` → dbt run → restart.
 - **dbr 22 visual types:** area, bar, box, bullet, card, choropleth, column, combo, funnel,
   gauge, heatmap, histogram, line, pie, ribbon, scatter, slicer, small_multiples, tab_group,
   table, treemap, waterfall.
 - **dbr `bar` = horizontal** (metric x, dim y); **`column` = vertical bars.**
-- KPI cards resolve latest *non-null* value (semantic.py).
 - Portal homepage = static `infra/nginx/html/index.html`; deploy via
   `docker compose up -d --force-recreate nginx`.
 
