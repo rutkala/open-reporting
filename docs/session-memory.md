@@ -1,6 +1,18 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-01 13:56 UTC (run #40 — first-anchor dead-band fix, live-verified) -->
+<!-- last-updated: 2026-06-01 14:10 UTC (run #40 — chrome spacing: first-anchor + flush header, live-verified) -->
+
+## Run #40b — header/footer flush against scroll body (no right-column row gap)
+
+Follow-up to #40: PO wanted the header to "touch the space where the page disappears when
+scrolling." The right column grid carried a `PAGE_GAP` (16px) between header/scroll/footer
+rows, so the header floated 16px above the scroll-clip line — content vanished in a detached
+canvas band. **Fix (`2ef31887`):** right-column grid `gap` PAGE_GAP→0. Header bottom border is
+now the scroll-disappear line; footer top likewise (symmetric). Right column = one contiguous
+panel mirroring the sidebar. Row edges don't move, so sidebar line-alignment is preserved.
+Verified live: header-bottom 72 == scroll-top 72 (gap 0), scroll-bottom 836 == footer-top 836
+(gap 0), header-bottom 72 == sidebar-brand-bottom 72 (dy 0), footer-top 836 == sidebar-footer-top
+836 (dy 0). Fleet redeployed, all 16 on HEAD.
 
 ## Run #40 — kill the dead band between page header and first section anchor
 
