@@ -178,8 +178,16 @@ def page_shell(
     sidebar_pairs = [(label, anchor) for label, anchor, _ in sections]
 
     main_children: list = []
-    for label, anchor, rows in sections:
-        main_children.append(html.H2(label, id=anchor, style=_SECTION_HEADING_STYLE))
+    for idx, (label, anchor, rows) in enumerate(sections):
+        # The first section heading sits directly under the page header, so its
+        # SECTION_TOP_GAP would stack with the main canvas's top padding and open a
+        # ~68px dead band between the header and the first anchor. section_top_gap
+        # exists to separate sections FROM EACH OTHER — kill it on the first one so
+        # the first anchor hugs the header at the normal canvas padding.
+        heading_style = _SECTION_HEADING_STYLE
+        if idx == 0:
+            heading_style = {**_SECTION_HEADING_STYLE, "marginTop": "0"}
+        main_children.append(html.H2(label, id=anchor, style=heading_style))
         for row_title, row_prose, row_items in rows:
             if row_title:
                 main_children.append(html.H3(row_title, style=_ROW_HEADING_STYLE))
