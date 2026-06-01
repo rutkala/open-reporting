@@ -95,54 +95,65 @@ _PAGE_RIGHT_STYLE = {
 
 # Scrollable wrapper around the page stack — scrollspy listens on this.
 # It occupies the grid's `minmax(0, 1fr)` track (a definite height), so its direct
-# children can size against that viewport via `min-height: 100%` (see _PAGE_SECTION_STYLE).
+# children can size against that viewport via `height: 100%` (see _PAGE_SECTION_STYLE).
 # minHeight:0 is belt-and-braces so the element itself never imposes a min-content
 # floor on that track.
 #
-# Page model: each section is a full-viewport "page" (like a Power BI report page)
-# stacked one below another. `scrollSnapType: y proximity` makes manual scrolling
-# gently settle on a page top, and clicking a nav anchor scrolls that page to the top
-# so it shows fully. `proximity` (not `mandatory`) is deliberate — a page taller than
-# the viewport must stay freely scrollable, never trapped by a hard snap.
-#
-# Edge fade: the header/footer are flush against this scroll body (zero row gap),
-# so mid-scroll the content slid right up to the divider lines and touched them.
-# Container padding can't fix it (overflow clips at the padding box — content paints
-# over the padding, verified), and a plain canvas gap leaves the divider line floating
-# in same-colour grey with an abrupt content slice. Instead we mask the scroll
-# viewport so content dissolves over the top/bottom `_FADE` px: it never hard-touches
-# the divider, the line stays put (still sidebar-aligned), and the transition reads as
-# breathing room. The mask is on the fixed viewport (not the scrolling child) so the
-# fade band stays pinned at the edges as content scrolls through it.
-_FADE = PAGE_GAP  # 16px soft fade at the top and bottom scroll edges
-_FADE_MASK = (
-    f"linear-gradient(to bottom, transparent 0, #000 {_FADE}, "
-    f"#000 calc(100% - {_FADE}), transparent 100%)"
-)
+# FIXED-PAGE model: each section is a Power BI–style fixed canvas — exactly one viewport
+# tall, never more, never less. `scrollSnapType: y mandatory` snaps to exactly one page
+# at a time so clicking an anchor (or scrolling) shows ONE page and never bleeds the
+# next/previous into view. Because each page is exactly the viewport height (with
+# `overflow: hidden`), nothing scrolls *under* the header/footer within a page, so the
+# page's own MAIN_PADDING provides clean breathing space against the chrome at rest —
+# no edge-fade mask needed (the old mask read as a shadow; real padding is the space).
 _MAIN_SCROLL_STYLE = {
     "minHeight":        0,
     "overflowY":        "auto",
     "overflowX":        "hidden",
     "scrollBehavior":   "smooth",
-    "scrollSnapType":   "y proximity",
-    "maskImage":        _FADE_MASK,
-    "WebkitMaskImage":  _FADE_MASK,
+    "scrollSnapType":   "y mandatory",
 }
 
-# One "page": a full-viewport block holding a section's heading + rows. `minHeight: 100%`
-# resolves against the scroll container's definite height (the visible track), so every
-# page is at least one screen tall — the next page starts at a clean viewport boundary.
-# Full width (no max-width cap): content spans the whole canvas, leaving only MAIN_PADDING
-# as the inset to the chrome — symmetric with the sidebar↔canvas gap. `scrollSnapAlign:
-# start` pairs with the container's snap type so each page settles flush to the top.
+# One "page": a FIXED full-viewport canvas holding a section's heading + rows.
+# `height: 100%` (not min-height) resolves against the scroll container's definite
+# height, so every page is exactly one screen — `overflow: hidden` clips anything that
+# would spill, guaranteeing no page overlaps its neighbour. Flex-column so the heading
+# takes its natural height and the row body distributes the remaining vertical space
+# across the grow rows (see page_shell()). Full width (no max-width cap): content spans
+# the whole canvas, leaving only MAIN_PADDING as the inset — symmetric with the
+# sidebar↔canvas gap, and the same padding becomes the space against header/footer.
 _PAGE_SECTION_STYLE = {
-    "minHeight":       "100%",
+    "height":          "100%",
     "padding":         MAIN_PADDING,
     "minWidth":        0,
     "boxSizing":       "border-box",
     "display":         "flex",
     "flexDirection":   "column",
+    "overflow":        "hidden",
     "scrollSnapAlign": "start",
+}
+
+# Minimum height for a grow (chart) row. A fixed one-viewport page divides its space
+# across grow rows, but a chart squeezed below this floor becomes an unreadable sliver
+# (Plotly's ~88px of vertical margins eat a short plot area). So grow rows never shrink
+# below this; if a page's content needs more than one viewport even at the floor, the
+# page BODY scrolls internally (the page itself stays a fixed one-viewport tile that
+# snaps as a unit, so neighbouring pages never bleed into view — you still only ever see
+# one page's content). When content fits, grow rows stretch past the floor to fill.
+_MIN_GROW_ROW_HEIGHT = "260px"
+
+# The page body: everything below the H2 heading. Flex-column so its rows distribute the
+# remaining vertical space (grow rows stretch, KPI/slicer rows keep natural height).
+# minHeight:0 lets it shrink within the fixed page. `overflowY: auto` is the graceful
+# fallback for over-dense pages (see _MIN_GROW_ROW_HEIGHT); overflowX hidden prevents any
+# horizontal scrollbar.
+_PAGE_BODY_STYLE = {
+    "flex":          "1 1 0",
+    "minHeight":     0,
+    "display":       "flex",
+    "flexDirection": "column",
+    "overflowY":     "auto",
+    "overflowX":     "hidden",
 }
 
 # Every heading now sits at the top of its own full-viewport page, so there is no
@@ -159,12 +170,15 @@ _SECTION_HEADING_STYLE = {
     "flexShrink":   0,
 }
 
+# Sub-headings and prose take their natural height and never stretch — flexShrink 0
+# keeps them from being squeezed when the page's grow rows compete for vertical space.
 _ROW_HEADING_STYLE = {
     "fontSize":     "16px",
     "fontWeight":   600,
     "color":        TEXT,
     "marginTop":    "16px",
     "marginBottom": "8px",
+    "flexShrink":   0,
 }
 
 _ROW_PROSE_STYLE = {
@@ -174,8 +188,13 @@ _ROW_PROSE_STYLE = {
     "marginTop":    "0",
     "marginBottom": "12px",
     "maxWidth":     "780px",   # readable line length — narrative shouldn't span full canvas
+    "flexShrink":   0,
 }
 
+# Base style for a row of visuals (a horizontal flex track). marginBottom separates
+# stacked rows. A grow row additionally gets `flex: 1 1 0` + `minHeight: 0` (applied in
+# page_shell) so it shares the page's remaining vertical space; a natural-height row
+# (KPI cards) gets `flexShrink: 0` so it keeps its content height.
 _ROW_STYLE = {
     "display":      "flex",
     "gap":          ROW_GAP,
@@ -184,11 +203,44 @@ _ROW_STYLE = {
 }
 
 
+def _item_flex(width: str | None) -> str:
+    """Resolve a flex-item's CSS ``flex`` shorthand from its YAML ``width``.
+
+    The previous ``flex: 0 0 <width>`` overflowed the row: with percentage widths
+    (e.g. four ``25%`` cards) the bases summed to 100% AND the inter-item gaps pushed
+    the total past the row, so each row's right edge landed at a different x and some
+    cards clipped past the canvas. Instead:
+      - percentage width → a *grow ratio* with a 0 basis (``<n> 1 0``): items share the
+        row width MINUS the gaps in proportion to their percentages, so every row fills
+        exactly [row-left, row-right] and all rows align edge-to-edge.
+      - pixel/explicit width → fixed (``0 0 <width>``): caller wants a hard size.
+      - no width → ``1 1 0`` (equal share of the row).
+    """
+    if width is None:
+        return "1 1 0"
+    w = str(width).strip()
+    if w.endswith("%"):
+        try:
+            ratio = float(w[:-1])
+            return f"{ratio} 1 0"
+        except ValueError:
+            return "1 1 0"
+    return f"0 0 {w}"
+
+
 def _wrap_item(component, width: str | None) -> html.Div:
-    """Wrap one visual in a flex-item div with the requested width."""
-    style: dict = {"minWidth": 0}                       # let inner content shrink
-    style["flex"] = f"0 0 {width}" if width else "1"
-    return html.Div(component, style=style)
+    """Wrap one visual in a flex-item div: fills its share of the row width and the
+    full row height (so charts stretch to fill the page), letting inner content shrink."""
+    return html.Div(
+        component,
+        style={
+            "minWidth":      0,
+            "flex":          _item_flex(width),
+            "height":        "100%",
+            "display":       "flex",
+            "flexDirection": "column",
+        },
+    )
 
 
 def page_shell(
@@ -222,22 +274,34 @@ def page_shell(
     """
     sidebar_pairs = [(label, anchor) for label, anchor, _ in sections]
 
-    # Each section is rendered as its own full-viewport "page" (Power BI–style),
+    # Each section is rendered as its own FIXED full-viewport "page" (Power BI–style),
     # stacked vertically inside the scroll container. The page wrapper carries
     # id ``dbr-section-<anchor>`` so the nav-click handler can snap-scroll the whole
     # page to the top; the H2 keeps id=anchor for the scrollspy active-state.
     # (Prefix is ``dbr-section-`` not ``dbr-page-`` — the latter is owned by the
     # header/footer chrome elements; keeping them distinct avoids any id collision.)
+    #
+    # Layout per page: the H2 heading takes its natural height; everything below it lives
+    # in a flex-column "body" that consumes the rest of the page. Within the body, each
+    # row is either natural-height (KPI/slicer rows: flexShrink 0) or a grow row (charts:
+    # flex 1 1 0) — the grow rows split the leftover vertical space equally so the page
+    # fills exactly one viewport with no overlap and no dead band.
     page_children: list = []
     for label, anchor, rows in sections:
-        section_children: list = [html.H2(label, id=anchor, style=_SECTION_HEADING_STYLE)]
-        for row_title, row_prose, row_items in rows:
+        body_children: list = []
+        for row_title, row_prose, row_items, grow in rows:
             if row_title:
-                section_children.append(html.H3(row_title, style=_ROW_HEADING_STYLE))
+                body_children.append(html.H3(row_title, style=_ROW_HEADING_STYLE))
             if row_prose:
-                section_children.append(dcc.Markdown(row_prose, style=_ROW_PROSE_STYLE))
+                body_children.append(dcc.Markdown(row_prose, style=_ROW_PROSE_STYLE))
             flex_items = [_wrap_item(component, width) for component, width in row_items]
-            section_children.append(html.Div(flex_items, style=_ROW_STYLE))
+            if grow:
+                row_style = {**_ROW_STYLE, "flex": "1 1 0", "minHeight": _MIN_GROW_ROW_HEIGHT}
+            else:
+                row_style = {**_ROW_STYLE, "flexShrink": 0}
+            body_children.append(html.Div(flex_items, style=row_style))
+        body = html.Div(style=_PAGE_BODY_STYLE, children=body_children)
+        section_children = [html.H2(label, id=anchor, style=_SECTION_HEADING_STYLE), body]
         page_children.append(
             html.Div(id=f"dbr-section-{anchor}", style=_PAGE_SECTION_STYLE, children=section_children)
         )

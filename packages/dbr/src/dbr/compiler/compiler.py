@@ -269,10 +269,17 @@ def run_dashboard(path: str | Path) -> None:
 
 
 # A section is (title, anchor, rows). A row is (title-or-None, prose-or-None,
-# list of (component, width-or-None)). Row title is optional H3 sub-heading;
-# prose is optional Markdown paragraph rendered above the row items.
-Row = tuple[str | None, str | None, list[tuple[object, str | None]]]
+# list of (component, width-or-None), grow). Row title is optional H3 sub-heading;
+# prose is optional Markdown paragraph rendered above the row items. ``grow`` is the
+# vertical flex weight: 0 = natural height (KPI/slicer rows), 1 = stretch to fill the
+# remaining page height (chart rows) — the fixed-page layout distributes leftover
+# vertical space across all grow>0 rows so each page fills exactly one viewport.
+Row = tuple[str | None, str | None, list[tuple[object, str | None]], int]
 Section = tuple[str, str, list[Row]]
+
+# Visual types that occupy only their natural (content) height — they must NOT be
+# stretched to fill page height. Everything else (charts, tables, maps) grows.
+_NON_GROWING_TYPES = {"card", "slicer"}
 
 
 def _load_pages(pages_dir: Path, ctx: BuildContext) -> list[Section]:
@@ -308,6 +315,7 @@ def _load_page_rows(visuals_dir: Path, page_name: str, ctx: BuildContext) -> lis
         row_title = row_spec.get("title") if is_dict else None
         row_prose = row_spec.get("prose") if is_dict else None
         row_items: list[tuple[object, str | None]] = []
+        item_grows: list[bool] = []
         for item in row_spec.get("items", []) or []:
             if isinstance(item, str):
                 visual_name, width = item, None
@@ -315,8 +323,18 @@ def _load_page_rows(visuals_dir: Path, page_name: str, ctx: BuildContext) -> lis
                 visual_name = item["visual"]
                 width = item.get("width")
             spec = _load_yaml(visuals_dir / f"{visual_name}.yml")
+            vtype = spec.get("type", "")
+            # A chart with an inline companion table renders at natural height (chart +
+            # table stacked); it must NOT be stretched to fill the page, or the table
+            # collapses the chart. So such a visual is treated as non-growing.
+            has_table = bool((spec.get("options") or {}).get("table"))
+            item_grows.append(vtype not in _NON_GROWING_TYPES and not has_table)
             row_items.append((_build_visual(spec, ctx, page_name, visual_name), width))
-        rows.append((row_title, row_prose, row_items))
+        # A row fills page height only when every visual in it is a fill-eligible chart
+        # (a growing type, no companion table). KPI/slicer rows and chart+table rows keep
+        # their natural height; empty rows don't grow.
+        grow = 1 if (item_grows and all(item_grows)) else 0
+        rows.append((row_title, row_prose, row_items, grow))
     return rows
 
 

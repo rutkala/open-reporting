@@ -40,6 +40,25 @@ from dbr.theme import (
 )
 
 
+# Fixed-page layout: every chart card stretches to fill its flex cell (the page
+# distributes vertical space to grow rows). To make the Plotly figure fill that cell
+# rather than sit at a fixed pixel height, we (1) clear the figure's hardcoded
+# ``layout.height`` and turn on ``autosize``, (2) render the dcc.Graph with
+# ``responsive: True`` + a 100%-height style so Plotly sizes the plot to its container,
+# and (3) lay the card out as a flex column so the graph flexes to fill while an
+# optional companion table / download link keeps its natural height beneath it.
+_FILL_CARD_STYLE = {"display": "flex", "flexDirection": "column", "minHeight": 0, "overflow": "hidden"}
+_FILL_GRAPH_STYLE = {"flex": "1 1 0", "minHeight": 0, "width": "100%"}
+_FILL_GRAPH_CONFIG = {"displayModeBar": False, "responsive": True}
+
+
+def _fill_card(fig, card_style: dict) -> dict:
+    """Clear the figure's fixed height (let it autosize) and return a flex-column card style."""
+    fig.update_layout(autosize=True)
+    fig.layout.height = None
+    return {**card_style, **_FILL_CARD_STYLE}
+
+
 def chart_with_graph_id(
     fig,
     df: pd.DataFrame,
@@ -50,16 +69,19 @@ def chart_with_graph_id(
 ) -> html.Div:
     """Wrap a Plotly figure in a card; assign graph_id when cross_filter is active."""
     opts = options or {}
-    graph_kwargs: dict = {"figure": fig, "config": {"displayModeBar": False}}
+    has_table = bool(opts.get("table") and df is not None and not df.empty)
+    style, graph_style, config = _card_render_mode(fig, card_style, has_table)
+    graph_kwargs: dict = {"figure": fig, "config": config}
+    if graph_style:
+        graph_kwargs["style"] = graph_style
     if graph_id:
         graph_kwargs["id"] = graph_id
     children: list = [dcc.Graph(**graph_kwargs)]
-    table_opt = opts.get("table")
-    if table_opt and df is not None and not df.empty:
-        children.append(_render_companion_table(df, table_opt))
+    if has_table:
+        children.append(_render_companion_table(df, opts["table"]))
     if opts.get("download") and df is not None and not df.empty:
         children.append(_render_download_button(df))
-    return html.Div(children, style=card_style)
+    return html.Div(children, style=style)
 
 
 def chart_with_optional_table(fig, df: pd.DataFrame, options: dict | None, card_style: dict) -> html.Div:
@@ -69,13 +91,32 @@ def chart_with_optional_table(fig, df: pd.DataFrame, options: dict | None, card_
     ``html.Div(dcc.Graph(...))`` itself.
     """
     opts = options or {}
-    children: list = [dcc.Graph(figure=fig, config={"displayModeBar": False})]
-    table_opt = opts.get("table")
-    if table_opt and df is not None and not df.empty:
-        children.append(_render_companion_table(df, table_opt))
+    has_table = bool(opts.get("table") and df is not None and not df.empty)
+    style, graph_style, config = _card_render_mode(fig, card_style, has_table)
+    graph_kwargs: dict = {"figure": fig, "config": config}
+    if graph_style:
+        graph_kwargs["style"] = graph_style
+    children: list = [dcc.Graph(**graph_kwargs)]
+    if has_table:
+        children.append(_render_companion_table(df, opts["table"]))
     if opts.get("download") and df is not None and not df.empty:
         children.append(_render_download_button(df))
-    return html.Div(children, style=card_style)
+    return html.Div(children, style=style)
+
+
+def _card_render_mode(fig, card_style: dict, has_table: bool):
+    """Pick the card render mode: fill vs. natural stacking.
+
+    Without a companion table the chart *fills* its page cell (cleared height +
+    responsive graph). With a companion table the chart keeps its fixed pixel height
+    and the table stacks beneath it at natural height (filling would collapse the chart),
+    so the card is left as its plain self.
+
+    Returns ``(card_style, graph_style_or_None, graph_config)``.
+    """
+    if has_table:
+        return card_style, None, {"displayModeBar": False}
+    return _fill_card(fig, card_style), _FILL_GRAPH_STYLE, _FILL_GRAPH_CONFIG
 
 
 def _render_download_button(df: pd.DataFrame) -> html.Div:
