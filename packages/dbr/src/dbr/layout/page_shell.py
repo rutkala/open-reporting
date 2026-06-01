@@ -71,7 +71,10 @@ _PAGE_RIGHT_STYLE = {
     "minWidth":  0,
     "minHeight": 0,
     "overflow":  "hidden",
-    "gap":       PAGE_GAP,
+    # No gap between rows: header/footer separator lines directly abut the
+    # chart area, mirroring how the sidebar's borderBottom/borderTop directly
+    # touch their adjacent sections. This keeps the header and sidebar brand
+    # lines at the same y-position with no BG_PAGE gap breaking the alignment.
     # `gridTemplateRows` is assembled per-page in page_shell() from the
     # enabled chrome (header? scroll, footer?) — the scroll row is the only
     # `minmax(0, 1fr)` track; header/footer rows are `auto`.
