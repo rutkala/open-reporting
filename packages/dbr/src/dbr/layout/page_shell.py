@@ -133,27 +133,20 @@ _PAGE_SECTION_STYLE = {
     "scrollSnapAlign": "start",
 }
 
-# Minimum height for a grow (chart) row. A fixed one-viewport page divides its space
-# across grow rows, but a chart squeezed below this floor becomes an unreadable sliver
-# (Plotly's ~88px of vertical margins eat a short plot area). So grow rows never shrink
-# below this; if a page's content needs more than one viewport even at the floor, the
-# page BODY scrolls internally (the page itself stays a fixed one-viewport tile that
-# snaps as a unit, so neighbouring pages never bleed into view — you still only ever see
-# one page's content). When content fits, grow rows stretch past the floor to fill.
-_MIN_GROW_ROW_HEIGHT = "260px"
-
 # The page body: everything below the H2 heading. Flex-column so its rows distribute the
-# remaining vertical space (grow rows stretch, KPI/slicer rows keep natural height).
-# minHeight:0 lets it shrink within the fixed page. `overflowY: auto` is the graceful
-# fallback for over-dense pages (see _MIN_GROW_ROW_HEIGHT); overflowX hidden prevents any
-# horizontal scrollbar.
+# remaining vertical space (grow rows stretch to fill, KPI/slicer rows keep natural
+# height). minHeight:0 lets it shrink within the fixed page; `overflow: hidden` means the
+# page NEVER scrolls internally — it is a true fixed canvas. Grow rows carry no min-height
+# floor, so they always shrink to whatever fits: the body absorbs all height pressure into
+# the chart rows and the page stays exactly one viewport. (Consequence: a page authored
+# with too many rows yields shorter charts — keep ≤2 chart rows per page for comfortable
+# heights; non-growing content beyond one viewport would clip, so don't over-stack tables.)
 _PAGE_BODY_STYLE = {
     "flex":          "1 1 0",
     "minHeight":     0,
     "display":       "flex",
     "flexDirection": "column",
-    "overflowY":     "auto",
-    "overflowX":     "hidden",
+    "overflow":      "hidden",
 }
 
 # Every heading now sits at the top of its own full-viewport page, so there is no
@@ -296,7 +289,7 @@ def page_shell(
                 body_children.append(dcc.Markdown(row_prose, style=_ROW_PROSE_STYLE))
             flex_items = [_wrap_item(component, width) for component, width in row_items]
             if grow:
-                row_style = {**_ROW_STYLE, "flex": "1 1 0", "minHeight": _MIN_GROW_ROW_HEIGHT}
+                row_style = {**_ROW_STYLE, "flex": "1 1 0", "minHeight": 0}
             else:
                 row_style = {**_ROW_STYLE, "flexShrink": 0}
             body_children.append(html.Div(flex_items, style=row_style))
