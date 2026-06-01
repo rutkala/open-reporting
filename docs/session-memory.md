@@ -1,6 +1,46 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-01 (run #42 — Power BI–style full-viewport pages, live-verified) -->
+<!-- last-updated: 2026-06-01 (run #43 — FIXED-canvas pages: distribute/fill/align, live-verified) -->
+
+## Run #43 — fixed-canvas pages (distribute, fill, align, real edge space). HEAD 4159fc6c, all 16 verified
+
+PO feedback on #42: (1) edge "shadow" should be real space; (2) visuals must align left+right
+across rows; (3) distribute content vertically — no overlapping pages, one page per anchor;
+(4) make pages FIXED at the layout level — jump via anchors and/or scroll.
+
+**Engine (`page_shell.py` + `compiler.py` + `_render.py`, commit before content):**
+- **Fixed pages**: section = exactly one viewport (`height:100%` + `overflow:hidden`),
+  `scrollSnapType: y mandatory`. Verified: snapped page 764px visible, all others **0px** —
+  no overlap, one page per anchor.
+- **Vertical distribution**: flex-column page body splits leftover height across *grow* rows;
+  KPI/slicer rows + chart+table rows keep natural height. Grow (chart) rows have a **260px
+  readable floor** (`_MIN_GROW_ROW_HEIGHT`); if a page needs more, the body scrolls internally
+  while staying a one-viewport tile (still only one page visible). `overflowY:auto` on body.
+- **Charts fill**: no-table chart cards clear fixed height + render a responsive graph that
+  fills the cell (`_card_render_mode` in `_render.py`). **Chart WITH a companion table keeps
+  fixed height and stacks the table beneath** (filling collapses the chart) — and the compiler
+  marks those rows non-grow. Fill cards `overflow:hidden` so an over-dense cell never paints
+  over its neighbour (was the old UE overlap mess). This makes the engine safe for the other
+  15 dashboards' inline tables without touching their content.
+- **Horizontal alignment**: `%` item widths → flex-grow ratio with 0 basis (`_item_flex`),
+  not `flex:0 0 <pct>`. Old form summed bases to 100% + added gaps → each row overflowed by a
+  different amount (KPI right 1604, 2-chart 1572, 1-chart 1556, some clipped past canvas). Now
+  every row fills exactly [left,right]; all rows align edge-to-edge (verified L280 R1556).
+- **Edge space**: removed the top/bottom mask-fade (#40c) — it read as a shadow. Fixed pages
+  don't scroll content under the chrome at rest, so the page's own MAIN_PADDING is clean space.
+
+**Content (`public_finance`)**: dropped 7 inline companion tables (up to 54 rows — overflow a
+fixed canvas), replaced with `download: true` (Pobierz CSV). Charts now fill the page.
+
+**Live-verified** (Playwright 1600×900): all 5 pf pages clean + screenshotted (KPIs aligned,
+charts fill, space below header, snap isolates one page); labour_market (has tables) + demographics
+spot-checked — 1 page on screen, no overlap. All 16 serve HEAD `4159fc6c`.
+
+**Known tradeoff**: pages authored with 2+ tall chart rows (≥2×260px + headings) exceed an
+880px window and scroll internally a little; they fit fully on ≥1080p monitors. Reducing rows
+per page (content authoring) removes the internal scroll — per-dashboard follow-up if wanted.
+The other 15 dashboards keep their inline tables (engine renders them natural-height, safe) —
+they can be migrated to the download pattern later for a cleaner fixed-canvas look.
 
 ## Run #42 — Power BI–style full-viewport pages + full-width canvas (shipped, all 16 verified)
 
