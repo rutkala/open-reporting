@@ -8,7 +8,7 @@ from dash import html
 
 from dbr.layout.loader import FOOTER_SHOW_SOURCE, FOOTER_SHOW_UPDATED
 from dbr.theme import (
-    BG_SURFACE,
+    BG_PAGE,
     BORDER,
     CARD_RADIUS,
     FONT_FAMILY,
@@ -20,7 +20,7 @@ _FOOTER_STYLE = {
     "display":      "flex",
     "alignItems":   "center",
     "padding":      "10px 24px",
-    "background":   BG_SURFACE,    # white — floating card, mirrors sidebar/header
+    "background":   BG_PAGE,
     "border":       f"1px solid {BORDER}",
     "borderRadius": CARD_RADIUS,
     "fontFamily":   FONT_FAMILY,

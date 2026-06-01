@@ -7,7 +7,7 @@ tokens come from ``dbr.theme``; behaviour flags from ``dbr.layout.loader``.
 from dash import html
 
 from dbr.theme import (
-    BG_SURFACE,
+    BG_PAGE,
     BORDER,
     CARD_RADIUS,
     FONT_FAMILY,
@@ -19,7 +19,7 @@ _HEADER_STYLE = {
     "display":      "flex",
     "alignItems":   "center",
     "padding":      "0 24px",
-    "background":   BG_SURFACE,   # white — floating card, distinct from the page canvas
+    "background":   BG_PAGE,
     "border":       f"1px solid {BORDER}",
     "borderRadius": CARD_RADIUS,
     "fontFamily":   FONT_FAMILY,
