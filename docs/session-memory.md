@@ -1,6 +1,29 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-01 02:05 UTC (run #37 — release-sweep no-op stubs + Linear board reconciliation) -->
+<!-- last-updated: 2026-06-01 02:35 UTC (footer grid fix — verified live; supersedes the #33–#36 footer attempts) -->
+
+## /goal footer fix — root-caused at last: flexbox minHeight:0 was the fragile link
+
+PO: "footer not showing up properly, should be always visible independent of scrolling"
+— then the decisive detail: **"it is not visible AND I cannot scroll down to see if it's
+there."** That symptom (footer below the fold *and* unreachable) is NOT the contrast bug
+#36 chased. Root cause: the right column was a flex-column whose scroll body relied on
+`minHeight:0` to stay constrained. That trick passes in headless Chromium — which is why
+every prior screenshot/verify "passed" — but is browser/zoom-fragile; when it fails the
+scroll body grows to full content height and pushes the footer past the column's
+`overflow:hidden` boundary, where it's invisible and impossible to scroll to (it's a
+clipped sibling, not in the scroll area). Fix (`c8daab16`): right column is now **CSS
+Grid**, `gridTemplateRows` = header `auto` / scroll `minmax(0, 1fr)` / footer `auto`,
+assembled per-page from enabled chrome. `minmax(0, …)` structurally permits the scroll
+track to shrink below content, so the auto header/footer tracks always keep their height
+in the viewport regardless of body length. Verified LIVE through prod nginx: footer
+pinned (scrolled_y == top_y) and fully in-viewport at 1440×900, 1366×600, and on
+demographics 1440×768. **Lesson: when "X is invisible" comes with "and I can't scroll to
+it," the bug is a clip boundary + an unconstrained scroll track, not colour. The
+canonical fix for fixed-header/scroll-body/pinned-footer is GRID with `minmax(0,1fr)` on
+the body — flex `minHeight:0` is the fragile version that passes headless and breaks in
+real browsers.** Fleet booted from `313a6781` (cron run #37 committed blog/docs on top of
+c8daab16, no dbr code change) — grid fix confirmed an ancestor of the live code.
 
 ## Run #37 — cleared two pieces of standing debt (housekeeping run)
 
