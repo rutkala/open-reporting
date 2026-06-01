@@ -1,6 +1,36 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-01 17:00 UTC (run #41 — quiet run, dbr WIP flagged) -->
+<!-- last-updated: 2026-06-01 (run #42 — Power BI–style full-viewport pages, live-verified) -->
+
+## Run #42 — Power BI–style full-viewport pages + full-width canvas (shipped, all 16 verified)
+
+`/goal`: each sidebar anchor should behave like a Power BI page — full-viewport, click-to-show-
+fully, pages stacked with up/down scroll; and kill the oversized right gap.
+
+**Shipped (`6989a42c`, follows `55f5895e`):**
+- **Page model** (`page_shell.py`): each section now renders as a `dbr-section-<anchor>` wrapper
+  with `minHeight:100%` (resolves against the scroll container's definite grid-track height),
+  `scrollSnapAlign:start`; container gets `scrollSnapType: y proximity` (proximity, not mandatory
+  — tall pages must stay freely scrollable, never trapped). Dropped the single `<html.Main>`
+  wrapper and the `1440px` `main_max_width` cap → canvas spans full width, leaving only
+  `MAIN_PADDING` as the inset (44px right, symmetric with the sidebar↔canvas side). All H2
+  headings now `marginTop:0` (each sits at its own page top).
+- **Nav-click snap** (`make_app.py` scrollspy JS): click scrolls the whole `dbr-section-<anchor>`
+  wrapper flush to the container top via `getBoundingClientRect` math (offsetParent-robust), so
+  the page opens fully like a default view. Scrollspy active-state still keyed on `h2[id]`.
+- Id namespace: section wrappers are `dbr-section-*` (the chrome already owns `dbr-page-header/
+  -footer` — keeping them distinct avoids collision).
+
+**Live-verified (Playwright, 1600×900 public_finance):** right inset 44px (was a big void from
+the 1440 cap); all 5 section pages ≥ container height 764; nav click → page-top offset 0px
+(flush snap); screenshots confirm full-width charts + clean page-open. **This supersedes/cleans
+up the dangling #41 uncommitted page-model WIP** — now a reviewed, committed, fleet-deployed
+version. All 16 serve HEAD `6989a42c`.
+
+**Note (judgment):** charts keep their own fixed heights — they fill width but do not vertically
+stretch to fill a page (heterogeneous row content makes auto-stretch fragile; Power BI itself
+hand-lays-out). Full-width fill + viewport-height pages was the robust read of "cover full page
+space". Revisit per-visual vertical-fill only if PO asks.
 
 ## Run #41 — quiet run: production verified, uncommitted dbr WIP flagged (no mutation)
 
