@@ -6,6 +6,8 @@
 # na siebie (cztery odrębne kolory + legenda są czytelniejsze).
 
 type: line
+title:  "Trend 4 największych funkcji"
+subtitle: "1995–2024, % PKB"
 encoding:
   x: { dimension: date_key__cal_year }
   y: { metric: cofog_expenditure }

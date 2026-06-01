@@ -3,6 +3,8 @@
 # Linia odniesienia: próg SGP -3%, oś równowagi.
 
 type: line
+title:  "Projekcja salda 2024–2030"
+subtitle: "% PKB, MFW WEO"
 encoding:
   x: { dimension: date_key__cal_year }
   y: { metric: fiscal_balance_weo }

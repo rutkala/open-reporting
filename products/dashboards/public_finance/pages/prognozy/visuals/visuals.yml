@@ -1,20 +1,12 @@
 # yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
-# Page 5 layout — fiscal balance + debt projection (history solid + IMF dashed).
+# Page 5 — fixed canvas: one prose lead + two side-by-side projection charts
+# (balance + debt, history solid / IMF forecast dashed) that fill the page height.
 
 rows:
-  - title: "Projekcja salda 2024–2030"
-    prose: |
-      Prognoza MFW WEO wskazuje, że saldo fiskalne Polski pozostaje
-      **poniżej progu SGP (-3% PKB)** przez cały horyzont prognozy —
-      konsolidacja fiskalna następuje stopniowo, ale nie wystarczy
-      do osiągnięcia równowagi przed końcem dekady.
+  - prose: |
+      Prognoza MFW WEO: saldo fiskalne pozostaje **poniżej progu SGP (-3% PKB)** przez
+      cały horyzont, a dług publiczny może **przekroczyć próg Maastricht (60% PKB)
+      około 2026–2027 r.** — pierwszy raz od dekady i główne ryzyko fiskalne.
     items:
-      - { visual: balance_projection, width: "100%" }
-  - title: "Projekcja długu 2024–2030"
-    prose: |
-      Przy obecnej ścieżce zadłużenia dług publiczny Polski może
-      **przekroczyć próg Maastricht (60% PKB) około 2026–2027 r.**
-      To pierwsza taka sytuacja od dekady i główne ryzyko fiskalne
-      w średnim terminie.
-    items:
-      - { visual: debt_projection,    width: "100%" }
+      - { visual: balance_projection, width: "50%" }
+      - { visual: debt_projection,    width: "50%" }

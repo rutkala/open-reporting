@@ -2,6 +2,8 @@
 # Deficyt fiskalny UE-27, dwa najnowsze lata side-by-side — Polska wyróżniona.
 
 type: bar
+title:  "Deficyt fiskalny 2024"
+subtitle: "% PKB, UE-27"
 encoding:
   x: { metric: fiscal_balance }
   y: { dimension: geo__country_name_pl }

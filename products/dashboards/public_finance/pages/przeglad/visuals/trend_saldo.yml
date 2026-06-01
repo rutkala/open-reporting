@@ -2,6 +2,8 @@
 # Saldo finansów publicznych — pełna historia 1995–2024 z linią SGP -3% i osią równowagi.
 
 type: line
+title:  "Saldo finansów publicznych"
+subtitle: "1995–2025, % PKB"
 encoding:
   x: { dimension: date_key__cal_year }
   y: { metric: fiscal_balance }

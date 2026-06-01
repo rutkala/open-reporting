@@ -1,23 +1,12 @@
 # yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
-# Page 3 layout:
-#   Row 1: debt trend with Maastricht threshold
-#   Row 2: interest-cost trend (the "rosnące koszty" story)
+# Page 3 — fixed canvas: one prose lead + a single row of two side-by-side charts
+# (debt level + interest cost) that fills the page height.
 
 rows:
-  - title: "Trend długu publicznego"
-    prose: |
-      Dług publiczny Polski w relacji do PKB pozostaje poniżej progu
-      Maastricht (60% PKB), ale po pandemii utrzymuje się w trendzie
-      wzrostowym — z poziomu ~45% w 2019 r. do **59,7% w 2025 r.**,
-      tuż przy progu traktatowym.
+  - prose: |
+      Dług publiczny wzrósł z ~45% PKB (2019) do **59,7% w 2025 r.**, tuż przy progu
+      Maastricht (60%). Towarzyszy temu **podwojenie kosztów obsługi** w cztery lata
+      do 2,5% PKB — ok. **40 mld zł rocznie** za każdy 1 punkt procentowy w odsetkach.
     items:
-      - { visual: debt_trend,     width: "100%" }
-  - title: "Koszty obsługi długu"
-    prose: |
-      Rosnący dług to nie tylko liczba — to też **rosnące koszty obsługi**.
-      W ciągu zaledwie czterech lat koszty odsetkowe **wzrosły ponad
-      dwukrotnie** z ~1,1% w 2021 r. do **2,5% PKB w 2025 r.** Każdy
-      1 punkt procentowy PKB w odsetkach to ok. **40 mld zł rocznie**
-      odjętych od innych wydatków.
-    items:
-      - { visual: interest_trend, width: "100%" }
+      - { visual: debt_trend,     width: "50%" }
+      - { visual: interest_trend, width: "50%" }

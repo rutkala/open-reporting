@@ -2,6 +2,8 @@
 # Dług publiczny brutto UE-27, dwa najnowsze lata side-by-side — Polska wyróżniona.
 
 type: bar
+title:  "Dług publiczny 2024"
+subtitle: "% PKB, UE-27"
 encoding:
   x: { metric: public_debt }
   y: { dimension: geo__country_name_pl }

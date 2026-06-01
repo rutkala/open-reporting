@@ -2,6 +2,8 @@
 # Dług publiczny brutto wg MFW WEO — historia + prognoza, próg Maastricht 60%.
 
 type: line
+title:  "Projekcja długu 2024–2030"
+subtitle: "% PKB, MFW WEO"
 encoding:
   x: { dimension: date_key__cal_year }
   y: { metric: gross_debt_weo }

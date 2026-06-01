@@ -3,6 +3,8 @@
 # Sortowanie value-desc: największa pozycja (Ochrona socjalna) na górze.
 
 type: bar
+title:  "Struktura wydatków 2024"
+subtitle: "% PKB, wg funkcji COFOG"
 encoding:
   x: { metric: cofog_expenditure }
   y: { dimension: cofog_function__cofog_label_pl }

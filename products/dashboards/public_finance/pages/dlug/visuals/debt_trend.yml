@@ -2,6 +2,8 @@
 # Dług publiczny Polski (% PKB) z linią Maastricht 60%.
 
 type: line
+title:  "Trend długu publicznego"
+subtitle: "1995–2025, % PKB"
 encoding:
   x: { dimension: date_key__cal_year }
   y: { metric: public_debt }

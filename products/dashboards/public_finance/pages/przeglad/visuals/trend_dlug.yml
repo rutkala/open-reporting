@@ -2,6 +2,8 @@
 # Dług publiczny — trend 1995-2024 z progiem Maastricht 60%.
 
 type: line
+title:  "Dług publiczny"
+subtitle: "1995–2025, % PKB"
 encoding:
   x: { dimension: date_key__cal_year }
   y: { metric: public_debt }
