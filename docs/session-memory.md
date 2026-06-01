@@ -1,6 +1,30 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-01 07:10 UTC (run #38 — flagship footer fix + OR-165 + data-block triage) -->
+<!-- last-updated: 2026-06-01 10:50 UTC (chrome line-alignment fix — VERIFIED pixel-exact via Playwright) -->
+
+## Header/footer ↔ sidebar line alignment — DONE, verified pixel-exact (`1acfc1a3`)
+
+Four-iteration saga, finally resolved. PO wanted the header's bottom divider line and the
+footer's top divider line to align with the sidebar's two internal divider lines (brand
+borderBottom, portal-footer borderTop). Two earlier attempts made it WORSE: `2ccc8e9a`
+(removed right-col grid gap — broke the floating look, didn't fix alignment) and `2d84962c`
+(full-width header/footer ABOVE/BELOW the sidebar — put the brand line 56px below the header
+line: gross misalignment). **Both reverted.**
+
+**Final fix (`0faf543b` + `1acfc1a3`):** back to side-by-side `[sidebar | right-col]`, right-col
+= the robust pinned-footer Grid `auto/minmax(0,1fr)/auto` WITH the floating gap restored
+(pinned-footer lesson preserved, NOT regressed). Three pixel sources of misalignment killed at
+root: (1) sidebar's 1px outer **border** offset its internal lines — removed border+radius, now
+a flat BG_SURFACE panel separated by the page gap; (2) brand box was 57px (28px badge + 2×14
+padding + 1px border) vs header 56px — trimmed brand padding 14→13px; (3) footer/​sidebar-footer
+heights unified to minHeight 48px, both bottom-anchored.
+
+**Lesson — the decisive move that ended the loop: MEASURE, don't trust CSS.** Wrote a Playwright
+script (`/tmp/measure_lines.py`) that reads the live rendered `getBoundingClientRect().y` of all
+four lines through prod nginx. Result: header-bottom 72 == brand-bottom 72 (Δ0); footer-top 836
+== sb-footer-top 836 (Δ0), identical on public_finance + demographics. The 3 prior attempts all
+"passed" on eyeballing/geometry-in-my-head and were wrong by 1–56px. For pixel-alignment work,
+bounding-box measurement is the only real verification.
 
 ## Run #38 — shipped a verified product fix + tracked a real fleet-wide finding
 
