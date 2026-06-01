@@ -11,5 +11,4 @@ filter:
   date_key__cal_year: 2024
 options:
   sort: value-desc
-  table:
-    row_limit: 12
+  download: true

@@ -16,9 +16,4 @@ options:
     other: slate_3
   reference_lines:
     - { value: -3, label: "Próg SGP", color: negative }
-  table:
-    row_limit: 54
-    labels:
-      geo__country_name_pl: "Kraj"
-      date_key__cal_year: "Rok"
-      fiscal_balance: "Saldo (% PKB)"
+  download: true

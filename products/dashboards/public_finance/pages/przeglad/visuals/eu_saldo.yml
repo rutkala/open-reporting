@@ -17,5 +17,4 @@ options:
     other: slate_3
   reference_lines:
     - { value: -3, label: "Próg SGP", color: negative }
-  table:
-    row_limit: 27
+  download: true

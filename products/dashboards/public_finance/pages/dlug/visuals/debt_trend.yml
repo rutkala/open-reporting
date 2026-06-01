@@ -13,8 +13,4 @@ options:
   annotations:
     - { x: 2020, y: 56.9, text: "COVID-19", direction: above, color: subtext }
     - { x: 2009, y: 49.7, text: "GFC",      direction: above, color: subtext }
-  table:
-    row_limit: 30
-    labels:
-      date_key__cal_year: "Rok"
-      public_debt: "Dług publiczny (% PKB)"
+  download: true

@@ -15,5 +15,4 @@ options:
     - { value: 60, label: "Próg Maastricht", color: negative }
   annotations:
     - { x: 2026, y: 62.9, text: "Przekroczenie 60% Maastricht", direction: above, color: negative }
-  table:
-    row_limit: 20
+  download: true

@@ -16,9 +16,4 @@ options:
     other: slate_3
   reference_lines:
     - { value: 60, label: "Próg Maastricht", color: negative }
-  table:
-    row_limit: 54
-    labels:
-      geo__country_name_pl: "Kraj"
-      date_key__cal_year: "Rok"
-      public_debt: "Dług publiczny (% PKB)"
+  download: true
