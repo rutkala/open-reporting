@@ -98,11 +98,28 @@ _PAGE_RIGHT_STYLE = {
 # Scrollable wrapper around the main canvas — scrollspy listens on this.
 # It occupies the grid's `minmax(0, 1fr)` track; minHeight:0 is belt-and-braces
 # so the element itself never imposes a min-content floor on that track.
+#
+# Edge fade: the header/footer are flush against this scroll body (zero row gap),
+# so mid-scroll the content slid right up to the divider lines and touched them.
+# Container padding can't fix it (overflow clips at the padding box — content paints
+# over the padding, verified), and a plain canvas gap leaves the divider line floating
+# in same-colour grey with an abrupt content slice. Instead we mask the scroll
+# viewport so content dissolves over the top/bottom `_FADE` px: it never hard-touches
+# the divider, the line stays put (still sidebar-aligned), and the transition reads as
+# breathing room. The mask is on the fixed viewport (not the scrolling child) so the
+# fade band stays pinned at the edges as content scrolls through it.
+_FADE = PAGE_GAP  # 16px soft fade at the top and bottom scroll edges
+_FADE_MASK = (
+    f"linear-gradient(to bottom, transparent 0, #000 {_FADE}, "
+    f"#000 calc(100% - {_FADE}), transparent 100%)"
+)
 _MAIN_SCROLL_STYLE = {
-    "minHeight":      0,
-    "overflowY":      "auto",
-    "overflowX":      "hidden",
-    "scrollBehavior": "smooth",
+    "minHeight":       0,
+    "overflowY":       "auto",
+    "overflowX":       "hidden",
+    "scrollBehavior":  "smooth",
+    "maskImage":       _FADE_MASK,
+    "WebkitMaskImage": _FADE_MASK,
 }
 
 _MAIN_STYLE = {
