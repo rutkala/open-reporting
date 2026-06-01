@@ -30,8 +30,8 @@ colors:
   slate_4: "#C8D8E2"
 
   # ── Backgrounds / surfaces / text ──────────────────────────────
-  bg_page:    "#E4EAF0"   # canvas behind floating cards — deliberately darker than white
-                          # so every card (sidebar/header/footer/charts) clearly separates
+  bg_page:    "#EDF1F6"   # canvas behind floating cards — a touch darker than white
+                          # so every card (sidebar/header/footer/charts) still separates
   bg_surface: "#FFFFFF"
   border:     "#D8E0E6"
   grid:       "#E6ECF0"
