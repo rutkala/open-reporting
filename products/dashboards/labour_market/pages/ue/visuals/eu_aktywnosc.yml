@@ -2,20 +2,18 @@
 # Aktywność zawodowa 15-74 — przekrój UE-27, Polska wyróżniona.
 
 type: bar
+title:  "Aktywność zawodowa 15–74"
+subtitle: "%, UE-27"
 encoding:
   x: { metric: activity_rate }
   y: { dimension: geo__country_name_pl }
 filter:
   geo: [AT, BE, BG, CY, CZ, DE, DK, EE, EL, ES, FI, FR, HR, HU, IE, IT, LT, LU, LV, MT, NL, PL, PT, RO, SE, SI, SK]
 options:
+  dual_year: true
   sort: value-desc
   highlight:
     value: Polska
     color: azure_1
     other: slate_3
-  table:
-    row_limit: 54
-    labels:
-      geo__country_name_pl: "Kraj"
-      date_key__cal_year: "Rok"
-      activity_rate: "Aktywność zawodowa (%)"
+  download: true

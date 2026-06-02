@@ -4,6 +4,8 @@
 # Line over bar: 25-year continuous time series with natural temporal order.
 
 type: line
+title:  "Polska vs UE-27"
+subtitle: "stopa bezrobocia (%), 2000–2024"
 encoding:
   x: { dimension: date_key__cal_year }
   y: { metric: unemployment_rate }

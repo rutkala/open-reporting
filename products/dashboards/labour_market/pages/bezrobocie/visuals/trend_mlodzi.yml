@@ -3,6 +3,8 @@
 # Single series: structural decline since 2013 is the story.
 
 type: line
+title:  "Bezrobocie młodych (15–24)"
+subtitle: "stopa bezrobocia (%), Polska"
 encoding:
   x: { dimension: date_key__cal_year }
   y: { metric: youth_unemployment_rate }

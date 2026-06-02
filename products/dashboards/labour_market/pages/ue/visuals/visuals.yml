@@ -1,15 +1,16 @@
 # yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
-# Page 4 layout — EU-27 ranked cross-sections:
-#   Row 1: employment rate ranking with EU 2030 reference line (full width)
-#   Row 2: activity rate ranking (full width)
+# Page 4 — fixed canvas: one prose lead + two side-by-side ranked EU-27 bars
+# (employment + activity), Polska highlighted. Side-by-side gives each 27-row bar the
+# full page height it needs to stay readable, and fits one viewport without clipping.
+# Each chart self-labels via title/subtitle; values available via CSV download (no inline
+# 27-row table, which would overflow the fixed canvas).
 
 rows:
-  - title: "Wskaźnik zatrudnienia 20–64 (% populacji)"
-    prose: |
-      Cel UE 2030: wskaźnik zatrudnienia 78%. Polska przekroczyła już ten próg —
-      wyróżnia się na tle wielu zachodnioeuropejskich krajów.
+  - prose: |
+      Cel UE 2030 to **wskaźnik zatrudnienia 78%** — Polska już go przekroczyła (78,8%
+      w 2025 r., powyżej średniej UE-27) i wyróżnia się na tle Francji, Belgii czy
+      Włoch. Pod względem **aktywności zawodowej** (15–74) Polska plasuje się w środku
+      stawki UE-27.
     items:
-      - { visual: eu_zatrudnienie, width: "100%" }
-  - title: "Aktywność zawodowa 15–74 (%)"
-    items:
-      - { visual: eu_aktywnosc, width: "100%" }
+      - { visual: eu_zatrudnienie, width: "50%" }
+      - { visual: eu_aktywnosc,    width: "50%" }
