@@ -199,7 +199,10 @@ def build_sidebar(
             href=f"#{anchor}",
             className="dbr-nav-link",
             style=_LINK_STYLE,
-            **{"data-anchor": anchor},
+            # data-label feeds the mobile active-dot pill via CSS attr() — on the
+            # narrow rail the link text is hidden (font-size:0) and replaced by a
+            # numbered badge, so the section name is surfaced from this attribute.
+            **{"data-anchor": anchor, "data-label": label},
         )
         for label, anchor in sections
     ]

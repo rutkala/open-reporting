@@ -111,8 +111,10 @@ body { margin: 0; padding: 0; overflow: hidden; }
     min-width: 48px   !important;
     height: 100vh     !important;
     z-index: 100      !important;
-    overflow-y: auto  !important;
-    overflow-x: hidden!important;
+    /* visible (not auto): lets the active dot's label pill escape the 48px rail
+       and float over the content. Safe because the fleet's deepest nav is 5
+       sections (~300px) — the dots never need to scroll within 100vh. */
+    overflow: visible !important;
     border-right: 1px solid #D8E0E6 !important;
     border-radius: 0  !important;
   }
@@ -135,6 +137,7 @@ body { margin: 0; padding: 0; overflow: hidden; }
     counter-reset: dbrnav;
   }
   .dbr-nav-link {
+    position: relative     !important;   /* anchor for the active-dot label pill */
     display: flex          !important;
     align-items: center    !important;
     justify-content: center!important;
@@ -165,6 +168,29 @@ body { margin: 0; padding: 0; overflow: hidden; }
     font-weight: 600         !important;
   }
   #dbr-sidebar-nav .dbr-nav-link.active::before { color: #FFFFFF; }
+  /* Active dot grows a label pill to its right (the section name, pulled from
+     data-label) so a bare number is never ambiguous — it names exactly where you
+     are. Floats over the content (pointer-events:none keeps taps passing through);
+     only the active dot has one, so the rail stays a clean numbered strip. */
+  #dbr-sidebar-nav .dbr-nav-link.active::after {
+    content: attr(data-label);
+    position: absolute;
+    left: calc(100% + 8px);
+    top: 50%;
+    transform: translateY(-50%);
+    white-space: nowrap;
+    background: #FFFFFF;
+    color: #2D3339;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.2;
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: 1px solid #D8E0E6;
+    box-shadow: 0 2px 10px rgba(45, 51, 57, 0.16);
+    pointer-events: none;
+    z-index: 200;
+  }
 
   /* Footer: portal back-link collapses to a single ← glyph, centred */
   #dbr-sidebar-footer { padding: 0 !important; min-height: 44px !important;
@@ -218,6 +244,21 @@ body { margin: 0; padding: 0; overflow: hidden; }
     min-height: 0    !important;
     min-width: 0     !important;
   }
+
+  /* KPI rows (fixed, non-grow) reflow to a 2-up grid instead of stacking 1-per-
+     line — halves the scroll before the first chart. auto-fit + minmax means the
+     card count drives the columns: 4 cards → 2×2, 2 → side-by-side, 1 → full
+     width. align-items:stretch (grid default) keeps cards in a row equal height. */
+  .dbr-row-fixed {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important;
+    gap: 10px !important;
+  }
+  .dbr-row-fixed .dbr-visual-item { width: auto !important; }
+  /* The KPI value is baked at 32px for the full-width desktop card; at ~150px
+     grid width it would wrap. Scale it down (and tighten padding) for the grid. */
+  .dbr-row-fixed .dbr-kpi-value { font-size: 23px !important; }
+  .dbr-row-fixed .dbr-kpi-card  { padding: 14px !important; }
 
   /* Fill-charts lose their definite-height parent once rows stack — pin an
      explicit, readable mobile height. Companion-table charts are NOT tagged

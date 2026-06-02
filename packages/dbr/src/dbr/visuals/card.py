@@ -106,11 +106,11 @@ def _render_standard(r, opts: dict, *, metric: str, filter: dict | None) -> html
         "height": "100%", "boxSizing": "border-box",
     }
     children = [
-        html.Div(r.label, style={
+        html.Div(r.label, className="dbr-kpi-label", style={
             "fontSize": KPI_LABEL_SIZE, "color": SUBTEXT,
             "marginBottom": KPI_LABEL_BOTTOM_GAP,
         }),
-        html.Div(r.formatted, style={
+        html.Div(r.formatted, className="dbr-kpi-value", style={
             "fontSize": KPI_VALUE_SIZE, "fontWeight": KPI_VALUE_WEIGHT,
             "color": TEXT, "lineHeight": "1.1",
         }),
@@ -128,7 +128,7 @@ def _render_standard(r, opts: dict, *, metric: str, filter: dict | None) -> html
         spark = _sparkline(metric, filter, sparkline_opts)
         if spark:
             children.append(spark)
-    return html.Div(children=children, style=style_card)
+    return html.Div(children=children, className="dbr-kpi-card", style=style_card)
 
 
 def _render_compact(r) -> html.Div:
