@@ -1,6 +1,31 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-02 (run #50 — OR-165 footer auto-derive) -->
+<!-- last-updated: 2026-06-02 (run #51 — sticky mobile section-name header) -->
+
+## Run #51 — sticky mobile section-name header (+ dropped pill). HEAD 432f3b84
+
+**Mobile follow-up to #49.** Added `#dbr-mobile-section-bar` — a sticky bar pinned to
+the top of mobile content that always names the current section (scrollspy `update()`
+rewrites its text; click-scroll offset by the bar height so a tapped heading clears
+it). Built in `page_shell.py` as the first child of `#dbr-main-scroll` (display:none
+on desktop, never perturbs the right-col grid; seeded with `sections[0]` label).
+**Removed the #49 active-dot label pill** — the bar names the section now, so the pill
+would duplicate the text on screen; restored rail `overflow` to auto/hidden. 2-up KPI
+grid (#49) kept. Single commit `432f3b84` (page_shell.py + make_app.py). Desktop
+pixel-identical; footer still derives "Dane: 2025" (Run #50 intact). All 16 on 432f3b84.
+
+**Sticky-position lesson:** `position:sticky` fails when an ancestor is a scroll
+container that doesn't actually scroll. Mobile had `html,body { overflow-y:auto }` →
+BODY is a scroll container, but `height:auto` means it never scrolls (the viewport
+does) → the sticky bar had no scrollport and scrolled away. Fix: `html,body {
+overflow:visible }` so the VIEWPORT is the scroller. Verified bar rectTop==0 after a
+1700px scroll, no h-overflow (scrollWidth==clientWidth==390). Caught only by a
+live getBoundingClientRect probe — the initial screenshot looked fine (bar at its
+natural top position) and hid the failure.
+
+**Residual (accepted):** at a section's exact top the bar + the section H2 show the
+same name briefly (distinct styling; clears mid-scroll). De-duping would mean hiding
+the H2 on mobile, but it carries the scrollspy geometry → left as-is.
 
 ## Run #50 — OR-165: auto-derive footer "Dane: YYYY" fleet-wide. HEAD 8b2f620a
 
