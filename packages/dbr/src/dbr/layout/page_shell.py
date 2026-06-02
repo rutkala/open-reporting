@@ -195,14 +195,6 @@ _ROW_STYLE = {
     "alignItems":   "stretch",
 }
 
-# Mobile-only sticky section-name bar. Hidden on desktop (display:none); the
-# @media (max-width:768px) block in make_app.py flips it to a sticky bar pinned to
-# the top of the scrolling content, and the scrollspy JS rewrites its text to the
-# active section as you scroll — so the current location is always named at a
-# conventional position even after the section heading scrolls away. Lives as the
-# first child of #dbr-main-scroll so it never perturbs the desktop right-column grid.
-_MOBILE_SECTION_BAR_STYLE = {"display": "none"}
-
 
 def _item_flex(width: str | None) -> str:
     """Resolve a flex-item's CSS ``flex`` shorthand from its YAML ``width``.
@@ -325,17 +317,8 @@ def page_shell(
         header_title = dashboard_title if HEADER_SHOW_TITLE else ""
         right_children.append(build_header(title=header_title, subtitle=dashboard_subtitle))
         grid_rows.append("auto")
-    # Sticky mobile section bar — first child of the scroll container, seeded with
-    # the first section's label; the scrollspy JS keeps it in sync on scroll.
-    section_bar = html.Div(
-        sections[0][0] if sections else "",
-        id="dbr-mobile-section-bar",
-        className="dbr-mobile-section-bar",
-        style=_MOBILE_SECTION_BAR_STYLE,
-    )
     right_children.append(
-        html.Div(id="dbr-main-scroll", style=_MAIN_SCROLL_STYLE,
-                 children=[section_bar, *page_children])
+        html.Div(id="dbr-main-scroll", style=_MAIN_SCROLL_STYLE, children=page_children)
     )
     grid_rows.append("minmax(0, 1fr)")
     if FOOTER_ENABLED:

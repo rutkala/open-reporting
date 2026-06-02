@@ -171,9 +171,9 @@ body { margin: 0; padding: 0; overflow: hidden; }
     font-weight: 600         !important;
   }
   #dbr-sidebar-nav .dbr-nav-link.active::before { color: #FFFFFF; }
-  /* The section name is surfaced by the sticky #dbr-mobile-section-bar at the top
-     of the content (see below + the scrollspy JS) — the numbered dots stay a clean
-     jump-strip, with the active one highlighted. */
+  /* The current section is signalled by the active (teal) dot; the numbered dots
+     stay a clean jump-strip. Dashboard identity stays visible via the sticky page
+     header (see #dbr-page-header below). */
 
   /* Footer: portal back-link collapses to a single ← glyph, centred */
   #dbr-sidebar-footer { padding: 0 !important; min-height: 44px !important;
@@ -194,21 +194,14 @@ body { margin: 0; padding: 0; overflow: hidden; }
     scroll-snap-type: none  !important;
   }
 
-  /* Sticky section-name bar: pinned to the top of the content as you scroll, it
-     always names the current section (the scrollspy JS rewrites its text). Opaque
-     white so content scrolls cleanly underneath; sits right of the 48px rail. */
-  .dbr-mobile-section-bar {
-    display: block   !important;
+  /* The existing page header sticks to the top of the content while you scroll a
+     page — same always-visible behaviour the desktop layout already gives it (there
+     it sits in a fixed grid row). Its BG_PAGE fill is opaque so content scrolls
+     cleanly underneath; it sits to the right of the 48px rail, so no overlap. */
+  #dbr-page-header {
     position: sticky !important;
     top: 0           !important;
-    z-index: 90      !important;
-    background: #FFFFFF !important;
-    color: #2D3339   !important;
-    font-size: 14px  !important;
-    font-weight: 600 !important;
-    padding: 12px 16px !important;
-    margin: 0 0 4px 0  !important;
-    border-bottom: 1px solid #D8E0E6 !important;
+    z-index: 95      !important;
     box-shadow: 0 2px 6px rgba(45, 51, 57, 0.06) !important;
   }
 
@@ -333,12 +326,13 @@ _SCROLLSPY_JS = """
       return;
     }
 
-    /* The sticky mobile section bar (visible only ≤768px). When shown it overlaps
-       the top of the content, so click-scroll targets are offset by its height to
-       keep a tapped section's heading clear of it. */
-    var bar = document.getElementById('dbr-mobile-section-bar');
-    function barOffset() {
-      return (bar && bar.offsetParent !== null) ? bar.offsetHeight : 0;
+    /* On mobile the page header is sticky (position:sticky), so it overlaps the top
+       of the scrolling content — offset click-scroll targets by its height to keep a
+       tapped section's heading clear of it. On desktop the header is static (it lives
+       in a fixed grid row, not over the content), so the offset is 0. */
+    var header = document.getElementById('dbr-page-header');
+    function headerOffset() {
+      return (header && getComputedStyle(header).position === 'sticky') ? header.offsetHeight : 0;
     }
 
     /* The desktop layout scrolls the #dbr-main-scroll container; the mobile
@@ -366,7 +360,7 @@ _SCROLLSPY_JS = """
                     (target.getBoundingClientRect().top - container.getBoundingClientRect().top);
           container.scrollTo({ top: top, behavior: 'smooth' });
         } else {
-          var wtop = window.pageYOffset + target.getBoundingClientRect().top - barOffset() - 8;
+          var wtop = window.pageYOffset + target.getBoundingClientRect().top - headerOffset() - 8;
           window.scrollTo({ top: wtop, behavior: 'smooth' });
         }
       });
@@ -378,22 +372,13 @@ _SCROLLSPY_JS = """
        window is the scroller. The section nearest the top (within 140px) wins. */
     function update() {
       var current = sections[0] ? sections[0].id : '';
-      var currentEl = sections[0] || null;
       for (var i = 0; i < sections.length; i++) {
-        if (sections[i].getBoundingClientRect().top <= 140) {
-          current = sections[i].id;
-          currentEl = sections[i];
-        }
+        if (sections[i].getBoundingClientRect().top <= 140) { current = sections[i].id; }
       }
       links.forEach(function (a) {
         if (a.dataset.anchor === current) { a.classList.add('active'); }
         else                             { a.classList.remove('active'); }
       });
-      // Keep the sticky mobile bar naming the current section.
-      if (bar && currentEl) {
-        var name = currentEl.textContent;
-        if (bar.textContent !== name) { bar.textContent = name; }
-      }
       ticking = false;
     }
 
