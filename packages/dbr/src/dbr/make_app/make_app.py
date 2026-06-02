@@ -50,6 +50,129 @@ def build_sha() -> str:
 _CSS = """
 body { margin: 0; padding: 0; overflow: hidden; }
 
+/* ──────────────────────────────────────────────────────────────────────────
+   MOBILE (≤768px) — break out of the desktop fixed-canvas model.
+
+   The desktop layout is a Power BI–style fixed canvas: the outer shell is
+   height:100vh + overflow:hidden, each section is exactly one viewport tall,
+   and rows are horizontal flex tracks whose chart heights come from a definite
+   -height cascade (grow row → item height:100% → card height:100% → graph
+   flex:1). On a phone that model crushes every chart to an unreadable sliver
+   and clips the footer. These rules (CSS !important beats Dash inline styles)
+   convert the page to a single natural-flow document that the BODY scrolls:
+     - shell stacks vertically; the sidebar becomes a top bar with wrap-nav
+     - each section grows to its content instead of being one viewport tall
+     - rows stack to one-visual-per-line, full width
+     - fill-charts (which lose their definite-height chain once rows stack) get
+       an explicit mobile height via .dbr-fill-graph; companion-table charts
+       keep their baked figure height and simply reflow to full width
+   See packages/dbr/src/dbr/layout/page_shell.py for the className hooks.
+   ────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  html, body {
+    overflow-x: hidden !important;
+    overflow-y: auto   !important;
+    height: auto       !important;
+  }
+
+  /* Outer shell: stack sidebar above content; let the document grow + scroll */
+  .dbr-page-outer {
+    flex-direction: column !important;
+    height: auto           !important;
+    min-height: 100vh      !important;
+    overflow: visible      !important;
+    padding: 8px           !important;
+    gap: 8px               !important;
+  }
+
+  /* Sidebar → full-width top bar with a horizontal, wrapping nav */
+  #dbr-sidebar {
+    width: 100%        !important;
+    min-width: 0       !important;
+    height: auto       !important;
+    overflow: visible  !important;
+    border-radius: 8px;
+  }
+  #dbr-sidebar-toggle { display: none !important; }
+  #dbr-sidebar-nav    { padding: 8px 0 !important; flex: none !important; }
+  .dbr-nav-label      { display: none !important; }
+  #dbr-sidebar-nav nav {
+    flex-direction: row !important;
+    flex-wrap: wrap     !important;
+    gap: 6px;
+    padding: 0 12px;
+  }
+  .dbr-nav-link {
+    border-left: none !important;
+    padding: 6px 12px !important;
+    border-radius: 6px;
+    background-color: rgba(74, 127, 181, 0.06);
+  }
+  .dbr-nav-link.active {
+    border-left: none !important;
+    padding-left: 12px !important;
+    border-radius: 6px;
+  }
+
+  /* Right column: drop the header/scroll/footer grid; flow as plain blocks */
+  .dbr-right-col {
+    display: block    !important;
+    overflow: visible !important;
+    border-radius: 8px;
+  }
+  #dbr-main-scroll {
+    overflow: visible       !important;
+    scroll-snap-type: none  !important;
+  }
+
+  /* Each section: grow to its content instead of one fixed viewport.
+     display:block (not flex-column) is essential — as a flex column the page
+     body keeps its flex:1 1 0 (basis 0) and collapses to ~0 once the section is
+     content-sized, leaving every chart to overflow and overlap. Block flow lets
+     heading + body + rows stack at their natural heights. */
+  .dbr-page-section {
+    display: block           !important;
+    height: auto             !important;
+    min-height: 0            !important;
+    overflow: visible        !important;
+    scroll-snap-align: none  !important;
+    padding: 16px            !important;
+  }
+  .dbr-page-body {
+    display: block    !important;
+    flex: none        !important;
+    overflow: visible !important;
+  }
+
+  /* Rows stack vertically; each visual takes the full width */
+  .dbr-row {
+    flex-direction: column !important;
+    flex: 0 0 auto         !important;
+    min-height: 0          !important;
+    margin-bottom: 16px    !important;
+  }
+  .dbr-visual-item {
+    width: 100%      !important;
+    flex: 0 0 auto   !important;
+    height: auto     !important;
+    min-height: 0    !important;
+    min-width: 0     !important;
+  }
+
+  /* Fill-charts lose their definite-height parent once rows stack — pin an
+     explicit, readable mobile height. Companion-table charts are NOT tagged
+     .dbr-fill-graph (they keep their baked figure height) so they are untouched
+     and simply reflow to full width. KPI cards are plain divs and size to text. */
+  .dbr-fill-graph {
+    height: 320px     !important;
+    min-height: 320px !important;
+    flex: none        !important;
+  }
+
+  /* Wide tables shrink their type rather than forcing horizontal overflow */
+  .dbr-visual-item table { font-size: 12px; }
+}
+
 /* Sidebar nav link hover + active states (augment Dash inline styles) */
 .dbr-nav-link {
   transition: color 0.15s ease, background-color 0.15s ease;
@@ -247,6 +370,13 @@ def make_app(domain: str, title: str = "") -> Dash:
     app = Dash(
         url_base_pathname=f"/{domain}/",
         suppress_callback_exceptions=True,
+        # Without an explicit device-width viewport, mobile browsers render the
+        # page at a 980px desktop canvas and zoom out — text and charts become
+        # unreadably small. This makes the @media (max-width:768px) rules in
+        # _CSS actually engage on real phones.
+        meta_tags=[
+            {"name": "viewport", "content": "width=device-width, initial-scale=1"},
+        ],
     )
     app.title = title or domain
     # Stamp the running framework's git SHA into the page head so a deploy

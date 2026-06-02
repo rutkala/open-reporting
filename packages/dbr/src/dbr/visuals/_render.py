@@ -73,7 +73,11 @@ def chart_with_graph_id(
     style, graph_style, config = _card_render_mode(fig, card_style, has_table)
     graph_kwargs: dict = {"figure": fig, "config": config}
     if graph_style:
+        # Fill mode: tag the graph so the mobile stylesheet can pin it to an
+        # explicit height (its desktop height comes from a definite-height flex
+        # chain that breaks once rows stack vertically on small screens).
         graph_kwargs["style"] = graph_style
+        graph_kwargs["className"] = "dbr-fill-graph"
     if graph_id:
         graph_kwargs["id"] = graph_id
     children: list = [dcc.Graph(**graph_kwargs)]
@@ -95,7 +99,9 @@ def chart_with_optional_table(fig, df: pd.DataFrame, options: dict | None, card_
     style, graph_style, config = _card_render_mode(fig, card_style, has_table)
     graph_kwargs: dict = {"figure": fig, "config": config}
     if graph_style:
+        # Fill mode: tag for the mobile stylesheet (see chart_with_graph_id).
         graph_kwargs["style"] = graph_style
+        graph_kwargs["className"] = "dbr-fill-graph"
     children: list = [dcc.Graph(**graph_kwargs)]
     if has_table:
         children.append(_render_companion_table(df, opts["table"]))

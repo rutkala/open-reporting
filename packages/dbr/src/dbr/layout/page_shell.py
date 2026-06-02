@@ -226,6 +226,7 @@ def _wrap_item(component, width: str | None) -> html.Div:
     full row height (so charts stretch to fill the page), letting inner content shrink."""
     return html.Div(
         component,
+        className="dbr-visual-item",
         style={
             "minWidth":      0,
             "flex":          _item_flex(width),
@@ -290,13 +291,20 @@ def page_shell(
             flex_items = [_wrap_item(component, width) for component, width in row_items]
             if grow:
                 row_style = {**_ROW_STYLE, "flex": "1 1 0", "minHeight": 0}
+                row_class = "dbr-row dbr-row-grow"
             else:
                 row_style = {**_ROW_STYLE, "flexShrink": 0}
-            body_children.append(html.Div(flex_items, style=row_style))
-        body = html.Div(style=_PAGE_BODY_STYLE, children=body_children)
+                row_class = "dbr-row dbr-row-fixed"
+            body_children.append(html.Div(flex_items, className=row_class, style=row_style))
+        body = html.Div(className="dbr-page-body", style=_PAGE_BODY_STYLE, children=body_children)
         section_children = [html.H2(label, id=anchor, style=_SECTION_HEADING_STYLE), body]
         page_children.append(
-            html.Div(id=f"dbr-section-{anchor}", style=_PAGE_SECTION_STYLE, children=section_children)
+            html.Div(
+                id=f"dbr-section-{anchor}",
+                className="dbr-page-section",
+                style=_PAGE_SECTION_STYLE,
+                children=section_children,
+            )
         )
 
     # Right column: fixed header + scrollable page stack + fixed footer.
@@ -317,7 +325,7 @@ def page_shell(
         right_children.append(build_footer(source=footer_source, updated=footer_updated))
         grid_rows.append("auto")
     right_style = {**_PAGE_RIGHT_STYLE, "gridTemplateRows": " ".join(grid_rows)}
-    right_col = html.Div(style=right_style, children=right_children)
+    right_col = html.Div(className="dbr-right-col", style=right_style, children=right_children)
 
     # Assemble outer row: sidebar (if enabled) + right column
     if not SIDEBAR_ENABLED:
@@ -326,4 +334,4 @@ def page_shell(
         sidebar = build_sidebar(sections=sidebar_pairs, dashboard_title=dashboard_title)
         outer_children = [sidebar, right_col] if SIDEBAR_POSITION == "left" else [right_col, sidebar]
 
-    return html.Div(style=_PAGE_OUTER_STYLE, children=outer_children)
+    return html.Div(className="dbr-page-outer", style=_PAGE_OUTER_STYLE, children=outer_children)
