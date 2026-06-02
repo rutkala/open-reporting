@@ -349,37 +349,40 @@ def latest_actual_year(domains: list[str], *, geo: str = "PL") -> int | None:
     Returns ``None`` if the warehouse is unreachable or no matching rows exist,
     in which case the caller should fall back to the literal footer.
 
-    Note: this is a deliberate second curated read path, distinct from the
-    MetricFlow engine that answers per-metric value questions against the gold
-    marts. A domain-wide "max calendar year" has no single metric, so it reads
-    ``all_indicators`` directly. The trade-off is domain-granularity freshness
-    rather than per-displayed-metric freshness — acceptable for a footer stamp;
-    see OR-165. Do not "unify" the two paths without revisiting that contract.
+    Note: this reads ``all_indicators`` (curated) directly rather than asking
+    MetricFlow for a metric value — a domain-wide "max calendar year" has no
+    single metric. It runs through the *same* in-process MetricFlow SQL client
+    (the engine's read-only DuckDB connection), because DuckDB refuses a second
+    in-process connection to the same file with a different config. The
+    trade-off is domain-granularity freshness rather than per-displayed-metric
+    freshness — acceptable for a footer stamp; see OR-165. Do not "unify" this
+    with the per-metric query path without revisiting that contract.
     """
     import datetime
 
-    if not domains:
+    # domain_id codes are short uppercase tokens from our own dashboard.yml.
+    # Sanitise defensively so the inlined IN-list cannot carry injection — the
+    # MetricFlow SQL client takes a raw statement, not bind parameters.
+    codes = [d for d in (str(x).strip().upper() for x in domains) if d.isalpha()]
+    if not codes:
         return None
-    path = os.environ.get("DUCKDB_PATH", "/opt/open-reporting/data/warehouse.duckdb")
     cutoff = datetime.datetime.now(datetime.timezone.utc).year
-    placeholders = ", ".join("?" for _ in domains)
+    in_list = ", ".join(f"'{c}'" for c in codes)
+    geo_lit = str(geo).replace("'", "''")
     sql = (
-        f"SELECT max(year(period_date)) FROM curated.all_indicators "
-        f"WHERE domain_id IN ({placeholders}) AND geo = ? "
-        f"AND year(period_date) < ?"
+        f"SELECT max(year(period_date)) AS y FROM curated.all_indicators "
+        f"WHERE domain_id IN ({in_list}) AND geo = '{geo_lit}' "
+        f"AND year(period_date) < {int(cutoff)}"
     )
     try:
-        import duckdb
-
-        con = duckdb.connect(path, read_only=True)
-        try:
-            row = con.execute(sql, [*domains, geo, cutoff]).fetchone()
-        finally:
-            con.close()
-    except Exception as exc:  # warehouse missing/locked → fall back to literal
-        log.warning("latest_actual_year(%s) failed: %s", domains, exc)
+        table = _get_engine()._sql_client.query(sql)
+        rows = list(table.rows)
+    except Exception as exc:  # warehouse unreachable → fall back to literal
+        log.warning("latest_actual_year(%s) failed: %s", codes, exc)
         return None
-    return int(row[0]) if row and row[0] is not None else None
+    if not rows or rows[0][0] is None:
+        return None
+    return int(rows[0][0])
 
 
 def _load_metric_config(metric: str) -> dict:
