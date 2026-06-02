@@ -60,12 +60,21 @@ body { margin: 0; padding: 0; overflow: hidden; }
    flex:1). On a phone that model crushes every chart to an unreadable sliver
    and clips the footer. These rules (CSS !important beats Dash inline styles)
    convert the page to a single natural-flow document that the BODY scrolls:
-     - shell stacks vertically; the sidebar becomes a top bar with wrap-nav
-     - each section grows to its content instead of being one viewport tall
+     - the sidebar becomes a FIXED, always-visible narrow rail (48px) pinned to
+       the left edge — it stays on screen while the content scrolls. Nav labels
+       collapse to numbered badges (a pure-CSS counter), so navigation is always
+       reachable yet costs almost no horizontal space — the content gets the rest
+       of the width for comfortable reading (the PO's priority).
+     - the content column clears the rail with a left margin and flows as plain
+       blocks; each section grows to its content instead of being one viewport
      - rows stack to one-visual-per-line, full width
      - fill-charts (which lose their definite-height chain once rows stack) get
        an explicit mobile height via .dbr-fill-graph; companion-table charts
        keep their baked figure height and simply reflow to full width
+   Because the BODY scrolls (not the #dbr-main-scroll container), the scrollspy
+   and nav-click handlers are rect-based and listen on BOTH the container and the
+   window — see _SCROLLSPY_JS. The collapse-toggle logic is disabled on mobile
+   (the rail IS the collapsed form) — see _SIDEBAR_TOGGLE_JS.
    See packages/dbr/src/dbr/layout/page_shell.py for the className hooks.
    ────────────────────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
@@ -75,50 +84,101 @@ body { margin: 0; padding: 0; overflow: hidden; }
     height: auto       !important;
   }
 
-  /* Outer shell: stack sidebar above content; let the document grow + scroll */
+  html { scroll-behavior: smooth; }
+
+  /* Outer shell: the sidebar is taken out of flow (position:fixed), so the outer
+     becomes a plain block whose only in-flow child is the content column. No
+     padding/gap — the rail sits flush to the viewport edge and the content
+     column owns its own insets. */
   .dbr-page-outer {
-    flex-direction: column !important;
-    height: auto           !important;
-    min-height: 100vh      !important;
-    overflow: visible      !important;
-    padding: 8px           !important;
-    gap: 8px               !important;
+    display: block    !important;
+    height: auto      !important;
+    min-height: 100vh !important;
+    overflow: visible !important;
+    padding: 0        !important;
+    gap: 0            !important;
   }
 
-  /* Sidebar → full-width top bar with a horizontal, wrapping nav */
+  /* Sidebar → FIXED narrow rail, pinned to the left edge, always visible while
+     the content scrolls past it. 48px wide: just enough for the OR badge + the
+     numbered nav dots. */
   #dbr-sidebar {
-    width: 100%        !important;
-    min-width: 0       !important;
-    height: auto       !important;
-    overflow: visible  !important;
-    border-radius: 8px;
+    position: fixed   !important;
+    top: 0            !important;
+    left: 0           !important;
+    bottom: 0         !important;
+    width: 48px       !important;
+    min-width: 48px   !important;
+    height: 100vh     !important;
+    z-index: 100      !important;
+    overflow-y: auto  !important;
+    overflow-x: hidden!important;
+    border-right: 1px solid #D8E0E6 !important;
+    border-radius: 0  !important;
   }
-  #dbr-sidebar-toggle { display: none !important; }
-  #dbr-sidebar-nav    { padding: 8px 0 !important; flex: none !important; }
+  /* Brand: centre the OR badge, drop the wordmark + toggle */
+  #dbr-sidebar-brand { padding: 10px 0 !important; min-height: 48px !important;
+                       justify-content: center !important; }
+  #dbr-logo-row      { justify-content: center !important; gap: 0 !important; }
+  #dbr-logo-name     { display: none !important; }
+  #dbr-sidebar-toggle{ display: none !important; }
+
+  /* Nav: a centred vertical stack of numbered badges (pure-CSS counter). The
+     section labels are hidden — the badge number + the active highlight (driven
+     by the scrollspy) carry the navigation. */
   .dbr-nav-label      { display: none !important; }
+  #dbr-sidebar-nav    { padding: 10px 0 !important; flex: 1 1 auto !important; }
   #dbr-sidebar-nav nav {
-    flex-direction: row !important;
-    flex-wrap: wrap     !important;
-    gap: 6px;
-    padding: 0 12px;
+    flex-direction: column !important;
+    align-items: center    !important;
+    gap: 8px               !important;
+    counter-reset: dbrnav;
   }
   .dbr-nav-link {
-    border-left: none !important;
-    padding: 6px 12px !important;
-    border-radius: 6px;
-    background-color: rgba(74, 127, 181, 0.06);
+    display: flex          !important;
+    align-items: center    !important;
+    justify-content: center!important;
+    width: 30px            !important;
+    height: 30px           !important;
+    padding: 0             !important;
+    border-left: none      !important;
+    border-radius: 50%     !important;
+    background-color: rgba(85, 161, 170, 0.10) !important;
+    font-size: 0           !important;   /* hide the label text … */
+    color: transparent     !important;
   }
-  .dbr-nav-link.active {
-    border-left: none !important;
-    padding-left: 12px !important;
-    border-radius: 6px;
+  .dbr-nav-link::before {
+    counter-increment: dbrnav;
+    content: counter(dbrnav);            /* … and show the section number instead */
+    font-size: 13px;
+    font-weight: 600;
+    color: #6B7A85;
   }
+  /* id prefix raises specificity above the desktop `.dbr-nav-link.active` rule
+     later in the sheet (equal-specificity + !important would otherwise let the
+     later desktop rule win on source order, leaking its pale bg / border-left /
+     padding-left and turning the dot into a pale oval). */
+  #dbr-sidebar-nav .dbr-nav-link.active {
+    background-color: #55A1AA !important;
+    border-left: none        !important;
+    padding-left: 0          !important;
+    font-weight: 600         !important;
+  }
+  #dbr-sidebar-nav .dbr-nav-link.active::before { color: #FFFFFF; }
 
-  /* Right column: drop the header/scroll/footer grid; flow as plain blocks */
+  /* Footer: portal back-link collapses to a single ← glyph, centred */
+  #dbr-sidebar-footer { padding: 0 !important; min-height: 44px !important;
+                        justify-content: center !important; }
+  #dbr-sidebar-footer a       { font-size: 0 !important; gap: 0 !important; }
+  #dbr-sidebar-footer a::before { content: "←"; font-size: 16px; color: #6B7A85; }
+
+  /* Content column: clear the fixed rail, then flow as plain blocks (drop the
+     header/scroll/footer grid) so the BODY scrolls the whole document. */
   .dbr-right-col {
+    margin-left: 48px !important;
     display: block    !important;
     overflow: visible !important;
-    border-radius: 8px;
+    border-radius: 0  !important;
   }
   #dbr-main-scroll {
     overflow: visible       !important;
@@ -231,30 +291,45 @@ _SCROLLSPY_JS = """
       return;
     }
 
+    /* The desktop layout scrolls the #dbr-main-scroll container; the mobile
+       layout (≤768px) lets the BODY scroll instead (the container is
+       overflow:visible). Detect which is live so the click + spy logic works in
+       both modes. */
+    function containerScrolls() {
+      return container.scrollHeight > container.clientHeight + 2;
+    }
+
     /* Intercept nav-link clicks: snap the WHOLE page (not just the heading) flush
-       to the top of the scroll container so it shows fully, like opening a Power BI
-       page. Prefer the page wrapper (dbr-section-<anchor>); fall back to the heading.
-       getBoundingClientRect math is robust regardless of offsetParent chain. */
+       to the top so it shows fully, like opening a Power BI page. Prefer the page
+       wrapper (dbr-section-<anchor>); fall back to the heading. getBoundingClientRect
+       math is robust regardless of offsetParent chain — and scrolls the container
+       (desktop) or the window (mobile) depending on which one actually scrolls. */
     links.forEach(function (a) {
       a.addEventListener('click', function (e) {
         e.preventDefault();
         var anchor = a.getAttribute('data-anchor');
         var target = document.getElementById('dbr-section-' + anchor) ||
                      document.getElementById(anchor);
-        if (target && container) {
+        if (!target) { return; }
+        if (containerScrolls()) {
           var top = container.scrollTop +
                     (target.getBoundingClientRect().top - container.getBoundingClientRect().top);
           container.scrollTo({ top: top, behavior: 'smooth' });
+        } else {
+          var wtop = window.pageYOffset + target.getBoundingClientRect().top - 8;
+          window.scrollTo({ top: wtop, behavior: 'smooth' });
         }
       });
     });
 
     var ticking = false;
+    /* Rect-based active detection: a heading's getBoundingClientRect().top is
+       viewport-relative, so the same test works whether the container or the
+       window is the scroller. The section nearest the top (within 140px) wins. */
     function update() {
-      var scrollTop = container.scrollTop;
-      var current   = sections[0] ? sections[0].id : '';
+      var current = sections[0] ? sections[0].id : '';
       for (var i = 0; i < sections.length; i++) {
-        if (scrollTop >= sections[i].offsetTop - 130) { current = sections[i].id; }
+        if (sections[i].getBoundingClientRect().top <= 140) { current = sections[i].id; }
       }
       links.forEach(function (a) {
         if (a.dataset.anchor === current) { a.classList.add('active'); }
@@ -263,9 +338,11 @@ _SCROLLSPY_JS = """
       ticking = false;
     }
 
-    container.addEventListener('scroll', function () {
+    function onScroll() {
       if (!ticking) { requestAnimationFrame(update); ticking = true; }
-    }, { passive: true });
+    }
+    container.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('scroll', onScroll, { passive: true });
     update();
   }
 
@@ -322,6 +399,12 @@ _SIDEBAR_TOGGLE_JS = """
     var sidebar = document.getElementById('dbr-sidebar');
     var btn     = document.getElementById('dbr-sidebar-toggle');
     if (!sidebar || !btn) { setTimeout(initSidebarToggle, 400); return; }
+
+    /* On mobile (≤768px) the sidebar is already the always-visible narrow rail —
+       the CSS handles it. Skip the collapse logic entirely: a stored desktop
+       `collapsed=true` would otherwise inline display:none onto the nav/footer
+       and beat the rail's CSS, leaving an empty strip. */
+    if (window.matchMedia('(max-width: 768px)').matches) { return; }
 
     var collapsed = localStorage.getItem(KEY) === 'true';
     applyState(sidebar, btn, collapsed);
