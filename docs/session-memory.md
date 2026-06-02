@@ -1,6 +1,30 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-02 (run #48 — mobile sidebar always-visible narrow rail) -->
+<!-- last-updated: 2026-06-02 (run #49 — mobile active-section pill + 2-up KPI grid) -->
+
+## Run #49 — mobile active-section label pill + 2-up KPI grid. HEAD 80ca7eb9
+
+**Two refinements on top of #48's rail, both pure declarative-shell + additive.**
+(1) **Active-dot label pill:** the active nav dot grows a pill to its right naming
+the section — `#dbr-sidebar-nav .dbr-nav-link.active::after { content: attr(data-label) }`.
+`data-label` is emitted per nav link in `sidebar.py`; the rail's `overflow` is now
+`visible` (was auto) so the pill floats over content (`pointer-events:none`) — safe
+because the fleet's deepest nav is 5 sections (~300px), never scrolls in 100vh.
+Closes the "#48 numbered-dot is ambiguous" gap. (2) **2-up KPI grid:** `.dbr-row-fixed`
+(non-grow rows) → `display:grid; repeat(auto-fit, minmax(140px,1fr))` so KPI cards
+reflow 2-up (4→2×2, 3→2+1, …) instead of one-per-line — halves scroll before the
+first chart. Card value baked 32px would wrap at ~150px grid width → scaled to 23px
+via new `.dbr-kpi-value`/`.dbr-kpi-card` classNames on `card.py`. Single commit
+`80ca7eb9` (3 files). Desktop pixel-identical (verified 1600×900). Fleet redeployed +
+SHA-verified: **all 16 serving 80ca7eb9.**
+
+**Two cosmetic edges left as-is (noted to PO):** (a) on section 1 at rest the pill
+overlaps its own H2 (dot sits at heading height) — clears on scroll; (b) a long KPI
+value (labour_market "3,1 % aktywnych zawodowo") wraps to 3 lines in the grid —
+readable, grid-stretch equalises row height. **mobbin.com is auth-gated (403)** — the
+ideas came from standard mobile-dashboard patterns, not those screens. Remaining
+shortlist offered: sticky section header, KPI carousel, tap-to-expand charts,
+swipe-between-sections.
 
 ## Run #48 — mobile sidebar → fixed always-visible narrow rail. HEAD fe337bfd
 
