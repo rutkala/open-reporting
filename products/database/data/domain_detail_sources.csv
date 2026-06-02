@@ -107,7 +107,7 @@ prc.fuel_price_petrol,dane_gov,country,2015,,Weekly fuel prices published on dan
 prc.fuel_price_diesel,dane_gov,country,2015,,Weekly diesel prices on dane.gov.pl,,false
 lab.unemployment_rate,mrpips,country,2000,,MRPiPS monthly registered unemployment (stopa bezrobocia rejestrowanego),,false
 lab.unemployment_rate,bdl,country,2004,,BDL labour market module; monthly,,false
-lab.unemployment_rate,eurostat,country,2004,,Eurostat LFS harmonised unemployment rate (different definition: LFS),une_rt_a?geo=PL&sex=T&unit=PC_ACT,true
+lab.unemployment_rate,eurostat,country,2004,,Eurostat LFS harmonised unemployment rate (different definition: LFS),une_rt_a?geo=ALL_GEOS&sex=T&unit=PC_ACT,true
 lab.unemployment_rate,ilostat,country,2004,,ILO modelled estimates; annual; international comparable,,false
 lab.unemployment_rate_regional,mrpips,country|voivodeship|county,2000,,MRPiPS monthly by voivodeship and powiat,,false
 lab.unemployment_rate_regional,bdl,country|voivodeship|county,2004,,BDL with voivodeship + powiat breakdown,,false
@@ -117,10 +117,10 @@ lab.employed_total,sdp,country,2004,,GUS quarterly LFS (BAEL) employed persons,,
 lab.employed_total,eurostat,country,2004,,Eurostat LFS employed (lfsa_empgan),lfsa_egan?age=Y15-74&citizen=TOTAL&geo=PL&sex=T&unit=THS_PER,true
 lab.employed_total,ilostat,country,2004,,ILO ILOSTAT employment by sector,,false
 lab.employment_rate,sdp,country,2004,,GUS BAEL quarterly; 15-64 age group,,false
-lab.employment_rate,eurostat,country,2004,,Eurostat LFS employment rate (lfsq_ergan),lfsa_ergan?age=Y20-64&geo=PL&sex=T&unit=PC,true
+lab.employment_rate,eurostat,country,2004,,Eurostat LFS employment rate (lfsq_ergan),lfsa_ergan?age=Y20-64&geo=ALL_GEOS&sex=T&unit=PC,true
 lab.employment_rate,ilostat,country,2004,,ILO comparable series,,false
 lab.activity_rate,sdp,country,2004,,GUS BAEL activity rate (15-64),,false
-lab.activity_rate,eurostat,country,2004,,Eurostat LFS activity rate (lfsq_agan),lfsa_argan?age=Y15-74&citizen=TOTAL&geo=PL&sex=T,true
+lab.activity_rate,eurostat,country,2004,,Eurostat LFS activity rate (lfsq_agan),lfsa_argan?age=Y15-74&citizen=TOTAL&geo=ALL_GEOS&sex=T,true
 lab.activity_rate,ilostat,country,2004,,ILO ILOSTAT participation rate,,false
 lab.average_wage,sdp,country,2000,,GUS monthly average gross wage in enterprise sector (10+ emp),,false
 lab.average_wage,bdl,country,2004,,BDL wage series; includes sectoral and regional cuts,,false
