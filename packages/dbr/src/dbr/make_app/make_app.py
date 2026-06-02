@@ -78,10 +78,16 @@ body { margin: 0; padding: 0; overflow: hidden; }
    See packages/dbr/src/dbr/layout/page_shell.py for the className hooks.
    ────────────────────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
+  /* Let the VIEWPORT be the scroller — NOT html/body. Setting overflow-y:auto on
+     body makes it a scroll container, but with height:auto it never actually
+     scrolls (the document does), so position:sticky inside it has no scrollport to
+     stick to and the sticky section bar just scrolls away. overflow:visible keeps
+     body out of the scroll-container role so the bar sticks to the viewport. (The
+     desktop base rule `body{overflow:hidden}` is overridden here.) Horizontal
+     overflow is prevented by the content sizing rules below, not by clipping. */
   html, body {
-    overflow-x: hidden !important;
-    overflow-y: auto   !important;
-    height: auto       !important;
+    overflow: visible !important;
+    height: auto      !important;
   }
 
   html { scroll-behavior: smooth; }
@@ -111,10 +117,8 @@ body { margin: 0; padding: 0; overflow: hidden; }
     min-width: 48px   !important;
     height: 100vh     !important;
     z-index: 100      !important;
-    /* visible (not auto): lets the active dot's label pill escape the 48px rail
-       and float over the content. Safe because the fleet's deepest nav is 5
-       sections (~300px) — the dots never need to scroll within 100vh. */
-    overflow: visible !important;
+    overflow-y: auto  !important;
+    overflow-x: hidden!important;
     border-right: 1px solid #D8E0E6 !important;
     border-radius: 0  !important;
   }
@@ -137,7 +141,6 @@ body { margin: 0; padding: 0; overflow: hidden; }
     counter-reset: dbrnav;
   }
   .dbr-nav-link {
-    position: relative     !important;   /* anchor for the active-dot label pill */
     display: flex          !important;
     align-items: center    !important;
     justify-content: center!important;
@@ -168,29 +171,9 @@ body { margin: 0; padding: 0; overflow: hidden; }
     font-weight: 600         !important;
   }
   #dbr-sidebar-nav .dbr-nav-link.active::before { color: #FFFFFF; }
-  /* Active dot grows a label pill to its right (the section name, pulled from
-     data-label) so a bare number is never ambiguous — it names exactly where you
-     are. Floats over the content (pointer-events:none keeps taps passing through);
-     only the active dot has one, so the rail stays a clean numbered strip. */
-  #dbr-sidebar-nav .dbr-nav-link.active::after {
-    content: attr(data-label);
-    position: absolute;
-    left: calc(100% + 8px);
-    top: 50%;
-    transform: translateY(-50%);
-    white-space: nowrap;
-    background: #FFFFFF;
-    color: #2D3339;
-    font-size: 12px;
-    font-weight: 600;
-    line-height: 1.2;
-    padding: 5px 10px;
-    border-radius: 6px;
-    border: 1px solid #D8E0E6;
-    box-shadow: 0 2px 10px rgba(45, 51, 57, 0.16);
-    pointer-events: none;
-    z-index: 200;
-  }
+  /* The section name is surfaced by the sticky #dbr-mobile-section-bar at the top
+     of the content (see below + the scrollspy JS) — the numbered dots stay a clean
+     jump-strip, with the active one highlighted. */
 
   /* Footer: portal back-link collapses to a single ← glyph, centred */
   #dbr-sidebar-footer { padding: 0 !important; min-height: 44px !important;
@@ -209,6 +192,24 @@ body { margin: 0; padding: 0; overflow: hidden; }
   #dbr-main-scroll {
     overflow: visible       !important;
     scroll-snap-type: none  !important;
+  }
+
+  /* Sticky section-name bar: pinned to the top of the content as you scroll, it
+     always names the current section (the scrollspy JS rewrites its text). Opaque
+     white so content scrolls cleanly underneath; sits right of the 48px rail. */
+  .dbr-mobile-section-bar {
+    display: block   !important;
+    position: sticky !important;
+    top: 0           !important;
+    z-index: 90      !important;
+    background: #FFFFFF !important;
+    color: #2D3339   !important;
+    font-size: 14px  !important;
+    font-weight: 600 !important;
+    padding: 12px 16px !important;
+    margin: 0 0 4px 0  !important;
+    border-bottom: 1px solid #D8E0E6 !important;
+    box-shadow: 0 2px 6px rgba(45, 51, 57, 0.06) !important;
   }
 
   /* Each section: grow to its content instead of one fixed viewport.
@@ -332,6 +333,14 @@ _SCROLLSPY_JS = """
       return;
     }
 
+    /* The sticky mobile section bar (visible only ≤768px). When shown it overlaps
+       the top of the content, so click-scroll targets are offset by its height to
+       keep a tapped section's heading clear of it. */
+    var bar = document.getElementById('dbr-mobile-section-bar');
+    function barOffset() {
+      return (bar && bar.offsetParent !== null) ? bar.offsetHeight : 0;
+    }
+
     /* The desktop layout scrolls the #dbr-main-scroll container; the mobile
        layout (≤768px) lets the BODY scroll instead (the container is
        overflow:visible). Detect which is live so the click + spy logic works in
@@ -357,7 +366,7 @@ _SCROLLSPY_JS = """
                     (target.getBoundingClientRect().top - container.getBoundingClientRect().top);
           container.scrollTo({ top: top, behavior: 'smooth' });
         } else {
-          var wtop = window.pageYOffset + target.getBoundingClientRect().top - 8;
+          var wtop = window.pageYOffset + target.getBoundingClientRect().top - barOffset() - 8;
           window.scrollTo({ top: wtop, behavior: 'smooth' });
         }
       });
@@ -369,13 +378,22 @@ _SCROLLSPY_JS = """
        window is the scroller. The section nearest the top (within 140px) wins. */
     function update() {
       var current = sections[0] ? sections[0].id : '';
+      var currentEl = sections[0] || null;
       for (var i = 0; i < sections.length; i++) {
-        if (sections[i].getBoundingClientRect().top <= 140) { current = sections[i].id; }
+        if (sections[i].getBoundingClientRect().top <= 140) {
+          current = sections[i].id;
+          currentEl = sections[i];
+        }
       }
       links.forEach(function (a) {
         if (a.dataset.anchor === current) { a.classList.add('active'); }
         else                             { a.classList.remove('active'); }
       });
+      // Keep the sticky mobile bar naming the current section.
+      if (bar && currentEl) {
+        var name = currentEl.textContent;
+        if (bar.textContent !== name) { bar.textContent = name; }
+      }
       ticking = false;
     }
 
