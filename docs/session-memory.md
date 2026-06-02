@@ -1,6 +1,25 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-02 (run #52 — sticky page header on mobile, reuse not add) -->
+<!-- last-updated: 2026-06-02 (run #53 — per-section sticky headings on mobile) -->
+
+## Run #53 — per-section sticky headings on mobile (pin + hand off). HEAD 62a24419
+
+**PO clarified what "pinned page header" meant:** per-SECTION sticky headers — each
+section's H2 pins while you scroll that section, the next section's H2 takes over on
+scroll-in (iOS sticky-section-header pattern). The #52 single dashboard-header pin was
+not the target. `.dbr-page-section > h2` → `position:sticky; top:var(--dbr-header-h)`
+(mobile only), flush beneath the still-sticky `#dbr-page-header`. Hand-off is native:
+each H2 is constrained to its own `.dbr-page-section` box. Negative side margins
+(`0 -16px`) + padding bleed the heading to section edges so its opaque #EDF1F6 fill
+hides content scrolling under. JS publishes live header height as `--dbr-header-h`
+(init + resize) so headings pin flush below a wrapping title. make_app.py only. Desktop
+unchanged (mobile-scoped; desktop pages are fixed one-viewport canvases — heading
+already always visible). Verified: section-2 H2 pins at top==header-height while
+section-1 scrolls above; live labour_market pinned heading = "Bezrobocie: Polska na tle
+UE". All 16 on 62a24419.
+
+**Mobile header model (final):** dashboard title pinned at very top + current section
+heading pinned just below it, handing off section-to-section.
 
 ## Run #52 — sticky PAGE HEADER on mobile (reuse, drop #51's bar). HEAD 0233b656
 
