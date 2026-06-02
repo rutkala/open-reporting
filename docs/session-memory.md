@@ -1,141 +1,76 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-02 (run #49 — mobile active-section pill + 2-up KPI grid) -->
+<!-- last-updated: 2026-06-02 (run #50 — OR-165 footer auto-derive) -->
 
-## Run #49 — mobile active-section label pill + 2-up KPI grid. HEAD 80ca7eb9
+## Run #50 — OR-165: auto-derive footer "Dane: YYYY" fleet-wide. HEAD 8b2f620a
 
-**Two refinements on top of #48's rail, both pure declarative-shell + additive.**
-(1) **Active-dot label pill:** the active nav dot grows a pill to its right naming
-the section — `#dbr-sidebar-nav .dbr-nav-link.active::after { content: attr(data-label) }`.
-`data-label` is emitted per nav link in `sidebar.py`; the rail's `overflow` is now
-`visible` (was auto) so the pill floats over content (`pointer-events:none`) — safe
-because the fleet's deepest nav is 5 sections (~300px), never scrolls in 100vh.
-Closes the "#48 numbered-dot is ambiguous" gap. (2) **2-up KPI grid:** `.dbr-row-fixed`
-(non-grow rows) → `display:grid; repeat(auto-fit, minmax(140px,1fr))` so KPI cards
-reflow 2-up (4→2×2, 3→2+1, …) instead of one-per-line — halves scroll before the
-first chart. Card value baked 32px would wrap at ~150px grid width → scaled to 23px
-via new `.dbr-kpi-value`/`.dbr-kpi-card` classNames on `card.py`. Single commit
-`80ca7eb9` (3 files). Desktop pixel-identical (verified 1600×900). Fleet redeployed +
-SHA-verified: **all 16 serving 80ca7eb9.**
+**Shipped the footer-freshness fix. The mobile-WIP blocker is GONE** — runs #47–#49
+committed+shipped the responsive work, so the engine tree is clean and OR-165 (which
+was blocked by the dirty tree) became actionable.
 
-**Two cosmetic edges left as-is (noted to PO):** (a) on section 1 at rest the pill
-overlaps its own H2 (dot sits at heading height) — clears on scroll; (b) a long KPI
-value (labour_market "3,1 % aktywnych zawodowo") wraps to 3 lines in the grid —
-readable, grid-stretch equalises row height. **mobbin.com is auth-gated (403)** — the
-ideas came from standard mobile-dashboard patterns, not those screens. Remaining
-shortlist offered: sticky section header, KPI carousel, tap-to-expand charts,
-swipe-between-sections.
+**What:** dashboard footers were hand-set literals (`"Dane: 2023"`) drifting stale
+after each ingest. New engine helper `latest_actual_year(domains)` in `dbr.semantic`
+derives the stamp at build time: `max(year(period_date))` from `curated.all_indicators`
+for the dashboard's domain_id code(s) + PL, **strictly before the current calendar
+year**. That single cutoff is the forecast-safety trick — it drops both partial
+current-year months and forward projections (IMF WEO → 2029) at once, so the stamp is
+always a complete observed year and never overstates. Compiler: `footer_updated: auto`
++ `footer_data_domain: <CODE>` triggers it; literal still wins (backward compatible).
+All 16 YAMLs migrated; `production` = `[MAC, AGR]` (mixed-domain). architecture-critic
+APPROVE. Commits `b86b2d63` + fix `8b2f620a`, PR #64 merged, OR-165 → Done.
 
-## Run #48 — mobile sidebar → fixed always-visible narrow rail. HEAD fe337bfd
+**The bug I caught (lesson):** first cut opened a *second* in-process
+`duckdb.connect()` — DuckDB rejects this once the MetricFlow engine holds the file
+("different configuration than existing connections"). Footer derives *after*
+`_load_pages` inits the engine, so every live service silently fell back to an EMPTY
+footer. The standalone unit test passed (no engine open) — only the live
+`_dash-layout` rendered-DOM check exposed it. Fix routes through the engine's existing
+`_sql_client`. **SHA stamp + 200 prove code is live, not that the feature works** — the
+rendered check is mandatory for behaviour, not just layout.
 
-**PO directive: keep the mobile sidebar always visible but shrink it to free reading
-width.** Run #47 had made the sidebar a full-width *top bar* on ≤768px; this run
-replaces that with a **fixed 48px left rail** (`position:fixed`, pinned full-height) that
-stays on screen while the BODY scrolls. Nav labels collapse to **numbered badges** via a
-pure-CSS `counter` (`.dbr-nav-link::before { content: counter(dbrnav) }`, label text
-hidden with `font-size:0`); the content column clears the rail with `margin-left:48px`.
-Active badge fills solid teal — its rule needs an `#dbr-sidebar-nav` id prefix to outrank
-the desktop `.dbr-nav-link.active` rule (equal specificity + `!important` → later desktop
-rule wins on source order, leaking a pale oval). Single commit `fe337bfd`, one file
-(`make_app.py`). Desktop unchanged (all rules mobile-only/additive).
+**Verified live (rendered footers, was→now):** demographics 2023→2025, health
+2022→2024, living_conditions 2022→2025, national_accounts/science/trade/transport/
+education/tourism/production 2023→2025, environment/energy 2023→2024, prices/
+labour_market/financial_markets 2024→2025, public_finance 2025. All match warehouse
+truth. Fleet SHA-verified: all 16 on HEAD `8b2f620a`.
 
-**Latent bug fixed same run:** the scrollspy + nav-click JS assumed the inner
-`#dbr-main-scroll` container scrolls, but mobile lets the BODY scroll → clicks no-op'd and
-active-state never updated. Rewrote both to be **rect-based** (`getBoundingClientRect().top`
-works for either scroller) and listen on container *and* window. Also early-return the
-collapse-toggle JS on mobile (a stored desktop `collapsed=true` would inline `display:none`
-the nav and blank the rail). Verified live: labour_market badge 3 lights at the UE-27
-section; public_finance + labour_market (27-bar EU ranking + CSV) render clean at 390×844.
-Fleet redeployed + SHA-verified: **all 16 serving fe337bfd.** Resolves the standing
-"finalize/stash mobile WIP" question — tree clean.
+**Known limitation (documented, accepted):** derives at *domain* granularity from
+`all_indicators`, not from the exact metrics a page renders — a future metric lagging
+its domain's max year could overstate by one year on that one card. Per-displayed-
+metric resolution is the future enhancement if precision is ever needed.
 
-## Run #47 — responsive mobile layout (fleet-wide). HEAD abd9d912
-
-**The dbr shell was desktop-only; added a mobile perspective without touching any
-dashboard YAML.** Root problems: (1) **no viewport meta** → phones rendered the 980px
-desktop canvas zoomed out; (2) the fixed-canvas model (outer `100vh`+`overflow:hidden`,
-each section exactly one viewport, horizontal flex rows whose chart heights come from a
-definite-height cascade) crushed charts to slivers and clipped the footer on narrow
-screens. All inline-style based (Dash), so the only responsive lever is a `<style>`
-`@media` block where **CSS `!important` overrides inline styles**.
-
-Engine-plane fix in `packages/dbr/` (3 files), one commit `abd9d912`:
-- `make_app.py`: added `meta_tags=[viewport width=device-width]` + a
-  `@media (max-width:768px)` block — shell stacks vertically & BODY scrolls; sidebar →
-  full-width top bar with wrap-nav; **sections `display:block`** (critical: as flex-column
-  the body keeps `flex:1 1 0` basis-0 and collapses to ~0, overflowing/overlapping — block
-  flow lets heading+rows stack naturally); rows stack one-visual-per-line full width.
-- `page_shell.py`: className hooks on structural divs (`dbr-page-outer`, `dbr-right-col`,
-  `dbr-page-section`, `dbr-page-body`, `dbr-row` + `dbr-row-grow`/`dbr-row-fixed`,
-  `dbr-visual-item`) so the stylesheet can target them.
-- `_render.py`: tag fill-mode charts `dbr-fill-graph`; mobile pins them to **320px**
-  (their desktop height comes from the now-broken flex chain). Companion-table and
-  baked-height visuals (choropleth/treemap/gauge/etc.) keep their figure height and just
-  reflow to full width — untouched.
-
-**Production visual vocabulary is only line/card/bar/column** (grepped all 17) — all
-covered (line/bar/column = fill-mode tagged; card = KPI div sizing to text). Verified at
-390×844 (iPhone) on education, labour_market (incl. 27-country EU ranking bars + CSV
-download) & public_finance (side-by-side rows): no overlap, no h-scroll, readable. Fleet
-redeployed + SHA-verified: **all 16 serving `abd9d912`**. Live systemd shot confirmed.
-
-## Run #46 — P0 PRODUCTION RECOVERY. HEAD 02afe50d (no code commit)
-
-**Three dashboards were dead at start — restored.** Smoke check caught `public_finance`
-+ `labour_market` 502; fleet sweep also caught `education` 502. All three `or-*.service`
-units were **inactive** — cleanly SIGTERM-stopped at **05:59 UTC** and never restarted
-(the other 13 survived). Interrupted-redeploy / lock-stop signature, not a code fault.
-`sudo systemctl start` the three → after ~15–25s boot all 200 + correct titles. Full
-fleet re-swept: **all 16 + www HTTP 200.**
-
-**Subtlety I own:** the tree carries uncommitted `packages/dbr/` WIP — the #41 interactive
-layout session has evolved into a **mobile-responsive feature** (`@media (max-width:768px)`
-block in make_app.py +130, className hooks in page_shell.py, `.dbr-fill-graph` in
-_render.py, `width=device-width` viewport meta). dbr is editable-installed, so my P0
-restart booted those **3 services on the uncommitted code; 13 run committed HEAD**. The
-change is **provably desktop-noop** (media query only ≤768px; classNames are additive) →
-desktop unchanged, which is why the 3 render correctly.
-
-**Verified live (not assumed):** flagship desktop 1600×900 fully intact (sidebar, 4 KPI
-cards −7,3/59,7/50,9/2,5 % PKB all 2025, 2 charts filling, footer Dane:2025, stamp
-02afe50d=HEAD). Mobile 390×844: the WIP works well — wrapping top-bar nav, full-width
-stacked cards, readable type, scrolls. `/tmp/pf_desktop.png`, `/tmp/pf_mobile.png`.
-
-**Held the #41 line:** did NOT commit the WIP (unreviewed engine code — needs
-architecture-critic + visual-screenshot-reviewer), did NOT revert it (PO's active work),
-did NOT redeploy (would push WIP fleet-wide). Fleet stable: stamp-consistent, desktop-
-identical.
-
-## PO question raised this run (outbox)
-The uncommitted dbr **mobile-responsive** WIP appears complete + verified-working.
-Finalize (commit → dbr review gate → redeploy all 16) or stash? Until decided, no
-autonomous run can safely redeploy dashboards (dirty engine tree).
-
-## Lessons
-- A subset of services can be left **dead** by an interrupted stop-all/redeploy; the
-  daily-ingest "ensure running" only starts *stopped* units on its own schedule (22 UTC),
-  so a 05:59 stop stays down until the next ensure or a manual start. **Always fleet-sweep
-  all 16 on smoke check, not just the 6 protocol URLs** — education would have been missed.
-- dbr-serve boot is slow (~15–25s); a fresh `systemctl start` can still 502 on the first
-  curl. Re-poll before concluding failure.
-- `build_sha()` reads git HEAD, not the dirty working tree → a service running uncommitted
-  code still stamps HEAD. The stamp proves *which commit*, not *that the tree is clean*.
+## How the footer auto-derive works (for next maintainer)
+- `footer_data_domain` in dashboard.yml = domain_id code(s): scalar `PUB` or list
+  `[MAC, AGR]`. 16-dashboard slug→code map lives only in the YAMLs (declarative plane).
+- Engine reads via `_get_engine()._sql_client.query(sql)` — the shared RO connection.
+  Do NOT open a fresh `duckdb.connect()` (config-conflict → silent empty-footer fallback).
+- Codes sanitised to uppercase-alpha before inlining (SQL client takes raw stmt, no
+  bind params). Bad/empty/injection → None → literal fallback.
 
 ## Recent commits
-- 02afe50d docs: run #45 — labour_market EU-27 data + ranking fix (OR-166)
-- 05719c6e fix(dashboards): labour_market EU pages — correct ranking + fixed-canvas fill
-- ce2dca37 fix(data): widen labour EU-comparison series to ALL_GEOS
-- 401b9a35 style(dbr): lighten dashboard canvas background #E4EAF0 -> #EDF1F6
-- 0a19fbdf docs: run #44 — no internal scroll + public_finance fill-restructure
+- 8b2f620a fix(dbr): footer auto-derive must reuse engine's DuckDB connection (OR-165)
+- b86b2d63 feat(dbr): auto-derive footer_updated from live warehouse data (OR-165)
+- f7be910e docs: run #49 — mobile active-section pill + 2-up KPI grid
+- 80ca7eb9 feat(dbr): mobile active-section label pill + 2-up KPI grid
+- 10e36b7e docs: run #48 — mobile sidebar always-visible narrow rail
 
-## What's next
-- **PO decision on the mobile WIP** (above) gates all dbr redeploys.
-- **OR-165** (open): fleet-wide `footer_updated` auto-derive — engine-plane, blocked by the
-  dirty tree until the mobile WIP is resolved.
-- Phase-3 data depth (OR-86, BDL) blocked on PO `BDL_API_KEY`.
+## What's next (unblocked, autonomous)
+- **dbr feature backlog (all engine-plane, High/Med):** OR-159 choropleth/map (High),
+  OR-160 cross-filtering (High), OR-162 number-format templates, OR-161 date-range
+  slicer + time-intelligence. Each is a sizable engine feature → branch+PR+critic+
+  redeploy; pick one per run, don't batch.
+- OR-88 NUTS2 regional coverage expansion (Data, Med) — needs source check.
 
 ## Standing blockers (all PO-side)
-- OR-153 Telegram inbound · OR-90 Instagram token → OR-89 · OR-86 BDL key · OR-79 Ghost nav
-- Known untracked PO/bot WIP in tree (do not commit): `infra/discord-bot/bot.py`,
-  `infra/systemd/or-*-bot.service`, `logs/`, `.claude/scheduled_tasks.lock`, and the
-  uncommitted `packages/dbr/` mobile WIP (page_shell.py, make_app.py, _render.py).
+- OR-153 Telegram inbound · OR-90 Instagram token → OR-89 · OR-86 BDL key → crime/agri/
+  business dashboards · OR-79 Ghost nav.
+- Known untracked PO/bot WIP in tree (do NOT commit): `infra/discord-bot/bot.py`,
+  `infra/systemd/or-*-bot.service`, `logs/`, `.claude/scheduled_tasks.lock`.
+
+## Lessons
+- **Rendered-DOM verification is non-negotiable for behaviour changes.** SHA stamp
+  proves which code is live; 200 proves a process answered; only the `_dash-layout`
+  (or Playwright) check proves the feature actually produces output. The empty-footer
+  bug passed SHA + 200 + standalone unit test and would have shipped silently.
+- A second in-process `duckdb.connect()` to a file the MetricFlow engine already holds
+  fails with a config-mismatch error → reuse `_get_engine()._sql_client.query()`.
