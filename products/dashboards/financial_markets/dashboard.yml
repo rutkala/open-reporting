@@ -10,4 +10,5 @@ port:   8072
 title:  "Rynki finansowe w Polsce"
 subtitle: "Stopy procentowe, kurs walutowy i rynki kapitałowe"
 footer_source: "Źródło: Eurostat"
-footer_updated: "Dane: 2024"
+footer_updated: auto
+footer_data_domain: FIN   # OR-165 auto-derive "Dane: YYYY"

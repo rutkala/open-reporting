@@ -331,6 +331,57 @@ def metric_label(metric: str) -> str:
         return metric
 
 
+def latest_actual_year(domains: list[str], *, geo: str = "PL") -> int | None:
+    """Latest complete *actual* data year across one or more domains.
+
+    Used to auto-derive a dashboard's footer "Dane: YYYY" stamp so it never
+    drifts stale after a daily ingest. Reads ``curated.all_indicators`` (the
+    same curated layer the dashboards' marts derive from) for the given
+    ``domain_id`` codes and Poland, and returns the maximum calendar year of
+    observations that is **strictly before the current calendar year**.
+
+    Excluding the current year is the key correctness rule: it drops both
+    partial current-year data (intra-year monthly series) *and* forward
+    projections (e.g. IMF WEO, which reaches +5 years) in one stroke — so the
+    result is always a complete, observed year and never overstates freshness.
+    A prior calendar year is, in practice, always actual rather than projected.
+
+    Returns ``None`` if the warehouse is unreachable or no matching rows exist,
+    in which case the caller should fall back to the literal footer.
+
+    Note: this is a deliberate second curated read path, distinct from the
+    MetricFlow engine that answers per-metric value questions against the gold
+    marts. A domain-wide "max calendar year" has no single metric, so it reads
+    ``all_indicators`` directly. The trade-off is domain-granularity freshness
+    rather than per-displayed-metric freshness — acceptable for a footer stamp;
+    see OR-165. Do not "unify" the two paths without revisiting that contract.
+    """
+    import datetime
+
+    if not domains:
+        return None
+    path = os.environ.get("DUCKDB_PATH", "/opt/open-reporting/data/warehouse.duckdb")
+    cutoff = datetime.datetime.now(datetime.timezone.utc).year
+    placeholders = ", ".join("?" for _ in domains)
+    sql = (
+        f"SELECT max(year(period_date)) FROM curated.all_indicators "
+        f"WHERE domain_id IN ({placeholders}) AND geo = ? "
+        f"AND year(period_date) < ?"
+    )
+    try:
+        import duckdb
+
+        con = duckdb.connect(path, read_only=True)
+        try:
+            row = con.execute(sql, [*domains, geo, cutoff]).fetchone()
+        finally:
+            con.close()
+    except Exception as exc:  # warehouse missing/locked → fall back to literal
+        log.warning("latest_actual_year(%s) failed: %s", domains, exc)
+        return None
+    return int(row[0]) if row and row[0] is not None else None
+
+
 def _load_metric_config(metric: str) -> dict:
     """Read the metric's `label` + `config.meta` block from semantic_models YAML."""
     if metric in _metric_config_cache:

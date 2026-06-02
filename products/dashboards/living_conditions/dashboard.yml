@@ -8,4 +8,5 @@ port:   8062
 title:  "Warunki życia: dochody, nierówności i ubóstwo"
 subtitle: "Dochody gospodarstw domowych, nierówności i zagrożenie ubóstwem"
 footer_source: "Źródło: Eurostat"
-footer_updated: "Dane: 2022"
+footer_updated: auto
+footer_data_domain: SOC   # OR-165 auto-derive "Dane: YYYY"

@@ -8,4 +8,5 @@ port:   8067
 title:  "Handel zagraniczny Polski"
 subtitle: "Eksport, import i bilans handlowy"
 footer_source: "Źródło: Eurostat"
-footer_updated: "Dane: 2023"
+footer_updated: auto
+footer_data_domain: TRD   # OR-165 auto-derive "Dane: YYYY"

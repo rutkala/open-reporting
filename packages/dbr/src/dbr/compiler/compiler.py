@@ -241,6 +241,23 @@ def run_dashboard(path: str | Path) -> None:
     dashboard_subtitle = config.get("subtitle", "")
     footer_source      = config.get("footer_source", "")
     footer_updated     = config.get("footer_updated", "")
+
+    # Auto-derive the footer "Dane: YYYY" stamp from live warehouse data when
+    # the author opts in (footer_updated omitted or "auto" + a footer_data_domain
+    # listing the dashboard's domain_id code(s)). Keeps the footer honest after
+    # every daily ingest without manual edits. Falls back to the literal on any
+    # failure (warehouse unreachable, no rows). See OR-165.
+    footer_data_domain = config.get("footer_data_domain")
+    if footer_updated in ("", "auto") and footer_data_domain:
+        from dbr.semantic import latest_actual_year
+        domains = (
+            [footer_data_domain]
+            if isinstance(footer_data_domain, str)
+            else list(footer_data_domain)
+        )
+        year = latest_actual_year(domains)
+        footer_updated = f"Dane: {year}" if year is not None else ""
+
     app = make_app(config["domain"], title=dashboard_title)
 
     shell_kwargs = dict(

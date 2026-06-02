@@ -8,4 +8,5 @@ port:   8061
 title:  "Środowisko: emisje i energia"
 subtitle: "Emisje gazów cieplarnianych i intensywność energetyczna"
 footer_source: "Źródło: Eurostat"
-footer_updated: "Dane: 2023"
+footer_updated: auto
+footer_data_domain: ENV   # OR-165 auto-derive "Dane: YYYY"

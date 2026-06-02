@@ -8,4 +8,5 @@ port:   8058
 title:  Rynek pracy w Polsce
 subtitle: "Zatrudnienie, bezrobocie i koszty pracy"
 footer_source: "Źródło: Eurostat"
-footer_updated: "Dane: 2024"
+footer_updated: auto
+footer_data_domain: LAB   # OR-165 auto-derive "Dane: YYYY"

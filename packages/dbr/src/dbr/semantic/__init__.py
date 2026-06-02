@@ -25,6 +25,7 @@ Use:
 """
 from dbr.semantic.semantic import (
     SemanticResult,
+    latest_actual_year,
     metric_label,
     semantic_query,
     semantic_query_data,
@@ -32,6 +33,7 @@ from dbr.semantic.semantic import (
 )
 
 __all__ = [
+    "latest_actual_year",
     "metric_label",
     "semantic_query",
     "semantic_query_data",

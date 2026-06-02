@@ -9,4 +9,5 @@ port:   8070
 title:  "Energia w Polsce"
 subtitle: "Zużycie, produkcja i mix energetyczny"
 footer_source: "Źródło: Eurostat"
-footer_updated: "Dane: 2023"
+footer_updated: auto
+footer_data_domain: ENE   # OR-165 auto-derive "Dane: YYYY"
