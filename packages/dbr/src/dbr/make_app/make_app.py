@@ -172,8 +172,9 @@ body { margin: 0; padding: 0; overflow: hidden; }
   }
   #dbr-sidebar-nav .dbr-nav-link.active::before { color: #FFFFFF; }
   /* The current section is signalled by the active (teal) dot; the numbered dots
-     stay a clean jump-strip. Dashboard identity stays visible via the sticky page
-     header (see #dbr-page-header below). */
+     stay a clean jump-strip. Dashboard identity (the title) shows at the top in the
+     rest state, then the section heading covers it on scroll (see .dbr-page-section
+     > h2 below). */
 
   /* Footer: portal back-link collapses to a single ← glyph, centred */
   #dbr-sidebar-footer { padding: 0 !important; min-height: 44px !important;
@@ -194,16 +195,9 @@ body { margin: 0; padding: 0; overflow: hidden; }
     scroll-snap-type: none  !important;
   }
 
-  /* The existing page header sticks to the top of the content while you scroll a
-     page — same always-visible behaviour the desktop layout already gives it (there
-     it sits in a fixed grid row). Its BG_PAGE fill is opaque so content scrolls
-     cleanly underneath; it sits to the right of the 48px rail, so no overlap. */
-  #dbr-page-header {
-    position: sticky !important;
-    top: 0           !important;
-    z-index: 95      !important;
-    box-shadow: 0 2px 6px rgba(45, 51, 57, 0.06) !important;
-  }
+  /* The dashboard header scrolls away normally on mobile (NOT sticky): the section
+     heading rises to cover it and take the top spot (see .dbr-page-section > h2).
+     It shows the dashboard title only at the very top, before you scroll. */
 
   /* Each section: grow to its content instead of one fixed viewport.
      display:block (not flex-column) is essential — as a flex column the page
@@ -218,16 +212,18 @@ body { margin: 0; padding: 0; overflow: hidden; }
     scroll-snap-align: none  !important;
     padding: 16px            !important;
   }
-  /* Per-section sticky heading: each section's H2 pins just below the dashboard
-     header while you scroll within that section, then the next section's H2 pushes
-     it up and takes its place (native sticky hand-off — each H2 is constrained to
-     its own .dbr-page-section box). top is the live dashboard-header height (set as
-     --dbr-header-h by the JS, so it follows a wrapping title). Negative side margins
+  /* Per-section sticky heading: each section's H2 pins to the very top (top:0) of
+     the viewport while you scroll within that section, then the next section's H2
+     pushes it up and takes its place (native sticky hand-off — each H2 is constrained
+     to its own .dbr-page-section box). Pinning at top:0 means the page (section)
+     header rises to COVER the dashboard header as you scroll: the dashboard title is
+     visible only at the very top in the rest state, and the current section's name
+     takes over the top spot the moment you scroll into content. Negative side margins
      bleed the heading to the section edges with padding added back, so its opaque
-     BG_PAGE fill fully hides content scrolling underneath. */
+     BG_PAGE fill fully hides content — and the dashboard header — scrolling under. */
   .dbr-page-section > h2 {
     position: sticky !important;
-    top: var(--dbr-header-h, 58px) !important;
+    top: 0           !important;
     z-index: 80      !important;
     background: #EDF1F6 !important;
     margin: 0 -16px 12px -16px !important;
@@ -341,21 +337,15 @@ _SCROLLSPY_JS = """
       return;
     }
 
-    /* On mobile the page header is sticky (position:sticky), so it overlaps the top
-       of the scrolling content — offset click-scroll targets by its height to keep a
-       tapped section's heading clear of it. On desktop the header is static (it lives
-       in a fixed grid row, not over the content), so the offset is 0. */
+    /* The dashboard header (#dbr-page-header) is no longer sticky on mobile: it
+       scrolls away and the section H2 pins at top:0 to cover it. So nothing fixed
+       overlaps the content above a clicked section — the click-scroll offset is the
+       header's height only while it is sticky (never, now), else 0. Kept as a guard
+       in case a future layout pins the header again. */
     var header = document.getElementById('dbr-page-header');
     function headerOffset() {
       return (header && getComputedStyle(header).position === 'sticky') ? header.offsetHeight : 0;
     }
-    /* Publish the live header height so the per-section sticky H2 can pin flush
-       beneath it (CSS `top: var(--dbr-header-h)`), tracking a wrapping title. */
-    function setHeaderVar() {
-      document.documentElement.style.setProperty('--dbr-header-h', headerOffset() + 'px');
-    }
-    setHeaderVar();
-    window.addEventListener('resize', setHeaderVar, { passive: true });
 
     /* The desktop layout scrolls the #dbr-main-scroll container; the mobile
        layout (≤768px) lets the BODY scroll instead (the container is
