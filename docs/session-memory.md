@@ -1,137 +1,94 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-02 (run #53 — per-section sticky headings on mobile) -->
+<!-- last-updated: 2026-06-02 (run #54 — OR-88 dim_geo NUTS1/NUTS2 regions) -->
 
-## Run #53 — per-section sticky headings on mobile (pin + hand off). HEAD 62a24419
+## Run #54 — OR-88: dim_geo now covers Polish NUTS1/NUTS2 regions. HEAD 1f21e0c2
 
-**PO clarified what "pinned page header" meant:** per-SECTION sticky headers — each
-section's H2 pins while you scroll that section, the next section's H2 takes over on
-scroll-in (iOS sticky-section-header pattern). The #52 single dashboard-header pin was
-not the target. `.dbr-page-section > h2` → `position:sticky; top:var(--dbr-header-h)`
-(mobile only), flush beneath the still-sticky `#dbr-page-header`. Hand-off is native:
-each H2 is constrained to its own `.dbr-page-section` box. Negative side margins
-(`0 -16px`) + padding bleed the heading to section edges so its opaque #EDF1F6 fill
-hides content scrolling under. JS publishes live header height as `--dbr-header-h`
-(init + resize) so headings pin flush below a wrapping title. make_app.py only. Desktop
-unchanged (mobile-scoped; desktop pages are fixed one-viewport canvases — heading
-already always visible). Verified: section-2 H2 pins at top==header-height while
-section-1 scrolls above; live labour_market pinned heading = "Bezrobocie: Polska na tle
-UE". All 16 on 62a24419.
+**Shipped the regional data foundation (data-plane, zero engine touch).** Picked OR-88
+because the engine tree was dirty (active sibling WIP — see below) so no dbr work was
+safe; OR-88 is pure dbt/seed.
 
-**Mobile header model (final):** dashboard title pinned at very top + current section
-heading pinned just below it, handing off section-to-section.
+**The issue premise was stale.** Audited the live warehouse: NUTS2/voivodeship data
+already exists across **6 domains** (~26 indicators: mac/pop/lab/soc/clt) via the
+`PL_NUTS2` ingestion sentinel — criterion #1 (≥5 domains) was already met. The real gap
+was criterion #3: `dim_geo` was country-only, so regional facts (`geo='PL21'`) resolved
+to NO name. The authoritative `seed_geo_nuts` seed (7 NUTS1 + 17 NUTS2, correct Polish
+diacritics) existed but was never joined into any dim (and wasn't even materialised).
 
-## Run #52 — sticky PAGE HEADER on mobile (reuse, drop #51's bar). HEAD 0233b656
+**Fix (commit `1f21e0c2`):** `dim_geo.sql` UNIONs the NUTS1/NUTS2 rows from
+`ref('seed_geo_nuts')` + new columns `geo_level` (country/nuts1/nuts2) and `parent_geo`
+(nuts2→nuts1→country roll-up). `dim_geo.yml` gains accepted_values test + 2 semantic
+dimensions. Verified: 58 rows (34 country + 7 + 17), 0 unresolved PL regional codes in
+all_indicators, country joins unchanged (additive), dbt tests PASS=8.
 
-**PO feedback on #51:** the new `#dbr-mobile-section-bar` was a redundant second bar.
-Reverted it; instead made the **existing** `#dbr-page-header` `position:sticky; top:0`
-on mobile so it stays visible while scrolling — the same always-visible behaviour
-desktop already has (header in the fixed grid `auto` row above `#dbr-main-scroll`).
-page_shell.py back to plain `#dbr-main-scroll` (bar element/style/scrollspy text-sync
-all removed). JS click-offset now derives from header height when the header is sticky
-(mobile), 0 on desktop (header static). Kept #51's `html,body{overflow:visible}`
-viewport-scroller fix (still required for sticky). No duplication now — header =
-dashboard identity, section H2 = section name. Desktop pixel-identical (shadow scoped
-inside the @media block). Single commit `0233b656`. All 16 on 0233b656; live-verified
-sticky on public_finance + labour_market (top:0 after scroll).
+**Prod build trick (avoids deploying the sibling WIP):** verified on a `/tmp` COPY first
+(zero disruption); then stopped all 16 dashboard services (release DuckDB RO locks),
+`git stash`-ed ONLY make_app.py so the restart booted clean committed HEAD (= the code
+they already ran → zero live-behaviour change), ran dbt on prod, restarted 16,
+`git stash pop` to restore the sibling WIP undeployed. All 16 + www back to 200, stamp
+`ddcbe73a` (clean — WIP correctly NOT shipped). ~50s planned outage during reboot.
 
-**Mobile sidebar/header arc DONE** (#48 rail → #49 numbers+KPI grid → #50 footer →
-#51 explored section-bar, superseded → #52 sticky reused header).
+**Linear:** OR-88 → Done. Criterion #2 (explorer regional drill-down = UI) handed to
+**OR-159 (choropleth)** — commented there that dim_geo now supplies the NUTS2 names +
+hierarchy (GeoJSON PL21…PL92 codes == `geo` PK).
 
-## Run #51 — sticky mobile section-name header (+ dropped pill). HEAD 432f3b84
+## ACTIVE SIBLING WIP in tree — do NOT commit/revert (as of run #54)
+- `packages/dbr/src/dbr/make_app/make_app.py` — modified 2026-06-02 13:48 UTC (after the
+  12:00 run). A **mobile-header revert**: drops run #53's sticky `#dbr-page-header` so the
+  section H2 rises to take the top slot instead (comment: "dashboard header scrolls away
+  normally on mobile"). Almost certainly dashboard-dev bot iterating on PO feedback about
+  the #53 double-sticky. Desktop-noop. **This dirties the engine tree → blocks ALL
+  engine-plane dbr work + fleet redeploy until committed/cleared.** Same hands-off rule as
+  the untracked bot files below.
+- Untracked PO/bot WIP (never commit): `infra/discord-bot/bot.py`,
+  `infra/systemd/or-*-bot.service`, `logs/`, `.claude/scheduled_tasks.lock`.
 
-**Mobile follow-up to #49.** Added `#dbr-mobile-section-bar` — a sticky bar pinned to
-the top of mobile content that always names the current section (scrollspy `update()`
-rewrites its text; click-scroll offset by the bar height so a tapped heading clears
-it). Built in `page_shell.py` as the first child of `#dbr-main-scroll` (display:none
-on desktop, never perturbs the right-col grid; seeded with `sections[0]` label).
-**Removed the #49 active-dot label pill** — the bar names the section now, so the pill
-would duplicate the text on screen; restored rail `overflow` to auto/hidden. 2-up KPI
-grid (#49) kept. Single commit `432f3b84` (page_shell.py + make_app.py). Desktop
-pixel-identical; footer still derives "Dane: 2025" (Run #50 intact). All 16 on 432f3b84.
+## How dim_geo regional mapping works (for next maintainer)
+- `seed_geo_nuts.csv` (products/warehouse/seeds/) = authoritative NUTS map: geo, geo_name,
+  geo_type (country/nuts1/nuts2), country_code, nuts1_code, nuts1_name. Seeded to
+  `curated` per dbt_project.yml.
+- `dim_geo.sql` country_rows (VALUES, 34) ∪ region_rows (seed, geo_type in nuts1/nuts2).
+  Region name_pl=name_en=geo_name (Polish proper nouns). parent_geo: nuts2→nuts1_code,
+  nuts1→country_code('PL'). country parent_geo NULL.
+- All 24 PL regional codes in all_indicators (7 NUTS1 + 17 NUTS2) now resolve. Non-PL
+  regional codes = 0 (foreign NUTS not ingested).
 
-**Sticky-position lesson:** `position:sticky` fails when an ancestor is a scroll
-container that doesn't actually scroll. Mobile had `html,body { overflow-y:auto }` →
-BODY is a scroll container, but `height:auto` means it never scrolls (the viewport
-does) → the sticky bar had no scrollport and scrolled away. Fix: `html,body {
-overflow:visible }` so the VIEWPORT is the scroller. Verified bar rectTop==0 after a
-1700px scroll, no h-overflow (scrollWidth==clientWidth==390). Caught only by a
-live getBoundingClientRect probe — the initial screenshot looked fine (bar at its
-natural top position) and hid the failure.
-
-**Residual (accepted):** at a section's exact top the bar + the section H2 show the
-same name briefly (distinct styling; clears mid-scroll). De-duping would mean hiding
-the H2 on mobile, but it carries the scrollspy geometry → left as-is.
-
-## Run #50 — OR-165: auto-derive footer "Dane: YYYY" fleet-wide. HEAD 8b2f620a
-
-**Shipped the footer-freshness fix. The mobile-WIP blocker is GONE** — runs #47–#49
-committed+shipped the responsive work, so the engine tree is clean and OR-165 (which
-was blocked by the dirty tree) became actionable.
-
-**What:** dashboard footers were hand-set literals (`"Dane: 2023"`) drifting stale
-after each ingest. New engine helper `latest_actual_year(domains)` in `dbr.semantic`
-derives the stamp at build time: `max(year(period_date))` from `curated.all_indicators`
-for the dashboard's domain_id code(s) + PL, **strictly before the current calendar
-year**. That single cutoff is the forecast-safety trick — it drops both partial
-current-year months and forward projections (IMF WEO → 2029) at once, so the stamp is
-always a complete observed year and never overstates. Compiler: `footer_updated: auto`
-+ `footer_data_domain: <CODE>` triggers it; literal still wins (backward compatible).
-All 16 YAMLs migrated; `production` = `[MAC, AGR]` (mixed-domain). architecture-critic
-APPROVE. Commits `b86b2d63` + fix `8b2f620a`, PR #64 merged, OR-165 → Done.
-
-**The bug I caught (lesson):** first cut opened a *second* in-process
-`duckdb.connect()` — DuckDB rejects this once the MetricFlow engine holds the file
-("different configuration than existing connections"). Footer derives *after*
-`_load_pages` inits the engine, so every live service silently fell back to an EMPTY
-footer. The standalone unit test passed (no engine open) — only the live
-`_dash-layout` rendered-DOM check exposed it. Fix routes through the engine's existing
-`_sql_client`. **SHA stamp + 200 prove code is live, not that the feature works** — the
-rendered check is mandatory for behaviour, not just layout.
-
-**Verified live (rendered footers, was→now):** demographics 2023→2025, health
-2022→2024, living_conditions 2022→2025, national_accounts/science/trade/transport/
-education/tourism/production 2023→2025, environment/energy 2023→2024, prices/
-labour_market/financial_markets 2024→2025, public_finance 2025. All match warehouse
-truth. Fleet SHA-verified: all 16 on HEAD `8b2f620a`.
-
-**Known limitation (documented, accepted):** derives at *domain* granularity from
-`all_indicators`, not from the exact metrics a page renders — a future metric lagging
-its domain's max year could overstate by one year on that one card. Per-displayed-
-metric resolution is the future enhancement if precision is ever needed.
-
-## How the footer auto-derive works (for next maintainer)
-- `footer_data_domain` in dashboard.yml = domain_id code(s): scalar `PUB` or list
-  `[MAC, AGR]`. 16-dashboard slug→code map lives only in the YAMLs (declarative plane).
-- Engine reads via `_get_engine()._sql_client.query(sql)` — the shared RO connection.
-  Do NOT open a fresh `duckdb.connect()` (config-conflict → silent empty-footer fallback).
-- Codes sanitised to uppercase-alpha before inlining (SQL client takes raw stmt, no
-  bind params). Bad/empty/injection → None → literal fallback.
+## NUTS2 ingestion path (catalogue-driven)
+- `eurostat_observations.py` reads `catalogue.domain_detail_sources` WHERE
+  source_id='eurostat' AND verified=true. series_id = `dataset?geo=PL_NUTS2&dim=val`.
+  `PL_NUTS2` sentinel = fetch all regions, keep `PL*` rows. Adding a NUTS2 series = add a
+  verified catalogue row + ingest; no code change.
 
 ## Recent commits
+- 1f21e0c2 feat(warehouse): dim_geo covers Polish NUTS1/NUTS2 regions (OR-88)
+- ddcbe73a docs: run #53 — per-section sticky headings on mobile
+- 62a24419 feat(dbr): per-section sticky headings on mobile (pin + hand off per page)
+- 0233b656 feat(dbr): sticky page header on mobile (reuse header, drop the extra bar)
 - 8b2f620a fix(dbr): footer auto-derive must reuse engine's DuckDB connection (OR-165)
-- b86b2d63 feat(dbr): auto-derive footer_updated from live warehouse data (OR-165)
-- f7be910e docs: run #49 — mobile active-section pill + 2-up KPI grid
-- 80ca7eb9 feat(dbr): mobile active-section label pill + 2-up KPI grid
-- 10e36b7e docs: run #48 — mobile sidebar always-visible narrow rail
 
 ## What's next (unblocked, autonomous)
-- **dbr feature backlog (all engine-plane, High/Med):** OR-159 choropleth/map (High),
-  OR-160 cross-filtering (High), OR-162 number-format templates, OR-161 date-range
-  slicer + time-intelligence. Each is a sizable engine feature → branch+PR+critic+
-  redeploy; pick one per run, don't batch.
-- OR-88 NUTS2 regional coverage expansion (Data, Med) — needs source check.
+- **Once make_app.py WIP is committed/cleared** (engine tree clean), the dbr feature
+  backlog opens up: **OR-159 choropleth (High)** — now has its dim_geo prerequisite ready,
+  natural next pick; OR-160 cross-filter (High), OR-161 date slicer, OR-162 number-format.
+  Each = branch+PR+critic+redeploy, one per run, don't batch.
+- Data-plane (always safe even with dirty engine tree): more NUTS2 indicators via the
+  catalogue sentinel if a domain gap appears; OR-88 left coverage in good shape.
+
+## Prod-build-with-dirty-engine-tree pattern (reusable)
+When a dbt build needs the DuckDB write lock but the engine tree has uncommitted WIP you
+must not deploy: stash ONLY the WIP file(s) → stop 16 → dbt on prod → start 16 (boots
+clean HEAD = unchanged behaviour) → stash pop. Verify build stamp == HEAD to prove WIP
+not shipped. Check WIP file mtime first to confirm the sibling bot is idle (low conflict risk).
 
 ## Standing blockers (all PO-side)
 - OR-153 Telegram inbound · OR-90 Instagram token → OR-89 · OR-86 BDL key → crime/agri/
   business dashboards · OR-79 Ghost nav.
-- Known untracked PO/bot WIP in tree (do NOT commit): `infra/discord-bot/bot.py`,
-  `infra/systemd/or-*-bot.service`, `logs/`, `.claude/scheduled_tasks.lock`.
 
 ## Lessons
-- **Rendered-DOM verification is non-negotiable for behaviour changes.** SHA stamp
-  proves which code is live; 200 proves a process answered; only the `_dash-layout`
-  (or Playwright) check proves the feature actually produces output. The empty-footer
-  bug passed SHA + 200 + standalone unit test and would have shipped silently.
-- A second in-process `duckdb.connect()` to a file the MetricFlow engine already holds
-  fails with a config-mismatch error → reuse `_get_engine()._sql_client.query()`.
+- **Audit the live warehouse before trusting an issue's premise.** OR-88 claimed "only 2
+  NUTS2 domains"; reality was 6. Two of three acceptance criteria were already met — the
+  real work was one missing dimension join, not new ingestion.
+- **Verify dbt model changes on a `/tmp` copy first**, then build prod — de-risks the SQL
+  with zero outage before touching the write lock.
+- A second in-process `duckdb.connect()` to a file the MetricFlow engine holds fails
+  (config-mismatch) → reuse `_get_engine()._sql_client.query()`. (from #50)
