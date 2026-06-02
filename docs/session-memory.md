@@ -1,6 +1,29 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-02 (run #47 — responsive mobile layout for all dashboards) -->
+<!-- last-updated: 2026-06-02 (run #48 — mobile sidebar always-visible narrow rail) -->
+
+## Run #48 — mobile sidebar → fixed always-visible narrow rail. HEAD fe337bfd
+
+**PO directive: keep the mobile sidebar always visible but shrink it to free reading
+width.** Run #47 had made the sidebar a full-width *top bar* on ≤768px; this run
+replaces that with a **fixed 48px left rail** (`position:fixed`, pinned full-height) that
+stays on screen while the BODY scrolls. Nav labels collapse to **numbered badges** via a
+pure-CSS `counter` (`.dbr-nav-link::before { content: counter(dbrnav) }`, label text
+hidden with `font-size:0`); the content column clears the rail with `margin-left:48px`.
+Active badge fills solid teal — its rule needs an `#dbr-sidebar-nav` id prefix to outrank
+the desktop `.dbr-nav-link.active` rule (equal specificity + `!important` → later desktop
+rule wins on source order, leaking a pale oval). Single commit `fe337bfd`, one file
+(`make_app.py`). Desktop unchanged (all rules mobile-only/additive).
+
+**Latent bug fixed same run:** the scrollspy + nav-click JS assumed the inner
+`#dbr-main-scroll` container scrolls, but mobile lets the BODY scroll → clicks no-op'd and
+active-state never updated. Rewrote both to be **rect-based** (`getBoundingClientRect().top`
+works for either scroller) and listen on container *and* window. Also early-return the
+collapse-toggle JS on mobile (a stored desktop `collapsed=true` would inline `display:none`
+the nav and blank the rail). Verified live: labour_market badge 3 lights at the UE-27
+section; public_finance + labour_market (27-bar EU ranking + CSV) render clean at 390×844.
+Fleet redeployed + SHA-verified: **all 16 serving fe337bfd.** Resolves the standing
+"finalize/stash mobile WIP" question — tree clean.
 
 ## Run #47 — responsive mobile layout (fleet-wide). HEAD abd9d912
 
