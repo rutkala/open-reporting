@@ -2,33 +2,47 @@ version: 2
 
 # dim_geo — shared geography dimension table.
 #
-# Star-schema convention: any fact table with a `geo` column (Eurostat
-# 2-letter code) joins to this dim via the `geo` entity. Dashboards can
-# then slice by Polish/English country names, EU membership, or continent.
+# Star-schema convention: any fact table with a `geo` column joins to this
+# dim via the `geo` entity. Dashboards can slice by Polish/English names, EU
+# membership, continent, or — for Polish regional data — the NUTS level and
+# roll-up parent. Grain: one row per country OR Polish NUTS1/NUTS2 region.
 
 models:
   - name: dim_geo
-    description: Country dimension with Polish/English names, EU membership, continent.
+    description: >-
+      Geography dimension — countries plus Polish NUTS1 macroregions and NUTS2
+      voivodeships. Polish/English names, EU membership, continent, NUTS level,
+      and roll-up parent for choropleths and regional drill-down.
     columns:
       - name: geo
-        description: Eurostat 2-letter country code (e.g. "PL", "DE"). Primary key.
+        description: Geo code (e.g. "PL", "DE", "PL21"). Primary key.
         tests: [not_null, unique]
       - name: name_pl
-        description: Polish country name (e.g. "Polska", "Niemcy").
+        description: Polish name (e.g. "Polska", "Niemcy", "Małopolskie").
         tests: [not_null]
       - name: name_en
-        description: English country name (e.g. "Poland", "Germany").
+        description: English name; Polish proper noun for regions.
         tests: [not_null]
       - name: eu_member
-        description: TRUE if a current EU member state.
+        description: TRUE if a current EU member state (regions inherit PL = true).
         tests: [not_null]
       - name: continent
         description: Broad region label — "Europe", "Americas", "Asia", etc.
         tests: [not_null]
+      - name: geo_level
+        description: Geography level — "country", "nuts1", or "nuts2".
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['country', 'nuts1', 'nuts2']
+      - name: parent_geo
+        description: >-
+          Roll-up parent geo code (nuts2 → nuts1, nuts1 → country). NULL for
+          countries. Enables choropleth aggregation and regional drill-down.
 
 semantic_models:
   - name: dim_geo
-    description: Country dimension for cross-fact joins on the `geo` entity.
+    description: Geography dimension for cross-fact joins on the `geo` entity.
     model: ref('dim_geo')
 
     entities:
@@ -49,3 +63,9 @@ semantic_models:
       - name: continent
         type: categorical
         expr: continent
+      - name: geo_level
+        type: categorical
+        expr: geo_level
+      - name: parent_geo
+        type: categorical
+        expr: parent_geo

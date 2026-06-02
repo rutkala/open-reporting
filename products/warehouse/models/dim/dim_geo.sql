@@ -4,21 +4,27 @@
   dim_geo — shared geography dimension.
 
   Star-schema convention: any fact table with a `geo` column joins to this
-  dim on the `geo` entity (Eurostat 2-letter country code) and exposes
-  Polish/English country names, EU membership, and continent for slicing
+  dim on the `geo` entity and exposes Polish/English names, EU membership,
+  continent, and (for Polish regional data) the NUTS hierarchy for slicing
   in dashboards.
 
-  Grain: one row per country (Eurostat ISO 2-letter code).
+  Grain: one row per geography — country (Eurostat 2-letter code) OR Polish
+  NUTS1 macroregion / NUTS2 voivodeship. `geo_level` discriminates the three.
 
   Columns:
-    geo           TEXT      — 2-letter country code, primary key
-    name_pl       TEXT      — Polish country name (e.g. "Polska")
-    name_en       TEXT      — English country name (e.g. "Poland")
-    eu_member     BOOLEAN   — current EU member (as of 2026-05)
+    geo           TEXT      — geo code, primary key (e.g. "PL", "PL21")
+    name_pl       TEXT      — Polish name (e.g. "Polska", "Małopolskie")
+    name_en       TEXT      — English name; Polish proper noun for regions
+    eu_member     BOOLEAN   — current EU member (regions inherit PL = true)
     continent     TEXT      — broad region label (Europe / non-European peer)
+    geo_level     TEXT      — 'country' | 'nuts1' | 'nuts2'
+    parent_geo    TEXT      — roll-up parent: nuts2→nuts1, nuts1→country;
+                              NULL for countries. Enables choropleth + drill.
 
-  Coverage: EU-27 + UK + EFTA (NO, CH, IS, LI) + a few non-European peers
-  commonly compared (US, JP). Extend as needed when ingesting new data.
+  Coverage: EU-27 + UK + EFTA (NO, CH, IS, LI) + non-European peers (US, JP)
+  at country level, PLUS all 7 Polish NUTS1 macroregions and 17 NUTS2
+  voivodeships (from the seed_geo_nuts authoritative seed). Extend the
+  country VALUES block as needed when ingesting new data.
 */
 
 with countries (geo, name_pl, name_en, eu_member, continent) as (
@@ -60,5 +66,35 @@ with countries (geo, name_pl, name_en, eu_member, continent) as (
         -- non-European peers
         ('US', 'Stany Zjednoczone', 'United States',  false, 'Americas'),
         ('JP', 'Japonia',           'Japan',          false, 'Asia')
+),
+
+country_rows as (
+    select
+        geo, name_pl, name_en, eu_member, continent,
+        'country'             as geo_level,
+        cast(null as varchar) as parent_geo
+    from countries
+),
+
+-- Polish NUTS1 macroregions + NUTS2 voivodeships from the authoritative seed.
+-- Lets regional facts (geo = 'PL21' …) resolve to a Polish name and roll up
+-- nuts2 → nuts1 → country for choropleths and regional explorers.
+region_rows as (
+    select
+        geo,
+        geo_name   as name_pl,
+        geo_name   as name_en,   -- voivodeship names are Polish proper nouns
+        true       as eu_member,
+        'Europe'   as continent,
+        geo_type   as geo_level,
+        case
+            when geo_type = 'nuts2' then nuts1_code     -- PL21 → PL2
+            when geo_type = 'nuts1' then country_code   -- PL2  → PL
+        end        as parent_geo
+    from {{ ref('seed_geo_nuts') }}
+    where geo_type in ('nuts1', 'nuts2')
 )
-select * from countries
+
+select * from country_rows
+union all
+select * from region_rows
