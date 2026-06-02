@@ -218,6 +218,21 @@ body { margin: 0; padding: 0; overflow: hidden; }
     scroll-snap-align: none  !important;
     padding: 16px            !important;
   }
+  /* Per-section sticky heading: each section's H2 pins just below the dashboard
+     header while you scroll within that section, then the next section's H2 pushes
+     it up and takes its place (native sticky hand-off — each H2 is constrained to
+     its own .dbr-page-section box). top is the live dashboard-header height (set as
+     --dbr-header-h by the JS, so it follows a wrapping title). Negative side margins
+     bleed the heading to the section edges with padding added back, so its opaque
+     BG_PAGE fill fully hides content scrolling underneath. */
+  .dbr-page-section > h2 {
+    position: sticky !important;
+    top: var(--dbr-header-h, 58px) !important;
+    z-index: 80      !important;
+    background: #EDF1F6 !important;
+    margin: 0 -16px 12px -16px !important;
+    padding: 10px 16px !important;
+  }
   .dbr-page-body {
     display: block    !important;
     flex: none        !important;
@@ -334,6 +349,13 @@ _SCROLLSPY_JS = """
     function headerOffset() {
       return (header && getComputedStyle(header).position === 'sticky') ? header.offsetHeight : 0;
     }
+    /* Publish the live header height so the per-section sticky H2 can pin flush
+       beneath it (CSS `top: var(--dbr-header-h)`), tracking a wrapping title. */
+    function setHeaderVar() {
+      document.documentElement.style.setProperty('--dbr-header-h', headerOffset() + 'px');
+    }
+    setHeaderVar();
+    window.addEventListener('resize', setHeaderVar, { passive: true });
 
     /* The desktop layout scrolls the #dbr-main-scroll container; the mobile
        layout (≤768px) lets the BODY scroll instead (the container is
