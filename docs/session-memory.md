@@ -1,6 +1,29 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-02 (run #54 — OR-88 dim_geo NUTS1/NUTS2 regions) -->
+<!-- last-updated: 2026-06-02 (run #55 — mobile page header covers dashboard header) -->
+
+## Run #55 — page header covers dashboard header on mobile scroll. HEAD 983461cf
+
+**PO follow-up to #53:** the two stacked mobile sticky bars (dashboard title pinned +
+section heading pinned below it) should collapse to one — the page (section) header
+should COVER the dashboard header when scrolling. Done: `#dbr-page-header` is no longer
+sticky on mobile (scrolls away → `position:static`), and `.dbr-page-section > h2` now
+pins at `top:0` instead of `top:var(--dbr-header-h)`. As you scroll into a section its
+heading rises to the top, covering where the dashboard title was; the dashboard title is
+a rest-state-only identity (visible only at the very top). Native section-to-section
+hand-off preserved (each H2 constrained to its `.dbr-page-section`). Dropped the unused
+`--dbr-header-h` var + its JS `setHeaderVar`/resize publisher. make_app.py only; desktop
+pixel-unchanged (mobile @media). Chose header-scrolls-away over z-index overlay: a true
+overlay would leave the taller 56px header peeking below the shorter ~40px H2.
+
+**Verified live (rendered-DOM, 390px, public_finance):** header computed `position:static`;
+rest header.top=0 / H2 "przeglad" top=74; after 900px scroll header.top=−900 (gone) and
+"przeglad" H2 pinned top=0. Screenshots confirm cover + hand-off. All 16 on `bf500259`
+(my `983461cf` + concurrent OR-88/run#54 stacked around it — clean linear history).
+
+**Mobile sidebar/header arc DONE** (#48 rail → #49 KPI grid → #50 footer → #51 section
+bar → #52 sticky header → #53 per-section H2 → #55 H2 covers header). Final model: one
+sticky bar = current section name; dashboard title is the rest-state top identity.
 
 ## Run #54 — OR-88: dim_geo now covers Polish NUTS1/NUTS2 regions. HEAD 1f21e0c2
 
