@@ -1,6 +1,23 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-02 (run #51 — sticky mobile section-name header) -->
+<!-- last-updated: 2026-06-02 (run #52 — sticky page header on mobile, reuse not add) -->
+
+## Run #52 — sticky PAGE HEADER on mobile (reuse, drop #51's bar). HEAD 0233b656
+
+**PO feedback on #51:** the new `#dbr-mobile-section-bar` was a redundant second bar.
+Reverted it; instead made the **existing** `#dbr-page-header` `position:sticky; top:0`
+on mobile so it stays visible while scrolling — the same always-visible behaviour
+desktop already has (header in the fixed grid `auto` row above `#dbr-main-scroll`).
+page_shell.py back to plain `#dbr-main-scroll` (bar element/style/scrollspy text-sync
+all removed). JS click-offset now derives from header height when the header is sticky
+(mobile), 0 on desktop (header static). Kept #51's `html,body{overflow:visible}`
+viewport-scroller fix (still required for sticky). No duplication now — header =
+dashboard identity, section H2 = section name. Desktop pixel-identical (shadow scoped
+inside the @media block). Single commit `0233b656`. All 16 on 0233b656; live-verified
+sticky on public_finance + labour_market (top:0 after scroll).
+
+**Mobile sidebar/header arc DONE** (#48 rail → #49 numbers+KPI grid → #50 footer →
+#51 explored section-bar, superseded → #52 sticky reused header).
 
 ## Run #51 — sticky mobile section-name header (+ dropped pill). HEAD 432f3b84
 
