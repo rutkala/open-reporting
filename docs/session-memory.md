@@ -1,6 +1,36 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-02 (run #46 — P0 recovery: 3 dead dashboards restored) -->
+<!-- last-updated: 2026-06-02 (run #47 — responsive mobile layout for all dashboards) -->
+
+## Run #47 — responsive mobile layout (fleet-wide). HEAD abd9d912
+
+**The dbr shell was desktop-only; added a mobile perspective without touching any
+dashboard YAML.** Root problems: (1) **no viewport meta** → phones rendered the 980px
+desktop canvas zoomed out; (2) the fixed-canvas model (outer `100vh`+`overflow:hidden`,
+each section exactly one viewport, horizontal flex rows whose chart heights come from a
+definite-height cascade) crushed charts to slivers and clipped the footer on narrow
+screens. All inline-style based (Dash), so the only responsive lever is a `<style>`
+`@media` block where **CSS `!important` overrides inline styles**.
+
+Engine-plane fix in `packages/dbr/` (3 files), one commit `abd9d912`:
+- `make_app.py`: added `meta_tags=[viewport width=device-width]` + a
+  `@media (max-width:768px)` block — shell stacks vertically & BODY scrolls; sidebar →
+  full-width top bar with wrap-nav; **sections `display:block`** (critical: as flex-column
+  the body keeps `flex:1 1 0` basis-0 and collapses to ~0, overflowing/overlapping — block
+  flow lets heading+rows stack naturally); rows stack one-visual-per-line full width.
+- `page_shell.py`: className hooks on structural divs (`dbr-page-outer`, `dbr-right-col`,
+  `dbr-page-section`, `dbr-page-body`, `dbr-row` + `dbr-row-grow`/`dbr-row-fixed`,
+  `dbr-visual-item`) so the stylesheet can target them.
+- `_render.py`: tag fill-mode charts `dbr-fill-graph`; mobile pins them to **320px**
+  (their desktop height comes from the now-broken flex chain). Companion-table and
+  baked-height visuals (choropleth/treemap/gauge/etc.) keep their figure height and just
+  reflow to full width — untouched.
+
+**Production visual vocabulary is only line/card/bar/column** (grepped all 17) — all
+covered (line/bar/column = fill-mode tagged; card = KPI div sizing to text). Verified at
+390×844 (iPhone) on education, labour_market (incl. 27-country EU ranking bars + CSV
+download) & public_finance (side-by-side rows): no overlap, no h-scroll, readable. Fleet
+redeployed + SHA-verified: **all 16 serving `abd9d912`**. Live systemd shot confirmed.
 
 ## Run #46 — P0 PRODUCTION RECOVERY. HEAD 02afe50d (no code commit)
 
