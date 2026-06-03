@@ -28,7 +28,9 @@ Optional:
                                   diverging scale for balance/change metrics (default: none)
   options.show_labels:   bool  — show metric value labels on each region (default: false;
                                   country/ISO maps only)
-  options.height:        int   — chart height in px (default: 400)
+  options.height:        int   — kept for back-compat; ignored on desktop (the map fills
+                                  its flex page cell like every other visual). Mobile uses
+                                  the .dbr-fill-graph pin, not this value.
 
 Typical uses:
   - EU member-state comparison (deficit, debt, unemployment) — geojson: europe_countries,
