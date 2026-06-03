@@ -28,7 +28,9 @@ Optional:
                                   diverging scale for balance/change metrics (default: none)
   options.show_labels:   bool  — show metric value labels on each region (default: false;
                                   country/ISO maps only)
-  options.height:        int   — chart height in px (default: 400)
+  options.height:        int   — kept for back-compat; ignored on desktop (the map fills
+                                  its flex page cell like every other visual). Mobile uses
+                                  the .dbr-fill-graph pin, not this value.
 
 Typical uses:
   - EU member-state comparison (deficit, debt, unemployment) — geojson: europe_countries,
@@ -43,7 +45,7 @@ import json
 import logging
 from pathlib import Path
 
-from dash import dcc, html
+from dash import html
 import plotly.graph_objects as go
 
 logger = logging.getLogger(__name__)
@@ -53,7 +55,7 @@ from dbr.theme import BG_SURFACE, CARD_RADIUS, CARD_SHADOW
 from dbr.visuals._encoding import (
     dimension_column_name, parse_channel,
 )
-from dbr.visuals._render import format_value, _FORMAT_OPTION_SCHEMA
+from dbr.visuals._render import format_value, chart_with_optional_table, _FORMAT_OPTION_SCHEMA
 
 # Bundled geographies shipped under dbr/data/. Each maps a friendly name to its
 # GeoJSON file and the feature property key whose value equals our `geo` code.
@@ -158,7 +160,6 @@ def choropleth(*, encoding: dict, filter: dict | None = None, options: dict | No
 
     colorscale    = opts.get("colorscale", "Blues")
     reverse_cs    = opts.get("reverse", False)
-    height        = opts.get("height", 400)
     show_labels   = opts.get("show_labels", False)
     zmid          = opts.get("color_midpoint")
     val_fmt       = opts.get("value_format")
@@ -210,9 +211,17 @@ def choropleth(*, encoding: dict, filter: dict | None = None, options: dict | No
             ))
 
     fig.update_layout(
-        height=height,
         margin=dict(l=0, r=0, t=0, b=0),
         geo=dict(bgcolor="rgba(0,0,0,0)"),
         paper_bgcolor="rgba(0,0,0,0)",
     )
-    return html.Div(dcc.Graph(figure=fig, config={"displayModeBar": False}), style=_CARD_STYLE)
+    # Fill the flex page cell like every other visual instead of baking a fixed
+    # pixel height. A baked height taller than the cell's definite-height share
+    # (rows split the viewport) overflows downward into the next row — invisible
+    # on wide maps (Europe leaves vertical margin) but obvious on tall ones
+    # (Poland fills the frame). chart_with_optional_table clears layout.height,
+    # turns on a responsive 100%-height graph (.dbr-fill-graph for the mobile
+    # pin), and renders the optional CSV download. `options.height` stays in the
+    # schema for back-compat but, as with the other fill charts, the desktop
+    # height now comes from the cell, not the figure.
+    return chart_with_optional_table(fig, df, opts, _CARD_STYLE)
