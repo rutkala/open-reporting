@@ -12,6 +12,13 @@ EnvironmentFile=/opt/open-reporting/.env
 ExecStart=/home/radek/.local/bin/dbr serve /opt/open-reporting/products/dashboards/science
 Restart=on-failure
 RestartSec=5
+# Memory guardrails (OR-168): each dbr serve peaks ~160 MB RSS. MemoryHigh is a
+# soft throttle/reclaim point; MemoryMax is a hard ceiling so a runaway process is
+# cgroup-OOM-killed + auto-restarted in isolation, instead of the kernel firing the
+# global OOM killer and rebooting the whole VPS (3.7 GiB box, 16 always-on services).
+MemoryAccounting=yes
+MemoryHigh=256M
+MemoryMax=384M
 
 [Install]
 WantedBy=multi-user.target
