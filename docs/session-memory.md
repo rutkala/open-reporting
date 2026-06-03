@@ -1,90 +1,89 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-03 (run #56 — OR-159 choropleth live) -->
+<!-- last-updated: 2026-06-03 (run #57 — OR-167 voivodeship GDP map live) -->
 
-## Run #56 — OR-159 dbr choropleth live (EU deficit map). HEAD d3d6dc14
+## Run #57 — OR-167 voivodeship (NUTS2) GDP-per-capita map live. HEAD 70f8f0e4
 
-**Shipped the choropleth visual end-to-end.** It was coded + registered (May 31) but
-never usable: required an absolute `geojson_path`, hard-coded a wrong featureidkey
-(`properties.nuts_id` vs GISCO `NUTS_ID`), and its no-geojson path used Plotly
-`locationmode`, which can't match Eurostat alpha-2 codes (Plotly only takes ISO-3 /
-country names; Eurostat uses EL/UK). So it had never rendered on a dashboard.
+**Shipped the first voivodeship choropleth end-to-end** on the National Accounts
+dashboard ("Regiony" page) — completing the regional-map arc started in #54
+(dim_geo NUTS2) and #56 (poland_nuts2 geo mechanism).
 
-**Delivered (branch → merged to main, HEAD d3d6dc14, 3 commits):**
-- Bundled two GISCO NUTS 2021 GeoJSONs keyed on `NUTS_ID` == warehouse `geo` 1:1:
-  `europe_countries` (32 EU/EFTA, 1:20M, 261KB) + `poland_nuts2` (17 voivodeships,
-  1:3M, 151KB). 17/17 NUTS2 codes verified against dim_geo. Provenance in
-  `packages/dbr/src/dbr/data/README.md`; `data/*.geojson` is package-data.
-- `options.geojson: <name>` → bundled map + correct featureidkey + default viewport
-  (continental-Europe lon/lat clip; fit-to-locations for PL). New `color_midpoint`
-  (zmid) for diverging metrics, formatted hover, themed colorbar, unmatched-location
-  warning log (silent-drop guard).
-- First live use: EU-27 deficit choropleth on public_finance "Polska na tle UE-27"
-  page (RdYlGn around 0), above the existing ranked deficit/debt bars.
+**Data plane (commit 85569855):**
+- `fact_macro_regional` — (geo, period_year) grain, restricted to the 17 NUTS2
+  voivodeships via `dim_geo.geo_level='nuts2'` (PL-only seed → exactly the 17
+  PL2x…PL9x codes; matches bundled `poland_nuts2` NUTS_ID 1:1, no aggregate
+  leakage). 425 rows 2000–2024, 17 in 2024. dbt tests PASS=3.
+- `macro_regional` semantic model → metric `gdp_per_capita_regional` (Eurostat
+  nama_10r_2gdp, EUR_HAB, current-price EUR/capita). Verified 17 regions via
+  semantic_query_data with geo + geo__country_name_pl.
+- Built on a /tmp COPY first, then promoted via stop-16 → dbt run → restart-16
+  lock pattern (run #54).
 
-**architecture-critic APPROVE.** Took both follow-ups (README provenance + warning log).
+**Engine fix (branch → critic APPROVE → merge ddc2cd3b, commits 7291111d+f1de9c3e):**
+- choropleth baked `fig.layout.height` onto a non-responsive dcc.Graph → map SVG
+  overflowed its definite-height flex cell into the next row. Invisible on wide
+  EU map (centres w/ vertical margin); tall Poland exposed it (visible overlap).
+- Routed through `chart_with_optional_table` like bar/line/area (clears height,
+  responsive cell-fill, `.dbr-fill-graph` mobile pin, + CSV download). Fixes the
+  latent EU-map overlap too. `options.height` now ignored on desktop (cell-driven).
 
-**Verified live (browser):** all 16 on d3d6dc14; Playwright on portal UE page — map
-renders (Romania darkest, Poland red, Ireland/Denmark green), layout clean, map plot a
-clean 1044×440 box. `poland_nuts2` path factory-render-verified offline (Poland shape
-incl. Warsaw enclave) — ready but no dashboard binds it yet.
+**Layout (commit 70f8f0e4, YAML):** map+bar side-by-side (52/48) in one row so the
+17-region bar gets full viewport-row height — all labels legible (was cramped stacked).
 
-**Linear:** OR-159 → Done. **OR-167 created** (High, Feature+Data): voivodeship map needs
-an exposed NUTS2-grain metric — none in the semantic layer yet despite ~26 regional
-indicators in all_indicators. Geo mechanism is done, so OR-167 is data-plane only.
+**Verified live (Playwright):** fleet redeploy → all 16 on ddc2cd3b after engine
+change. Poland map renders (Warsaw darkest ~45.3k, Lubelskie ~16k, Teal scale),
+no overlap (map bottom 545 < bar top 634), all 17 sorted labels show, Warsaw azure.
+EU map re-checked, no regression. national_accounts on HEAD 70f8f0e4 (YAML-only).
 
-## How the choropleth works (for next maintainer)
-- `packages/dbr/src/dbr/visuals/choropleth.py`. `_BUNDLED_GEOJSON` dict:
-  name → (geojson path, featureidkey, view-or-None). `options.geojson` picks a bundled
-  map; `options.geojson_path` for arbitrary files; `feature_id_key` override.
-- The whole design rests on warehouse `geo` == GISCO `NUTS_ID` (Eurostat 2-letter incl.
-  EL/UK at level 0; PL21… at level 2). YAML must filter out aggregate codes
-  (EU27_2020/EA20) or they're silently dropped — a warning now logs when that happens.
-- EU country maps need the bundled `europe_countries` geojson, NOT plotly scope mode
-  (alpha-2 incompatible). `scope: world` + ISO-3 still works for non-Eurostat global data.
-
-## OR-167 next (voivodeship map, data-plane, unblocked)
-- Expose 1–3 NUTS2 metrics in `products/warehouse/models/semantic/` (candidates:
-  lab.employment_rate_regional, mac.gdp_per_capita_regional, soc.at_risk_poverty_rate).
-  Confirm `semantic_query_data(metric, group_by=['geo'])` returns 17 PL regions.
-- Add a voivodeship choropleth (`geojson: poland_nuts2`, sequential Teal scale) + ranked
-  bar pairing on a domain dashboard. Build with the DuckDB-lock pattern (stop services →
-  dbt run → restart). Geo mechanism already verified — data-only work.
+## Choropleth maintainer notes (updated)
+- `packages/dbr/src/dbr/visuals/choropleth.py`. `_BUNDLED_GEOJSON`: name →
+  (geojson path, featureidkey, view-or-None). `options.geojson` picks a bundled
+  map; poland_nuts2 view=None → fitbounds="locations".
+- **Renders as a fill-chart now** (since #57): no baked pixel height; fills its
+  flex cell via chart_with_optional_table. Add new maps the same way; don't bake
+  fig.layout.height on a geo (it overflows the row — see #57 lesson).
+- Design rests on warehouse `geo` == GISCO `NUTS_ID`. YAML must filter aggregate
+  codes (EU27_2020/EA20) or they silently drop (a warning logs when they do).
 
 ## Recent commits
-- d3d6dc14 Merge OR-159: dbr choropleth bundled geographies (EU + Poland NUTS2 maps)
-- f3bd2e29 docs(dbr): choropleth geojson provenance + unmatched-location warning
-- 64f10c4c feat(dbr): choropleth bundled geographies — EU + Poland NUTS2 maps (OR-159)
-- 516f80e4 docs: run #55 — mobile page header covers dashboard header on scroll
-- 983461cf feat(dbr): page header covers dashboard header on mobile scroll
+- 70f8f0e4 feat(national_accounts): map + ranked bar side-by-side on Regiony (OR-167)
+- ddc2cd3b Merge OR-167: choropleth fills flex cell (fixes Poland map overlap)
+- f1de9c3e docs(dbr): correct choropleth options.height docstring
+- 7291111d fix(dbr): choropleth fills its flex cell instead of fixed height (OR-167)
+- 85569855 feat(warehouse): voivodeship GDP-per-capita NUTS2 regional map (OR-167)
+- 0e462319 docs: run #56 — OR-159 choropleth live (EU deficit map)
 
 ## What's next (unblocked, autonomous)
-- **OR-167 voivodeship choropleth (High)** — data-plane, the natural next pick (geo done).
+- **More NUTS2 metrics** (data-plane, always safe): only gdp_per_capita_regional
+  reaches full 17-NUTS2 coverage cleanly from mac_indicators. Others (employment/
+  unemployment/poverty regional) are filtered out of the by-domain intermediates
+  — exposing them needs an intermediate change first. A follow-up could add a
+  regional page to labour_market once lab_indicators carries the NUTS2 rows.
 - dbr feature backlog (engine, branch+PR+critic+redeploy, one per run, don't batch):
   **OR-160 cross-filter (High)**, OR-161 date slicer, OR-162 number-format.
-- Data-plane always safe: more NUTS2 indicators / metric exposure via the catalogue.
 
 ## Engine-tree state
 - Clean except known untracked PO/bot WIP (never commit): `infra/discord-bot/bot.py`,
   `infra/systemd/or-*-bot.service`, `logs/`, `.claude/scheduled_tasks.lock`,
   `products/blog/reviews/release-report.md` (regenerated each release sweep).
+- NB: 15 non-national_accounts dashboards serve stamp ddc2cd3b (engine HEAD at
+  redeploy); the two later commits are national_accounts YAML only — functionally
+  current, stamp lag is cosmetic. Next engine change's redeploy resyncs them.
 
-## Prod-build-with-dirty-engine-tree pattern (reusable, from #54)
-When a dbt build needs the DuckDB write lock but the engine tree has WIP you must not
-deploy: stash ONLY the WIP file(s) → stop 16 → dbt on prod → start 16 (boots clean HEAD)
-→ stash pop. Verify build stamp == HEAD to prove WIP not shipped.
+## Prod-build-with-lock pattern (reusable, #54/#57)
+dbt build needing the DuckDB write lock: build on a /tmp COPY to verify → stop 16
+→ dbt run+test on prod → restart 16 → verify rows + stamp. ~1 min planned outage.
 
 ## Standing blockers (all PO-side)
-- OR-153 Telegram inbound · OR-90 Instagram token → OR-89 · OR-86 BDL key → crime/agri/
-  business dashboards · OR-79 Ghost nav.
+- OR-153 Telegram inbound · OR-90 Instagram token → OR-89 · OR-86 BDL key →
+  crime/agri/business dashboards · OR-79 Ghost nav.
 
 ## Lessons
-- **A registered visual is not a working visual.** choropleth was in the registry +
-  schema for days but had three bugs that meant it had never rendered on a dashboard.
-  Registration/validate-clean ≠ live-verified. Always bind it on a real page + screenshot.
-- **Plotly built-in geo scope can't match Eurostat alpha-2** (only ISO-3 / country names,
-  and EL/UK aren't ISO). For EU maps bundle a GISCO NUTS-0 geojson keyed on NUTS_ID, which
-  matches our `geo` codes exactly — same mechanism as the regional map.
-- **A mid-render Playwright screenshot can show false layout overlap.** Wait for settle
-  (networkidle + a few s) and cross-check with DOM bounding-box measurement before
-  diagnosing a layout bug — the DOM said 440px clean box; the early screenshot lied.
+- **A "verified clean" wide map can mask a layout bug a tall map exposes.** The EU
+  choropleth had the identical row overlap since #56 but transparent margins hid
+  it; Poland filling the frame made it visible. Measure adjacent-row bounding
+  boxes — don't trust the eye on one geography.
+- **A registered/used visual can still be subtly broken.** choropleth rendered on
+  the EU page but was opting out of the layout cascade the whole time.
+- **Plotly built-in geo scope can't match Eurostat alpha-2** (only ISO-3 / names).
+  EU maps use bundled GISCO geojson keyed on NUTS_ID == our `geo`.
