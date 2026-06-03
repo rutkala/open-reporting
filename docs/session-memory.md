@@ -1,89 +1,85 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-03 (run #57 — OR-167 voivodeship GDP map live) -->
+<!-- last-updated: 2026-06-03 (run #58 — P0 fleet OOM recovery + OR-168) -->
 
-## Run #57 — OR-167 voivodeship (NUTS2) GDP-per-capita map live. HEAD 70f8f0e4
+## Run #58 — [P0 RECOVERY] whole dashboard fleet was OOM-culled. HEAD bd65761c
 
-**Shipped the first voivodeship choropleth end-to-end** on the National Accounts
-dashboard ("Regiony" page) — completing the regional-map arc started in #54
-(dim_geo NUTS2) and #56 (poland_nuts2 geo mechanism).
+**At start: all 16 dashboards 502** (only www up). Every `or-<domain>.service`
+SIGTERM-dead at 09:24:31 UTC (between 07 and 12 runs), never restarted. Portal
+dark ~2.5h.
 
-**Data plane (commit 85569855):**
-- `fact_macro_regional` — (geo, period_year) grain, restricted to the 17 NUTS2
-  voivodeships via `dim_geo.geo_level='nuts2'` (PL-only seed → exactly the 17
-  PL2x…PL9x codes; matches bundled `poland_nuts2` NUTS_ID 1:1, no aggregate
-  leakage). 425 rows 2000–2024, 17 in 2024. dbt tests PASS=3.
-- `macro_regional` semantic model → metric `gdp_per_capita_regional` (Eurostat
-  nama_10r_2gdp, EUR_HAB, current-price EUR/capita). Verified 17 regions via
-  semantic_query_data with geo + geo__country_name_pl.
-- Built on a /tmp COPY first, then promoted via stop-16 → dbt run → restart-16
-  lock pattern (run #54).
+**Fixed:** no lock/stuck proc → `redeploy_dashboards.py` → 16/16 PASS on HEAD
+`bd65761c`, live-verified (200 + Dash app served, not portal index).
 
-**Engine fix (branch → critic APPROVE → merge ddc2cd3b, commits 7291111d+f1de9c3e):**
-- choropleth baked `fig.layout.height` onto a non-responsive dcc.Graph → map SVG
-  overflowed its definite-height flex cell into the next row. Invisible on wide
-  EU map (centres w/ vertical margin); tall Poland exposed it (visible overlap).
-- Routed through `chart_with_optional_table` like bar/line/area (clears height,
-  responsive cell-fill, `.dbr-fill-graph` mobile pin, + CSV download). Fixes the
-  latent EU-map overlap too. `options.height` now ignored on desktop (cell-driven).
+**ROOT CAUSE (measured, not the old "interrupted redeploy" guess): VPS memory
+overcommit.** `free -h`: 3.7 GiB box, swap full, ~222 MiB available. RSS: 16
+`dbr serve` = **3,276 MB (~205 MB each) = 88% of RAM** before docker + 13 bot
+listeners (168 MB) + autonomous `claude -p` (152 MB). Kernel/OOM culls the fleet.
+After restart: still only **256 MiB available — fragile, will recur.** Run #46's
+3-dashboard P0 was almost certainly the same mechanism, mis-diagnosed.
 
-**Layout (commit 70f8f0e4, YAML):** map+bar side-by-side (52/48) in one row so the
-17-region bar gets full viewport-row height — all labels legible (was cramped stacked).
+**Escalated:** filed **OR-168 (Infra, Urgent)** — recommend **add 4 GiB swap**
+(zero-cost, reversible, 9.9 GiB disk free). I CANNOT do it: NOPASSWD allowlist has
+no swap/fallocate tooling; RAM upgrade = recurring cost (hard floor). PO must run
+3 cmds OR extend my sudoers. Durable fallback = RAM 3.7→8 GiB. Flagged in outbox.
 
-**Verified live (Playwright):** fleet redeploy → all 16 on ddc2cd3b after engine
-change. Poland map renders (Warsaw darkest ~45.3k, Lubelskie ~16k, Teal scale),
-no overlap (map bottom 545 < bar top 634), all 17 sorted labels show, Warsaw azure.
-EU map re-checked, no regression. national_accounts on HEAD 70f8f0e4 (YAML-only).
+**Deliberately no feature work** — a build/subagent at 256 MiB available would
+re-trigger the cull. Did NOT remove any live dashboard (silent 502s worse than
+bounded recovery). Release sweep: 18/18 published, 0 drafts → skipped spawns.
 
-## Choropleth maintainer notes (updated)
-- `packages/dbr/src/dbr/visuals/choropleth.py`. `_BUNDLED_GEOJSON`: name →
-  (geojson path, featureidkey, view-or-None). `options.geojson` picks a bundled
-  map; poland_nuts2 view=None → fitbounds="locations".
-- **Renders as a fill-chart now** (since #57): no baked pixel height; fills its
-  flex cell via chart_with_optional_table. Add new maps the same way; don't bake
-  fig.layout.height on a geo (it overflows the row — see #57 lesson).
-- Design rests on warehouse `geo` == GISCO `NUTS_ID`. YAML must filter aggregate
-  codes (EU27_2020/EA20) or they silently drop (a warning logs when they do).
+## Memory ops cheat-sheet (run #58)
+- Diagnose a 502 fleet: `systemctl list-units 'or-*.service'`, `free -h`,
+  `ps -eo rss,args --sort=-rss | head`, `fuser data/warehouse.duckdb`.
+- Each `dbr serve` ≈ 205 MB RSS (MetricFlow/duckdb resident). 16 of them don't
+  fit in 3.7 GiB alongside bots + docker + a claude run. This is the ceiling.
+- My NOPASSWD sudo = ONLY `systemctl <restart|start|stop|status|enable> or-*`,
+  `daemon-reload`, `cp .../infra/systemd/*.service /etc/systemd/system/`. No swap.
+- Recovery tool: `python3 infra/scheduler/redeploy_dashboards.py` (restart 16 +
+  verify each `<meta dbr-build>` == HEAD; non-zero exit = not resolved).
 
 ## Recent commits
-- 70f8f0e4 feat(national_accounts): map + ranked bar side-by-side on Regiony (OR-167)
-- ddc2cd3b Merge OR-167: choropleth fills flex cell (fixes Poland map overlap)
+- bd65761c docs: run #57 — OR-167 voivodeship GDP map live + outbox
+- 70f8f0e4 feat(national_accounts): map + ranked bar side-by-side (OR-167)
+- ddc2cd3b Merge OR-167: choropleth fills flex cell (Poland map overlap fix)
 - f1de9c3e docs(dbr): correct choropleth options.height docstring
 - 7291111d fix(dbr): choropleth fills its flex cell instead of fixed height (OR-167)
 - 85569855 feat(warehouse): voivodeship GDP-per-capita NUTS2 regional map (OR-167)
-- 0e462319 docs: run #56 — OR-159 choropleth live (EU deficit map)
 
-## What's next (unblocked, autonomous)
-- **More NUTS2 metrics** (data-plane, always safe): only gdp_per_capita_regional
-  reaches full 17-NUTS2 coverage cleanly from mac_indicators. Others (employment/
-  unemployment/poverty regional) are filtered out of the by-domain intermediates
-  — exposing them needs an intermediate change first. A follow-up could add a
-  regional page to labour_market once lab_indicators carries the NUTS2 rows.
-- dbr feature backlog (engine, branch+PR+critic+redeploy, one per run, don't batch):
+## What's next (autonomous, ONLY once memory is safe — OR-168)
+- **Until OR-168 is resolved, avoid heavy builds** (dbt/dbr/subagents) — they can
+  re-cull the fleet at 256 MiB available. Prefer light/no-mutation runs; if the
+  fleet is 502 again, just re-run redeploy_dashboards.py and re-flag OR-168.
+- dbr feature backlog (engine, branch+PR+critic+redeploy, one/run, don't batch):
   **OR-160 cross-filter (High)**, OR-161 date slicer, OR-162 number-format.
+- More NUTS2 metrics: only gdp_per_capita_regional reaches full 17-NUTS2 cleanly;
+  others need a by-domain intermediate change first (data-plane, safe when RAM ok).
 
 ## Engine-tree state
 - Clean except known untracked PO/bot WIP (never commit): `infra/discord-bot/bot.py`,
   `infra/systemd/or-*-bot.service`, `logs/`, `.claude/scheduled_tasks.lock`,
   `products/blog/reviews/release-report.md` (regenerated each release sweep).
-- NB: 15 non-national_accounts dashboards serve stamp ddc2cd3b (engine HEAD at
-  redeploy); the two later commits are national_accounts YAML only — functionally
-  current, stamp lag is cosmetic. Next engine change's redeploy resyncs them.
+- All 16 dashboards on stamp `bd65761c` (= HEAD) after this run's recovery redeploy.
 
-## Prod-build-with-lock pattern (reusable, #54/#57)
-dbt build needing the DuckDB write lock: build on a /tmp COPY to verify → stop 16
-→ dbt run+test on prod → restart 16 → verify rows + stamp. ~1 min planned outage.
+## Choropleth maintainer notes (from #57, unchanged)
+- `packages/dbr/src/dbr/visuals/choropleth.py`. Renders as a fill-chart via
+  `chart_with_optional_table` — do NOT bake `fig.layout.height` on a geo (overflows
+  the row). `_BUNDLED_GEOJSON`: name → (path, featureidkey, view-or-None). Design
+  rests on warehouse `geo` == GISCO `NUTS_ID`; YAML must filter EU27_2020/EA20.
+
+## Prod-build-with-lock pattern (#54/#57) — use sparingly under OR-168
+dbt build needing the DuckDB write lock: build on /tmp COPY → stop 16 → dbt run+test
+on prod → restart 16 → verify rows + stamp. NB stop-16 + restart spikes memory;
+risky while the box is at ~256 MiB available.
 
 ## Standing blockers (all PO-side)
-- OR-153 Telegram inbound · OR-90 Instagram token → OR-89 · OR-86 BDL key →
-  crime/agri/business dashboards · OR-79 Ghost nav.
+- **OR-168 VPS memory overcommit (Urgent, NEW)** — fleet gets OOM-culled; needs
+  swap (PO 3 cmds or sudoers extension) or RAM upgrade.
+- OR-153 Telegram inbound · OR-90 Instagram token → OR-89 · OR-86 BDL key ·
+  OR-79 Ghost nav.
 
 ## Lessons
-- **A "verified clean" wide map can mask a layout bug a tall map exposes.** The EU
-  choropleth had the identical row overlap since #56 but transparent margins hid
-  it; Poland filling the frame made it visible. Measure adjacent-row bounding
-  boxes — don't trust the eye on one geography.
-- **A registered/used visual can still be subtly broken.** choropleth rendered on
-  the EU page but was opting out of the layout cascade the whole time.
-- **Plotly built-in geo scope can't match Eurostat alpha-2** (only ISO-3 / names).
-  EU maps use bundled GISCO geojson keyed on NUTS_ID == our `geo`.
+- **When the same P0 recurs, measure before re-guessing.** Run #46 called the
+  dead-fleet "interrupted redeploy"; `free -h` + per-proc RSS this run proved it's
+  a capacity ceiling (16×205 MB > 3.7 GiB). A restart at 256 MiB available is a
+  reprieve, not a fix.
+- A "verified clean" wide map can mask a layout bug a tall map exposes (#57).
