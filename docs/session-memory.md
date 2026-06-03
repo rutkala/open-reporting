@@ -1,117 +1,90 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-02 (run #55 — mobile page header covers dashboard header) -->
+<!-- last-updated: 2026-06-03 (run #56 — OR-159 choropleth live) -->
 
-## Run #55 — page header covers dashboard header on mobile scroll. HEAD 983461cf
+## Run #56 — OR-159 dbr choropleth live (EU deficit map). HEAD d3d6dc14
 
-**PO follow-up to #53:** the two stacked mobile sticky bars (dashboard title pinned +
-section heading pinned below it) should collapse to one — the page (section) header
-should COVER the dashboard header when scrolling. Done: `#dbr-page-header` is no longer
-sticky on mobile (scrolls away → `position:static`), and `.dbr-page-section > h2` now
-pins at `top:0` instead of `top:var(--dbr-header-h)`. As you scroll into a section its
-heading rises to the top, covering where the dashboard title was; the dashboard title is
-a rest-state-only identity (visible only at the very top). Native section-to-section
-hand-off preserved (each H2 constrained to its `.dbr-page-section`). Dropped the unused
-`--dbr-header-h` var + its JS `setHeaderVar`/resize publisher. make_app.py only; desktop
-pixel-unchanged (mobile @media). Chose header-scrolls-away over z-index overlay: a true
-overlay would leave the taller 56px header peeking below the shorter ~40px H2.
+**Shipped the choropleth visual end-to-end.** It was coded + registered (May 31) but
+never usable: required an absolute `geojson_path`, hard-coded a wrong featureidkey
+(`properties.nuts_id` vs GISCO `NUTS_ID`), and its no-geojson path used Plotly
+`locationmode`, which can't match Eurostat alpha-2 codes (Plotly only takes ISO-3 /
+country names; Eurostat uses EL/UK). So it had never rendered on a dashboard.
 
-**Verified live (rendered-DOM, 390px, public_finance):** header computed `position:static`;
-rest header.top=0 / H2 "przeglad" top=74; after 900px scroll header.top=−900 (gone) and
-"przeglad" H2 pinned top=0. Screenshots confirm cover + hand-off. All 16 on `bf500259`
-(my `983461cf` + concurrent OR-88/run#54 stacked around it — clean linear history).
+**Delivered (branch → merged to main, HEAD d3d6dc14, 3 commits):**
+- Bundled two GISCO NUTS 2021 GeoJSONs keyed on `NUTS_ID` == warehouse `geo` 1:1:
+  `europe_countries` (32 EU/EFTA, 1:20M, 261KB) + `poland_nuts2` (17 voivodeships,
+  1:3M, 151KB). 17/17 NUTS2 codes verified against dim_geo. Provenance in
+  `packages/dbr/src/dbr/data/README.md`; `data/*.geojson` is package-data.
+- `options.geojson: <name>` → bundled map + correct featureidkey + default viewport
+  (continental-Europe lon/lat clip; fit-to-locations for PL). New `color_midpoint`
+  (zmid) for diverging metrics, formatted hover, themed colorbar, unmatched-location
+  warning log (silent-drop guard).
+- First live use: EU-27 deficit choropleth on public_finance "Polska na tle UE-27"
+  page (RdYlGn around 0), above the existing ranked deficit/debt bars.
 
-**Mobile sidebar/header arc DONE** (#48 rail → #49 KPI grid → #50 footer → #51 section
-bar → #52 sticky header → #53 per-section H2 → #55 H2 covers header). Final model: one
-sticky bar = current section name; dashboard title is the rest-state top identity.
+**architecture-critic APPROVE.** Took both follow-ups (README provenance + warning log).
 
-## Run #54 — OR-88: dim_geo now covers Polish NUTS1/NUTS2 regions. HEAD 1f21e0c2
+**Verified live (browser):** all 16 on d3d6dc14; Playwright on portal UE page — map
+renders (Romania darkest, Poland red, Ireland/Denmark green), layout clean, map plot a
+clean 1044×440 box. `poland_nuts2` path factory-render-verified offline (Poland shape
+incl. Warsaw enclave) — ready but no dashboard binds it yet.
 
-**Shipped the regional data foundation (data-plane, zero engine touch).** Picked OR-88
-because the engine tree was dirty (active sibling WIP — see below) so no dbr work was
-safe; OR-88 is pure dbt/seed.
+**Linear:** OR-159 → Done. **OR-167 created** (High, Feature+Data): voivodeship map needs
+an exposed NUTS2-grain metric — none in the semantic layer yet despite ~26 regional
+indicators in all_indicators. Geo mechanism is done, so OR-167 is data-plane only.
 
-**The issue premise was stale.** Audited the live warehouse: NUTS2/voivodeship data
-already exists across **6 domains** (~26 indicators: mac/pop/lab/soc/clt) via the
-`PL_NUTS2` ingestion sentinel — criterion #1 (≥5 domains) was already met. The real gap
-was criterion #3: `dim_geo` was country-only, so regional facts (`geo='PL21'`) resolved
-to NO name. The authoritative `seed_geo_nuts` seed (7 NUTS1 + 17 NUTS2, correct Polish
-diacritics) existed but was never joined into any dim (and wasn't even materialised).
+## How the choropleth works (for next maintainer)
+- `packages/dbr/src/dbr/visuals/choropleth.py`. `_BUNDLED_GEOJSON` dict:
+  name → (geojson path, featureidkey, view-or-None). `options.geojson` picks a bundled
+  map; `options.geojson_path` for arbitrary files; `feature_id_key` override.
+- The whole design rests on warehouse `geo` == GISCO `NUTS_ID` (Eurostat 2-letter incl.
+  EL/UK at level 0; PL21… at level 2). YAML must filter out aggregate codes
+  (EU27_2020/EA20) or they're silently dropped — a warning now logs when that happens.
+- EU country maps need the bundled `europe_countries` geojson, NOT plotly scope mode
+  (alpha-2 incompatible). `scope: world` + ISO-3 still works for non-Eurostat global data.
 
-**Fix (commit `1f21e0c2`):** `dim_geo.sql` UNIONs the NUTS1/NUTS2 rows from
-`ref('seed_geo_nuts')` + new columns `geo_level` (country/nuts1/nuts2) and `parent_geo`
-(nuts2→nuts1→country roll-up). `dim_geo.yml` gains accepted_values test + 2 semantic
-dimensions. Verified: 58 rows (34 country + 7 + 17), 0 unresolved PL regional codes in
-all_indicators, country joins unchanged (additive), dbt tests PASS=8.
-
-**Prod build trick (avoids deploying the sibling WIP):** verified on a `/tmp` COPY first
-(zero disruption); then stopped all 16 dashboard services (release DuckDB RO locks),
-`git stash`-ed ONLY make_app.py so the restart booted clean committed HEAD (= the code
-they already ran → zero live-behaviour change), ran dbt on prod, restarted 16,
-`git stash pop` to restore the sibling WIP undeployed. All 16 + www back to 200, stamp
-`ddcbe73a` (clean — WIP correctly NOT shipped). ~50s planned outage during reboot.
-
-**Linear:** OR-88 → Done. Criterion #2 (explorer regional drill-down = UI) handed to
-**OR-159 (choropleth)** — commented there that dim_geo now supplies the NUTS2 names +
-hierarchy (GeoJSON PL21…PL92 codes == `geo` PK).
-
-## ACTIVE SIBLING WIP in tree — do NOT commit/revert (as of run #54)
-- `packages/dbr/src/dbr/make_app/make_app.py` — modified 2026-06-02 13:48 UTC (after the
-  12:00 run). A **mobile-header revert**: drops run #53's sticky `#dbr-page-header` so the
-  section H2 rises to take the top slot instead (comment: "dashboard header scrolls away
-  normally on mobile"). Almost certainly dashboard-dev bot iterating on PO feedback about
-  the #53 double-sticky. Desktop-noop. **This dirties the engine tree → blocks ALL
-  engine-plane dbr work + fleet redeploy until committed/cleared.** Same hands-off rule as
-  the untracked bot files below.
-- Untracked PO/bot WIP (never commit): `infra/discord-bot/bot.py`,
-  `infra/systemd/or-*-bot.service`, `logs/`, `.claude/scheduled_tasks.lock`.
-
-## How dim_geo regional mapping works (for next maintainer)
-- `seed_geo_nuts.csv` (products/warehouse/seeds/) = authoritative NUTS map: geo, geo_name,
-  geo_type (country/nuts1/nuts2), country_code, nuts1_code, nuts1_name. Seeded to
-  `curated` per dbt_project.yml.
-- `dim_geo.sql` country_rows (VALUES, 34) ∪ region_rows (seed, geo_type in nuts1/nuts2).
-  Region name_pl=name_en=geo_name (Polish proper nouns). parent_geo: nuts2→nuts1_code,
-  nuts1→country_code('PL'). country parent_geo NULL.
-- All 24 PL regional codes in all_indicators (7 NUTS1 + 17 NUTS2) now resolve. Non-PL
-  regional codes = 0 (foreign NUTS not ingested).
-
-## NUTS2 ingestion path (catalogue-driven)
-- `eurostat_observations.py` reads `catalogue.domain_detail_sources` WHERE
-  source_id='eurostat' AND verified=true. series_id = `dataset?geo=PL_NUTS2&dim=val`.
-  `PL_NUTS2` sentinel = fetch all regions, keep `PL*` rows. Adding a NUTS2 series = add a
-  verified catalogue row + ingest; no code change.
+## OR-167 next (voivodeship map, data-plane, unblocked)
+- Expose 1–3 NUTS2 metrics in `products/warehouse/models/semantic/` (candidates:
+  lab.employment_rate_regional, mac.gdp_per_capita_regional, soc.at_risk_poverty_rate).
+  Confirm `semantic_query_data(metric, group_by=['geo'])` returns 17 PL regions.
+- Add a voivodeship choropleth (`geojson: poland_nuts2`, sequential Teal scale) + ranked
+  bar pairing on a domain dashboard. Build with the DuckDB-lock pattern (stop services →
+  dbt run → restart). Geo mechanism already verified — data-only work.
 
 ## Recent commits
-- 1f21e0c2 feat(warehouse): dim_geo covers Polish NUTS1/NUTS2 regions (OR-88)
-- ddcbe73a docs: run #53 — per-section sticky headings on mobile
-- 62a24419 feat(dbr): per-section sticky headings on mobile (pin + hand off per page)
-- 0233b656 feat(dbr): sticky page header on mobile (reuse header, drop the extra bar)
-- 8b2f620a fix(dbr): footer auto-derive must reuse engine's DuckDB connection (OR-165)
+- d3d6dc14 Merge OR-159: dbr choropleth bundled geographies (EU + Poland NUTS2 maps)
+- f3bd2e29 docs(dbr): choropleth geojson provenance + unmatched-location warning
+- 64f10c4c feat(dbr): choropleth bundled geographies — EU + Poland NUTS2 maps (OR-159)
+- 516f80e4 docs: run #55 — mobile page header covers dashboard header on scroll
+- 983461cf feat(dbr): page header covers dashboard header on mobile scroll
 
 ## What's next (unblocked, autonomous)
-- **Once make_app.py WIP is committed/cleared** (engine tree clean), the dbr feature
-  backlog opens up: **OR-159 choropleth (High)** — now has its dim_geo prerequisite ready,
-  natural next pick; OR-160 cross-filter (High), OR-161 date slicer, OR-162 number-format.
-  Each = branch+PR+critic+redeploy, one per run, don't batch.
-- Data-plane (always safe even with dirty engine tree): more NUTS2 indicators via the
-  catalogue sentinel if a domain gap appears; OR-88 left coverage in good shape.
+- **OR-167 voivodeship choropleth (High)** — data-plane, the natural next pick (geo done).
+- dbr feature backlog (engine, branch+PR+critic+redeploy, one per run, don't batch):
+  **OR-160 cross-filter (High)**, OR-161 date slicer, OR-162 number-format.
+- Data-plane always safe: more NUTS2 indicators / metric exposure via the catalogue.
 
-## Prod-build-with-dirty-engine-tree pattern (reusable)
-When a dbt build needs the DuckDB write lock but the engine tree has uncommitted WIP you
-must not deploy: stash ONLY the WIP file(s) → stop 16 → dbt on prod → start 16 (boots
-clean HEAD = unchanged behaviour) → stash pop. Verify build stamp == HEAD to prove WIP
-not shipped. Check WIP file mtime first to confirm the sibling bot is idle (low conflict risk).
+## Engine-tree state
+- Clean except known untracked PO/bot WIP (never commit): `infra/discord-bot/bot.py`,
+  `infra/systemd/or-*-bot.service`, `logs/`, `.claude/scheduled_tasks.lock`,
+  `products/blog/reviews/release-report.md` (regenerated each release sweep).
+
+## Prod-build-with-dirty-engine-tree pattern (reusable, from #54)
+When a dbt build needs the DuckDB write lock but the engine tree has WIP you must not
+deploy: stash ONLY the WIP file(s) → stop 16 → dbt on prod → start 16 (boots clean HEAD)
+→ stash pop. Verify build stamp == HEAD to prove WIP not shipped.
 
 ## Standing blockers (all PO-side)
 - OR-153 Telegram inbound · OR-90 Instagram token → OR-89 · OR-86 BDL key → crime/agri/
   business dashboards · OR-79 Ghost nav.
 
 ## Lessons
-- **Audit the live warehouse before trusting an issue's premise.** OR-88 claimed "only 2
-  NUTS2 domains"; reality was 6. Two of three acceptance criteria were already met — the
-  real work was one missing dimension join, not new ingestion.
-- **Verify dbt model changes on a `/tmp` copy first**, then build prod — de-risks the SQL
-  with zero outage before touching the write lock.
-- A second in-process `duckdb.connect()` to a file the MetricFlow engine holds fails
-  (config-mismatch) → reuse `_get_engine()._sql_client.query()`. (from #50)
+- **A registered visual is not a working visual.** choropleth was in the registry +
+  schema for days but had three bugs that meant it had never rendered on a dashboard.
+  Registration/validate-clean ≠ live-verified. Always bind it on a real page + screenshot.
+- **Plotly built-in geo scope can't match Eurostat alpha-2** (only ISO-3 / country names,
+  and EL/UK aren't ISO). For EU maps bundle a GISCO NUTS-0 geojson keyed on NUTS_ID, which
+  matches our `geo` codes exactly — same mechanism as the regional map.
+- **A mid-render Playwright screenshot can show false layout overlap.** Wait for settle
+  (networkidle + a few s) and cross-check with DOM bounding-box measurement before
+  diagnosing a layout bug — the DOM said 440px clean box; the early screenshot lied.
