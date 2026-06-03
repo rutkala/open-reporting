@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
-# Page 4 — fixed canvas: one prose lead + two side-by-side ranked EU-27 bars
-# (deficit + debt), Polska highlighted in azure. Side-by-side gives each 27-row bar
-# the full page height it needs to stay readable.
+# Page 4 — prose lead + full-width EU-27 deficit choropleth (geographic pattern),
+# then two side-by-side ranked bars (deficit + debt) for precise ranking. Map answers
+# "where", bars answer "exactly how much" — Polska highlighted in azure on the bars.
 
 rows:
   - prose: |
@@ -9,5 +9,7 @@ rows:
       największy w UE-27 po Rumunii. Dług publiczny (~55% PKB) **mieści się poniżej**
       progu Maastricht (60%), ale przewyższa średnią krajów Europy Środkowo-Wschodniej.
     items:
+      - { visual: eu_deficit_map, width: "100%" }
+  - items:
       - { visual: eu_deficit, width: "50%" }
       - { visual: eu_debt,    width: "50%" }
