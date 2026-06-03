@@ -40,10 +40,13 @@ Note: Plotly's built-in scope maps (no geojson) only match ISO-3 alpha-3 codes o
 names, not Eurostat alpha-2 — so EU maps use the bundled europe_countries geojson instead.
 """
 import json
+import logging
 from pathlib import Path
 
 from dash import dcc, html
 import plotly.graph_objects as go
+
+logger = logging.getLogger(__name__)
 
 from dbr.semantic import semantic_query_data
 from dbr.theme import BG_SURFACE, CARD_RADIUS, CARD_SHADOW
@@ -177,6 +180,15 @@ def choropleth(*, encoding: dict, filter: dict | None = None, options: dict | No
         common["zmid"] = zmid
 
     if geojson is not None:
+        # Plotly silently drops locations with no matching feature — warn so an author
+        # binding `location: geo` without a member filter can see the gap (e.g. aggregate
+        # codes like EU27_2020 / EA20, or non-NUTS GUS codes).
+        key = feature_id_key.split(".", 1)[-1] if feature_id_key else "NUTS_ID"
+        feat_ids = {f.get("properties", {}).get(key) for f in geojson.get("features", [])}
+        unmatched = sorted(set(locations) - feat_ids)
+        if unmatched:
+            logger.warning("choropleth: %d location(s) have no %s feature, dropped from map: %s",
+                           len(unmatched), key, unmatched)
         fig = go.Figure(go.Choropleth(geojson=geojson, featureidkey=feature_id_key, **common))
         if view:
             fig.update_geos(visible=False, bgcolor="rgba(0,0,0,0)", **view)
