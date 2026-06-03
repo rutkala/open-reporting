@@ -1,6 +1,31 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-03 (run #59 — quiet run, OR-168 reframed) -->
+<!-- last-updated: 2026-06-03 (run #60 — OR-168 memory guardrails shipped) -->
+
+## Run #60 — [OR-168] dbr memory guardrails shipped. HEAD 987744b1
+
+`/goal` urgent: "high memory, probably dbr serve." **Diagnosed: NOT a dbr bug** —
+`dbr serve` is plain Dash `app.run` (single proc, no reloader; child python3 is
+the 2 MB mp resource_tracker). Structural overcommit: 16 services = **2,942 MB
+cgroup mem** (per-svc 127–214 M) on 3.7 GB box. Swap (`/swapfile`, 2 GiB) exists
+since 2026-03-16 — NOT absent as OR-168 first said. 09:24 event was a **full
+reboot** (global OOM killer), confirmed by uptime.
+
+**Shipped (commit 987744b1, pushed):** `MemoryAccounting=yes` / `MemoryHigh=256M`
+/ `MemoryMax=384M` on all 16 units + the `_render_systemd_unit` template (survives
+`dbr run`). Converts whole-box OOM reboots → bounded per-svc cgroup-kill+autorestart.
+All 16 sit under MemoryHigh in normal op (largest public_finance 214 M), so no
+interference. Verified live (`systemctl show`), 16/16 active, stamp-verify PASS.
+
+**Stamp note:** 16 dashboards serve `2b09320a`, HEAD is `987744b1`. The commit is
+**infra-only (units + template fn), zero `dbr serve` render-path change** → output
+identical. Did NOT re-restart to bump stamps (200 MiB available — the spike I'm
+mitigating). Next natural `dbr run`/redeploy will sync stamps. **Do not let
+redeploy --verify-only false-flag this into a needless full restart.**
+
+**Still PO-side (OR-168 stays Urgent/open):** guardrails harden failure, add no
+capacity (~200 MiB avail, swap 1.3/2.0 used). Need swap grow 2→6 GiB (PO runs it,
+or add `fallocate`/`mkswap`/`swapon` to my NOPASSWD allowlist) OR RAM upgrade.
 
 ## Run #59 — [QUIET RUN] healthy fleet; OR-168 reframed. HEAD 16c39397
 
