@@ -25,3 +25,21 @@ models:
         description: Industrial output growth index (% vs prior year, sts_inpr_a).
       - name: current_account_pct_gdp
         description: Current account balance as % of GDP (annual avg of quarterly bop_gdp6_q data).
+
+  - name: fact_macro_regional
+    description: >
+      Regional (NUTS2) macroeconomic indicators for Poland's 17 voivodeship
+      regions. One row per (geo, period_year). Feeds the voivodeship choropleth
+      + ranked bar on the National Accounts dashboard (OR-167).
+    columns:
+      - name: geo
+        description: NUTS2 region code (PL21…PL92) — matches bundled poland_nuts2 GeoJSON NUTS_ID.
+        tests: [not_null]
+      - name: period_year
+        description: Calendar year (integer).
+        tests: [not_null]
+      - name: period_date
+        description: December 31 of period_year — MetricFlow time spine join key.
+        tests: [not_null]
+      - name: gdp_per_capita_eur
+        description: Regional GDP per inhabitant, current-price EUR (Eurostat nama_10r_2gdp, EUR_HAB).

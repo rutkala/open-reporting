@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 4 — regional GDP per capita:
+#   prose lead → full-width voivodeship choropleth (geographic pattern)
+#   → full-width ranked bar (precise ordering, Warsaw highlighted).
+# Map answers "where", bar answers "exactly how much".
+
+rows:
+  - prose: |
+      Polska gospodarka jest **głęboko zróżnicowana regionalnie**. W 2024 r.
+      **Warszawski stołeczny** osiągnął ~45 300 EUR PKB na mieszkańca — niemal
+      **trzykrotnie** więcej niż **Lubelskie** (~16 000 EUR), najuboższy region.
+      Najzamożniejsze regiony skupiają się na zachodzie i wokół metropolii;
+      „ściana wschodnia" pozostaje w tyle.
+    items:
+      - { visual: mapa_pkb_region, width: "100%" }
+  - items:
+      - { visual: bar_pkb_region, width: "100%" }

@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Ranking PKB na mieszkańca — 17 regionów NUTS2, 2024. Mapa pokazuje "gdzie",
+# słupek pokazuje "dokładnie ile". Warszawski stołeczny wyróżniony.
+
+type: bar
+title:  "Ranking regionów — PKB na mieszkańca, 2024"
+subtitle: "EUR na mieszkańca, ceny bieżące"
+encoding:
+  x: { metric: gdp_per_capita_regional }
+  y: { dimension: geo__country_name_pl }
+filter:
+  date_key__cal_year: 2024
+options:
+  sort: value-desc
+  highlight:
+    value: Warszawski stołeczny
+    color: azure_1
+    other: slate_3
+  download: true

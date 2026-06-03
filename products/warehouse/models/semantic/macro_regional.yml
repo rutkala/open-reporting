@@ -1,0 +1,62 @@
+version: 2
+
+# MetricFlow semantic model for the voivodeship (NUTS2) regional map (OR-167).
+#
+# Single source: curated.fact_macro_regional (one row per geo × period_year,
+# restricted to Poland's 17 NUTS2 regions). Exposes regional GDP per capita to
+# the visual layer for the choropleth + ranked bar pairing.
+#
+# Region names + hierarchy come from dim_geo via the `geo` foreign entity
+# (dimension geo__country_name_pl = voivodeship name for NUTS2 codes).
+#
+# Aggregation note: `agg: average` — the source pivot yields at most one
+# non-null value per (geo, period_year), so average collapses identically to
+# max/min; the choice matches the convention across the macro semantic models
+# and behaves safely if a geo or time grouping is broadened.
+
+semantic_models:
+  - name: macro_regional
+    description: Regional (NUTS2) macroeconomic KPIs — Poland's 17 voivodeship regions.
+    model: ref('fact_macro_regional')
+
+    defaults:
+      agg_time_dimension: period
+
+    primary_entity: macro_regional_row
+
+    entities:
+      - name: geo
+        type: foreign
+        expr: geo
+      - name: date_key
+        type: foreign
+        expr: period_date
+
+    dimensions:
+      # INTERNAL — MetricFlow requirement; do not reference in dashboard YAMLs.
+      - name: period
+        type: time
+        expr: period_date
+        type_params:
+          time_granularity: year
+
+    measures:
+      - name: gdp_per_capita_eur
+        description: Regional GDP per inhabitant, current-price EUR (nama_10r_2gdp, EUR_HAB).
+        agg: average
+        expr: gdp_per_capita_eur
+
+metrics:
+  - name: gdp_per_capita_regional
+    label: "PKB na mieszkańca (region)"
+    type: simple
+    type_params:
+      measure: gdp_per_capita_eur
+    config:
+      meta:
+        format:
+          decimals: 0
+          suffix: " EUR"
+          scale: 1
+        source_label: "Eurostat (nama_10r_2gdp), EUR/mieszkańca, ceny bieżące"
+        ascending_is_good: true

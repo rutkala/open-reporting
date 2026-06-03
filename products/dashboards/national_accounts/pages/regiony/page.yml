@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/page.schema.json
+# Page 4 — Regional GDP per capita across Poland's 17 NUTS2 voivodeship regions.
+# Story it tells: the depth of regional economic divergence — Warsaw vs the eastern wall.
+
+title:  "Regiony"
+anchor: regiony

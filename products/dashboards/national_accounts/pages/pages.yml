@@ -3,7 +3,9 @@
 #   1. Scorecard snapshot (Przegląd)
 #   2. GDP growth and level (PKB)
 #   3. Investment and external balance (Inwestycje)
+#   4. Regional GDP per capita — NUTS2 voivodeships (Regiony)
 order:
   - przeglad
   - pkb
   - inwestycje
+  - regiony
