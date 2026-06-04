@@ -1,6 +1,50 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-04 (run #63 — quiet run, memory pressure = PO VS Code session, OR-168 holding) -->
+<!-- last-updated: 2026-06-04 (run #64 — OR-168 ROOT FIX: dashboards → static HTML, Dash fleet retired) -->
+
+## Run #64 — [OR-168 ROOT FIX] dashboards converted to static HTML; 16 Dash servers retired
+
+PO directive: stop masking OR-168 with swap — remove the always-on Dash servers.
+**Done.** Available RAM **884 MiB → 2.5 GiB**, swap **2.0 G → 0.3 G**. The 16-server
+overcommit (~2.9 GB) that caused the global-OOM reboots is eliminated.
+
+**Diagnosis that unlocked it:** the 16 dashboards use ZERO server callbacks (only
+line/card/bar/column/choropleth; no slicers/cross-filter/tabs/Interval;
+`Location(refresh=False)`). Every chart is a pre-computed Plotly figure; only
+client-side hover/zoom interactivity, which survives static export. The Dash backend
+was pure overhead. NB: PROJECT.md had *mandated* "Interactive dashboards, Dash+Plotly+
+MetricFlow" — the static premise contradicted the doc, but the call was right; docs now updated.
+
+**Shipped (engine):** `packages/dbr/src/dbr/static_export/` + `dbr build`. Walks the
+same compiled tree → self-contained static HTML (Plotly `to_html`, ONE shared
+`infra/nginx/html/assets/plotly.min.js`, reuses exact `_CSS`/scrollspy/sidebar JS +
+`<meta dbr-build>` stamp = byte-identical layout). `UnsupportedComponentError` hard-fails
+if a dashboard ever adds interactivity (guards both `ctx.has_bindings()` and the dcc tree).
+architecture-critic CONDITIONAL → all fixes applied (shared asset, strict guard, atomic
+write, freshness verify).
+
+**Cutover:** 16 pre-rendered to `infra/nginx/html/<domain>/`; nginx `try_files` static
+(no proxy); `dbr run` rewritten (build → static route → reload, no systemd/port);
+`_render_nginx_block` static; `redeploy_dashboards.py` rebuilds+verifies file stamps
+(hard-fail on build error); `run_daily.sh` no longer stops/restarts fleet (no DuckDB
+lock holder). 16 `or-<domain>.service` STOPPED. Verified 16/16 200 + stamp==HEAD + SVG.
+
+**KEY OPS CHANGES (supersede #58–63 cheat-sheets):**
+- Dashboards = static files in `infra/nginx/html/<domain>/index.html` (gitignored
+  build artifacts; rebuilt by `dbr run`/`redeploy_dashboards.py`). NO `dbr serve`,
+  NO `or-<domain>.service`, NO ports. Old OOM/fleet-502 recovery is obsolete.
+- Rebuild+verify: `python3 infra/scheduler/redeploy_dashboards.py` (builds 16 → web
+  root, checks each built `<meta dbr-build>` == HEAD). `--verify-only` reads stamps.
+- A dashboard change OR data refresh (dbt) now needs a REBUILD (not restart) to show.
+- Live verify: `curl -sk --resolve portal.open-reporting.dev:443:127.0.0.1 https://portal.open-reporting.dev/<domain>/`.
+
+**ONE PO ACTION (sudo gap):** 16 units stopped but still `enabled` — reboot would
+restart them (benign: 2.5 GiB headroom + #60 guardrails = no OOM, just wasted RAM).
+`disable`/`mask`/`rm` NOT in my NOPASSWD allowlist. PO runs `systemctl disable or-{16}`
++ `daemon-reload` (in outbox + OR-168), or extends sudoers. Then OR-168 closes.
+
+**Held (PO call):** OR-160 cross-filter + OR-161 date-picker = backend-only, on hold.
+OR-162 number-format + OR-161 time-windows = build-time, still doable.
 
 ## Run #63 — [QUIET RUN] tight RAM = concurrent PO VS Code session, not fleet. HEAD pending
 
