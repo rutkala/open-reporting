@@ -46,6 +46,12 @@ def main(argv: list[str] | None = None) -> int:
     p_compile.add_argument("path", nargs="?", default=".",
                            help="Path to the dashboard project (default: .)")
 
+    p_build = sub.add_parser("build", help="Render the dashboard to static HTML (no server)")
+    p_build.add_argument("path", nargs="?", default=".",
+                         help="Path to the dashboard project (default: .)")
+    p_build.add_argument("--out", required=True,
+                         help="Output directory; writes <out>/<domain>/index.html + plotly.min.js")
+
     args = parser.parse_args(argv)
 
     dispatch = {
@@ -54,6 +60,7 @@ def main(argv: list[str] | None = None) -> int:
         "serve":    cmd_serve,
         "validate": cmd_validate,
         "compile":  cmd_compile,
+        "build":    cmd_build,
     }
     return dispatch[args.cmd](args)
 
@@ -420,6 +427,32 @@ def cmd_compile(args: argparse.Namespace) -> int:
         "pages":        [{"title": s[0], "anchor": s[1], "visual_count": len(s[2])} for s in sections],
     }
     print(json.dumps(summary, indent=2, ensure_ascii=False))
+    return 0
+
+
+# ── build ──────────────────────────────────────────────────────────────────────
+
+def cmd_build(args: argparse.Namespace) -> int:
+    """Render the dashboard to static HTML under ``--out``."""
+    import os
+
+    project_root = Path(args.path).resolve()
+    _assert_project(project_root)
+
+    # Match app.py: set DBR_PROJECT_ROOT BEFORE importing dbr's theme/layout
+    # loaders so any per-project theme.yaml / layout.yaml overrides are picked up.
+    os.environ.setdefault("DBR_PROJECT_ROOT", str(project_root))
+
+    from dbr.static_export import UnsupportedComponentError, build_static_dashboard
+
+    try:
+        index = build_static_dashboard(project_root, args.out)
+    except UnsupportedComponentError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        return 1
+
+    size_kb = index.stat().st_size / 1024
+    print(f"  ✓ built {project_root.name} → {index} ({size_kb:.0f} KB)")
     return 0
 
 

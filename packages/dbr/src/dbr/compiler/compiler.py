@@ -221,32 +221,33 @@ class BuildContext:
                     return no_update, no_update
 
 
-def run_dashboard(path: str | Path) -> None:
-    """Build and run the dashboard at ``path``.
+def load_dashboard(path: str | Path) -> tuple[Path, dict, "BuildContext", list[Section]]:
+    """Resolve a dashboard project and compile its page tree.
 
-    Accepts either:
-      - a directory path (e.g. ``"products/dashboards/finance"``) — the
-        project root containing ``dashboard.yml``, or
-      - a file path (e.g. ``__file__`` from a calling ``app.py``) — the
-        compiler uses its parent directory as the project root.
+    Accepts either a directory (the project root containing ``dashboard.yml``)
+    or a file path (e.g. ``__file__`` from a calling ``app.py``) — in which case
+    the parent directory is used. Returns ``(project_root, config, ctx, sections)``.
+
+    This is the shared front half of both the live server (``run_dashboard``) and
+    the static export (``dbr.static_export``): both need exactly this compiled tree.
     """
     p = Path(path).resolve()
     project_root = p if p.is_dir() else p.parent
     config = _load_yaml(project_root / "dashboard.yml")
-
     ctx = BuildContext()
     sections = _load_pages(project_root / "pages", ctx)
+    return project_root, config, ctx, sections
 
-    dashboard_title    = config.get("title", "")
-    dashboard_subtitle = config.get("subtitle", "")
-    footer_source      = config.get("footer_source", "")
-    footer_updated     = config.get("footer_updated", "")
 
-    # Auto-derive the footer "Dane: YYYY" stamp from live warehouse data when
-    # the author opts in (footer_updated omitted or "auto" + a footer_data_domain
-    # listing the dashboard's domain_id code(s)). Keeps the footer honest after
-    # every daily ingest without manual edits. Falls back to the literal on any
-    # failure (warehouse unreachable, no rows). See OR-165.
+def _resolve_footer_updated(config: dict) -> str:
+    """Resolve the footer "Dane: YYYY" stamp.
+
+    Auto-derives from live warehouse data when the author opts in (``footer_updated``
+    omitted or ``"auto"`` + a ``footer_data_domain`` listing the dashboard's domain_id
+    code(s)). Keeps the footer honest after every daily ingest without manual edits.
+    Falls back to the literal on any failure (warehouse unreachable, no rows). See OR-165.
+    """
+    footer_updated = config.get("footer_updated", "")
     footer_data_domain = config.get("footer_data_domain")
     if footer_updated in ("", "auto") and footer_data_domain:
         from dbr.semantic import latest_actual_year
@@ -257,27 +258,38 @@ def run_dashboard(path: str | Path) -> None:
         )
         year = latest_actual_year(domains)
         footer_updated = f"Dane: {year}" if year is not None else ""
+    return footer_updated
 
-    app = make_app(config["domain"], title=dashboard_title)
 
-    shell_kwargs = dict(
+def build_shell(config: dict, sections: list[Section]):
+    """Build the full page tree (sidebar + header + canvas + footer) from a compiled
+    dashboard. Shared by the live server and the static exporter so both render an
+    identical layout."""
+    return page_shell(
         sections=sections,
-        dashboard_title=dashboard_title,
-        dashboard_subtitle=dashboard_subtitle,
-        footer_source=footer_source,
-        footer_updated=footer_updated,
+        dashboard_title=config.get("title", ""),
+        dashboard_subtitle=config.get("subtitle", ""),
+        footer_source=config.get("footer_source", ""),
+        footer_updated=_resolve_footer_updated(config),
     )
+
+
+def run_dashboard(path: str | Path) -> None:
+    """Build and run the live Dash server for the dashboard at ``path``."""
+    project_root, config, ctx, sections = load_dashboard(path)
+
+    app = make_app(config["domain"], title=config.get("title", ""))
+    shell = build_shell(config, sections)
 
     # Inject dcc.Location for drill-through URL hash navigation when needed
     if ctx.needs_location:
         from dash import dcc as _dcc, html as _html
-        shell = page_shell(**shell_kwargs)
         app.layout = _html.Div([
             _dcc.Location(id="dbr_location", refresh=False),
             shell,
         ])
     else:
-        app.layout = page_shell(**shell_kwargs)
+        app.layout = shell
 
     if ctx.has_bindings():
         ctx.register_callbacks(app)
