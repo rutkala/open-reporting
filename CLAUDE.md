@@ -318,17 +318,19 @@ docker compose ps                           # Check service status
 docker compose logs -f postgres             # View logs
 docker compose up -d --force-recreate nginx # Reload nginx after config/html changes
 
-# Dashboards — dbr (YAML-authored, deployed via systemd + nginx)
+# Dashboards — dbr (YAML-authored, pre-rendered to STATIC HTML served by nginx; OR-168)
 dbr validate products/dashboards/public_finance     # JSON Schema check
-dbr run      products/dashboards/public_finance     # systemd restart + health check + nginx route + reload
-dbr serve    products/dashboards/public_finance     # foreground dev server
+dbr build    products/dashboards/public_finance --out infra/nginx/html  # render static HTML
+dbr run      products/dashboards/public_finance     # dbr build into web root + write nginx route + reload
+dbr serve    products/dashboards/public_finance     # foreground dev server (Dash, local preview only)
 
-# After ANY packages/dbr/ change: commit, then redeploy + VERIFY the whole fleet.
-# Editable install means live services keep old code until restarted; curl 200 can't
-# detect stale code. This script restarts all 16 and polls each page's <meta dbr-build>
-# stamp until it == repo HEAD. Non-zero exit = NOT resolved.
-python3 infra/scheduler/redeploy_dashboards.py                # all 16, restart + verify
-python3 infra/scheduler/redeploy_dashboards.py --verify-only  # check stamps, no restart
+# Dashboards are static files — NO always-on Dash servers (the 16 services are retired).
+# After ANY packages/dbr/ change OR a data refresh: commit, then REBUILD + VERIFY the fleet.
+# A 200 only proves a file exists, not that it was rebuilt from current code/data. This
+# script rebuilds all 16 into the web root and checks each built page's <meta dbr-build>
+# stamp == repo HEAD; it hard-fails on any build error. Non-zero exit = NOT resolved.
+python3 infra/scheduler/redeploy_dashboards.py                # all 16, rebuild + verify
+python3 infra/scheduler/redeploy_dashboards.py --verify-only  # check built stamps, no rebuild
 
 # dbt — run all models
 cd products/warehouse && DUCKDB_PATH=/opt/open-reporting/data/warehouse.duckdb dbt run --profiles-dir .

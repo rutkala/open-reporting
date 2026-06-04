@@ -112,12 +112,21 @@ dbr visual factories (line, column, bar, card, ...)
     │
     │   products/dashboards/<domain>/pages/<page>/visuals/<v>.yml
     ↓
-Dash app rendered as HTML + Plotly JSON
+`dbr build` → pre-rendered static HTML + Plotly JSON       — build time, no server
     │
-    │   nginx reverse proxy
+    │   infra/nginx/html/<domain>/index.html
+    │   nginx serves the file directly (no backend)
     ↓
 https://portal.open-reporting.dev/<domain>/
 ```
+
+**Serving model (OR-168):** dashboards are **pre-rendered to static HTML** by
+`dbr build` and served directly by nginx — there is **no always-on Dash server**.
+The MetricFlow → Plotly pipeline runs at *build* time (on `dbr run` / data refresh),
+not per request. The dashboards use no server callbacks (no slicers, cross-filter,
+or live interactivity — that roadmap is on hold; see OR-160/161/162), so the only
+runtime interactivity is Plotly's client-side hover/zoom, which the static page keeps.
+This eliminated the 16 always-on Python servers that overcommitted VPS RAM.
 
 **Rule:** dashboards and visuals query MetricFlow only — never `curated.*` directly, never `raw.*` ever. Direct SQL access skips the semantic layer's business logic.
 
@@ -206,13 +215,17 @@ products/dashboards/<domain>/
 
 | Concern | Where | Notes |
 |---|---|---|
-| HTTP reverse proxy | `infra/nginx/conf.d/portal.conf` | Routes per dashboard |
-| Auto-generated dashboard routes | `infra/nginx/conf.d/dbr-routes/<domain>.conf` | Written by `dbr run` |
+| HTTP server | `infra/nginx/conf.d/portal.conf` | Serves the static web root; per-dashboard routes |
+| Static dashboard routes | `infra/nginx/conf.d/dbr-routes/<domain>.conf` | `try_files` static serve, written by `dbr run` |
 | TLS certs | `infra/nginx/certs/` (Let's Encrypt) | Renewed via certbot |
-| Static web root | `infra/nginx/html/` | Portal landing page + static dashboards |
-| systemd units | `infra/systemd/or-<domain>.service` | Hand-written for legacy; `dbr run` writes new ones |
+| Static web root | `infra/nginx/html/` | Portal landing + pre-rendered dashboards (`<domain>/index.html`) + shared `assets/plotly.min.js` (build artifacts, gitignored) |
+| systemd units | `infra/systemd/or-<domain>.service` | **Retired** (OR-168): dashboards no longer run as services. Files kept (disabled) for rollback. |
 
-**Deploy command:** `dbr run products/dashboards/<domain>` — writes systemd unit, restarts service, waits for port health, writes nginx route, reloads nginx.
+**Deploy command:** `dbr run products/dashboards/<domain>` — renders the dashboard to
+static HTML in the web root (`dbr build`), writes the static nginx route, reloads nginx.
+No systemd, no port. Rebuild + verify the whole fleet with
+`python3 infra/scheduler/redeploy_dashboards.py` (checks each built page's
+`<meta dbr-build>` stamp == HEAD).
 
 ---
 

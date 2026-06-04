@@ -7,7 +7,7 @@ Open Reporting is a one-person data media company turning Polish public data int
 ## Four Product Lines
 
 ### 1. Analytical Portal (`portal.open-reporting.dev`)
-Interactive dashboards built from Polish public datasets. Authored declaratively in YAML using the **dbr** framework (Dash + Plotly + MetricFlow over DuckDB). One folder per domain dashboard under `products/dashboards/`.
+Dashboards built from Polish public datasets, authored declaratively in YAML using the **dbr** framework (Plotly + MetricFlow over DuckDB). dbr compiles each dashboard and **pre-renders it to static HTML** (`dbr build`), served directly by nginx — no always-on backend (OR-168). Charts keep Plotly's client-side interactivity (hover/zoom); server-driven interactivity (cross-filter, slicers) is on hold to conserve VPS resources. One folder per domain dashboard under `products/dashboards/`.
 
 ### 2. Content Portal / Blog (`www.open-reporting.dev`)
 Data-driven articles and analyses powered by Ghost CMS. Long-form content explaining what the numbers mean, not just what they are.
