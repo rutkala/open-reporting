@@ -983,3 +983,22 @@ Correction to the entry above: the tool I/O channel was NOT fully dead — it fl
 - **Linear grooming:** backlog reviewed (28 items). Stable; OPE-era issues OR-51/60/62/63/69-73 already archived. No churn-comments added — no state drift worth flagging.
 - **Status:** Quiet run. 1 commit (post-mortem + session-memory + outbox). 0 builds, 0 subagent spawns, fleet untouched. Untracked PO/bot WIP left unstaged.
 - **Standing blockers (all PO-side):** **OR-168 (VPS memory, Urgent)** — now with zero-cost mitigation path documented; OR-153 (Telegram inbound), OR-90 (Instagram token → OR-89), OR-86 (BDL key), OR-79 (Ghost nav).
+
+## Run #60 — 2026-06-03 (reconstructed) — [OR-168] dbr memory guardrails shipped
+
+> Audit gap: run #60 committed session-memory + systemd units (51c34ea8 / 987744b1) but the decisions.md entry was missed. Reconstructed here from session-memory.md for the audit trail.
+
+- **Shipped (987744b1, pushed):** `MemoryAccounting=yes` / `MemoryHigh=256M` / `MemoryMax=384M` on all 16 dbr dashboard units + the `_render_systemd_unit` template (survives `dbr run`). Converts whole-box OOM reboots → bounded per-svc cgroup-kill + autorestart.
+- **Diagnosis:** the 09:24 cull was a full reboot (global OOM killer), not a dbr bug. `dbr serve` is plain Dash `app.run` (single proc). Structural overcommit: 16 svc ≈ 2,942 MB cgroup mem on a 3.7 GB box. Swap (2 GiB `/swapfile`) has existed since 2026-03-16.
+- **Verified:** all 16 sit under MemoryHigh in normal op; 16/16 active, stamp-verify PASS. Did NOT force a stamp-bumping restart (infra-only change, zero render-path diff) to avoid the very spike being mitigated.
+- **Still PO-side:** guardrails harden failure, add no capacity. Needs swap grow 2→6 GiB or RAM upgrade (PO runs it, or extend NOPASSWD allowlist with `fallocate`/`mkswap`/`swapon`).
+
+## Run #61 — 2026-06-04 02:00 UTC — [QUIET RUN] fleet healthy, OR-168 guardrails holding
+
+- **Production healthy at start:** all 5 probed dashboards (public_finance, labour_market, national_accounts, demographics, environment) + www return 200; yesterday's daily ingest exit=0 (Eurostat fresh 2026-06-03, 98,091 obs); Telegram inbox empty; no Strategic / In-Progress / Todo in Linear. Open Urgents (OR-168, OR-153, OR-90) are all PO-side blockers.
+- **Step 2b release sweep:** ran the pipeline — **18/18 articles already published, 0 drafts**. The two `.md` files in products/blog/ (health, tourism) are already-published source. Ghost-API skip path → no `claude -p` reviewer spawns, memory-safe.
+- **Verified run #60's OR-168 guardrails are live and holding:** `systemctl show` confirms MemoryHigh=256M / MemoryMax=384M on the units; live per-svc usage 145–190 MiB — all comfortably under MemoryHigh, no cgroup pressure. Exactly 16 `dbr serve` procs (the apparent "17th" was this session's transient grep cwd helper, not an orphan). No failed units.
+- **Memory ceiling unchanged:** `free` = **527 MiB available, swap 1523/2047 MiB used (75%)** — same fragile overcommit. OR-168 remains the binding constraint → deliberately NO heavy build (dbr feature backlog OR-160/161/162 needs a fleet-restarting redeploy; new NUTS2 metrics need a write-lock dbt build with stop/restart — both spike memory and risk re-culling at 527 MiB).
+- **Minor doc drift noted (not fixed — CLAUDE.md is a protected contract file):** the Development Commands example uses `from dbr.semantic import query`; the current API is `semantic_query` / `semantic_query_data` (the latter is MetricFlow-only, not raw SQL). Flagged to PO in the outbox.
+- **Status:** Quiet run. 1 commit (post-mortem #60+#61 + session-memory + outbox). 0 builds, 0 subagent spawns, fleet untouched. Untracked PO/bot WIP left unstaged.
+- **Standing blockers (all PO-side):** **OR-168 (VPS memory, Urgent)** — guardrails shipped, still needs swap-grow or RAM; OR-153 (Telegram inbound), OR-90 (Instagram token → OR-89), OR-86 (BDL key), OR-79 (Ghost nav).
