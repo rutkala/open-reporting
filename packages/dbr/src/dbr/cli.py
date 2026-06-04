@@ -50,7 +50,12 @@ def main(argv: list[str] | None = None) -> int:
     p_build.add_argument("path", nargs="?", default=".",
                          help="Path to the dashboard project (default: .)")
     p_build.add_argument("--out", required=True,
-                         help="Output directory; writes <out>/<domain>/index.html + plotly.min.js")
+                         help="Output directory; writes <out>/<domain>/index.html (+ plotly.min.js)")
+    p_build.add_argument("--plotly-src", default="plotly.min.js",
+                         help="<script src> for plotly.js (default per-page 'plotly.min.js'; "
+                              "pass an absolute URL like /assets/plotly.min.js to share one copy)")
+    p_build.add_argument("--no-vendor-plotly", action="store_true",
+                         help="Don't write plotly.min.js next to the page (use with a shared --plotly-src)")
 
     args = parser.parse_args(argv)
 
@@ -446,7 +451,11 @@ def cmd_build(args: argparse.Namespace) -> int:
     from dbr.static_export import UnsupportedComponentError, build_static_dashboard
 
     try:
-        index = build_static_dashboard(project_root, args.out)
+        index = build_static_dashboard(
+            project_root, args.out,
+            plotly_src=args.plotly_src,
+            vendor_plotly=not args.no_vendor_plotly,
+        )
     except UnsupportedComponentError as e:
         print(f"Error: {e}", file=sys.stderr)
         return 1

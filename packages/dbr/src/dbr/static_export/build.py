@@ -24,14 +24,14 @@ from dbr.make_app.make_app import (
 from dbr.static_export.serialize import UnsupportedComponentError, render_node
 
 
-def _document(*, title: str, body_html: str, build: str) -> str:
+def _document(*, title: str, body_html: str, build: str, plotly_src: str) -> str:
     return (
         "<!DOCTYPE html>\n<html>\n<head>\n"
         '  <meta charset="utf-8">\n'
         '  <meta name="viewport" content="width=device-width, initial-scale=1">\n'
         f'  <meta name="dbr-build" content="{build}">\n'
         f"  <title>{title}</title>\n"
-        '  <script src="plotly.min.js" charset="utf-8"></script>\n'
+        f'  <script src="{plotly_src}" charset="utf-8"></script>\n'
         f"  <style>{_CSS}</style>\n"
         "</head>\n<body>\n"
         f"{body_html}\n"
@@ -41,12 +41,34 @@ def _document(*, title: str, body_html: str, build: str) -> str:
     )
 
 
-def build_static_dashboard(path: str | Path, out_dir: str | Path) -> Path:
-    """Render the dashboard at ``path`` to ``<out_dir>/<domain>/``. Returns the
-    written ``index.html`` path. Raises ``UnsupportedComponentError`` if the
-    dashboard uses runtime interactivity (slicers, cross-filter, tabs)."""
+def write_plotlyjs(dest_dir: str | Path) -> Path:
+    """Write plotly.min.js to ``dest_dir`` (created if needed). Returns the path.
+    Used to vendor ONE shared copy across all dashboards rather than per page."""
     from plotly.offline import get_plotlyjs
 
+    dest = Path(dest_dir)
+    dest.mkdir(parents=True, exist_ok=True)
+    out = dest / "plotly.min.js"
+    out.write_text(get_plotlyjs(), encoding="utf-8")
+    return out
+
+
+def build_static_dashboard(
+    path: str | Path,
+    out_dir: str | Path,
+    *,
+    plotly_src: str = "plotly.min.js",
+    vendor_plotly: bool = True,
+) -> Path:
+    """Render the dashboard at ``path`` to ``<out_dir>/<domain>/``. Returns the
+    written ``index.html`` path. Raises ``UnsupportedComponentError`` if the
+    dashboard uses runtime interactivity (slicers, cross-filter, tabs).
+
+    ``plotly_src`` is the ``<script src>`` value (default the per-page relative
+    ``plotly.min.js``; pass an absolute URL like ``/assets/plotly.min.js`` to share
+    one cached copy across dashboards). ``vendor_plotly`` writes plotly.min.js next
+    to the page — set False when a shared copy is published separately.
+    """
     _project_root, config, ctx, sections = load_dashboard(path)
 
     if ctx.has_bindings() or ctx.needs_location:
@@ -63,11 +85,13 @@ def build_static_dashboard(path: str | Path, out_dir: str | Path) -> Path:
         title=config.get("title", "") or domain,
         body_html=body_html,
         build=build_sha(),
+        plotly_src=plotly_src,
     )
 
     dest = Path(out_dir) / domain
     dest.mkdir(parents=True, exist_ok=True)
-    (dest / "plotly.min.js").write_text(get_plotlyjs(), encoding="utf-8")
+    if vendor_plotly:
+        write_plotlyjs(dest)
     index = dest / "index.html"
     index.write_text(html_doc, encoding="utf-8")
     return index

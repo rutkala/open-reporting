@@ -176,13 +176,22 @@ def render_node(node) -> str:
             return render_markdown(props.get("children", ""), props.get("style"))
         if ctype in ("Store", "Location"):
             return ""  # no-ops without a callback backend
-        if ctype in _INTERACTIVE_DCC:
-            raise UnsupportedComponentError(
-                f"dcc.{ctype} requires a runtime backend — this dashboard cannot "
-                f"be exported to static HTML. Interactivity is on hold (see OR-168)."
-            )
-        # Unknown dcc component: render its children if any, else drop.
-        return render_node(props.get("children"))
+        # Every other dcc component (interactive widgets AND anything unrecognised)
+        # is treated as backend-dependent: fail loud rather than ship a page that is
+        # silently missing a control. build sits in the deploy path, so a degrade here
+        # would publish a broken dashboard.
+        raise UnsupportedComponentError(
+            f"dcc.{ctype} cannot be rendered statically — it requires a runtime "
+            f"backend (or is not yet supported by the static exporter). This dashboard "
+            f"cannot be exported to static HTML; interactivity is on hold (see OR-168)."
+        )
+
+    if namespace != "dash_html_components":
+        # Unknown component library — refuse rather than guess a tag mapping.
+        raise UnsupportedComponentError(
+            f"Component {namespace}.{ctype} is from an unrecognised library and "
+            f"cannot be serialized to static HTML."
+        )
 
     # html component (dash_html_components) — map type to its lowercase tag.
     tag = ctype.lower()
