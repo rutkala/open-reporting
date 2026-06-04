@@ -37,6 +37,7 @@ from dbr.semantic import metric_label
 from dbr.theme import (
     BORDER, SUBTEXT, TEXT,
     TABLE_FONT_SIZE, TABLE_ROW_HEIGHT, TABLE_ROW_LIMIT,
+    FORMATS,
 )
 
 
@@ -164,9 +165,11 @@ def _render_companion_table(df: pd.DataFrame, table_opt: bool | dict) -> html.Ta
     """
     limit = TABLE_ROW_LIMIT
     labels: dict[str, str] = {}
+    formats: dict[str, str] = {}
     if isinstance(table_opt, dict):
         limit = table_opt.get("row_limit", TABLE_ROW_LIMIT)
         labels = table_opt.get("labels") or {}
+        formats = table_opt.get("formats") or {}
     capped = df.head(limit)
 
     th_style = {
@@ -187,7 +190,10 @@ def _render_companion_table(df: pd.DataFrame, table_opt: bool | dict) -> html.Ta
                 for c in capped.columns
             ])),
             html.Tbody([
-                html.Tr([html.Td(_fmt(row[c]), style=td_style) for c in capped.columns])
+                html.Tr([
+                    html.Td(_fmt(row[c], formats.get(c)), style=td_style)
+                    for c in capped.columns
+                ])
                 for _, row in capped.iterrows()
             ]),
         ],
@@ -223,10 +229,16 @@ def _label_for_column(col: str, labels: dict[str, str] | None = None) -> str:
     return cleaned[:1].upper() + cleaned[1:] if cleaned else col
 
 
-def _fmt(v) -> str:
-    """Same number formatting as the standalone table visual (PL decimal comma)."""
+def _fmt(v, fmt: str | None = None) -> str:
+    """Number formatting for table cells (PL decimal comma).
+
+    With ``fmt`` (a format spec or named template), delegate to
+    ``format_value``; otherwise keep the default 2-decimal PL formatting.
+    """
     if pd.isna(v):
         return "—"
+    if fmt is not None:
+        return format_value(v, fmt)
     if isinstance(v, float):
         return f"{v:.2f}".replace(".", ",")
     return str(v)
@@ -306,6 +318,9 @@ _FORMAT_OPTION_SCHEMA: dict = {
     },
 }
 
+# Built-in fallback templates. The authoritative set lives in theme.yaml
+# under ``formats:`` (exposed as ``dbr.theme.FORMATS``) and is merged over
+# these at resolution time, so a project theme can add/override presets.
 _FORMAT_TEMPLATES: dict[str, str] = {
     "percent_1dp":   ".1f",
     "percent_0dp":   ".0f",
@@ -316,12 +331,19 @@ _FORMAT_TEMPLATES: dict[str, str] = {
 }
 
 
+def _resolve_format_spec(fmt: str) -> str:
+    """Resolve a named template (theme.yaml ``formats:`` then built-ins) to a
+    Python/D3 format spec; pass an unrecognised value through unchanged so a
+    raw spec like ``,.0f`` still works."""
+    return {**_FORMAT_TEMPLATES, **FORMATS}.get(fmt, fmt)
+
+
 def format_value(v, fmt: str | None) -> str:
     """Format a numeric value with a Python format spec (Polish decimal comma).
 
     Accepts a format spec string (e.g. '.1f', ',.0f') or a named template
-    from _FORMAT_TEMPLATES. Falls back to 1-decimal Polish format if fmt is
-    None or the value is not numeric.
+    resolved from theme.yaml ``formats:`` (falling back to ``_FORMAT_TEMPLATES``).
+    Falls back to 1-decimal Polish format if fmt is None or the value is not numeric.
 
     Polish convention: decimal separator = comma, thousands separator = NBSP (thin space).
     """
@@ -331,7 +353,7 @@ def format_value(v, fmt: str | None) -> str:
         return str(v) if v is not None else "—"
     if fmt is None:
         return f"{f:.1f}".replace(".", ",")
-    spec = _FORMAT_TEMPLATES.get(fmt, fmt)
+    spec = _resolve_format_spec(fmt)
     try:
         raw = format(f, spec)
         # Swap: ',' thousands → ' ' (narrow no-break space), '.' decimal → ','
@@ -354,8 +376,13 @@ _TABLE_OPTION_SCHEMA = {
                     "additionalProperties": {"type": "string"},
                     "description": "Map raw column names to Polish display labels (overrides metric_label and the heuristic). Keys are DataFrame column names (e.g. date_key__cal_year); values are display strings.",
                 },
+                "formats": {
+                    "type": "object",
+                    "additionalProperties": {"type": "string"},
+                    "description": "Per-column number format. Keys are DataFrame column names; values are a Python format spec (',.0f', '.1f') or a named template (percent_1dp, thousands, …). Columns without an entry keep the default 2-decimal PL formatting.",
+                },
             },
         },
     ],
-    "description": "Render a precision table beneath the chart using the same data. true = default row limit; {row_limit, labels} = configured.",
+    "description": "Render a precision table beneath the chart using the same data. true = default row limit; {row_limit, labels, formats} = configured.",
 }

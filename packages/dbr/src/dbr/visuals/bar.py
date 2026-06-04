@@ -165,7 +165,9 @@ def bar(*, encoding: dict, filter: dict | None = None, options: dict | None = No
         df = df.sort_values(y_col)
 
     data_labels = opts.get("data_labels", False)
-    text_templ = "%{x:.1f}" if data_labels else None
+    val_fmt = opts.get("value_format")
+    # No value_format → preserve the historical 1-decimal label exactly (no-op).
+    _label = (lambda v: format_value(v, val_fmt)) if val_fmt else (lambda v: f"{v:.1f}")
 
     fig = go.Figure()
     if enc.color:
@@ -173,7 +175,7 @@ def bar(*, encoding: dict, filter: dict | None = None, options: dict | None = No
         for series, sub in df.groupby(color_col):
             fig.add_trace(go.Bar(
                 x=sub[metric], y=sub[y_col], orientation="h", name=str(series),
-                text=[f"{v:.1f}" for v in sub[metric]] if data_labels else None,
+                text=[_label(v) for v in sub[metric]] if data_labels else None,
                 textposition="outside" if data_labels else None,
             ))
         fig.update_layout(barmode="stack" if opts.get("stack") else "group")
@@ -189,7 +191,7 @@ def bar(*, encoding: dict, filter: dict | None = None, options: dict | None = No
             x=df[metric], y=df[y_col], orientation="h",
             marker=dict(color=marker_color) if marker_color else None,
             showlegend=False,
-            text=[f"{v:.1f}" for v in df[metric]] if data_labels else None,
+            text=[_label(v) for v in df[metric]] if data_labels else None,
             textposition="outside" if data_labels else None,
         ))
     height = opts.get("height", int(str(BAR_CHART_HEIGHT).rstrip("px")))

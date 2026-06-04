@@ -52,6 +52,12 @@ _EFFECTS   = _DATA["effects"]
 _CHART     = _DATA["chart"]
 _VISUALS   = _DATA["visuals"]
 
+# ── Named number-format templates (value_format presets) ───────────────
+# Maps a template name → Python/D3 format spec. A project theme.yaml may
+# add or override entries via the deep-merge above. Consumed by
+# ``dbr.visuals._render.format_value``.
+FORMATS = dict(_DATA.get("formats") or {})
+
 # ── Colours — logo core ────────────────────────────────────────────────
 TEAL_PRIMARY  = _COLORS["teal_primary"]
 AZURE_PRIMARY = _COLORS["azure_primary"]
