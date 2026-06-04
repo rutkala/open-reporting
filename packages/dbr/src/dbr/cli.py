@@ -141,9 +141,11 @@ def cmd_init(args: argparse.Namespace) -> int:
 # ── run ────────────────────────────────────────────────────────────────────────
 
 def cmd_run(args: argparse.Namespace) -> int:
-    """Deploy a dashboard end-to-end: write infra files, sudo cp, restart service, reload nginx."""
+    """Deploy a dashboard end-to-end: render it to static HTML in the nginx web
+    root, write the static nginx route, validate + reload nginx. No backend, no
+    systemd service, no port (OR-168 — the always-on Dash fleet is retired)."""
+    import os
     import subprocess
-    import time
     import yaml
 
     project_root = Path(args.path).resolve()
@@ -151,81 +153,54 @@ def cmd_run(args: argparse.Namespace) -> int:
 
     config = yaml.safe_load((project_root / "dashboard.yml").read_text()) or {}
     domain = config.get("domain")
-    port = config.get("port")
-    if not domain or not port:
-        print("Error: dashboard.yml must define `domain` and `port`", file=sys.stderr)
+    if not domain:
+        print("Error: dashboard.yml must define `domain`", file=sys.stderr)
         return 1
 
-    print(f"→ Deploying {domain} on port {port}")
-
-    # 1. Write the systemd unit at infra/systemd/or-<domain>.service
+    print(f"→ Deploying {domain} (static)")
     repo_root = _find_repo_root(project_root)
-    unit_path = repo_root / "infra" / "systemd" / f"or-{domain}.service"
-    unit_path.parent.mkdir(parents=True, exist_ok=True)
-    unit_path.write_text(_render_systemd_unit(domain, project_root))
-    print(f"  ✓ wrote {unit_path.relative_to(repo_root)}")
+    web_root = repo_root / "infra" / "nginx" / "html"
 
-    # 2. Install + (re)start the systemd unit
-    _run(["sudo", "-n", "/usr/bin/cp", str(unit_path), "/etc/systemd/system/"])
-    _run(["sudo", "-n", "/usr/bin/systemctl", "daemon-reload"])
-    _run(["sudo", "-n", "/usr/bin/systemctl", "enable", f"or-{domain}.service"], allow_fail=True)
-    _run(["sudo", "-n", "/usr/bin/systemctl", "restart", f"or-{domain}.service"])
-    print(f"  ✓ systemd: or-{domain}.service restarted — waiting for health check")
+    # Match app.py: set DBR_PROJECT_ROOT BEFORE importing dbr's theme/layout loaders.
+    os.environ.setdefault("DBR_PROJECT_ROOT", str(project_root))
+    from dbr.static_export import (
+        UnsupportedComponentError,
+        build_static_dashboard,
+        write_plotlyjs,
+    )
 
-    # 2b. Health check: dashboards take ~5-10s to start. MetricFlow runs
-    #     in-process now (one ~6s engine setup amortised across all
-    #     visuals, then ~50ms per query). Poll for the port to be
-    #     listening; if not after the budget, dump status and fail.
-    health_budget_s = 60
-    import socket
-    deadline = time.time() + health_budget_s
-    while time.time() < deadline:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.settimeout(0.5)
-            try:
-                if s.connect_ex(("127.0.0.1", int(port))) == 0:
-                    break
-            except OSError:
-                pass
-        time.sleep(1)
-    else:
-        # Port never opened — dump systemctl status (no journal access without sudo)
-        status = subprocess.run(
-            ["/usr/bin/systemctl", "status", f"or-{domain}.service", "--no-pager", "-n", "30"],
-            capture_output=True, text=True,
+    # 1. Publish the shared plotly.min.js once (idempotent), then render the page.
+    write_plotlyjs(web_root / "assets")
+    try:
+        index = build_static_dashboard(
+            project_root, web_root,
+            plotly_src="/assets/plotly.min.js", vendor_plotly=False,
         )
-        print(
-            f"Error: port {port} did not open within {health_budget_s}s — service may be in a crash loop",
-            file=sys.stderr,
-        )
-        print("─" * 60, file=sys.stderr)
-        print(status.stdout, file=sys.stderr)
-        print("─" * 60, file=sys.stderr)
-        print(f"Inspect logs:  sudo journalctl -u or-{domain}.service -n 50", file=sys.stderr)
+    except UnsupportedComponentError as e:
+        print(f"Error: {e}", file=sys.stderr)
         return 1
-    print(f"  ✓ health check: port {port} is listening")
+    print(f"  ✓ built {index.relative_to(repo_root)} ({index.stat().st_size // 1024} KB)")
 
-    # 3. Write the nginx route block at infra/nginx/conf.d/dbr-routes/<domain>.conf
+    # 2. Write the static nginx route block.
     nginx_path = repo_root / "infra" / "nginx" / "conf.d" / "dbr-routes" / f"{domain}.conf"
     nginx_path.parent.mkdir(parents=True, exist_ok=True)
-    nginx_path.write_text(_render_nginx_block(domain, port))
+    nginx_path.write_text(_render_nginx_block(domain))
     print(f"  ✓ wrote {nginx_path.relative_to(repo_root)}")
 
-    # 4. Validate + reload nginx
+    # 3. Validate + reload nginx.
+    compose = ["docker", "compose", "-f", str(repo_root / "docker-compose.yml")]
     test = subprocess.run(
-        ["docker", "compose", "-f", str(repo_root / "docker-compose.yml"), "exec", "-T", "nginx", "nginx", "-t"],
+        [*compose, "exec", "-T", "nginx", "nginx", "-t"],
         capture_output=True, text=True,
     )
     if test.returncode != 0:
         print(f"Error: nginx config invalid after writing route:\n{test.stderr}", file=sys.stderr)
         return 1
-    _run(["docker", "compose", "-f", str(repo_root / "docker-compose.yml"), "exec", "-T", "nginx", "nginx", "-s", "reload"])
-    print(f"  ✓ nginx reloaded")
+    _run([*compose, "exec", "-T", "nginx", "nginx", "-s", "reload"])
+    print("  ✓ nginx reloaded")
 
     print()
     print(f"  → https://portal.open-reporting.dev/{domain}/")
-    print(f"  → http://localhost:{port}/{domain}/")
-    print(f"  → Logs: sudo journalctl -u or-{domain}.service -f")
     return 0
 
 
@@ -276,18 +251,17 @@ WantedBy=multi-user.target
 """
 
 
-def _render_nginx_block(domain: str, port: int) -> str:
-    """Generate the nginx `location` block for a dashboard route."""
-    return f"""# dbr-managed — re-written by `dbr run`. Manual edits will be lost.
+def _render_nginx_block(domain: str) -> str:
+    """Generate the nginx `location` block for a static dashboard route.
+
+    Dashboards are pre-rendered to ``infra/nginx/html/<domain>/index.html`` (served
+    from the nginx ``root`` /usr/share/nginx/charts) — no backend, no port (OR-168).
+    """
+    return f"""# dbr-managed — static dashboard, no backend. Re-written by `dbr run`. Manual edits lost.
+location = /{domain} {{ return 301 /{domain}/; }}
 location /{domain}/ {{
-    proxy_pass http://172.18.0.1:{port};
-    proxy_http_version 1.1;
-    proxy_set_header Upgrade $http_upgrade;
-    proxy_set_header Connection "upgrade";
-    proxy_set_header Host $host;
-    proxy_set_header X-Real-IP $remote_addr;
-    add_header Cache-Control "no-store, no-cache, must-revalidate" always;
-    add_header Pragma "no-cache" always;
+    try_files $uri $uri/ /{domain}/index.html;
+    add_header Cache-Control "public, max-age=3600" always;
 }}
 """
 

@@ -12,6 +12,7 @@ are gone. nginx serves the files directly; nothing runs at request time.
 """
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 from dbr.compiler.compiler import build_shell, load_dashboard
@@ -93,5 +94,9 @@ def build_static_dashboard(
     if vendor_plotly:
         write_plotlyjs(dest)
     index = dest / "index.html"
-    index.write_text(html_doc, encoding="utf-8")
+    # Atomic write: render to a temp file in the same dir, then rename into place,
+    # so nginx never serves a half-written index.html during a rebuild.
+    tmp = dest / ".index.html.tmp"
+    tmp.write_text(html_doc, encoding="utf-8")
+    os.replace(tmp, index)
     return index
