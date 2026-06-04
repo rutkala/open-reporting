@@ -1002,3 +1002,15 @@ Correction to the entry above: the tool I/O channel was NOT fully dead — it fl
 - **Minor doc drift noted (not fixed — CLAUDE.md is a protected contract file):** the Development Commands example uses `from dbr.semantic import query`; the current API is `semantic_query` / `semantic_query_data` (the latter is MetricFlow-only, not raw SQL). Flagged to PO in the outbox.
 - **Status:** Quiet run. 1 commit (post-mortem #60+#61 + session-memory + outbox). 0 builds, 0 subagent spawns, fleet untouched. Untracked PO/bot WIP left unstaged.
 - **Standing blockers (all PO-side):** **OR-168 (VPS memory, Urgent)** — guardrails shipped, still needs swap-grow or RAM; OR-153 (Telegram inbound), OR-90 (Instagram token → OR-89), OR-86 (BDL key), OR-79 (Ghost nav).
+
+## Run #62 — 2026-06-04 07:00 UTC — [QUIET RUN] clean smoke + data-quality audit
+
+- **Production healthy at start:** all 5 probed dashboards + www = 200; daily ingest 2026-06-03 exit=0 (full log, not just the trap's service-ensure tail); Telegram inbox empty; no Strategic / In-Progress / Todo in Linear; 0 failed units; 16/16 `dbr serve`.
+- **Memory healthier than #61:** `free` = **1122 MiB available** (vs 527 last run), fleet RSS 2167 MiB — but **swap 100% used (2047/2047)**, so the overcommit ceiling is unchanged. OR-168 still binding → deliberately NO heavy build (dbt/dbr/subagent spawns all spike memory).
+- **Step 2b release sweep:** report shows **18/18 already published, 0 drafts** (pipeline last ran 02:01 UTC this date). Did not re-spawn — no new drafts, memory-safe.
+- **Data-quality audit (read-only, zero memory risk).** Queried `curated.all_indicators` latest period + fetch date per domain:
+  - **Curated marts lag raw by ~6 days** (`last_fetch` clusters at 2026-05-29, FIN at 05-28) because `run_daily.sh` refreshes **raw only** (NBP + Eurostat) and restarts the fleet — it does **not** run `dbt`. Curated is only as fresh as the last manual/autonomous `dbt run`.
+  - **Verified this has NO visible product impact:** every live dashboard displays **annual/quarterly aggregates** (e.g. financial_markets shows annual-average FX 2002–2025, not daily NBP). A 6-day curated lag is immaterial at annual granularity; the team's existing ad-hoc "stop-16 → dbt → restart" pattern during builds is adequate. No fix warranted — and a daily `dbt` in cron would add exactly the memory spike OR-168 is fighting. Noted, not actioned.
+  - **PUB latest period = 2029** confirmed **legitimate fiscal forecasts** (2026–2029 all `obs_status='p'` provisional/projection — Stability Programme / AWG), not a bad-year data error.
+- **Status:** Quiet run. 1 commit (post-mortem + session-memory + outbox). 0 builds, 0 subagent spawns, fleet untouched. Untracked PO/bot WIP left unstaged.
+- **Standing blockers (all PO-side):** **OR-168 (VPS memory, Urgent)** — guardrails holding, still needs swap-grow or RAM; OR-153 (Telegram inbound), OR-90 (Instagram token → OR-89), OR-86 (BDL key), OR-79 (Ghost nav).
