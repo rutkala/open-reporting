@@ -1,15 +1,14 @@
 #!/usr/bin/env bash
 # Daily ingestion wrapper — NBP exchange rates + Eurostat observations.
 #
-# Invoked by user crontab at 22:00 UTC (00:00 Warsaw next day, CEST), in
-# the quiet hours so the brief dbr restart is invisible. NBP publishes
-# rates around 12:15 CET; by 22:00 UTC the publish has had ~9h to settle.
+# Invoked by user crontab at 22:00 UTC (00:00 Warsaw next day, CEST). NBP
+# publishes rates around 12:15 CET; by 22:00 UTC the publish has had ~9h to settle.
 #
-# DuckDB is file-locked: any live dbr-served dashboard holds an exclusive
-# lock on warehouse.duckdb, blocking writers. We work around this by
-# stopping every or-*.service dashboard (discovered dynamically — telegram-bot
-# is excluded because it doesn't touch DuckDB) before ingestion and starting
-# them again after. Total downtime ~30 seconds.
+# As of OR-168 the dashboards are pre-rendered STATIC HTML served by nginx — no
+# process holds a live lock on warehouse.duckdb during ingestion, so the old
+# "stop every or-*.service, ingest, restart" dance is gone (it also never refreshed
+# dashboard content: the dashboards render from curated marts, updated only by a
+# deliberate `dbt run` + `dbr build`, not by raw ingestion).
 #
 # Idempotent: both upstream scripts use upsert semantics on their natural
 # keys (NBP: currency_code+rate_date; Eurostat: dataset+geo+period+dim_key).
@@ -18,9 +17,8 @@
 # Logs to /opt/open-reporting/data/logs/ingest-daily-YYYY-MM-DD.log with
 # rotation by date (one file per day; old files persist for inspection).
 # Exit code: max of the two sub-scripts (non-zero if anything failed).
-# The dashboard is always restarted, even on ingestion failure.
 #
-# Linear: OR-85
+# Linear: OR-85, OR-168
 set -uo pipefail
 
 REPO=/opt/open-reporting
@@ -34,28 +32,6 @@ log() { echo "[$(ts)] $*" | tee -a "$LOG"; }
 
 log "=== daily ingestion start ==="
 log "host: $(hostname)  user: $(whoami)  python: $(python3 --version 2>&1)"
-
-# Discover dashboard services dynamically — any unit matching or-*.service
-# that holds the DuckDB lock. Excludes or-telegram-bot.service (no DuckDB).
-dashboard_services() {
-  systemctl list-unit-files --type=service --no-legend 'or-*.service' \
-    | awk '{print $1}' \
-    | grep -v '^or-telegram-bot\.service$' || true
-}
-
-# Trap to always restart dashboards even on early exit
-ensure_dashboards_running() {
-  for svc in $(dashboard_services); do
-    log "ensuring $svc is running…"
-    sudo -n /usr/bin/systemctl start "$svc" >>"$LOG" 2>&1 || log "WARN: $svc start failed"
-  done
-}
-trap ensure_dashboards_running EXIT
-
-for svc in $(dashboard_services); do
-  log "stopping $svc to release DuckDB lock…"
-  sudo -n /usr/bin/systemctl stop "$svc" >>"$LOG" 2>&1 || log "WARN: $svc stop failed"
-done
 
 run() {
   local name=$1 script=$2
@@ -100,10 +76,8 @@ if [ "$worst" -ne 0 ]; then
     tail -30 "$LOG"
     echo '```'
     echo
-    echo "Dashboards have been restarted (trap)."
     echo "Investigate: \`tail -200 $LOG\` on VPS."
   } > "$ALERT" 2>/dev/null || true
 fi
 
-# trap will restart the dashboard
 exit $worst

@@ -1,51 +1,48 @@
 #!/usr/bin/env python3
-"""Redeploy every dbr dashboard and *verify* each is running current code.
+"""Rebuild every dbr dashboard to static HTML and *verify* each is on current code.
 
 Why this exists
 ---------------
-``packages/dbr/`` is editable-installed. A running ``or-<domain>.service``
-loads the framework code as it was on disk at process-start; editing dbr
-source does NOT change a live service until that service is restarted.
+As of OR-168 the dashboards are pre-rendered STATIC HTML (``dbr build``) served
+directly by nginx from ``infra/nginx/html/<domain>/index.html`` — there is no
+always-on Dash server and no port. Editing dbr source or refreshing the warehouse
+does NOT change what nginx serves until the pages are rebuilt.
 
-The recurring failure this kills: a run edits dbr code, commits, restarts
-some-or-no services, then "verifies" with a ``curl`` that returns 200 — but
-200 only proves *a* process answered, not that it is running the *new* code.
-Stale services pass the check, the run reports "resolved", and the dashboards
-visibly do not change.
-
-This script closes the loop. Every dashboard page now advertises the git SHA
-it booted from via ``<meta name="dbr-build">`` (see ``dbr.make_app``). Here we:
+The recurring failure this kills: a run edits dbr code or refreshes data, then
+"verifies" with a ``curl`` that returns 200 — but 200 only proves a file exists,
+not that it was rebuilt from current code/data. This script closes the loop:
 
   1. read repo HEAD,
-  2. restart every ``or-<domain>.service`` (NOPASSWD-allowlisted),
-  3. poll each live page until its ``dbr-build`` stamp == HEAD,
-  4. print an honest per-dashboard PASS / STALE / DOWN table,
-  5. exit non-zero if ANY dashboard is not on HEAD.
+  2. (unless --verify-only) publish the shared plotly.min.js, then ``dbr build``
+     every dashboard into the nginx web root — hard-failing if ANY build errors
+     (e.g. UnsupportedComponentError = a dashboard grew runtime interactivity),
+  3. read each built page's ``<meta name="dbr-build">`` stamp and confirm == HEAD,
+  4. print an honest per-dashboard PASS / STALE / MISSING table,
+  5. exit non-zero if ANY dashboard is not freshly built on HEAD.
 
-"resolved" is then provable: the live page literally names its commit, and a
+"resolved" is then provable: the built page literally names its commit, and a
 non-zero exit means do not report success.
 
 Usage
 -----
-    python3 infra/scheduler/redeploy_dashboards.py            # all dashboards
+    python3 infra/scheduler/redeploy_dashboards.py            # rebuild + verify all
     python3 infra/scheduler/redeploy_dashboards.py finance    # one (by domain)
-    python3 infra/scheduler/redeploy_dashboards.py --verify-only   # no restart
+    python3 infra/scheduler/redeploy_dashboards.py --verify-only   # no rebuild
 """
 from __future__ import annotations
 
+import os
 import re
 import subprocess
 import sys
-import time
-import urllib.request
 from pathlib import Path
 
 import yaml
 
 REPO = Path(__file__).resolve().parents[2]
 DASHBOARDS_DIR = REPO / "products" / "dashboards"
-HEALTH_BUDGET_S = 140           # per-dashboard boot budget; heaviest (demographics) boots ~105s
-POLL_INTERVAL_S = 2
+WEB_ROOT = REPO / "infra" / "nginx" / "html"
+PLOTLY_SRC = "/assets/plotly.min.js"
 _BUILD_RE = re.compile(r'<meta name="dbr-build" content="([^"]*)">')
 
 
@@ -58,64 +55,57 @@ def head_sha() -> str:
     return out.stdout.strip()
 
 
-def discover() -> list[tuple[str, int]]:
-    """Return [(domain, port), ...] for every dashboard with a dashboard.yml."""
-    found: list[tuple[str, int]] = []
+def discover() -> list[str]:
+    """Return [domain, ...] for every dashboard with a dashboard.yml."""
+    found: list[str] = []
     for d in sorted(DASHBOARDS_DIR.iterdir()):
         yml = d / "dashboard.yml"
         if not yml.is_file():
             continue
         cfg = yaml.safe_load(yml.read_text()) or {}
-        domain, port = cfg.get("domain"), cfg.get("port")
-        if domain and port:
-            found.append((domain, int(port)))
+        if cfg.get("domain"):
+            found.append(cfg["domain"])
     return found
 
 
-def live_sha(domain: str, port: int, timeout: float = 3.0) -> str | None:
-    """Fetch the dashboard's index HTML and return its dbr-build stamp.
+def built_sha(domain: str) -> str | None:
+    """Read the built page's dbr-build stamp.
 
-    None  → could not connect / no 200 (service down or still booting).
-    ""    → page served but carries no stamp (pre-stamp / old code).
+    None → no index.html (never built / wrong path).
+    ""   → built but carries no stamp (shouldn't happen with current dbr).
     """
-    url = f"http://127.0.0.1:{port}/{domain}/"
-    try:
-        with urllib.request.urlopen(url, timeout=timeout) as resp:
-            if resp.status != 200:
-                return None
-            html = resp.read().decode("utf-8", "replace")
-    except Exception:
+    index = WEB_ROOT / domain / "index.html"
+    if not index.is_file():
         return None
-    m = _BUILD_RE.search(html)
+    m = _BUILD_RE.search(index.read_text(encoding="utf-8", errors="replace"))
     return m.group(1) if m else ""
 
 
-def restart(domain: str) -> tuple[bool, str]:
-    """Restart one unit via the NOPASSWD-allowlisted systemctl form."""
+def _build_env() -> dict:
+    env = dict(os.environ)
+    env.setdefault("DUCKDB_PATH", str(REPO / "data" / "warehouse.duckdb"))
+    env.setdefault("PYTHONPATH", str(REPO))
+    return env
+
+
+def build(domain: str) -> tuple[bool, str]:
+    """Render one dashboard to static HTML in the web root. Returns (ok, detail)."""
     r = subprocess.run(
-        ["sudo", "-n", "/usr/bin/systemctl", "restart", f"or-{domain}.service"],
-        capture_output=True, text=True,
+        ["dbr", "build", str(DASHBOARDS_DIR / domain),
+         "--out", str(WEB_ROOT),
+         "--plotly-src", PLOTLY_SRC, "--no-vendor-plotly"],
+        capture_output=True, text=True, env=_build_env(),
     )
-    return r.returncode == 0, (r.stderr or r.stdout).strip()
+    out = (r.stderr or r.stdout).strip()
+    detail = out.splitlines()[-1] if out else ""
+    return r.returncode == 0, detail
 
 
-def wait_for_sha(domain: str, port: int, want: str) -> tuple[str, str]:
-    """Poll until the live stamp == want, or the budget expires.
-
-    Returns (status, detail) where status ∈ {PASS, STALE, DOWN}.
-    """
-    deadline = time.time() + HEALTH_BUDGET_S
-    last: str | None = None
-    while time.time() < deadline:
-        last = live_sha(domain, port)
-        if last == want:
-            return "PASS", want
-        time.sleep(POLL_INTERVAL_S)
-    if last is None:
-        return "DOWN", "no 200 within budget"
-    if last == "":
-        return "STALE", "page has no dbr-build stamp (pre-stamp code)"
-    return "STALE", f"serving {last or '?'}, want {want}"
+def publish_shared_assets() -> None:
+    """Write the single shared plotly.min.js under the web root (idempotent)."""
+    sys.path.insert(0, str(REPO / "packages" / "dbr" / "src"))
+    from dbr.static_export import write_plotlyjs
+    write_plotlyjs(WEB_ROOT / "assets")
 
 
 def main(argv: list[str]) -> int:
@@ -123,37 +113,49 @@ def main(argv: list[str]) -> int:
     targets = [a for a in argv if not a.startswith("--")]
 
     want = head_sha()
-    dashboards = discover()
+    domains = discover()
     if targets:
-        dashboards = [(d, p) for d, p in dashboards if d in targets]
-        if not dashboards:
+        domains = [d for d in domains if d in targets]
+        if not domains:
             print(f"No matching dashboards for {targets}", file=sys.stderr)
             return 2
 
-    action = "Verifying" if verify_only else "Redeploying"
-    print(f"{action} {len(dashboards)} dashboard(s) against HEAD {want}\n")
+    action = "Verifying" if verify_only else "Rebuilding"
+    print(f"{action} {len(domains)} static dashboard(s) against HEAD {want}\n")
 
     if not verify_only:
-        for domain, _ in dashboards:
-            ok, detail = restart(domain)
+        publish_shared_assets()
+        build_failed = False
+        for domain in domains:
+            ok, detail = build(domain)
             mark = "✓" if ok else "✗"
-            print(f"  {mark} restart or-{domain}.service" + ("" if ok else f" — {detail}"))
+            print(f"  {mark} build {domain}" + ("" if ok else f" — {detail}"))
+            build_failed = build_failed or not ok
         print()
+        if build_failed:
+            print("FAIL — one or more dashboards failed to build. Do NOT report resolved.")
+            return 1
 
     results: list[tuple[str, str, str]] = []
-    for domain, port in dashboards:
-        status, detail = wait_for_sha(domain, port, want)
+    for domain in domains:
+        sha = built_sha(domain)
+        if sha is None:
+            status, detail = "MISSING", "no index.html in web root"
+        elif sha == want:
+            status, detail = "PASS", want
+        else:
+            status, detail = "STALE", f"built {sha or '?'}, want {want}"
         results.append((domain, status, detail))
-        glyph = {"PASS": "✓", "STALE": "✗", "DOWN": "✗"}[status]
-        print(f"  {glyph} {domain:<20} {status:<6} {detail}")
+        glyph = {"PASS": "✓", "STALE": "✗", "MISSING": "✗"}[status]
+        print(f"  {glyph} {domain:<20} {status:<7} {detail}")
 
     stale = [d for d, s, _ in results if s != "PASS"]
     print()
     if stale:
-        print(f"FAIL — {len(stale)}/{len(results)} not on HEAD: {', '.join(stale)}")
+        print(f"FAIL — {len(stale)}/{len(results)} not freshly built on HEAD: {', '.join(stale)}")
         print("Do NOT report this as resolved.")
         return 1
-    print(f"OK — all {len(results)} dashboards serving HEAD {want}.")
+    print(f"OK — all {len(results)} dashboards built static on HEAD {want}.")
     return 0
 
 
