@@ -50,6 +50,8 @@ from dbr.theme.loader import (
     BAR_CHART_HEIGHT, BAR_CHART_BARGAP, BAR_CHART_HISTORY_YEARS,
     # Visual-specific defaults — table
     TABLE_ROW_HEIGHT, TABLE_FONT_SIZE, TABLE_ROW_LIMIT,
+    # Named number-format templates
+    FORMATS,
 )
 
 __all__ = [
@@ -85,4 +87,6 @@ __all__ = [
     "BAR_CHART_HEIGHT", "BAR_CHART_BARGAP", "BAR_CHART_HISTORY_YEARS",
     # Visual-specific defaults — table
     "TABLE_ROW_HEIGHT", "TABLE_FONT_SIZE", "TABLE_ROW_LIMIT",
+    # Named number-format templates
+    "FORMATS",
 ]

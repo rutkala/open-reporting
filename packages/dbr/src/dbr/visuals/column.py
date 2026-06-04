@@ -113,6 +113,9 @@ def column(*, encoding: dict, filter: dict | None = None, options: dict | None =
     df = postprocess_time_columns(df, enc)
 
     data_labels = opts.get("data_labels", False)
+    val_fmt = opts.get("value_format")
+    # No value_format → preserve the historical 1-decimal label exactly (no-op).
+    _label = (lambda v: format_value(v, val_fmt)) if val_fmt else (lambda v: f"{v:.1f}")
     err_opts = opts.get("error_bars")
     err_vals = None
     if err_opts and err_opts.get("metric"):
@@ -128,7 +131,7 @@ def column(*, encoding: dict, filter: dict | None = None, options: dict | None =
         for series, sub in df.groupby(color_col):
             fig.add_trace(go.Bar(
                 x=sub[x_col], y=sub[metric], name=str(series),
-                text=[f"{v:.1f}" for v in sub[metric]] if data_labels else None,
+                text=[_label(v) for v in sub[metric]] if data_labels else None,
                 textposition="outside" if data_labels else None,
             ))
         fig.update_layout(barmode="stack" if opts.get("stack") else "group")
@@ -136,7 +139,7 @@ def column(*, encoding: dict, filter: dict | None = None, options: dict | None =
         error_y = dict(type="data", array=err_vals, visible=True) if err_vals else None
         fig.add_trace(go.Bar(
             x=df[x_col], y=df[metric],
-            text=[f"{v:.1f}" for v in df[metric]] if data_labels else None,
+            text=[_label(v) for v in df[metric]] if data_labels else None,
             textposition="outside" if data_labels else None,
             error_y=error_y,
         ))

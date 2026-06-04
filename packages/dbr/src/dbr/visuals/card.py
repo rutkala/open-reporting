@@ -22,6 +22,7 @@ from dbr.theme import (
     NEGATIVE, POSITIVE, SUBTEXT, TEXT, WARNING,
 )
 from dbr.visuals._encoding import parse_encoding, _resolve_color
+from dbr.visuals._render import format_value, _FORMAT_OPTION_SCHEMA
 
 SCHEMA = {
     "type": "object",
@@ -46,6 +47,7 @@ SCHEMA = {
             "properties": {
                 "show_period": {"type": "boolean"},
                 "compact":     {"type": "boolean"},
+                **_FORMAT_OPTION_SCHEMA,
                 "threshold":   {
                     "type": "object",
                     "required": ["rule"],
@@ -89,8 +91,17 @@ def card(*, encoding: dict, filter: dict | None = None, options: dict | None = N
     compact = opts.get("compact", False)
 
     if compact:
-        return _render_compact(r)
+        return _render_compact(r, opts)
     return _render_standard(r, opts, metric=enc.value.metric, filter=filter)
+
+
+def _display_value(r, opts: dict) -> str:
+    """The KPI's main value string. ``options.value_format`` overrides the
+    semantic layer's built-in formatting; otherwise use ``r.formatted``."""
+    fmt = opts.get("value_format")
+    if fmt and r.value is not None:
+        return format_value(r.value, fmt)
+    return r.formatted
 
 
 def _render_standard(r, opts: dict, *, metric: str, filter: dict | None) -> html.Div:
@@ -110,7 +121,7 @@ def _render_standard(r, opts: dict, *, metric: str, filter: dict | None) -> html
             "fontSize": KPI_LABEL_SIZE, "color": SUBTEXT,
             "marginBottom": KPI_LABEL_BOTTOM_GAP,
         }),
-        html.Div(r.formatted, className="dbr-kpi-value", style={
+        html.Div(_display_value(r, opts), className="dbr-kpi-value", style={
             "fontSize": KPI_VALUE_SIZE, "fontWeight": KPI_VALUE_WEIGHT,
             "color": TEXT, "lineHeight": "1.1",
         }),
@@ -131,11 +142,11 @@ def _render_standard(r, opts: dict, *, metric: str, filter: dict | None) -> html
     return html.Div(children=children, className="dbr-kpi-card", style=style_card)
 
 
-def _render_compact(r) -> html.Div:
+def _render_compact(r, opts: dict | None = None) -> html.Div:
     return html.Div(
         children=[
             html.Span(r.label, style={"fontSize": KPI_COMPACT_LABEL_SIZE, "color": SUBTEXT}),
-            html.Span(r.formatted, style={
+            html.Span(_display_value(r, opts or {}), style={
                 "fontSize": KPI_COMPACT_VALUE_SIZE,
                 "fontWeight": KPI_COMPACT_VALUE_WEIGHT,
                 "color": TEXT,

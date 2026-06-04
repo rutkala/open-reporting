@@ -35,7 +35,7 @@ from dbr.visuals._encoding import (
     postprocess_time_columns,
     dimension_column_name, parse_encoding, _resolve_color,
 )
-from dbr.visuals._render import _label_for_column
+from dbr.visuals._render import _label_for_column, format_value
 
 SCHEMA = {
     "type": "object",
@@ -84,6 +84,11 @@ SCHEMA = {
                     "type": "array",
                     "items": {"type": "string"},
                     "description": "Metric column names to render with an inline data bar.",
+                },
+                "formats": {
+                    "type": "object",
+                    "additionalProperties": {"type": "string"},
+                    "description": "Per-column number format. Keys are column names; values are a Python format spec (',.0f', '.1f') or a named template (percent_1dp, thousands, …). Columns without an entry keep the default 2-decimal PL formatting.",
                 },
             },
         },
@@ -141,6 +146,7 @@ def table(*, encoding: dict, filter: dict | None = None, options: dict | None = 
     header    = group_by + metrics
     cond_fmts = opts.get("conditional_format") or []
     data_bars = set(opts.get("data_bars") or [])
+    value_formats = opts.get("formats") or {}
     show_totals = opts.get("totals", False)
 
     # Pre-compute column max for data_bars scaling
@@ -152,7 +158,7 @@ def table(*, encoding: dict, filter: dict | None = None, options: dict | None = 
 
     def _cell(col: str, val, is_total: bool = False) -> html.Td:
         base_style = dict(_TD_TOTAL if is_total else _TD_BASE)
-        text = _fmt(val)
+        text = _fmt(val, value_formats.get(col))
 
         # Conditional formatting
         for rule in cond_fmts:
@@ -221,9 +227,11 @@ def table(*, encoding: dict, filter: dict | None = None, options: dict | None = 
     )
 
 
-def _fmt(v) -> str:
+def _fmt(v, fmt: str | None = None) -> str:
     if pd.isna(v):
         return "—"
+    if fmt is not None:
+        return format_value(v, fmt)
     if isinstance(v, float):
         return f"{v:.2f}".replace(".", ",")
     return str(v)
