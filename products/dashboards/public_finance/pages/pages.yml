@@ -5,6 +5,7 @@
 
 order:
   - przeglad
+  - dochody
   - wydatki
   - dlug
   - ue

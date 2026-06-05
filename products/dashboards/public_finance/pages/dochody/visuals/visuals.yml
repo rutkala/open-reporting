@@ -1,0 +1,14 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visuals.schema.json
+# Page 2 — fixed canvas: one prose lead + a single row of two side-by-side charts
+# (domestic revenue structure over time + EU peer benchmark). Each chart self-labels
+# via its own title/subtitle. Mirrors the wydatki page layout.
+
+rows:
+  - prose: |
+      Dochody sektora finansów publicznych to ok. **44% PKB** — wyraźnie poniżej
+      średniej UE i o kilkanaście punktów mniej niż w krajach nordyckich. Największe
+      źródło to **składki na ubezpieczenia społeczne** (~15% PKB) i **podatki pośrednie**
+      (VAT, akcyza; ~14% PKB); podatki **dochodowe** są relatywnie niskie (~8% PKB).
+    items:
+      - { visual: revenue_trend, width: "50%" }
+      - { visual: eu_revenue,    width: "50%" }

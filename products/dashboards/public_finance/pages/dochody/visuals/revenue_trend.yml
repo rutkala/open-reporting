@@ -1,0 +1,15 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
+# Struktura dochodów publicznych 1995-2025: dochody ogółem (linia wiodąca) plus
+# trzy główne źródła — składki społeczne, podatki pośrednie (VAT/akcyza) i podatki
+# dochodowe. Wszystkie metryki są w % PKB (jedna oś), etykietowane po polsku przez
+# metric.label. Legenda zamiast etykiet końcowych — cztery odrębne kolory.
+
+type: line
+title:  "Struktura dochodów publicznych"
+subtitle: "1995–2025, % PKB"
+encoding:
+  x: { dimension: date_key__cal_year }
+  y:
+    metric: [total_revenue, social_contributions, taxes_production, taxes_income]
+filter:
+  geo: PL

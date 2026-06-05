@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/page.schema.json
+# Page 2 — where the money comes from. Sits before "wydatki" so the citizen
+# sees income before spending. Question-as-title.
+
+title:  Skąd państwo bierze pieniądze?
+anchor: dochody
