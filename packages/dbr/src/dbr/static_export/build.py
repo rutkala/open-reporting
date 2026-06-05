@@ -5,7 +5,8 @@ Produces, under ``<out_dir>/<domain>/``:
   - ``plotly.min.js``  — plotly.js vendored once, referenced relatively
 
 The page reuses the *exact* same stylesheet and client-side scripts as the live
-Dash server (``dbr.make_app._CSS`` / ``_SCROLLSPY_JS`` / ``_SIDEBAR_TOGGLE_JS``)
+Dash server (``dbr.make_app._CSS`` / ``_SCROLLSPY_JS`` / ``_SIDEBAR_TOGGLE_JS`` /
+``_RESIZE_JS``)
 and the same ``<meta name="dbr-build">`` stamp, so layout and behaviour are
 identical — only Dash's React/renderer bundle and the always-on Python server
 are gone. nginx serves the files directly; nothing runs at request time.
@@ -18,6 +19,7 @@ from pathlib import Path
 from dbr.compiler.compiler import build_shell, load_dashboard
 from dbr.make_app.make_app import (
     _CSS,
+    _RESIZE_JS,
     _SCROLLSPY_JS,
     _SIDEBAR_TOGGLE_JS,
     build_sha,
@@ -38,6 +40,7 @@ def _document(*, title: str, body_html: str, build: str, plotly_src: str) -> str
         f"{body_html}\n"
         f"  <script>{_SCROLLSPY_JS}</script>\n"
         f"  <script>{_SIDEBAR_TOGGLE_JS}</script>\n"
+        f"  <script>{_RESIZE_JS}</script>\n"
         "</body>\n</html>\n"
     )
 

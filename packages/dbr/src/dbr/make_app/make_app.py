@@ -480,6 +480,41 @@ _SIDEBAR_TOGGLE_JS = """
 })();
 """
 
+# Below-the-fold charts bake a too-wide width at Plotly.newPlot time (the card is
+# not yet constrained to its final flex width when the chart first renders), then
+# never resize — so the SVG overflows its fixed-width `overflow:hidden` card and
+# clips on the right (notably a multi-series horizontal legend never wraps; its
+# last labels vanish — OR-169). Force every Plotly graph to resize to its true
+# container width once layout has settled, and keep them responsive on window
+# resize. Once correctly sized, Plotly auto-wraps the horizontal legend to fit.
+_RESIZE_JS = """
+(function () {
+  function resizeAll() {
+    if (!window.Plotly) { setTimeout(resizeAll, 200); return; }
+    document.querySelectorAll('.js-plotly-plot').forEach(function (el) {
+      try { Plotly.Plots.resize(el); } catch (e) {}
+    });
+  }
+  /* 300 ms after DOMContentLoaded gives the flex layout time to settle so each
+     card has reached its final width before the first resize; 200 ms after the
+     `load` event catches late font/asset reflow; 150 ms debounces continuous
+     resize drags so we reflow once per gesture, not per event. */
+  function schedule() { setTimeout(resizeAll, 300); }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', schedule);
+  } else {
+    schedule();
+  }
+  /* Re-run once more after fonts/late layout settle, then on every resize. */
+  window.addEventListener('load', function () { setTimeout(resizeAll, 200); });
+  var t;
+  window.addEventListener('resize', function () {
+    clearTimeout(t); t = setTimeout(resizeAll, 150);
+  });
+})();
+"""
+
 _INDEX_STRING = (
     "<!DOCTYPE html>\n"
     "<html>\n"
@@ -500,6 +535,7 @@ _INDEX_STRING = (
     "    </footer>\n"
     "    <script>" + _SCROLLSPY_JS + "</script>\n"
     "    <script>" + _SIDEBAR_TOGGLE_JS + "</script>\n"
+    "    <script>" + _RESIZE_JS + "</script>\n"
     "  </body>\n"
     "</html>\n"
 )
