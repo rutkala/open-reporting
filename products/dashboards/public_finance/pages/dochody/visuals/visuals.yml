@@ -10,5 +10,5 @@ rows:
       źródło to **składki na ubezpieczenia społeczne** (~15% PKB) i **podatki pośrednie**
       (VAT, akcyza; ~14% PKB); podatki **dochodowe** są relatywnie niskie (~8% PKB).
     items:
-      - { visual: revenue_trend, width: "50%" }
-      - { visual: eu_revenue,    width: "50%" }
+      - { visual: revenue_trend, width: "60%" }
+      - { visual: eu_revenue,    width: "40%" }

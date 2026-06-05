@@ -1,16 +1,19 @@
 # yaml-language-server: $schema=https://open-reporting.dev/dbr/schemas/visual.schema.json
-# Dochody sektora finansów publicznych UE-27, dwa najnowsze lata side-by-side —
-# Polska wyróżniona. Pokazuje, że Polska jest państwem o relatywnie niskich
-# dochodach (i obciążeniach podatkowych) na tle UE — daleko od nordyckich >50% PKB.
+# Dochody sektora finansów publicznych — Polska na tle wybranych krajów UE,
+# dwa najnowsze lata side-by-side. Polska wyróżniona. Wybrany, czytelny zestaw
+# (sąsiedzi V4 + Niemcy + nordyckie/zachodnie kotwice wysokich dochodów +
+# Irlandia/Rumunia jako niskie) — pokazuje, że Polska jest państwem o relatywnie
+# niskich dochodach na tle UE. Pełna lista 27 krajów byłaby nieczytelna na pół
+# szerokości strony.
 
 type: bar
 title:  "Dochody publiczne na tle UE"
-subtitle: "% PKB, UE-27"
+subtitle: "% PKB, Polska i wybrane kraje UE"
 encoding:
   x: { metric: total_revenue }
   y: { dimension: geo__country_name_pl }
 filter:
-  geo: [AT, BE, BG, CY, CZ, DE, DK, EE, EL, ES, FI, FR, HR, HU, IE, IT, LT, LU, LV, MT, NL, PL, PT, RO, SE, SI, SK]
+  geo: [SE, FR, DE, CZ, PL, SK, HU, RO, IE]
 options:
   dual_year: true
   sort: value-desc
