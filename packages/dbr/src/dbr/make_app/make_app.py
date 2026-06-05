@@ -495,6 +495,10 @@ _RESIZE_JS = """
       try { Plotly.Plots.resize(el); } catch (e) {}
     });
   }
+  /* 300 ms after DOMContentLoaded gives the flex layout time to settle so each
+     card has reached its final width before the first resize; 200 ms after the
+     `load` event catches late font/asset reflow; 150 ms debounces continuous
+     resize drags so we reflow once per gesture, not per event. */
   function schedule() { setTimeout(resizeAll, 300); }
 
   if (document.readyState === 'loading') {
