@@ -1,89 +1,88 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-04 (run #65 — OR-162 value_format wired across visuals) -->
+<!-- last-updated: 2026-06-05 (run #66 — OR-111 revenue page shipped) -->
 
-## Run #65 — OR-162 shipped: value_format honored in card/column/bar/table
+## Run #66 — OR-111 shipped: Public Finance revenue page ("dochody")
 
-Picked the one actionable backlog item (build-time, static-safe, no PO blocker).
-**Found half-done:** a prior run added the `value_format` *schema + import* across
-~14 visuals but never wired the rendering — silently ignored except choropleth/heatmap
-(a documented-but-dead option = footgun). Completed it.
+Filled the biggest gap in the flagship dashboard — it had deficit/debt/expenditure/EU/
+forecast pages but **no revenue page**. Fully in my control (static, no PO blocker).
 
-**Shipped (PR #65, squash-merged, HEAD `f8f64776`):**
-- **card** — `options.value_format` overrides the semantic-layer KPI format (standard + compact)
-- **column / bar** — `data_labels` via `format_value`; **exact no-op** (`f"{v:.1f}"`) when unset
-- **table + companion table** — per-column `formats: {col: spec}` option
-- **theme.yaml** — named templates moved to a `formats:` block (percent_1dp, percent_0dp,
-  thousands, thousands_1dp, index_100, currency_bln), exposed as `dbr.theme.FORMATS`,
-  deep-mergeable per project; `format_value` resolves theme over built-in fallback,
-  applies Polish locale (space thousands, decimal comma).
+**Shipped (HEAD `03ce4515`, pushed to main):** new `dochody` page "Skąd państwo bierze
+pieniądze?", inserted between overview and expenditure. Two charts:
+- **revenue_trend** — multi-metric line: total revenue + social contributions + indirect
+  taxes + income taxes, PL 1995–2025, all % PKB.
+- **eu_revenue** — peer-benchmark bar, Poland highlighted vs 8 curated EU peers
+  (V4 + DE + SE/FR high anchors + RO/IE low). Poland ~44% PKB = mid-low.
 
-**Verified:** 16/16 `dbr validate`; format_value unit-checked (`1234567 → "1 234 567"`);
-`redeploy_dashboards.py` rebuilt all 16 static on HEAD (exit 0, every stamp == f8f64776);
-live 200 + stamp==HEAD + Plotly content. No production YAML uses the new options yet →
-rendered output unchanged (latent-correctness fix, unblocks authors). code-reviewer
-CONDITIONAL → P2 backward-compat fixed (bar/column no-op preserved).
+Re-scoped OR-111 from the retired `app.py` (donut/scatter, not in the static visual set)
+to dbr line+bar. Reused existing `finance_revenue_expenditure` metrics — no new data.
 
-**Deferred (OR-162 comment):** gauge/bullet (Plotly Indicator `valueformat`, unused),
-line hover (65 charts, own change), `currency_pln` (no need yet).
+**Visual review (live Playwright screenshots) caught + fixed two real defects:**
+- Full 27-country EU bar was illegible at half-width and **Poland's highlighted bar lost
+  its label** → curated to 9 peers; Poland now labelled + highlighted.
+- Widened line to 60% (EU bar 40%) so its legend renders.
+Decoded the served Plotly arrays to confirm the line spans 1995–2025 (total ends 43.6) —
+an apparent ~2012 cutoff was a pixel misread; data was always complete.
 
-## Run #64 — [OR-168 ROOT FIX] dashboards → static HTML; 16 Dash servers retired
+**Rejected:** `label_endpoints` (long PL labels clip at right under card `overflow:hidden`);
+stacked full-width rows (page is a **fixed single-screen canvas, `overflow:hidden`** —
+stacking clipped both charts, hid Poland). Side-by-side is the only all-visible layout.
 
-Available RAM 884 MiB → **2.5 GiB**, swap 2.0 G → 0.3 G. The 16 dashboards use ZERO
-server callbacks (only line/card/bar/column/choropleth pre-computed figures) — the Dash
-backend was pure overhead. Shipped `dbr build` static export → self-contained HTML
-(Plotly `to_html`, ONE shared `assets/plotly.min.js`, byte-identical layout +
-`<meta dbr-build>` stamp). nginx `try_files` static; `dbr run`/`redeploy_dashboards.py`
-rebuild+verify file stamps; `run_daily.sh` no longer touches the fleet. 16
-`or-<domain>.service` STOPPED.
+**Known minor → filed OR-169:** at 60% width the 4-series line legend clips the 4th label
+(line-legend wrap limitation, engine plane). Queued, not forced under time pressure.
 
-**KEY OPS MODEL (current):**
-- Dashboards = **static files** in `infra/nginx/html/<domain>/index.html` (gitignored build
-  artifacts). NO `dbr serve`, NO `or-<domain>.service`, NO ports. Old OOM/fleet-502 recovery
-  is obsolete.
-- A dashboard change OR a data refresh (dbt) needs a **REBUILD** (not restart) to show:
-  `python3 infra/scheduler/redeploy_dashboards.py` (builds 16 → web root, verifies each built
-  `<meta dbr-build>` == HEAD; hard-fails on build error). `--verify-only` reads stamps.
-- After ANY `packages/dbr/` edit: commit FIRST, then `redeploy_dashboards.py` (stamp target
-  is HEAD). Non-zero exit = NOT resolved.
-- Live verify: `curl -sk --resolve portal.open-reporting.dev:443:127.0.0.1 https://portal.open-reporting.dev/<domain>/`.
-- **ONE PO ACTION (sudo gap):** 16 units stopped but still `enabled` — reboot restarts them
-  (benign: 2.5 GiB headroom). PO runs `systemctl disable or-{16}` + `daemon-reload` (sudoers
-  gap), then OR-168 closes.
+## KEY OPS MODEL (current — unchanged since #64)
+- Dashboards = **static HTML** in `infra/nginx/html/<domain>/index.html` (gitignored build
+  artifacts). NO `dbr serve`, NO `or-<domain>.service`, NO ports.
+- A dashboard YAML change OR a data refresh needs a **REBUILD** to show:
+  single dashboard → `dbr run products/dashboards/<domain>` (build + nginx route + reload).
+  Whole fleet / after any `packages/dbr/` edit → commit FIRST, then
+  `python3 infra/scheduler/redeploy_dashboards.py` (builds 16 → web root, verifies each
+  `<meta dbr-build>` == HEAD; non-zero exit = NOT resolved).
+- Build embeds `<meta dbr-build>` = HEAD **at build time** → commit, then rebuild so
+  stamp == HEAD (else --verify-only reports STALE).
+- Live verify: `curl -s https://portal.open-reporting.dev/<domain>/` → 200 + stamp==HEAD +
+  Plotly content. For layout/visual changes, screenshot (Playwright) — curl can't see layout.
+- **Page layout is a fixed single-screen canvas with `overflow:hidden`.** Do NOT stack
+  full-height rows (clips). Side-by-side widths (e.g. 60/40) within one row are safe.
 
-## Pipeline freshness note (still true)
-`run_daily.sh` = raw refresh only (no dbt). Curated marts lag raw between manual dbt runs —
-fine because all dashboards show annual/quarterly aggregates. To refresh dashboard data:
-`dbt run` (DuckDB write lock now FREE — no live readers) then `redeploy_dashboards.py`. No
-daily cron dbt (would re-spike memory). NB `run_daily.sh` still logs "ensuring
-or-<domain>.service is running…" for the retired fleet — stale/benign, clean up next infra touch.
+## dbr visual notes
+- **bar = HORIZONTAL** (metric on x). Vertical categorical → use **column**. Bitten 3×.
+- **Multi-metric line:** `y: { metric: [a, b, c] }` → one trace per metric, labelled by
+  metric.label, shown in legend. Long PL labels overflow a narrow legend (see OR-169).
+- **bar `highlight` + 27 categories at half-width** thins y-tick labels — the highlighted
+  category can lose its label. Curate the category set for narrow slots.
+- **choropleth:** warehouse `geo` == GISCO `NUTS_ID`; filter EU27_2020/EA20; don't bake height.
+- Production visual types only: line, card, bar, column, choropleth. No slicers/tabs/Interval.
+- `value_format` fully wired (OR-162): `options.value_format` on card/column/bar/table +
+  table `formats:` + theme `formats:` presets.
+
+## public_finance dashboard pages (post #66)
+przeglad → **dochody (NEW)** → wydatki → dlug → ue → prognozy.
 
 ## Engine-tree state
 - Clean except known untracked PO/bot WIP (never commit): `infra/discord-bot/bot.py`,
   `infra/systemd/or-*-bot.service`, `logs/`, `.claude/scheduled_tasks.lock`,
   `products/blog/reviews/release-report.md`, stray `open-reporting-full.tar.gz` (root).
-- 16 dashboards = static HTML on stamp == HEAD (f8f64776).
-- dbr `value_format` now fully wired (OR-162). Authors can use `options.value_format` on
-  card/column/bar/table + table `formats:` + theme `formats:` presets.
-
-## dbr visual notes
-- **bar = HORIZONTAL** (metric on x). Vertical categorical → use **column**. Bitten 3×.
-- **choropleth** (`packages/dbr/src/dbr/visuals/choropleth.py`): renders via
-  `chart_with_optional_table`; do NOT bake `fig.layout.height` on a geo. Warehouse `geo` ==
-  GISCO `NUTS_ID`; YAML must filter EU27_2020/EA20.
-- Production visual types only: line (65), card (57), bar (8), column (4), choropleth (2).
-  No data_labels set in any production YAML; no slicers/cross-filter/tabs/Interval.
+- 16 dashboards static; public_finance on stamp == HEAD (03ce4515). Others on their last
+  build commit (normal — only rebuilt on their own YAML/data change).
 
 ## Standing blockers (all PO-side)
 - **OR-168** — root-fixed (#64); only `systemctl disable or-{16}` remains (sudo gap).
 - OR-153 Telegram inbound · OR-90 Instagram token → OR-89 · OR-86 BDL key · OR-79 Ghost nav.
 - On hold under static model: OR-160 cross-filter, OR-161 date-picker (backend-only).
+- OR-169 line-legend wrap (engine; queued from #66).
+
+## Content
+- 18 articles published; release sweep clean (0 drafts). Run `release_pipeline.py` each run.
 
 ## Lessons
-- **Check whether a backlog item is already half-done before building** (#65): OR-162's schema
-  was wired but the rendering was a silent no-op. Audit call-sites, not just imports.
-- **A "no-op" must be byte-exact** (#65): `format_value(v, None)` returns comma-decimal, but the
-  prior bar/column label was dot-decimal — preserve the exact prior path when the option is unset.
-- **Measure the WHOLE box before re-diagnosing RAM** (#59/#63): low avail-RAM was often a
-  concurrent PO VS Code Remote-SSH session, not the fleet. (Now moot — fleet retired.)
-- **Trust a sound engineering call but verify the premise against docs** (#64).
+- **Screenshot, then verify pixels against the source data before re-diagnosing** (#66): an
+  apparent line cutoff at ~2012 was a misread — decoding the served Plotly arrays proved
+  1995–2025 complete. Don't act on a pixel read alone.
+- **The page canvas is fixed-height/overflow-hidden** (#66): never stack full rows; it clips
+  silently (hid the highlighted country). Verify the WHOLE rendered card is visible.
+- **27 categories don't fit a half-width bar** (#66): curate to a legible peer set so the
+  highlighted item keeps its label.
+- **Check whether a backlog item is already half-done before building** (#65).
+- **A "no-op" must be byte-exact** (#65).
