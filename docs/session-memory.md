@@ -1,34 +1,30 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-05 (run #67 — OR-169 Plotly resize-on-load fix) -->
+<!-- last-updated: 2026-06-05 (run #68 — article #19, revenue-side public finance) -->
 
-## Run #67 — OR-169 shipped: Plotly resize-on-load fixes clipped legends fleet-wide
+## Run #68 — Article #19 shipped: revenue-side public-finance piece
 
-The Dochody line legend clip filed in #66 turned out to be a **general chart-sizing
-bug**, not a legend-config issue. Fixed it at the engine root; benefits all 16 dashboards.
+Broke a 5-run streak of public_finance dashboard tweaks (#63/#65/#66/#67). The
+under-used lever per `docs/roadmap.md` is **content cadence**, and the draft queue was
+empty. Audited the 18 published articles: finance was covered on deficit / debt /
+debt-service / social spending (COFOG) / EU excessive-deficit — but **nothing on the
+revenue side**. Filled that gap; it pairs with the `dochody` dashboard page from #66.
 
-**Root cause (found by measuring live bounding boxes, not eyeballing):** below-the-fold
-Plotly charts bake a too-wide width at `Plotly.newPlot` time — the card hasn't reached its
-final flex width when the chart first renders — and never resize. The SVG overflows its
-fixed-width `overflow:hidden` card and clips on the right. revenue_trend SVG was **1084px
-in a 628px card**. The horizontal legend never wrapped → last labels vanished. The same
-defect silently clipped the right *data* edge of every below-the-fold chart. Confirmed on
-**live production**.
+**Angle (grounded in `curated.fact_finance_revenue_expenditure`, not guessed):** PL state
+runs on social contributions (15,1% PKB, 2024 — single largest) + consumption taxes/VAT
+(14,4%); income taxes D5 only 7,8%; total take 42,8% PKB, ~3,2 pp BELOW EU27 (46,0).
 
-**Shipped (PR #66 squash-merged, HEAD `c9d7a687`):** added `_RESIZE_JS` to `make_app.py`,
-wired into BOTH the live Dash `_INDEX_STRING` and the static export `build._document`
-(live/static parity). Forces `Plotly.Plots.resize` on every `.js-plotly-plot` after layout
-settles (300ms post-DOMContentLoaded, 200ms post-load) + debounced (150ms) on window
-resize. Once sized to the card, Plotly **auto-wraps** the horizontal legend to multiple
-rows — no schema change, no per-chart option.
+**Process:** content-writer (1 spawn) wrote it → release_pipeline gate **BLOCKED** first
+pass (content BLOCK, 2 P1s: unsourced min-wage trend; "14,4% below a 14,2–14,4% max"
+self-contradiction). Fixed all findings **directly** (SendMessage unavailable this harness)
+incl. domain CONDITIONALs (OFE-2010 timing, Polski Ład 2022 D61 break, VAT-Gap report
+covers thru 2022, JPK_VAT causal→coinciding, D5/D29 scope). Re-gate (--force) PASSED:
+content PASS, analytical CONDITIONAL, domain CONDITIONAL.
 
-**Rejected:** `legend: right` (vertical) — grows horizontally, always overflows a
-fixed-width overflow:hidden card and gets clipped entirely (built, measured failing,
-reverted). Side-by-side fixed-canvas constraint stands.
+**Live:** https://www.open-reporting.dev/dochody-panstwa-polska-skad-pieniadze-2024/ → 200.
+Blog now **19 published articles**.
 
-**Verified live (Playwright bbox):** revenue_trend SVG 1084→628px (== card), legend 2 rows,
-0 labels overflow; live stamp == HEAD. redeploy_dashboards.py: all 16 on HEAD, exit 0.
-code-reviewer PASS (1 P3 on timing-constant comments, addressed).
+**Gate logic confirmed:** `gate_passed` blocks only on BLOCK/ERROR; CONDITIONAL = pass.
 
 ## KEY OPS MODEL (current — unchanged since #64)
 - Dashboards = **static HTML** in `infra/nginx/html/<domain>/index.html` (gitignored build
@@ -44,20 +40,27 @@ code-reviewer PASS (1 P3 on timing-constant comments, addressed).
   Plotly content. For layout/visual changes, screenshot (Playwright) — curl can't see layout.
 - **Page layout is a fixed single-screen canvas with `overflow:hidden`.** Do NOT stack
   full-height rows (clips). Side-by-side widths (e.g. 60/40) within one row are safe.
-- **It is a single scrolling page** with scrollspy nav (sections stacked, `dbr-section-<anchor>`),
-  NOT a display:none multi-page app. Charts below the fold now auto-resize on load (#67).
+- **Single scrolling page** with scrollspy nav (sections stacked, `dbr-section-<anchor>`),
+  NOT a display:none multi-page app. Below-the-fold charts auto-resize on load (#67).
+
+## Content release (run EVERY run — Step 2b)
+- `python3 products/blog/release_pipeline.py` → reviews each unreviewed draft through 3
+  reviewers (content + analytical + domain Opus), auto-publishes those with NO BLOCK.
+  `gate_passed`: blocks only on BLOCK/ERROR; **CONDITIONAL counts as pass**.
+- Re-review a fixed draft: `release_pipeline.py <draft.md> --force` (single article,
+  3 reviewers, ~6 min). Published drafts stay in `products/blog/drafts/` (state tracked via
+  Ghost slug lookup, not file moves). Review reports: `products/blog/reviews/<slug>-review.md`.
+- **19 articles published.** Each run starts with sweep clean unless a new draft was authored.
 
 ## dbr visual notes
 - **bar = HORIZONTAL** (metric on x). Vertical categorical → use **column**. Bitten 3×.
-- **Multi-metric line:** `y: { metric: [a, b, c] }` → one trace per metric, labelled by
-  metric.label, shown in legend. Long PL labels now **wrap to multiple rows** once the chart
-  is resized to its card (#67 `_RESIZE_JS`) — no longer clip.
+- **Multi-metric line:** `y: { metric: [a, b, c] }` → one trace per metric. Long PL labels
+  wrap to multiple rows once the chart is resized to its card (#67 `_RESIZE_JS`).
 - **choropleth:** warehouse `geo` == GISCO `NUTS_ID`; filter EU27_2020/EA20; don't bake height.
 - Production visual types only: line, card, bar, column, choropleth. No slicers/tabs/Interval.
-- `value_format` fully wired (OR-162): `options.value_format` on card/column/bar/table +
-  table `formats:` + theme `formats:` presets.
-- Client scripts (live + static parity, in `make_app.py`): `_SCROLLSPY_JS`,
-  `_SIDEBAR_TOGGLE_JS`, `_RESIZE_JS`. Static export injects all three via `build._document`.
+- `value_format` fully wired (#65): `options.value_format` on card/column/bar/table.
+- Client scripts (live + static parity, `make_app.py`): `_SCROLLSPY_JS`, `_SIDEBAR_TOGGLE_JS`,
+  `_RESIZE_JS`. Static export injects all three via `build._document`.
 
 ## public_finance dashboard pages
 przeglad → dochody → wydatki → dlug → ue → prognozy.
@@ -66,22 +69,22 @@ przeglad → dochody → wydatki → dlug → ue → prognozy.
 - Clean except known untracked PO/bot WIP (never commit): `infra/discord-bot/bot.py`,
   `infra/systemd/or-*-bot.service`, `logs/`, `.claude/scheduled_tasks.lock`,
   `products/blog/reviews/release-report.md`, stray `open-reporting-full.tar.gz` (root).
-- 16 dashboards static; all rebuilt on HEAD `c9d7a687` (run #67 fleet redeploy).
+- 16 dashboards static; all on HEAD `c9d7a687` (run #67 fleet redeploy). No dbr code change
+  this run → no fleet redeploy needed.
 
 ## Standing blockers (all PO-side)
 - **OR-168** — root-fixed (#64); only `systemctl disable or-{16}` remains (sudo gap).
 - OR-153 Telegram inbound · OR-90 Instagram token → OR-89 · OR-86 BDL key · OR-79 Ghost nav.
 - On hold under static model: OR-160 cross-filter, OR-161 date-picker (backend-only).
 
-## Content
-- 18 articles published; release sweep clean (0 drafts). Run `release_pipeline.py` each run.
-
 ## Lessons
-- **Measure live bounding boxes before re-diagnosing** (#66, #67): the "legend clip" was
-  actually a chart that rendered 1084px wide in a 628px card. Playwright bbox readout, not a
-  pixel-eyeball, found it. A vertical legend "fix" made it worse — measuring caught that too.
-- **A below-the-fold Plotly chart needs an explicit resize** (#67): it sizes to a stale/wide
-  container at newPlot and never reflows on its own. `Plotly.Plots.resize` after layout settles.
-- **The page canvas is fixed-height/overflow-hidden** (#66): never stack full rows; verify the
-  WHOLE rendered card is visible.
+- **When the dashboard vein has been worked several runs running, check the content gap map
+  first** (#68): a new article filling a coverage hole + cross-linking a recent dashboard
+  page beat a 6th consecutive dashboard polish on marginal value.
+- **The publish gate works — let it block, then fix precisely** (#68): the content reviewer
+  caught a real self-contradiction and an unsourced trend; domain caught OFE-timing + a
+  missing structural break. All fixable inline; re-gate passed.
+- **Measure live bounding boxes before re-diagnosing** (#66/#67): the "legend clip" was a
+  chart rendering 1084px wide in a 628px card. Playwright bbox, not a pixel-eyeball.
+- **The page canvas is fixed-height/overflow-hidden** (#66): never stack full rows.
 - **Check whether a backlog item is already half-done before building** (#65).
