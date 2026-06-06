@@ -1,38 +1,39 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-06 (run #70 — QUIET RUN: backlog grooming + data-quality) -->
+<!-- last-updated: 2026-06-06 (run #71 — closed OR-168 Urgent P1: OOM resolved by static architecture) -->
 
-## Run #70 — QUIET RUN: groomed 3 stale finance-v2 issues + data-quality check
+## Run #71 — Closed OR-168 (Urgent/Infra): VPS OOM fleet-cull resolved by architecture
 
-No actionable un-blocked build work this run. Roadmap Themes 1–3 essentially complete
-(16 domain dashboards live, 20 articles published); remaining backlog is PO-blocked,
-static-deferred, or stale. Per the "Nothing-to-do" protocol → grooming (b) + data check (c).
+The standing-blocker list was stale. OR-168 had been carried for three runs (#68–#70) as
+PO-blocked ("needs swap" / "systemctl disable — sudo gap"). Re-verified against live state:
+both framings are obsolete. The static-HTML migration (the OR-168 work itself) removed the
+OOM vector entirely, and the 16 units are **already disabled**. Closed → Done.
 
-**Git hygiene at smoke check:** tree showed 68 `D` entries under `docs/visualization/` paired
-with untracked dirs (benign index desync from a bot directory-recreate). Verified all 68
-on-disk files byte-identical to HEAD, then `git checkout HEAD -- docs/visualization` → clean.
+**Verification (run #71):** no `dbr serve`/dash processes; all 16 `or-<domain>.service` =
+`active=inactive enabled=disabled`; all 16 domains 200 (static HTML, stamp c9d7a687); `free -h`
+= 1.5 GiB available (vs ~256 MiB under the old fleet); nginx 7d log = 72 502s ALL on 02–03 Jun
+(runs #46/#58), most recent 2026-06-03 12:00:13, **zero since**. No PO swap/RAM action needed —
+criterion #1's durable-mechanism clause is met, strictly stronger than the swap stopgap.
 
-**Canceled 3 obsolete finance issues** (all target the retired `products/dashboards/finance/app.py`,
-replaced by the `public_finance` dbr dashboard): **OR-110** (v2 programme), **OR-112**
-(expenditure tab), **OR-113** (debt-management tab). Valuable subset already lives on
-Wydatki/Dług/Dochody pages; remaining asks need a treemap primitive (not in production set:
-line/card/bar/column/choropleth) and MF granular debt-structure data we don't ingest. Each got
-a rationale comment pointing to the live replacement.
+**Loose end (zero risk):** 16 leftover `/etc/systemd/system/or-<domain>.service` files remain on
+disk, disabled+inactive. Removal needs `rm` (outside NOPASSWD allowlist) → optional cosmetic
+cleanup, not a blocker.
 
-**Data-quality (DuckDB direct, read-only):** 56 datasets / 98,091 obs / latest 2026-S1 / fetched
-2026-06-05 22:08 UTC; all 21 `curated.fact_*` tables populated. No anomalies. NOTE: CLAUDE.md's
-`from dbr.semantic import query` snippet is stale — use `duckdb.connect(read_only=True)` directly.
+**Lesson:** the standing-blockers list can rot. An item fixed at the root in #64 kept being
+recopied as PO-blocked on a stale remediation framing. Re-verify blockers against live state
+periodically instead of recopying.
 
 ## KEY OPS MODEL (current — unchanged since #64)
 - Dashboards = **static HTML** in `infra/nginx/html/<domain>/index.html` (gitignored build
-  artifacts). NO `dbr serve`, NO `or-<domain>.service`, NO ports.
+  artifacts). NO `dbr serve`, NO `or-<domain>.service` running, NO ports. Confirmed #71: all 16
+  units inactive+disabled, no dashboard processes, 1.5 GiB free.
 - A dashboard YAML change OR a data refresh needs a **REBUILD** to show:
   single dashboard → `dbr run products/dashboards/<domain>` (build + nginx route + reload).
   Whole fleet / after any `packages/dbr/` edit → commit FIRST, then
   `python3 infra/scheduler/redeploy_dashboards.py` (builds 16 → web root, verifies each
   `<meta dbr-build>` == HEAD; non-zero exit = NOT resolved).
-- Live verify: `curl -s https://portal.open-reporting.dev/<domain>/` → 200 + stamp==HEAD +
-  Plotly content. For layout/visual changes, screenshot (Playwright) — curl can't see layout.
+- Live verify: `curl -s https://portal.open-reporting.dev/<domain>/` → 200 + stamp + Plotly
+  content. For layout/visual changes, screenshot (Playwright) — curl can't see layout.
 - **Page layout is a fixed single-screen canvas with `overflow:hidden`.** Do NOT stack
   full-height rows (clips). Side-by-side widths (e.g. 60/40) within one row are safe.
 
@@ -43,11 +44,6 @@ a rationale comment pointing to the live replacement.
 - Re-review a fixed draft: `release_pipeline.py <draft.md> --force` (single article).
   Published drafts stay in `products/blog/drafts/` (state via Ghost slug lookup, not file moves).
 - **20 articles published.** Each run starts with sweep clean unless a new draft was authored.
-
-## Lesson (run #70)
-- **At smoke check, a `D`+untracked pairing on a whole directory is usually a benign index
-  desync, not lost work.** Verify on-disk content == HEAD (`cmp` loop) BEFORE acting, then
-  `git checkout HEAD -- <dir>` restores tracking with zero content change. Don't panic-commit.
 
 ## dbr visual notes
 - **bar = HORIZONTAL** (metric on x). Vertical categorical → use **column**. Bitten 3×.
@@ -62,11 +58,17 @@ przeglad → dochody → wydatki → dlug → ue → prognozy.
 - Clean except known untracked PO/bot WIP (never commit): `infra/discord-bot/bot.py`,
   `infra/systemd/or-*-bot.service`, `logs/`, `.claude/scheduled_tasks.lock`,
   `products/blog/reviews/release-report.md`.
-- 16 dashboards static; all on HEAD from #67 fleet redeploy. No dbr code change since → no
-  fleet redeploy needed.
+- 16 dashboards static; all on stamp c9d7a687 (#67). No dbr code change since → no fleet
+  redeploy needed.
 
-## Standing blockers (all PO-side)
-- **OR-168** — root-fixed (#64); only `systemctl disable or-{16}` remains (sudo gap).
+## Standing blockers (all PO-side — re-verified #71)
 - OR-153 Telegram inbound · OR-90 Instagram token → OR-89 · OR-86 BDL key · OR-79 Ghost nav.
 - On hold under static model: OR-160 cross-filter, OR-161 date-picker (backend-only).
+- **CLOSED #71: OR-168** (OOM — resolved by static architecture; no PO swap needed).
 - Canceled #70: OR-110/112/113 (finance-v2, app.py-era — superseded by public_finance dbr).
+
+## Followup (minor, deferred)
+- CLAUDE.md Development Commands shows a stale DuckDB snippet (`from dbr.semantic import query`)
+  — use `duckdb.connect(read_only=True)`. Too trivial to warrant a flagged CLAUDE.md edit alone.
+- 16 leftover `or-<domain>.service` unit files on disk (disabled, zero risk) — `rm` needs sudo
+  outside allowlist; optional PO-assisted cleanup.
