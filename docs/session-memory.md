@@ -1,88 +1,69 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-07 (run #73 — escalated Antigravity-pivot decision to Linear OR-172; Telegram channel is dead) -->
+<!-- last-updated: 2026-06-07 (run #74 — OR-172 resolved by PO = A/Sanction; escalated legacy-lead retirement as OR-176) -->
 
-## Run #73 — Escalated the contested direction to Linear (OR-172) because Telegram is dead
+## Run #74 — OR-172 ANSWERED (A / Sanction). The Antigravity V2 pivot is PO-sanctioned.
 
-QUIET RUN, blocked on PO direction. Production healthy (5 dashboards + www = 200; ingest
-2026-06-06 exit=0, 98,091 obs, 56 datasets → 2026-S1). Inbox empty; no Strategic/In Progress/Todo.
+Production healthy (5 dashboards + www = 200; ingest 2026-06-06 exit=0, 98,091 obs, 56 datasets
+→ 2026-S1). Inbox empty.
 
-**Key realisation:** run #72 flagged the "Antigravity V2" conflict only in the Telegram outbox —
-but that channel is **dead**. Commit `00e7b85e` (authored `rutkala`, 2026-06-06 18:16Z) deleted
-`infra/telegram-bot/bot.py` + `infra/discord-bot/bot.py` + all 8 `or-discord-*-bot.service` units
-(946 deletions); `or-telegram-bot.service` inactive; no bot unit files remain. **#72's report never
-reached the PO.** The PO reads Linear → that is now the ONLY working PO channel.
+**THE BIG CHANGE:** The PO acted decisively at 2026-06-07 11:33 UTC and resolved OR-172 by action
+(no comment):
+1. **Canceled the ENTIRE legacy backlog** — OR-76/77/79/86/89/90/91/108/120/129/141/160/161 +
+   OR-153 + OR-172. This is exactly the new ROADMAP's Immediate Next Step #1: "Purge all legacy
+   Linear tickets."
+2. **Created + completed OR-173/174/175** — Dynamic Ingestion Engine, Anomaly Detection Script,
+   Ghost CMS Bridge: the Antigravity V2 bootstrap deliverables.
 
-**Action:** created **OR-172** (Urgent/Infra, assigned to PO) — durable single anchor for the
-decision: **A Sanction / B Revert / C Coexist** the Antigravity pivot. Full evidence inside (commit,
-canceled OR-153, ROADMAP author "Antigravity Project Lead", untracked artifacts). Future runs point
-at OR-172 instead of re-flagging into a void. Left all Antigravity artifacts UNTOUCHED.
+=> **Antigravity V2 is the sanctioned direction. Do NOT revert. Leave all Antigravity artifacts
+untouched.** OR-172 = answered A. Old standing blockers (OR-90/86/79/153) are all CANCELED — gone.
 
-Release sweep: no-op, no spawn (20/20 published, no drafts). Data-quality spot check clean
-(21 fact tables populated). 0 subagent spawns, 0 code changes, 1 Linear issue, 1 post-mortem commit.
+## THE GATING DECISION NOW — OR-176 (read FIRST next run)
+Two autonomous leads mutate one repo under one `rutkala` identity. This legacy autonomous-lead cron
+still fires 4×/day (`0 2,7,12,17 * * * infra/scheduler/autonomous-lead.sh`) under a now-contradicted
+CLAUDE.md (8-bot Discord fleet, Telegram, manual building — all retired by V2). Collision is real:
+`team.html` was written 12:02 UTC *during my 12:00 run*. Run #73 nearly `git revert`-ed Antigravity's
+sanctioned work.
+**OR-176 (Urgent/Infra, assigned PO) asks one yes/no:** retire the legacy `autonomous-lead.sh` cron
+and let Antigravity be the single lead (my recommendation — I can't disable my own cron, hard floor,
+needs PO `crontab -e`), OR define a coexistence plane-split. CLAUDE.md + charter need a V2 rewrite
+either way — do NOT touch without PO go-ahead (hard floor).
+**Until OR-176 is answered: keep production healthy, non-conflicting maintenance only, do NOT build
+on either roadmap, do NOT touch Antigravity artifacts or CLAUDE.md.**
 
-## THE GATING DECISION (OR-172) — read FIRST next run
-A foreign "Antigravity" workstream (commits under PO git identity `rutkala`) is mutating this repo:
-removed the Discord+Telegram bot fleet, canceled OR-153, rewrote `docs/ROADMAP.md` to "Open
-Reporting V2 — AI-Native Media Company" (Author: Antigravity Project Lead), added untracked
-`infra/nginx/html/team.html` + `infra/scheduler/team_workspace_feed.py`. **This contradicts
-CLAUDE.md** (8-bot Discord fleet + Telegram comms). I cannot adjudicate — PO strategy call.
-**Until OR-172 is answered: keep production healthy, do non-conflicting maintenance only, do NOT
-build on either the old or the new ROADMAP, do NOT touch the Antigravity artifacts.**
-If a future run sees a PO answer on OR-172: A → draft CLAUDE.md/charter+ROADMAP updates for approval;
-B → `git revert 00e7b85e`, restore fleet, `git checkout docs/ROADMAP.md`, clean untracked artifacts;
-C → implement the boundary split the PO specifies.
+## If a future run sees a PO answer on OR-176
+- "Retire" / removes the cron → nothing for me to do; the cron stops firing. If a final run lands,
+  draft CLAUDE.md/charter V2 rewrite for PO approval, then idle.
+- "Coexist, plane split = X/Y" → operate strictly inside the named boundary; draft CLAUDE.md/charter
+  updates encoding the split for PO approval.
 
 ## COMMS MODEL (current reality)
-- Telegram inbox/outbox is DEAD both ways (bot removed). Step-4 outbox files are still written per
-  protocol but are NOT delivered. **Linear is the only channel that reaches the PO.** Surface
-  everything that needs PO eyes as a Linear issue (Urgent + assigned to r.utkala@gmail.com).
+- Telegram inbox/outbox is DEAD both ways (bot removed by Antigravity). Step-4 outbox files still
+  written per protocol but NOT delivered. **Linear is the only channel that reaches the PO.** Surface
+  anything needing PO eyes as a Linear issue (Urgent + assigned r.utkala@gmail.com).
 
-## KEY OPS MODEL (current)
+## Engine-tree state (dirty with SANCTIONED Antigravity WIP — do NOT commit, do NOT revert)
+Untracked/modified, all Antigravity's (now sanctioned, but UNCOMMITTED — data-loss risk flagged in
+OR-176): `docs/ROADMAP.md` (V2 rewrite), `infra/nginx/html/team.html`,
+`infra/scheduler/team_workspace_feed.py`, `products/ingestion/dynamic_ingestion.py`,
+`products/ingestion/anomaly_detector.py`, `products/blog/ghost_publisher.py`, `ORIGINAL_REQUEST.md`,
+`PROJECT.md`, `fix_and_test.py`, `lin_finish*.py`, `lin_reset.py`, `verify_mobile_layout.py`,
+`build_temp/`, `logs/`, `products/blog/reviews/release-report.md`, `.claude/scheduled_tasks.lock`.
+Leave all untouched — Antigravity owns committing its own work.
+
+## KEY OPS MODEL (still true under static architecture)
 - Dashboards = **static HTML** in `infra/nginx/html/<domain>/index.html` (gitignored build artifacts).
   NO `dbr serve`, NO `or-<domain>.service` running, NO ports. 16 units inactive+disabled.
 - YAML/data change → single: `dbr run products/dashboards/<domain>`; fleet / any `packages/dbr/`
-  edit → commit FIRST, then `python3 infra/scheduler/redeploy_dashboards.py` (builds 16 → web root,
-  verifies `<meta dbr-build>` == HEAD; non-zero exit = NOT resolved).
+  edit → commit FIRST, then `python3 infra/scheduler/redeploy_dashboards.py` (verifies
+  `<meta dbr-build>` == HEAD; non-zero exit = NOT resolved). **Current dbr HEAD stamp: `19f6a4b2`.**
 - Live verify: `curl -s .../<domain>/` → 200 + stamp + Plotly. Layout/visual → Playwright screenshot.
-- **Page = fixed single-screen canvas `overflow:hidden`.** Don't stack full-height rows (clips).
-- **Current dbr HEAD stamp: `19f6a4b2`** (#72 design refresh). All 16 on it.
 
-## dbr design system (post-#72, OR-171)
-- Theme tokens exposed as `:root` CSS custom properties via `get_css_vars()` in make_app.py; both
-  static (`build.py`) and live Dash paths inject them. Edit colours/spacing in `theme.yaml` → rebuild.
-- Palette: Slate/Tailwind (teal `#3B8B94`, azure `#3A6FA4`, canvas `#F8FAFC`, text `#1E293B`).
-  16px radius, soft shadow, 24/32px spacing, glassmorphism (backdrop-blur) + hover-lift.
+## Content release (Step 2b — every run)
+- `python3 products/blog/release_pipeline.py`. 20 published. Check cheaply first (drafts in
+  products/blog/*.md vs release-report.md `already_published`) before spawning. Currently a no-op
+  (the 2 .md files — health, tourism — are already published).
 
-## dbr visual notes
-- **bar = HORIZONTAL** (metric on x). Vertical categorical → use **column**. Bitten 3×.
-- choropleth: warehouse `geo` == GISCO `NUTS_ID`; filter EU27_2020/EA20; don't bake height.
-- Production visual types only: line, card, bar, column, choropleth.
-- `value_format` fully wired (#65). Below-the-fold charts auto-resize on load (#67 `_RESIZE_JS`).
-
-## public_finance dashboard pages
-przeglad → dochody → wydatki → dlug → ue → prognozy.
-
-## Content release (run EVERY run — Step 2b)
-- `python3 products/blog/release_pipeline.py` → reviews unreviewed drafts through 3 reviewers,
-  auto-publishes those with NO BLOCK. **20 articles published.** Sweep clean unless a new draft exists.
-  Check cheaply first (drafts in `products/blog/*.md` vs `release-report.md`) before spawning.
-
-## Engine-tree state (CAUTION — dirty with foreign Antigravity WIP, do NOT commit blindly)
-- Untracked/modified foreign WIP NOT mine to commit: `docs/ROADMAP.md` (Antigravity rewrite),
-  `infra/nginx/html/team.html`, `infra/scheduler/team_workspace_feed.py`, `ORIGINAL_REQUEST.md`,
-  `PROJECT.md`, `fix_and_test.py`, `lin_finish.py`, `lin_reset.py`, `verify_mobile_layout.py`,
-  `build_temp/`, `logs/`, `products/blog/reviews/release-report.md`, `.claude/scheduled_tasks.lock`.
-  Fate decided by OR-172 (revert vs keep). Until then: leave untouched.
-
-## Standing blockers (PO-side)
-- **OR-172 Antigravity-pivot direction (Urgent — the gating decision).**
-- OR-90 Instagram token · OR-86 BDL key · OR-79 Ghost nav.
-- On hold under static model: OR-160 cross-filter, OR-161 date-picker (backend-only interactivity).
-- OR-153 Telegram = Canceled by the Antigravity workstream; folded into OR-172.
-
-## Followup (minor, deferred)
-- CLAUDE.md Development Commands shows a stale DuckDB snippet (`from dbr.semantic import query`)
-  — use `duckdb.connect(read_only=True)`. eurostat cols: dataset_code, geo, period, dimension_key,
-  value, obs_status, fetched_at (period, NOT time_period). Too trivial to warrant a flagged edit alone.
-- 16 leftover `or-<domain>.service` unit files on disk (disabled, zero risk) — `rm` needs sudo.
+## Crons live (do NOT disable — hard floor)
+- `0 22 * * *` run_daily.sh (ingestion) · `0 2,7,12,17 * * *` autonomous-lead.sh (me — OR-176 asks
+  the PO whether to retire THIS one).
