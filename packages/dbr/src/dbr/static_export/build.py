@@ -23,11 +23,19 @@ from dbr.make_app.make_app import (
     _SCROLLSPY_JS,
     _SIDEBAR_TOGGLE_JS,
     build_sha,
+    get_css_vars,
 )
 from dbr.static_export.serialize import UnsupportedComponentError, render_node
 
 
-def _document(*, title: str, body_html: str, build: str, plotly_src: str) -> str:
+def _document(
+    *,
+    title: str,
+    body_html: str,
+    build: str,
+    plotly_src: str,
+    css_vars: str,
+) -> str:
     return (
         "<!DOCTYPE html>\n<html>\n<head>\n"
         '  <meta charset="utf-8">\n'
@@ -35,7 +43,7 @@ def _document(*, title: str, body_html: str, build: str, plotly_src: str) -> str
         f'  <meta name="dbr-build" content="{build}">\n'
         f"  <title>{title}</title>\n"
         f'  <script src="{plotly_src}" charset="utf-8"></script>\n'
-        f"  <style>{_CSS}</style>\n"
+        f"  <style>{css_vars + _CSS}</style>\n"
         "</head>\n<body>\n"
         f"{body_html}\n"
         f"  <script>{_SCROLLSPY_JS}</script>\n"
@@ -90,6 +98,7 @@ def build_static_dashboard(
         body_html=body_html,
         build=build_sha(),
         plotly_src=plotly_src,
+        css_vars=get_css_vars(),
     )
 
     dest = Path(out_dir) / domain

@@ -48,7 +48,13 @@ def build_sha() -> str:
 
 
 _CSS = """
-body { margin: 0; padding: 0; overflow: hidden; }
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
 /* ──────────────────────────────────────────────────────────────────────────
    MOBILE (≤768px) — break out of the desktop fixed-canvas model.
@@ -119,7 +125,7 @@ body { margin: 0; padding: 0; overflow: hidden; }
     z-index: 100      !important;
     overflow-y: auto  !important;
     overflow-x: hidden!important;
-    border-right: 1px solid #D8E0E6 !important;
+    border-right: 1px solid var(--border) !important;
     border-radius: 0  !important;
   }
   /* Brand: centre the OR badge, drop the wordmark + toggle */
@@ -149,7 +155,7 @@ body { margin: 0; padding: 0; overflow: hidden; }
     padding: 0             !important;
     border-left: none      !important;
     border-radius: 50%     !important;
-    background-color: rgba(85, 161, 170, 0.10) !important;
+    background-color: color-mix(in srgb, var(--teal-primary) 10%, transparent) !important;
     font-size: 0           !important;   /* hide the label text … */
     color: transparent     !important;
   }
@@ -158,14 +164,14 @@ body { margin: 0; padding: 0; overflow: hidden; }
     content: counter(dbrnav);            /* … and show the section number instead */
     font-size: 13px;
     font-weight: 600;
-    color: #6B7A85;
+    color: var(--subtext);
   }
   /* id prefix raises specificity above the desktop `.dbr-nav-link.active` rule
      later in the sheet (equal-specificity + !important would otherwise let the
      later desktop rule win on source order, leaking its pale bg / border-left /
      padding-left and turning the dot into a pale oval). */
   #dbr-sidebar-nav .dbr-nav-link.active {
-    background-color: #55A1AA !important;
+    background-color: var(--teal-primary) !important;
     border-left: none        !important;
     padding-left: 0          !important;
     font-weight: 600         !important;
@@ -180,7 +186,7 @@ body { margin: 0; padding: 0; overflow: hidden; }
   #dbr-sidebar-footer { padding: 0 !important; min-height: 44px !important;
                         justify-content: center !important; }
   #dbr-sidebar-footer a       { font-size: 0 !important; gap: 0 !important; }
-  #dbr-sidebar-footer a::before { content: "←"; font-size: 16px; color: #6B7A85; }
+  #dbr-sidebar-footer a::before { content: "←"; font-size: 16px; color: var(--subtext); }
 
   /* Content column: clear the fixed rail, then flow as plain blocks (drop the
      header/scroll/footer grid) so the BODY scrolls the whole document. */
@@ -225,7 +231,7 @@ body { margin: 0; padding: 0; overflow: hidden; }
     position: sticky !important;
     top: 0           !important;
     z-index: 80      !important;
-    background: #EDF1F6 !important;
+    background: var(--bg-page) !important;
     margin: 0 -16px 12px -16px !important;
     padding: 10px 16px !important;
   }
@@ -284,15 +290,15 @@ body { margin: 0; padding: 0; overflow: hidden; }
   transition: color 0.15s ease, background-color 0.15s ease;
 }
 .dbr-nav-link:hover {
-  color: #4A7FB5 !important;
-  background-color: rgba(74, 127, 181, 0.07) !important;
+  color: var(--azure-primary) !important;
+  background-color: color-mix(in srgb, var(--azure-primary) 7%, transparent) !important;
   border-radius: 0 6px 6px 0;
 }
 .dbr-nav-link.active {
-  color: #4A7FB5 !important;
+  color: var(--azure-primary) !important;
   font-weight: 600 !important;
-  background-color: rgba(74, 127, 181, 0.09) !important;
-  border-left: 3px solid #4A7FB5 !important;
+  background-color: color-mix(in srgb, var(--azure-primary) 9%, transparent) !important;
+  border-left: 3px solid var(--azure-primary) !important;
   padding-left: 17px !important;
 }
 
@@ -301,8 +307,8 @@ body { margin: 0; padding: 0; overflow: hidden; }
   transition: background-color 0.15s ease, color 0.15s ease;
 }
 #dbr-sidebar-toggle:hover {
-  background-color: rgba(74, 127, 181, 0.08) !important;
-  color: #4A7FB5 !important;
+  background-color: color-mix(in srgb, var(--azure-primary) 8%, transparent) !important;
+  color: var(--azure-primary) !important;
 }
 
 /* Collapsed sidebar: !important overrides React inline style */
@@ -316,6 +322,32 @@ body { margin: 0; padding: 0; overflow: hidden; }
 }
 #dbr-sidebar.dbr-sidebar-collapsed #dbr-sidebar-toggle {
   margin-left: 0 !important;
+}
+
+/* Glassmorphism sidebar */
+#dbr-sidebar {
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(20px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(190%) !important;
+  border-right: 1px solid var(--border) !important;
+}
+
+/* Glassmorphism cards */
+.dbr-visual-item > div, .dbr-kpi-card {
+  background: rgba(255, 255, 255, 0.65) !important;
+  backdrop-filter: blur(20px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(190%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  border-radius: var(--card-radius) !important;
+  box-shadow: var(--card-shadow) !important;
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+              box-shadow 0.3s ease,
+              border-color 0.3s ease !important;
+}
+.dbr-visual-item > div:hover, .dbr-kpi-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(31, 38, 135, 0.08), 0 0 1px rgba(0, 0, 0, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.6) !important;
 }
 """
 
@@ -473,7 +505,9 @@ _SIDEBAR_TOGGLE_JS = """
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function () { setTimeout(initSidebarToggle, 600); });
+    document.addEventListener('DOMContentLoaded', function () {
+      setTimeout(initSidebarToggle, 600);
+    });
   } else {
     setTimeout(initSidebarToggle, 600);
   }
@@ -524,7 +558,7 @@ _INDEX_STRING = (
     "    <title>{%title%}</title>\n"
     "    {%favicon%}\n"
     "    {%css%}\n"
-    "    <style>" + _CSS + "</style>\n"
+    "    <style><!--DBR_STYLE--></style>\n"
     "  </head>\n"
     "  <body>\n"
     "    {%app_entry%}\n"
@@ -541,7 +575,28 @@ _INDEX_STRING = (
 )
 
 
+def get_css_vars() -> str:
+    from dbr.theme import (
+        TEAL_PRIMARY, AZURE_PRIMARY, BORDER, BG_PAGE, BG_SURFACE,
+        TEXT, SUBTEXT, CARD_RADIUS, CARD_SHADOW
+    )
+    return f'''
+:root {{
+  --teal-primary: {TEAL_PRIMARY};
+  --azure-primary: {AZURE_PRIMARY};
+  --bg-page: {BG_PAGE};
+  --bg-surface: {BG_SURFACE};
+  --border: {BORDER};
+  --text: {TEXT};
+  --subtext: {SUBTEXT};
+  --card-radius: {CARD_RADIUS};
+  --card-shadow: {CARD_SHADOW};
+}}
+'''
+
+
 def make_app(domain: str, title: str = "") -> Dash:
+    css_vars = get_css_vars()
     app = Dash(
         url_base_pathname=f"/{domain}/",
         suppress_callback_exceptions=True,
@@ -557,7 +612,11 @@ def make_app(domain: str, title: str = "") -> Dash:
     # Stamp the running framework's git SHA into the page head so a deploy
     # can be verified end-to-end (live page advertises which commit it booted).
     build_meta = f'<meta name="dbr-build" content="{build_sha()}">'
-    app.index_string = _INDEX_STRING.replace("<!--DBR_BUILD-->", build_meta)
+    app.index_string = (
+        _INDEX_STRING
+        .replace("<!--DBR_BUILD-->", build_meta)
+        .replace("<!--DBR_STYLE-->", css_vars + _CSS)
+    )
     return app
 
 

@@ -5,40 +5,40 @@
 
 colors:
   # ── Logo-derived core ──────────────────────────────────────────
-  teal_primary:  "#55A1AA"
-  azure_primary: "#4A7FB5"
-  charcoal:      "#2D3339"
+  teal_primary:  "#3B8B94"
+  azure_primary: "#3A6FA4"
+  charcoal:      "#24292E"
 
   # ── Teal family (green-leaning) ────────────────────────────────
-  teal_1:    "#4A9B8F"
-  teal_2:    "#55A1AA"
-  teal_3:    "#6BB5A8"
-  teal_4:    "#8BC4C7"
-  teal_pale: "#D7F3F0"
+  teal_1:    "#30727A"
+  teal_2:    "#3B8B94"
+  teal_3:    "#5CA4AE"
+  teal_4:    "#86BFC6"
+  teal_pale: "#E2EFF1"
 
   # ── Azure family (blue-leaning) ────────────────────────────────
-  azure_1:    "#4A7FB5"
-  azure_2:    "#6B9FD4"
-  azure_3:    "#8BB5E0"
-  azure_4:    "#A8C8E8"
-  azure_pale: "#D6E4F4"
+  azure_1:    "#3A6FA4"
+  azure_2:    "#5B89B7"
+  azure_3:    "#7CA3CA"
+  azure_4:    "#A3BDDC"
+  azure_pale: "#E8EFF6"
 
   # ── Slate family (neutral greys) ───────────────────────────────
-  slate_1: "#6B8090"
-  slate_2: "#8FA4B4"
-  slate_3: "#B0C4D0"
-  slate_4: "#C8D8E2"
+  slate_1: "#475569"
+  slate_2: "#64748B"
+  slate_3: "#94A3B8"
+  slate_4: "#CBD5E1"
 
   # ── Backgrounds / surfaces / text ──────────────────────────────
-  bg_page:    "#EDF1F6"   # canvas behind floating cards — a touch darker than white
+  bg_page:    "#F8FAFC"   # canvas behind floating cards — a touch darker than white
                           # so every card (sidebar/header/footer/charts) still separates
   bg_surface: "#FFFFFF"
-  border:     "#D8E0E6"
-  grid:       "#E6ECF0"
-  zero_line:  "#C5D0D8"
-  text:       "#2D3339"
-  subtext:    "#6B7A85"
-  muted:      "#95A5B0"
+  border:     "#E2E8F0"
+  grid:       "#F1F5F9"
+  zero_line:  "#CBD5E1"
+  text:       "#1E293B"
+  subtext:    "#475569"
+  muted:      "#64748B"
 
   # ── Semantic ───────────────────────────────────────────────────
   # Polarity tokens — rubric dim 9: blue/orange polarity, not red/green.
@@ -46,31 +46,31 @@ colors:
   # positive = good-direction signal (blue azure_1);
   # negative = deteriorating signal (orange).
   # Applied uniformly across badges, deltas, threshold reference lines.
-  positive: "#4A7FB5"  # blue
+  positive: "#3A6FA4"  # blue
   negative: "#D4874A"  # orange
   warning:  "#D4874A"  # orange — same as negative (threshold approach == breach in fiscal context)
 
 typography:
-  font_family:            "Inter, 'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif"
+  font_family: "Inter, 'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif"
   size_body:              "13px"
   size_section_heading:   "18px"
   weight_section_heading: 700
 
 spacing:
-  page_gap:           "16px"     # gap between sidebar and main canvas
-  page_padding:       "16px"     # outer padding of the page wrapper
-  main_padding:       "28px"     # inner padding of the main canvas
+  page_gap:           "24px"     # gap between sidebar and main canvas
+  page_padding:       "24px"     # outer padding of the page wrapper
+  main_padding:       "32px"     # inner padding of the main canvas
   main_max_width:     "1440px"   # cap main canvas width — beyond this, page centres
   sidebar_width:      "220px"
   sidebar_padding:    "0"        # internal; each sidebar section handles its own padding
   nav_link_padding:   "8px 20px"
   section_top_gap:    "40px"     # margin above each section heading
   section_bottom_gap: "6px"      # margin below each section heading (before border)
-  row_gap:            "16px"     # gap between items in a visual row (and between rows)
+  row_gap:            "24px"     # gap between items in a visual row (and between rows)
 
 effects:
-  card_radius: "10px"
-  card_shadow: "0 2px 8px rgba(0,0,0,0.06), 0 0 1px rgba(0,0,0,0.08)"
+  card_radius: "16px"
+  card_shadow: "0 8px 30px rgba(0,0,0,0.03), 0 0 1px rgba(0,0,0,0.05)"
 
 chart:
   # Colourway resolved at load time against the colour names above.
