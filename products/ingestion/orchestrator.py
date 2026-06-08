@@ -36,7 +36,7 @@ def fetch_data(source: dict) -> int:
         return rows
         
     elif source_id == "gus_bdl_api":
-        cmd = ["python3", "/opt/open-reporting/products/ingestion/extractors/gus_extractor.py", "72305"]
+        cmd = ["python3", "/opt/open-reporting/products/ingestion/extractors/gus_extractor.py", "--metric", "72305"]
         logger.info(f"Running GUS Extractor: {' '.join(cmd)}")
         result = subprocess.run(cmd, capture_output=True, text=True)
         if result.returncode != 0:
@@ -70,6 +70,7 @@ def main():
             error_message VARCHAR
         )
     """)
+    conn.close()
 
     for source in data.get("sources", []):
         source_id = source["id"]
@@ -88,6 +89,7 @@ def main():
             
         last_sync = datetime.now()
 
+        conn = _db()
         conn.execute("""
             INSERT INTO ingestion_status (
                 source_id, last_sync, status, rows_fetched, error_message
@@ -98,10 +100,9 @@ def main():
                 rows_fetched = excluded.rows_fetched,
                 error_message = excluded.error_message
         """, (source_id, last_sync, status, rows_fetched, error_message))
+        conn.close()
         
         logger.info(f"Finished {source_id} with status: {status}")
-
-    conn.close()
 
 
 if __name__ == "__main__":
