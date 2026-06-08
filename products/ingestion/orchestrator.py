@@ -1,0 +1,77 @@
+#!/usr/bin/env python3
+import os
+import time
+import yaml
+import random
+import logging
+from datetime import datetime
+import duckdb
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logger = logging.getLogger(__name__)
+
+
+def _db() -> duckdb.DuckDBPyConnection:
+    path = os.environ.get("DUCKDB_PATH", "/opt/open-reporting/data/warehouse.duckdb")
+    return duckdb.connect(path)
+
+
+def fetch_data(source: dict) -> int:
+    """Mock fetching data for a source."""
+    time.sleep(0.5)
+    if random.random() < 0.1:
+        raise Exception("Mock simulated error during fetch")
+    return random.randint(1000, 50000)
+
+
+def main():
+    yaml_path = "/opt/open-reporting/products/ingestion/to_landing/sources.yaml"
+    with open(yaml_path, "r", encoding="utf-8") as f:
+        data = yaml.safe_load(f)
+
+    conn = _db()
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS ingestion_status (
+            source_id VARCHAR PRIMARY KEY,
+            last_sync TIMESTAMP,
+            status VARCHAR,
+            rows_fetched INTEGER,
+            error_message VARCHAR
+        )
+    """)
+
+    for source in data.get("sources", []):
+        source_id = source["id"]
+        logger.info(f"Fetching data for {source_id}...")
+        
+        status = "SUCCESS"
+        rows_fetched = 0
+        error_message = None
+        
+        try:
+            rows_fetched = fetch_data(source)
+        except Exception as e:
+            status = "FAILED"
+            error_message = str(e)
+            logger.error(f"Failed to fetch {source_id}: {error_message}")
+            
+        last_sync = datetime.now()
+
+        conn.execute("""
+            INSERT INTO ingestion_status (
+                source_id, last_sync, status, rows_fetched, error_message
+            ) VALUES (?, ?, ?, ?, ?)
+            ON CONFLICT (source_id) DO UPDATE SET
+                last_sync = excluded.last_sync,
+                status = excluded.status,
+                rows_fetched = excluded.rows_fetched,
+                error_message = excluded.error_message
+        """, (source_id, last_sync, status, rows_fetched, error_message))
+        
+        logger.info(f"Finished {source_id} with status: {status}")
+
+    conn.close()
+
+
+if __name__ == "__main__":
+    main()

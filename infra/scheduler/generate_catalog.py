@@ -62,7 +62,10 @@ html_content = """<!DOCTYPE html>
     <h1>Data Catalog & Source Registry</h1>
     <p style="color: #bac2de; font-size: 13px; margin-top: 4px;">Relational Metadata Graph</p>
   </div>
-  <a href="/admin.html" class="btn">⬅ Back to Admin</a>
+  <div style="display: flex; gap: 12px;">
+    <a href="/ingestion-status.html" class="btn">View Ingestion Status</a>
+    <a href="/admin.html" class="btn">⬅ Back to Admin</a>
+  </div>
 </header>
 <main>
 
@@ -130,3 +133,123 @@ with open(OUTPUT_HTML, "w", encoding="utf-8") as f:
     f.write(html_content)
 
 print(f"Generated relational {OUTPUT_HTML}")
+
+# --- Generate Ingestion Status Page ---
+import duckdb
+import pandas as pd
+
+DUCKDB_PATH = "/opt/open-reporting/data/warehouse.duckdb"
+STATUS_HTML = "/opt/open-reporting/infra/nginx/html/ingestion-status.html"
+
+# Fetch status from duckdb if it exists
+sync_statuses = {}
+if os.path.exists(DUCKDB_PATH):
+    try:
+        conn = duckdb.connect(DUCKDB_PATH)
+        # Create table if not exists so it doesn't fail
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS ingestion_status (
+                source_id VARCHAR PRIMARY KEY,
+                last_sync TIMESTAMP,
+                status VARCHAR,
+                rows_fetched INTEGER,
+                error_message VARCHAR
+            )
+        """)
+        df = conn.execute("SELECT * FROM ingestion_status").fetchdf()
+        for _, row in df.iterrows():
+            sync_statuses[row['source_id']] = {
+                "last_sync": str(row['last_sync']) if not pd.isna(row['last_sync']) else "Never",
+                "status": row['status'],
+                "rows_fetched": row['rows_fetched'],
+                "error_message": row['error_message'] if not pd.isna(row['error_message']) else ""
+            }
+        conn.close()
+    except Exception as e:
+        print(f"Failed to read duckdb: {e}")
+
+html_status = """<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open Reporting — Ingestion Status</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Inter, system-ui, sans-serif; background: #1e1e2e; color: #cdd6f4; min-height: 100vh; }
+    header { background: #181825; border-bottom: 1px solid #313244; padding: 20px 32px; display: flex; justify-content: space-between; align-items: center;}
+    header h1 { font-size: 20px; font-weight: 700; color: #a6e3a1; }
+    main { max-width: 1200px; margin: 40px auto; padding: 0 24px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 24px; background: #181825; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    th, td { padding: 16px; text-align: left; border-bottom: 1px solid #313244; }
+    th { background: #313244; color: #89b4fa; font-weight: 600; font-size: 14px; text-transform: uppercase; }
+    tr:last-child td { border-bottom: none; }
+    .status-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+    .status-success { background: rgba(166, 227, 161, 0.2); color: #a6e3a1; }
+    .status-failed { background: rgba(243, 139, 168, 0.2); color: #f38ba8; }
+    .status-pending { background: rgba(249, 226, 175, 0.2); color: #f9e2af; }
+    .btn { background: #89b4fa; color: #11111b; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 600; }
+  </style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Live Ingestion Status</h1>
+    <p style="color: #bac2de; font-size: 13px; margin-top: 4px;">Monitor all automated data pipelines</p>
+  </div>
+  <div style="display: flex; gap: 12px;">
+    <a href="/data-catalog.html" class="btn">Data Catalog</a>
+    <a href="/admin.html" class="btn">⬅ Back to Admin</a>
+  </div>
+</header>
+<main>
+  <table>
+    <thead>
+      <tr>
+        <th>Source ID</th>
+        <th>Organization & Name</th>
+        <th>Status</th>
+        <th>Last Sync</th>
+        <th>Rows Fetched</th>
+      </tr>
+    </thead>
+    <tbody>
+"""
+
+for s in sources_data:
+    sid = s["id"]
+    record = sync_statuses.get(sid, {"status": "Pending", "last_sync": "Never", "rows_fetched": 0, "error_message": ""})
+    
+    st_val = str(record["status"]).lower()
+    if st_val == "success":
+        badge = "status-success"
+    elif st_val == "failed" or st_val == "error":
+        badge = "status-failed"
+    else:
+        badge = "status-pending"
+        
+    err_msg = f"<br><span style='color: #f38ba8; font-size: 12px;'>{record['error_message']}</span>" if record['error_message'] else ""
+        
+    html_status += f"""
+      <tr>
+        <td style="font-family: monospace; color: #bac2de;">{sid}</td>
+        <td><strong>{s['organization']}</strong> - {s['name']}{err_msg}</td>
+        <td><span class="status-badge {badge}">{record['status']}</span></td>
+        <td style="color: #a6adc8; font-size: 14px;">{record['last_sync']}</td>
+        <td style="font-family: monospace;">{record['rows_fetched']:,}</td>
+      </tr>
+"""
+
+html_status += """
+    </tbody>
+  </table>
+</main>
+</body>
+</html>
+"""
+
+with open(STATUS_HTML, "w", encoding="utf-8") as f:
+    f.write(html_status)
+
+print(f"Generated status dashboard at {STATUS_HTML}")
+
