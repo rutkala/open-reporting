@@ -1,32 +1,46 @@
 sources:
   - id: gus_bdl_api
     organization: GUS
-    name: "BDL API"
+    name: "Bank Danych Lokalnych (BDL)"
     url: "https://api.stat.gov.pl/Home/BdlApi"
     method: "REST API"
     status: Active
-    description: "Main Bank Danych Lokalnych API"
+    description: "Main Bank Danych Lokalnych API for regional and local statistics"
   - id: gus_db_portal
     organization: GUS
-    name: "Baza Danych Portal"
+    name: "Knowledge Databases (DBW)"
     url: "https://bazydanych.new.stat.gov.pl/"
-    method: "Web Scrape / Bulk CSV"
+    method: "REST API (JSON/XML)"
     status: "Pending Analysis"
-    description: "New database portal with references to external sources"
+    description: "Macroeconomic indicators, long time series"
   - id: nbp_web_api
     organization: NBP
-    name: "NBP Web API"
-    url: "https://nbp.pl/api/"
+    name: "Currency Exchange Rates"
+    url: "https://api.nbp.pl/"
     method: "REST API"
     status: "Pending Analysis"
-    description: "National Bank of Poland official exchange rates and macro data"
+    description: "National Bank of Poland official exchange rates and gold prices"
+  - id: nbp_hist_rates
+    organization: NBP
+    name: "Historical Exchange Rates"
+    url: "https://nbp.pl/"
+    method: "Bulk CSV"
+    status: "Pending Analysis"
+    description: "Historical daily, monthly, and annual average exchange rates"
   - id: gov_finanse
     organization: Ministry of Finance
-    name: "Gov.pl Finanse"
-    url: "https://www.gov.pl/web/finanse"
-    method: "Bulk Excel / CSV"
+    name: "State Budget Execution"
+    url: "https://dane.gov.pl/pl/institutions/ministerstwo-finansow"
+    method: "Bulk CSV"
     status: "Pending Analysis"
-    description: "Detailed budgetary data published directly by the Ministry"
+    description: "Detailed budgetary data and tax aggregations published by the Ministry"
+  - id: gov_cru
+    organization: Ministry of Finance
+    name: "Central Register of Contracts (CRU)"
+    url: "https://www.gov.pl/web/finanse"
+    method: "REST API"
+    status: "Pending Analysis"
+    description: "Public Procurement and Taxpayer Verification"
   - id: eurostat_api
     organization: Eurostat
     name: "Eurostat API"

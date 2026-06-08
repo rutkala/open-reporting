@@ -14,3 +14,9 @@ domains:
   - id: sports_market
     name: Sports Market
     description: "Sports funding, club finances, and league statistics"
+  - id: financial_markets
+    name: Financial Markets
+    description: "Currencies, exchange rates, and financial instruments"
+  - id: socio_economic
+    name: Socio-Economic
+    description: "Regional and local statistics, environment, and society"

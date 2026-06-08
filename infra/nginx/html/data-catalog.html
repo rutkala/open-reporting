@@ -43,7 +43,7 @@
       <p>National and regional budgets, expenditures, and tax revenues</p>
       <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
         <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Mapped Sources:</span>
-<span class="badge">GUS - BDL API</span><span class="badge">Ministry of Finance - Gov.pl Finanse</span>
+<span class="badge">Ministry of Finance - State Budget Execution</span><span class="badge">Ministry of Finance - Central Register of Contracts (CRU)</span>
       </div>
     </div>
 
@@ -52,7 +52,7 @@
       <p>Population size, births, deaths, and migrations</p>
       <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
         <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Mapped Sources:</span>
-<span class="badge">GUS - BDL API</span><span class="badge">GUS - Baza Danych Portal</span>
+<span class="badge">GUS - Bank Danych Lokalnych (BDL)</span>
       </div>
     </div>
 
@@ -61,7 +61,7 @@
       <p>GDP, Inflation, Interest Rates, and Trade Balances</p>
       <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
         <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Mapped Sources:</span>
-<span class="badge">GUS - BDL API</span><span class="badge">NBP - NBP Web API</span><span class="badge">Eurostat - Eurostat API</span>
+<span class="badge">GUS - Knowledge Databases (DBW)</span><span class="badge">Eurostat - Eurostat API</span>
       </div>
     </div>
 
@@ -70,7 +70,7 @@
       <p>Healthcare expenditures, hospital beds, patient statistics</p>
       <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
         <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Mapped Sources:</span>
-<span class="badge">GUS - Baza Danych Portal</span>
+<span class="badge">GUS - Bank Danych Lokalnych (BDL)</span>
       </div>
     </div>
 
@@ -79,7 +79,25 @@
       <p>Sports funding, club finances, and league statistics</p>
       <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
         <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Mapped Sources:</span>
-<span class="badge">GUS - Baza Danych Portal</span>
+<span class="badge">GUS - Bank Danych Lokalnych (BDL)</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Financial Markets</h3>
+      <p>Currencies, exchange rates, and financial instruments</p>
+      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
+        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Mapped Sources:</span>
+<span class="badge">NBP - Currency Exchange Rates</span><span class="badge">NBP - Historical Exchange Rates</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Socio-Economic</h3>
+      <p>Regional and local statistics, environment, and society</p>
+      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
+        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Mapped Sources:</span>
+<span class="badge">GUS - Bank Danych Lokalnych (BDL)</span>
       </div>
     </div>
 
@@ -90,42 +108,27 @@
 
     <div class="card">
       <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-        <h3>GUS - BDL API</h3>
+        <h3>GUS - Bank Danych Lokalnych (BDL)</h3>
         <span class="badge status-active">Active</span>
       </div>
-      <p>Main Bank Danych Lokalnych API</p>
+      <p>Main Bank Danych Lokalnych API for regional and local statistics</p>
       <p style="font-size: 13px; margin-bottom: 4px;"><strong>Method:</strong> REST API</p>
       <p style="font-size: 13px; margin-bottom: 16px;"><strong>URL:</strong> <a href="https://api.stat.gov.pl/Home/BdlApi" style="color: #89b4fa;">https://api.stat.gov.pl/Home/BdlApi</a></p>
       
       <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
         <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Feeds into Domains:</span>
-<span class="badge">Public Finance</span><span class="badge">Demographics</span><span class="badge">Macroeconomy</span>
+<span class="badge">Socio-Economic</span><span class="badge">Demographics</span><span class="badge">Health</span><span class="badge">Sports Market</span>
       </div>
     </div>
 
     <div class="card">
       <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-        <h3>GUS - Baza Danych Portal</h3>
+        <h3>GUS - Knowledge Databases (DBW)</h3>
         <span class="badge status-pending">Pending Analysis</span>
       </div>
-      <p>New database portal with references to external sources</p>
-      <p style="font-size: 13px; margin-bottom: 4px;"><strong>Method:</strong> Web Scrape / Bulk CSV</p>
+      <p>Macroeconomic indicators, long time series</p>
+      <p style="font-size: 13px; margin-bottom: 4px;"><strong>Method:</strong> REST API (JSON/XML)</p>
       <p style="font-size: 13px; margin-bottom: 16px;"><strong>URL:</strong> <a href="https://bazydanych.new.stat.gov.pl/" style="color: #89b4fa;">https://bazydanych.new.stat.gov.pl/</a></p>
-      
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Feeds into Domains:</span>
-<span class="badge">Demographics</span><span class="badge">Health</span><span class="badge">Sports Market</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-        <h3>NBP - NBP Web API</h3>
-        <span class="badge status-pending">Pending Analysis</span>
-      </div>
-      <p>National Bank of Poland official exchange rates and macro data</p>
-      <p style="font-size: 13px; margin-bottom: 4px;"><strong>Method:</strong> REST API</p>
-      <p style="font-size: 13px; margin-bottom: 16px;"><strong>URL:</strong> <a href="https://nbp.pl/api/" style="color: #89b4fa;">https://nbp.pl/api/</a></p>
       
       <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
         <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Feeds into Domains:</span>
@@ -135,11 +138,56 @@
 
     <div class="card">
       <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-        <h3>Ministry of Finance - Gov.pl Finanse</h3>
+        <h3>NBP - Currency Exchange Rates</h3>
         <span class="badge status-pending">Pending Analysis</span>
       </div>
-      <p>Detailed budgetary data published directly by the Ministry</p>
-      <p style="font-size: 13px; margin-bottom: 4px;"><strong>Method:</strong> Bulk Excel / CSV</p>
+      <p>National Bank of Poland official exchange rates and gold prices</p>
+      <p style="font-size: 13px; margin-bottom: 4px;"><strong>Method:</strong> REST API</p>
+      <p style="font-size: 13px; margin-bottom: 16px;"><strong>URL:</strong> <a href="https://api.nbp.pl/" style="color: #89b4fa;">https://api.nbp.pl/</a></p>
+      
+      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
+        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Feeds into Domains:</span>
+<span class="badge">Financial Markets</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+        <h3>NBP - Historical Exchange Rates</h3>
+        <span class="badge status-pending">Pending Analysis</span>
+      </div>
+      <p>Historical daily, monthly, and annual average exchange rates</p>
+      <p style="font-size: 13px; margin-bottom: 4px;"><strong>Method:</strong> Bulk CSV</p>
+      <p style="font-size: 13px; margin-bottom: 16px;"><strong>URL:</strong> <a href="https://nbp.pl/" style="color: #89b4fa;">https://nbp.pl/</a></p>
+      
+      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
+        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Feeds into Domains:</span>
+<span class="badge">Financial Markets</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+        <h3>Ministry of Finance - State Budget Execution</h3>
+        <span class="badge status-pending">Pending Analysis</span>
+      </div>
+      <p>Detailed budgetary data and tax aggregations published by the Ministry</p>
+      <p style="font-size: 13px; margin-bottom: 4px;"><strong>Method:</strong> Bulk CSV</p>
+      <p style="font-size: 13px; margin-bottom: 16px;"><strong>URL:</strong> <a href="https://dane.gov.pl/pl/institutions/ministerstwo-finansow" style="color: #89b4fa;">https://dane.gov.pl/pl/institutions/ministerstwo-finansow</a></p>
+      
+      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
+        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Feeds into Domains:</span>
+<span class="badge">Public Finance</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+        <h3>Ministry of Finance - Central Register of Contracts (CRU)</h3>
+        <span class="badge status-pending">Pending Analysis</span>
+      </div>
+      <p>Public Procurement and Taxpayer Verification</p>
+      <p style="font-size: 13px; margin-bottom: 4px;"><strong>Method:</strong> REST API</p>
       <p style="font-size: 13px; margin-bottom: 16px;"><strong>URL:</strong> <a href="https://www.gov.pl/web/finanse" style="color: #89b4fa;">https://www.gov.pl/web/finanse</a></p>
       
       <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
