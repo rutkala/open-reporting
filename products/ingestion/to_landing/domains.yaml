@@ -1,22 +1,55 @@
 domains:
   - id: public_finance
     name: Public Finance
-    description: "National and regional budgets, expenditures, and tax revenues"
-  - id: demographics
-    name: Demographics
-    description: "Population size, births, deaths, and migrations"
-  - id: macroeconomy
-    name: Macroeconomy
-    description: "GDP, Inflation, Interest Rates, and Trade Balances"
-  - id: health
-    name: Health
-    description: "Healthcare expenditures, hospital beds, patient statistics"
-  - id: sports_market
-    name: Sports Market
-    description: "Sports funding, club finances, and league statistics"
+    description: "State/local budgets, revenues, deficit, public debt."
+  - id: national_accounts
+    name: National Accounts & Macroeconomics
+    description: "GDP, GNI, economic growth, sector accounts."
+  - id: prices_inflation
+    name: Prices & Inflation
+    description: "CPI, HICP, housing prices, purchasing power."
   - id: financial_markets
     name: Financial Markets
-    description: "Currencies, exchange rates, and financial instruments"
-  - id: socio_economic
-    name: Socio-Economic
-    description: "Regional and local statistics, environment, and society"
+    description: "Exchange rates, interest rates, banking sector."
+  - id: demographics
+    name: Population & Demographics
+    description: "Population size, age pyramid, birth/death rates, migrations."
+  - id: labour_market
+    name: Labour Market
+    description: "Unemployment, wages, job vacancies."
+  - id: health
+    name: Health
+    description: "Healthcare services, reimbursements, waiting lists."
+  - id: education
+    name: Education
+    description: "Schools, students, exams, education spending."
+  - id: income_living_conditions
+    name: Income, Living Conditions & Social Protection
+    description: "Social transfers, household income, pensions."
+  - id: crime_justice
+    name: Crime & Justice
+    description: "Crime stats, court cases, prison population, road safety."
+  - id: culture_tourism_sport
+    name: Culture, Tourism & Sport
+    description: "Museums, cultural spending, tourist arrivals."
+  - id: business_industry
+    name: Business & Industry
+    description: "Enterprise stats, business demography, construction."
+  - id: agriculture_forestry
+    name: Agriculture & Forestry
+    description: "Crop production, livestock, farm structure."
+  - id: international_trade
+    name: International Trade
+    description: "Imports/exports by country and commodity, FDI."
+  - id: transport
+    name: Transport
+    description: "Road/rail transport, infrastructure, public transit."
+  - id: environment_climate
+    name: Environment & Climate
+    description: "Air quality, emissions, waste management."
+  - id: energy
+    name: Energy
+    description: "Energy production, mix, electricity prices."
+  - id: science_tech
+    name: Science, Technology & Digital Society
+    description: "R&D spending, patents, innovation, internet usage."

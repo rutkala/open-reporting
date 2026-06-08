@@ -1,21 +1,106 @@
 mappings:
-  - domain_id: socio_economic
+  - domain_id: public_finance
+    source_id: mf_openbudget
+  - domain_id: public_finance
+    source_id: gus_dbw_bulk
+  - domain_id: public_finance
+    source_id: eurostat_api
+
+  - domain_id: national_accounts
+    source_id: gus_dbw_api
+  - domain_id: national_accounts
+    source_id: eurostat_api
+
+  - domain_id: prices_inflation
+    source_id: gus_dbw_bulk
+  - domain_id: prices_inflation
     source_id: gus_bdl_api
+  - domain_id: prices_inflation
+    source_id: eurostat_api
+
+  - domain_id: financial_markets
+    source_id: nbp_api
+  - domain_id: financial_markets
+    source_id: knf_data
+
+  - domain_id: demographics
+    source_id: gus_dbw_bulk
   - domain_id: demographics
     source_id: gus_bdl_api
-  - domain_id: macroeconomy
-    source_id: gus_db_portal
-  - domain_id: financial_markets
-    source_id: nbp_web_api
-  - domain_id: financial_markets
-    source_id: nbp_hist_rates
-  - domain_id: public_finance
-    source_id: gov_finanse
-  - domain_id: public_finance
-    source_id: gov_cru
-  - domain_id: macroeconomy
+  - domain_id: demographics
     source_id: eurostat_api
+
+  - domain_id: labour_market
+    source_id: gus_dbw_bulk
+  - domain_id: labour_market
+    source_id: gus_bdl_api
+  - domain_id: labour_market
+    source_id: eurostat_api
+
+  - domain_id: health
+    source_id: nfz_api
   - domain_id: health
     source_id: gus_bdl_api
-  - domain_id: sports_market
+
+  - domain_id: education
+    source_id: men_data
+  - domain_id: education
     source_id: gus_bdl_api
+
+  - domain_id: income_living_conditions
+    source_id: gus_dbw_bulk
+  - domain_id: income_living_conditions
+    source_id: gus_bdl_api
+  - domain_id: income_living_conditions
+    source_id: zus_data
+
+  - domain_id: crime_justice
+    source_id: ms_saos
+  - domain_id: crime_justice
+    source_id: ms_krs
+  - domain_id: crime_justice
+    source_id: gus_bdl_api
+
+  - domain_id: culture_tourism_sport
+    source_id: gus_dbw_bulk
+  - domain_id: culture_tourism_sport
+    source_id: gus_bdl_api
+
+  - domain_id: business_industry
+    source_id: gus_dbw_bulk
+  - domain_id: business_industry
+    source_id: gus_bdl_api
+
+  - domain_id: agriculture_forestry
+    source_id: gus_bdl_api
+  - domain_id: agriculture_forestry
+    source_id: eurostat_api
+
+  - domain_id: international_trade
+    source_id: gus_dbw_bulk
+  - domain_id: international_trade
+    source_id: eurostat_api
+
+  - domain_id: transport
+    source_id: gus_bdl_api
+  - domain_id: transport
+    source_id: gddkia_data
+
+  - domain_id: environment_climate
+    source_id: gus_bdl_api
+  - domain_id: environment_climate
+    source_id: eurostat_api
+  - domain_id: environment_climate
+    source_id: gios_api
+
+  - domain_id: energy
+    source_id: gus_bdl_api
+  - domain_id: energy
+    source_id: eurostat_api
+
+  - domain_id: science_tech
+    source_id: gus_bdl_api
+  - domain_id: science_tech
+    source_id: eurostat_api
+  - domain_id: science_tech
+    source_id: opi_radon

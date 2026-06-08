@@ -1,50 +1,106 @@
 sources:
+  - id: gus_dbw_bulk
+    organization: GUS
+    name: "DBW Knowledge Databases (HVD Bulk)"
+    url: "https://dbw.stat.gov.pl/pl/katalog/bulk"
+    method: "Bulk CSV"
+    status: Active
+    description: "Level 1: High-Value Datasets covering GDP, macroeconomics, population, employment."
+  - id: gus_dbw_api
+    organization: GUS
+    name: "DBW Knowledge Databases (REST API)"
+    url: "https://api-dbw.stat.gov.pl/api/"
+    method: "REST API"
+    status: "Pending Analysis"
+    description: "Level 1: Targeted queries for DBW datasets."
   - id: gus_bdl_api
     organization: GUS
     name: "Bank Danych Lokalnych (BDL)"
-    url: "https://api.stat.gov.pl/Home/BdlApi"
+    url: "https://bdl.stat.gov.pl/api/v1/"
     method: "REST API"
     status: Active
-    description: "Main Bank Danych Lokalnych API for regional and local statistics"
-  - id: gus_db_portal
-    organization: GUS
-    name: "Knowledge Databases (DBW)"
-    url: "https://bazydanych.new.stat.gov.pl/"
-    method: "REST API (JSON/XML)"
-    status: "Pending Analysis"
-    description: "Macroeconomic indicators, long time series"
-  - id: nbp_web_api
-    organization: NBP
-    name: "Currency Exchange Rates"
-    url: "https://api.nbp.pl/"
-    method: "REST API"
-    status: "Pending Analysis"
-    description: "National Bank of Poland official exchange rates and gold prices"
-  - id: nbp_hist_rates
-    organization: NBP
-    name: "Historical Exchange Rates"
-    url: "https://nbp.pl/"
-    method: "Bulk CSV"
-    status: "Pending Analysis"
-    description: "Historical daily, monthly, and annual average exchange rates"
-  - id: gov_finanse
-    organization: Ministry of Finance
-    name: "State Budget Execution"
-    url: "https://dane.gov.pl/pl/institutions/ministerstwo-finansow"
-    method: "Bulk CSV"
-    status: "Pending Analysis"
-    description: "Detailed budgetary data and tax aggregations published by the Ministry"
-  - id: gov_cru
-    organization: Ministry of Finance
-    name: "Central Register of Contracts (CRU)"
-    url: "https://www.gov.pl/web/finanse"
-    method: "REST API"
-    status: "Pending Analysis"
-    description: "Public Procurement and Taxpayer Verification"
+    description: "Level 1: Regional and local statistics across multiple domains."
   - id: eurostat_api
     organization: Eurostat
     name: "Eurostat API"
-    url: "https://ec.europa.eu/eurostat/web/main/data/database"
-    method: "SDMX REST API"
-    status: Active
-    description: "European Union statistics"
+    url: "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/"
+    method: "JSON-stat API"
+    status: "Pending Analysis"
+    description: "Level 1: EU-wide statistics for macro, trade, and demographics."
+  - id: mf_openbudget
+    organization: Ministry of Finance
+    name: "OpenBudget API"
+    url: "https://openbudget.gov.pl/api/"
+    method: "REST API"
+    status: "Pending Analysis"
+    description: "Level 1: State and local budget execution."
+  - id: nbp_api
+    organization: NBP
+    name: "NBP Web API"
+    url: "https://api.nbp.pl/api/"
+    method: "REST API"
+    status: "Pending Analysis"
+    description: "Level 1: Exchange rates, interest rates, and gold prices."
+  - id: nfz_api
+    organization: NFZ
+    name: "NFZ Open Data"
+    url: "https://api.nfz.gov.pl/"
+    method: "REST API"
+    status: "Pending Analysis"
+    description: "Level 1: Healthcare services, reimbursements, waiting lists."
+  - id: men_data
+    organization: MEN
+    name: "Ministry of Education Data"
+    url: "https://www.gov.pl/web/edukacja/"
+    method: "Bulk XLSX"
+    status: "Pending Analysis"
+    description: "Level 1: Education statistics, schools, and student data."
+  - id: zus_data
+    organization: ZUS
+    name: "ZUS Social Insurance"
+    url: "https://dane.gov.pl/"
+    method: "Bulk CSV"
+    status: "Pending Analysis"
+    description: "Level 2: Social transfers, pensions, and benefits."
+  - id: ms_saos
+    organization: Ministry of Justice
+    name: "SAOS Common Courts"
+    url: "https://saos.org.pl/api/"
+    method: "REST API"
+    status: "Pending Analysis"
+    description: "Level 1: Court judgments and justice system statistics."
+  - id: ms_krs
+    organization: Ministry of Justice
+    name: "National Court Register (KRS)"
+    url: "https://prs.ms.gov.pl/krs/openApi"
+    method: "REST API"
+    status: "Pending Analysis"
+    description: "Level 1: Corporate registry and business demographics."
+  - id: gddkia_data
+    organization: GDDKiA
+    name: "GDDKiA Road Infrastructure"
+    url: "https://dane.gov.pl/"
+    method: "Bulk Data"
+    status: "Pending Analysis"
+    description: "Level 2: Road transport and infrastructure."
+  - id: gios_api
+    organization: GIOŚ
+    name: "GIOŚ Air Quality"
+    url: "https://powietrze.gios.gov.pl/pjp/"
+    method: "REST API"
+    status: "Pending Analysis"
+    description: "Level 2: Environmental monitoring, PM2.5/PM10."
+  - id: knf_data
+    organization: KNF
+    name: "KNF Financial Supervision"
+    url: "https://www.knf.gov.pl/dane_statystyczne"
+    method: "Bulk XLSX/PDF"
+    status: "Pending Analysis"
+    description: "Level 2: Banking sector stability."
+  - id: opi_radon
+    organization: OPI
+    name: "RAD-on Science Database"
+    url: "https://radon.nauka.gov.pl/api/"
+    method: "REST API"
+    status: "Pending Analysis"
+    description: "Level 2: Higher education, R&D, and scientific institutions."
