@@ -13,7 +13,7 @@ sources:
   url: https://api-dbw.stat.gov.pl/api/
   method: REST API
   status: Pending Analysis
-  description: 'Level 1: Targeted queries for DBW datasets (all 20+ DBW domains).'
+  description: 'Level 1: Targeted queries for all DBW macro domains.'
 - id: gus_bdl_api
   organization: GUS
   name: Bank Danych Lokalnych (BDL)
@@ -21,6 +21,14 @@ sources:
   method: REST API
   status: Active
   description: 'Level 1: Regional and local statistics across multiple domains.'
+- id: gus_bazydanych
+  organization: GUS
+  name: GUS Bazy Danych Portal
+  url: https://bazydanych.new.stat.gov.pl/
+  method: Web Portal
+  status: Pending Analysis
+  description: 'Level 1: Aggregator for all GUS statistical databases (Demography,
+    Trade, Prices, etc).'
 - id: eurostat_api
   organization: Eurostat
   name: Eurostat API
@@ -35,106 +43,57 @@ sources:
   method: REST API
   status: Pending Analysis
   description: 'Level 1: State and local budget execution.'
+- id: mf_dane_gov
+  organization: Ministry of Finance
+  name: MF Datasets on dane.gov.pl
+  url: https://dane.gov.pl/pl/institution/18
+  method: API / Bulk
+  status: Pending Analysis
+  description: 'Level 1: Public debt, tax revenues, state budget reports.'
 - id: nbp_api
   organization: NBP
   name: NBP Web API
   url: https://api.nbp.pl/api/
   method: REST API
   status: Pending Analysis
-  description: 'Level 1: Exchange rates, interest rates, public finance, macroeconomic
-    data.'
+  description: 'Level 1: Exchange rates, interest rates, gold prices. (Note: does
+    NOT contain broad macro data).'
 - id: knf_data
   organization: KNF
   name: KNF Financial Supervision
   url: https://www.knf.gov.pl/dane_statystyczne
-  method: Bulk XLSX/PDF
+  method: Bulk XLSX
   status: Pending Analysis
-  description: 'Level 2: Banking sector stability.'
-- id: gpw_data
-  organization: GPW
-  name: Warsaw Stock Exchange
-  url: https://www.gpw.pl/
-  method: Web/API
+  description: 'Level 2: Banking sector stability and financial market supervision.'
+- id: gpw_benchmark
+  organization: GPW Benchmark
+  name: WIBOR/WIBID Reference Rates
+  url: https://gpwbenchmark.pl/
+  method: Web/Data
   status: Pending Analysis
-  description: 'Level 4 (Approved): Polish stock market indicators, indices, company
-    valuations.'
-- id: min_finanse
-  organization: Ministry of Finance
-  name: Ministry of Finance Open Data
-  url: https://www.gov.pl/web/finanse
-  method: Bulk/API
+  description: 'Level 2: Official interest rate benchmarks.'
+- id: stooq_data
+  organization: Stooq
+  name: Stooq Market Data
+  url: https://stooq.pl/
+  method: Bulk CSV
   status: Pending Analysis
-  description: 'Level 1: Detailed public finance, taxes, treasury.'
-- id: min_rolnictwo
-  organization: Ministry of Agriculture
-  name: Ministry of Agriculture Data
-  url: https://www.gov.pl/web/rolnictwo
-  method: Bulk Data
-  status: Pending Analysis
-  description: 'Level 1: Agricultural policies, subsidies, rural development.'
-- id: min_klimat
-  organization: Ministry of Climate
-  name: Ministry of Climate and Environment
-  url: https://www.gov.pl/web/klimat
-  method: Bulk Data
-  status: Pending Analysis
-  description: 'Level 1: Environmental protection, energy transition, climate.'
-- id: min_infrastruktura
-  organization: Ministry of Infrastructure
-  name: Ministry of Infrastructure
-  url: https://www.gov.pl/web/infrastruktura
-  method: Bulk Data
-  status: Pending Analysis
-  description: 'Level 1: Transport policies, roads, railways, aviation.'
-- id: min_zdrowie
-  organization: Ministry of Health
-  name: Ministry of Health
-  url: https://www.gov.pl/web/zdrowie
-  method: Bulk Data
-  status: Pending Analysis
-  description: 'Level 1: Public health, hospitals, medical registries.'
-- id: min_sport
-  organization: Ministry of Sport
-  name: Ministry of Sport and Tourism
-  url: https://www.gov.pl/web/sport
-  method: Bulk Data
-  status: Pending Analysis
-  description: 'Level 1: Sports infrastructure, funding, tourism stats.'
-- id: min_kultura
-  organization: Ministry of Culture
-  name: Ministry of Culture
-  url: https://www.gov.pl/web/kultura
-  method: Bulk Data
-  status: Pending Analysis
-  description: 'Level 1: Museums, national heritage, cultural funding.'
-- id: min_rodzina
-  organization: Ministry of Family, Labor
-  name: MRPiPS Data
-  url: https://www.gov.pl/web/rodzina
-  method: Bulk Data
-  status: Pending Analysis
-  description: 'Level 1: Social protection, labor market regulations.'
+  description: 'Level 4 (Approved): Aggregated historical stock data for GPW (GPW
+    official API is commercial only).'
 - id: nfz_api
-  organization: NFZ
-  name: NFZ Open Data
-  url: https://api.nfz.gov.pl/
-  method: REST API
+  organization: NFZ / CeZ
+  name: e-Zdrowie (NFZ) Open Data
+  url: https://dane.ezdrowie.gov.pl/
+  method: REST API / CSV
   status: Pending Analysis
-  description: 'Level 1: Healthcare services, reimbursements, waiting lists.'
+  description: 'Level 1: Healthcare services, disease registries, waiting lists.'
 - id: zus_data
   organization: ZUS
   name: ZUS Social Insurance
-  url: https://dane.gov.pl/
+  url: https://dane.gov.pl/pl/institution/47
   method: Bulk CSV
   status: Pending Analysis
-  description: 'Level 2: Social transfers, pensions, and benefits.'
-- id: min_sprawiedliwosc
-  organization: Ministry of Justice
-  name: Ministry of Justice
-  url: https://www.gov.pl/web/sprawiedliwosc
-  method: Bulk Data
-  status: Pending Analysis
-  description: 'Level 1: Justice system, prisons, courts.'
+  description: 'Level 2: Social transfers, pensions, sickness benefits, 800+ program.'
 - id: ms_saos
   organization: Ministry of Justice
   name: SAOS Common Courts
@@ -149,13 +108,13 @@ sources:
   method: REST API
   status: Pending Analysis
   description: 'Level 1: Corporate registry and business demographics.'
-- id: men_data
-  organization: MEN
-  name: Ministry of Education Data
-  url: https://www.gov.pl/web/edukacja/
-  method: Bulk XLSX
+- id: cie_edukacja
+  organization: CIE / MEN
+  name: Centrum Informatyczne Edukacji
+  url: https://cie.men.gov.pl/otwarte-dane/
+  method: Bulk Data
   status: Pending Analysis
-  description: 'Level 1: Education statistics, schools, and student data.'
+  description: 'Level 1: Official schools registry, student and teacher statistics.'
 - id: opi_radon
   organization: OPI
   name: RAD-on Science Database
@@ -165,11 +124,11 @@ sources:
   description: 'Level 2: Higher education, R&D, and scientific institutions.'
 - id: gddkia_data
   organization: GDDKiA
-  name: GDDKiA Road Infrastructure
-  url: https://dane.gov.pl/
+  name: GDDKiA Open Data
+  url: https://dane.gov.pl/pl/institution/106
   method: Bulk Data
   status: Pending Analysis
-  description: 'Level 2: Road transport and infrastructure.'
+  description: 'Level 2: Traffic measurements, road infrastructure.'
 - id: gios_api
   organization: "GIO\u015A"
   name: "GIO\u015A Air Quality"
@@ -177,10 +136,18 @@ sources:
   method: REST API
   status: Pending Analysis
   description: 'Level 2: Environmental monitoring, PM2.5/PM10.'
-- id: wiesci_rolnicze
-  organization: "Wie\u015Bci Rolnicze"
-  name: Agricultural Daily Prices
-  url: https://wiescirolnicze.pl/ceny-rolnicze
-  method: Scrape/Web
+- id: ure_data
+  organization: URE
+  name: Energy Regulatory Office
+  url: https://www.ure.gov.pl/pl/rynki-energii
+  method: Bulk Data
   status: Pending Analysis
-  description: 'Level 4 (Approved): Daily agricultural prices and market trends.'
+  description: 'Level 2: Energy markets, tariffs, renewable energy capacity.'
+- id: zsrir_api
+  organization: MRiRW
+  name: ZSRIR (Agri Market Info System)
+  url: https://dane.gov.pl/pl/dataset/633,zintegrowany-system-rolniczej-informacji-rynkowej
+  method: API / CSV
+  status: Pending Analysis
+  description: 'Level 1: Official daily/weekly agricultural prices directly from the
+    Ministry.'

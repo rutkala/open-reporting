@@ -2,33 +2,31 @@ mappings:
 - domain_id: public_finance
   source_id: mf_openbudget
 - domain_id: public_finance
+  source_id: mf_dane_gov
+- domain_id: public_finance
   source_id: gus_dbw_bulk
 - domain_id: public_finance
   source_id: eurostat_api
-- domain_id: public_finance
-  source_id: nbp_api
-- domain_id: public_finance
-  source_id: min_finanse
 - domain_id: national_accounts
   source_id: gus_dbw_api
 - domain_id: national_accounts
-  source_id: eurostat_api
+  source_id: gus_dbw_bulk
 - domain_id: national_accounts
-  source_id: nbp_api
+  source_id: eurostat_api
 - domain_id: prices_inflation
   source_id: gus_dbw_bulk
 - domain_id: prices_inflation
   source_id: gus_bdl_api
 - domain_id: prices_inflation
   source_id: eurostat_api
-- domain_id: prices_inflation
-  source_id: nbp_api
 - domain_id: financial_markets
   source_id: nbp_api
 - domain_id: financial_markets
   source_id: knf_data
 - domain_id: financial_markets
-  source_id: gpw_data
+  source_id: gpw_benchmark
+- domain_id: financial_markets
+  source_id: stooq_data
 - domain_id: demographics
   source_id: gus_dbw_bulk
 - domain_id: demographics
@@ -40,17 +38,13 @@ mappings:
 - domain_id: labour_market
   source_id: gus_bdl_api
 - domain_id: labour_market
-  source_id: eurostat_api
-- domain_id: labour_market
-  source_id: min_rodzina
+  source_id: zus_data
 - domain_id: health
   source_id: nfz_api
 - domain_id: health
   source_id: gus_bdl_api
-- domain_id: health
-  source_id: min_zdrowie
 - domain_id: education
-  source_id: men_data
+  source_id: cie_edukacja
 - domain_id: education
   source_id: gus_bdl_api
 - domain_id: income_living_conditions
@@ -59,24 +53,16 @@ mappings:
   source_id: gus_bdl_api
 - domain_id: income_living_conditions
   source_id: zus_data
-- domain_id: income_living_conditions
-  source_id: min_rodzina
 - domain_id: crime_justice
   source_id: ms_saos
 - domain_id: crime_justice
   source_id: ms_krs
 - domain_id: crime_justice
   source_id: gus_bdl_api
-- domain_id: crime_justice
-  source_id: min_sprawiedliwosc
 - domain_id: culture_tourism_sport
   source_id: gus_dbw_bulk
 - domain_id: culture_tourism_sport
   source_id: gus_bdl_api
-- domain_id: culture_tourism_sport
-  source_id: min_kultura
-- domain_id: culture_tourism_sport
-  source_id: min_sport
 - domain_id: business_industry
   source_id: gus_dbw_bulk
 - domain_id: business_industry
@@ -84,15 +70,13 @@ mappings:
 - domain_id: business_industry
   source_id: ms_krs
 - domain_id: business_industry
-  source_id: gpw_data
+  source_id: stooq_data
 - domain_id: agriculture_forestry
   source_id: gus_bdl_api
 - domain_id: agriculture_forestry
   source_id: eurostat_api
 - domain_id: agriculture_forestry
-  source_id: min_rolnictwo
-- domain_id: agriculture_forestry
-  source_id: wiesci_rolnicze
+  source_id: zsrir_api
 - domain_id: international_trade
   source_id: gus_dbw_bulk
 - domain_id: international_trade
@@ -101,22 +85,18 @@ mappings:
   source_id: gus_bdl_api
 - domain_id: transport
   source_id: gddkia_data
-- domain_id: transport
-  source_id: min_infrastruktura
 - domain_id: environment_climate
   source_id: gus_bdl_api
 - domain_id: environment_climate
   source_id: eurostat_api
 - domain_id: environment_climate
   source_id: gios_api
-- domain_id: environment_climate
-  source_id: min_klimat
 - domain_id: energy
   source_id: gus_bdl_api
 - domain_id: energy
   source_id: eurostat_api
 - domain_id: energy
-  source_id: min_klimat
+  source_id: ure_data
 - domain_id: science_tech
   source_id: gus_bdl_api
 - domain_id: science_tech
