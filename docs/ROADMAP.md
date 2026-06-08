@@ -1,125 +1,40 @@
-# Roadmap — Open Reporting
+# Open Reporting V2 — The AI-Native Media Company
 
-**Last updated:** 2026-05-30 | All active work tracked in [Linear OR project](https://linear.app/open-reporting/project/open-reporting-a1e9c36ff5be)
-
----
-
-## Current state (May 2026)
-
-Platform is live and operational. The core infrastructure is complete.
-
-| Product | State |
-|---|---|
-| Analytical portal (`portal.open-reporting.dev`) | Live — **16 domain dashboards**, all linked from homepage |
-| Blog (`www.open-reporting.dev`) | Live — **17 articles drafted**, awaiting PO publish approval |
-| Daily ingestion | Live — Eurostat + NBP + IMF, 22:00 UTC cron |
-| Autonomous Project Lead | Live — fires at 02/07/12/17 UTC |
-| Discord agent fleet | Live — 8 bots |
-| Social (Instagram weekly snapshot) | Code ready — blocked on token refresh (OR-90, PO action) |
-| Telegram inbound | Broken — systemd env-var bug (OR-153, PO action) |
-
-**16 live domains:** Public Finance, Labour Market, National Accounts, Demographics, Environment, Living Conditions, Prices & Inflation, Education, Transport, Science & R&D, Trade, Production, Health, Energy, Tourism, Financial Markets.
+**Last updated:** 2026-06-06 | Author: Antigravity Project Lead
 
 ---
 
-## Immediate — unblock the backlog (next 2 weeks)
+## The Paradigm Shift
+The previous roadmap focused on manually building domain dashboards and blog posts one by one. With the deployment of the Google Antigravity architecture, **engineering and content creation are no longer bottlenecks**. We have an infinite, autonomous workforce.
 
-These are blocking value delivery right now. None require new code — they require PO action or are ready to ship.
-
-| # | Item | Owner | Blocker |
-|---|---|---|---|
-| OR-153 | Fix Telegram inbound comms | PO | systemd `${}` non-expansion — re-enter token |
-| OR-90 | Instagram token refresh | PO | Meta developer portal action |
-| OR-79 | Add "Portal" link to Ghost nav | PO | Ghost browser admin |
-| 17 drafts | Preview + publish Ghost articles | PO | Awaiting review |
-| OR-89 | Activate weekly Economy Snapshot cron | Claude | Unblocks after OR-90 |
-
-**Article publication is the highest-value unblock.** Seventeen data-journalism pieces covering all 16 live domains are sitting as Ghost drafts. Publishing them: (a) establishes editorial credibility, (b) drives SEO, (c) demonstrates the dashboard↔article product pairing.
+Our new long-term goal is to transition Open Reporting from a static dashboard repository into a **fully autonomous, real-time data media company**.
 
 ---
 
-## Phase 2 — Domain depth ✓ COMPLETE (delivered May 2026)
+## Phase 1: The Autonomous Data Pipeline (Current)
+Instead of hardcoding dashboards for predefined domains, the platform must become reactive to reality.
+- **Dynamic Ingestion:** Agents monitor Eurostat, GUS (BDL), and NBP APIs for new releases.
+- **Anomaly Detection:** Statistical agents scan the incoming data for significant deviations, trends, or news-worthy insights.
+- **Auto-Generation:** When a story is found, the system automatically provisions a semantic model, writes a `dbr` dashboard, and deploys it.
 
-All four Phase 2 domains shipped with dashboard + companion article.
+## Phase 2: The Multi-Modal Newsroom
+Static charts are not enough to capture the modern audience.
+- **Automated Data Journalism:** For every dashboard, the Content Writer agent drafts a deep-dive Ghost article explaining the socio-economic impact in plain Polish.
+- **Social Infographics:** The Visual QA agent generates highly optimized, vertical infographics for Instagram and LinkedIn.
+- **Publishing:** The entire package (Dashboard + Article + Social Post) is pushed live automatically.
 
-| Domain | Linear | Status |
-|---|---|---|
-| **Health** | OR-57 | ✓ Live — port 8069 |
-| **Energy** | OR-67 | ✓ Live — port 8070 |
-| **Tourism** | OR-62* | ✓ Live — port 8071 |
-| **Financial Markets** | OR-54 | ✓ Live — port 8072 (exchange rates, NBP data 2002–2026) |
+## Phase 3: Conversational Data (Interactive Intelligence)
+Citizens don't just want to look at charts; they want answers.
+- **Ask The Data:** Embed a natural language interface into every dashboard. Users can type "How did transport investment change in my specific region?" and the agent will execute the DuckDB query and render a custom chart on the fly.
+- **Personalized Reporting:** Users can subscribe to customized monthly economic briefings based on their demographic or region.
 
-Phase 2 target was 16 live domains by end of July 2026 — **achieved end of May 2026**.
-
----
-
-## Phase 3 — Data depth (July–August 2026)
-
-Expand the data underneath existing dashboards. Current data is all Eurostat + NBP + IMF. BDL unlocks regional granularity.
-
-| Item | Linear | Dependencies | Value |
-|---|---|---|---|
-| BDL (GUS) ingestion — regional data | OR-86 | **BDL API key from PO** | NUTS2 breakdown on all indicators |
-| NUTS2 regional dashboard tab | OR-88 | BDL ingested | Regional inequality stories |
-| Finance dashboard v2 improvements | OR-110–113 | None | Revenue analysis, expenditure COFOG depth, debt management tab |
-| dbt test coverage — fact/dim constraints | Phase 2 quality | None | Reliability floor before external users |
-| Dashboard data freshness indicators | New | None | Trust signal |
+## Phase 4: Data-as-a-Service (Monetization)
+Once the semantic layer is hardened and vast:
+- **B2B API:** Expose our clean, curated, and joined DuckDB models as a paid REST/GraphQL API for researchers, journalists, and financial analysts.
 
 ---
 
-## Phase 4 — Distribution & reach (Q3 2026)
-
-With content depth established, shift to growing the audience.
-
-| Item | Value | Notes |
-|---|---|---|
-| SEO — sitemap + canonical URLs | Organic discovery | Ghost + nginx config |
-| Social calendar automation | Consistent presence | OR-89 unblocks this; needs OR-90 |
-| LinkedIn article cross-posting | B2B / professional audience | API or Zapier bridge |
-| Facebook Page | Broader Polish audience | Companion to Instagram |
-| Email newsletter (Ghost) | Direct subscriber retention | Ghost built-in; needs subscriber strategy |
-
----
-
-## Phase 5 — European scope (Q4 2026+)
-
-Expand from Poland-only to EU27 comparison framing. Most Eurostat datasets already have EU27 rows — the expansion is editorial and semantic, not primarily a data engineering problem.
-
-| Item | Notes |
-|---|---|
-| EU27 cross-country comparison dashboards | Reuse existing Eurostat data; new YAML pages |
-| European scope articles (English) | Per `docs/languages.json` — English content when scope is European |
-| Historical depth (pre-2000 datasets) | Where Eurostat + GUS provide it |
-| SDP / Polish statistical yearbook integration | Annual supplementary data source |
-
----
-
-## Longer horizon (2027+)
-
-Not scheduled — directional intent only.
-
-- **Mobile-optimised dashboards** — same dbr YAML, mobile render target
-- **Portal search** — full-text across dashboard KPIs and article content
-- **Cross-domain comparison view** — e.g. "How does transport investment correlate with regional GDP?"
-- **CI/CD pipeline + staging environment** — currently deploy is push-to-main + `dbr run`
-- **Open data API** — expose the semantic layer as a queryable endpoint
-
----
-
-## Parking lot (ideas under evaluation)
-
-| Idea | Linear | Verdict |
-|---|---|---|
-| Domain Specialist agents (one per domain) | OR-129 | Evaluate after Phase 2; useful for article quality gate |
-| ENG/PL translation dictionary | OR-91 | Useful once European scope articles start |
-| Standard dashboard template | OR-84 | Absorb into Phase 2 domain builds as evolving convention |
-| Product hierarchy clarification | OR-141 | Architectural debt — address before Phase 4 |
-
----
-
-## What we are NOT doing
-
-- Mobile app (separate codebase) — not in active planning
-- Paid data sources — no recurring cost without PO approval
-- New ingestion sources without first exhausting Eurostat depth
-- New dashboard domains before Phase 3 data depth work is complete
+## Immediate Next Steps (Bootstrapping V2)
+1. **Clean Slate:** Purge all legacy Linear tickets. We are no longer tracking manual dashboard creation.
+2. **Dynamic Ingestion Engine:** Build the first autonomous data-watcher script that detects when a new dataset is published.
+3. **Ghost Publishing Bridge:** Connect the agents directly to the Ghost Admin API so they can publish their findings.
