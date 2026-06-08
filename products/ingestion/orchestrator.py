@@ -16,12 +16,43 @@ def _db() -> duckdb.DuckDBPyConnection:
     return duckdb.connect(path)
 
 
+import subprocess
+
 def fetch_data(source: dict) -> int:
-    """Mock fetching data for a source."""
-    time.sleep(0.5)
-    if random.random() < 0.1:
-        raise Exception("Mock simulated error during fetch")
-    return random.randint(1000, 50000)
+    """Fetch data using real extractors where available."""
+    source_id = source["id"]
+    
+    if source_id == "eurostat_api":
+        cmd = ["python3", "/opt/open-reporting/products/ingestion/extractors/eurostat_extractor.py", "nama_10_gdp"]
+        logger.info(f"Running Eurostat Extractor: {' '.join(cmd)}")
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode != 0:
+            raise Exception(f"Eurostat extraction failed: {result.stderr}")
+        # Parse stdout to find row count if possible, else default
+        rows = 0
+        for line in result.stdout.split("\\n"):
+            if "Total rows in raw_eurostat:" in line:
+                rows = int(line.split(":")[-1].strip())
+        return rows
+        
+    elif source_id == "gus_bdl_api":
+        cmd = ["python3", "/opt/open-reporting/products/ingestion/extractors/gus_extractor.py", "72305"]
+        logger.info(f"Running GUS Extractor: {' '.join(cmd)}")
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode != 0:
+            raise Exception(f"GUS extraction failed: {result.stderr}")
+        rows = 0
+        for line in result.stdout.split("\\n"):
+            if "Total rows in raw_gus:" in line:
+                rows = int(line.split(":")[-1].strip())
+        return rows
+        
+    else:
+        # Mock for remaining until extractors are built
+        time.sleep(0.5)
+        if random.random() < 0.1:
+            raise Exception("Not yet implemented - Mock simulated error")
+        return random.randint(100, 5000)
 
 
 def main():

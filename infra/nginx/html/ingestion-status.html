@@ -49,168 +49,183 @@
         <td style="font-family: monospace; color: #bac2de;">gus_dbw_bulk</td>
         <td><strong>GUS</strong> - DBW Knowledge Databases (HVD Bulk)</td>
         <td><span class="status-badge status-success">SUCCESS</span></td>
-        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 15:46:37.510255</td>
-        <td style="font-family: monospace;">32,782</td>
+        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 16:23:47.595631</td>
+        <td style="font-family: monospace;">545</td>
       </tr>
 
       <tr>
         <td style="font-family: monospace; color: #bac2de;">gus_dbw_api</td>
         <td><strong>GUS</strong> - DBW Knowledge Databases (REST API)</td>
         <td><span class="status-badge status-success">SUCCESS</span></td>
-        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 15:46:38.808948</td>
-        <td style="font-family: monospace;">42,388</td>
+        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 16:23:48.852155</td>
+        <td style="font-family: monospace;">1,389</td>
       </tr>
 
       <tr>
         <td style="font-family: monospace; color: #bac2de;">gus_bdl_api</td>
-        <td><strong>GUS</strong> - Bank Danych Lokalnych (BDL)</td>
-        <td><span class="status-badge status-success">SUCCESS</span></td>
-        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 15:46:39.328579</td>
-        <td style="font-family: monospace;">15,574</td>
-      </tr>
-
-      <tr>
-        <td style="font-family: monospace; color: #bac2de;">gus_bazydanych</td>
-        <td><strong>GUS</strong> - GUS Bazy Danych Portal<br><span style='color: #f38ba8; font-size: 12px;'>Mock simulated error during fetch</span></td>
+        <td><strong>GUS</strong> - Bank Danych Lokalnych (BDL)<br><span style='color: #f38ba8; font-size: 12px;'>GUS extraction failed: usage: gus_extractor.py [-h] [--metric METRIC] [--limit-pages LIMIT_PAGES]
+gus_extractor.py: error: unrecognized arguments: 72305
+</span></td>
         <td><span class="status-badge status-failed">FAILED</span></td>
-        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 15:46:39.850048</td>
+        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 16:23:50.174080</td>
         <td style="font-family: monospace;">0</td>
       </tr>
 
       <tr>
-        <td style="font-family: monospace; color: #bac2de;">eurostat_api</td>
-        <td><strong>Eurostat</strong> - Eurostat API</td>
+        <td style="font-family: monospace; color: #bac2de;">gus_bazydanych</td>
+        <td><strong>GUS</strong> - GUS Bazy Danych Portal</td>
         <td><span class="status-badge status-success">SUCCESS</span></td>
-        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 15:46:40.366295</td>
-        <td style="font-family: monospace;">40,680</td>
+        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 16:23:50.690809</td>
+        <td style="font-family: monospace;">1,305</td>
+      </tr>
+
+      <tr>
+        <td style="font-family: monospace; color: #bac2de;">eurostat_api</td>
+        <td><strong>Eurostat</strong> - Eurostat API<br><span style='color: #f38ba8; font-size: 12px;'>Eurostat extraction failed: 2026-06-08 16:23:51,803 [INFO] Fetching Eurostat dataset nama_10_gdp
+Traceback (most recent call last):
+  File "/opt/open-reporting/products/ingestion/extractors/eurostat_extractor.py", line 153, in <module>
+    main()
+  File "/opt/open-reporting/products/ingestion/extractors/eurostat_extractor.py", line 149, in main
+    load_to_duckdb(df)
+  File "/opt/open-reporting/products/ingestion/extractors/eurostat_extractor.py", line 108, in load_to_duckdb
+    conn = _db()
+           ^^^^^
+  File "/opt/open-reporting/products/ingestion/extractors/eurostat_extractor.py", line 25, in _db
+    return duckdb.connect(db_path)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+_duckdb.IOException: IO Error: Could not set lock on file "/opt/open-reporting/data/warehouse.duckdb": Conflicting lock is held in /usr/bin/python3.12 (PID 1302044) by user root. See also https://duckdb.org/docs/stable/connect/concurrency
+</span></td>
+        <td><span class="status-badge status-failed">FAILED</span></td>
+        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 16:24:16.976868</td>
+        <td style="font-family: monospace;">0</td>
       </tr>
 
       <tr>
         <td style="font-family: monospace; color: #bac2de;">mf_openbudget</td>
         <td><strong>Ministry of Finance</strong> - OpenBudget API</td>
         <td><span class="status-badge status-success">SUCCESS</span></td>
-        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 15:46:40.881551</td>
-        <td style="font-family: monospace;">36,148</td>
+        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 16:24:17.512109</td>
+        <td style="font-family: monospace;">1,433</td>
       </tr>
 
       <tr>
         <td style="font-family: monospace; color: #bac2de;">mf_dane_gov</td>
         <td><strong>Ministry of Finance</strong> - MF Datasets on dane.gov.pl</td>
         <td><span class="status-badge status-success">SUCCESS</span></td>
-        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 15:46:41.404230</td>
-        <td style="font-family: monospace;">45,956</td>
+        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 16:24:18.028945</td>
+        <td style="font-family: monospace;">3,987</td>
       </tr>
 
       <tr>
         <td style="font-family: monospace; color: #bac2de;">nbp_api</td>
         <td><strong>NBP</strong> - NBP Web API</td>
         <td><span class="status-badge status-success">SUCCESS</span></td>
-        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 15:46:41.917770</td>
-        <td style="font-family: monospace;">39,505</td>
+        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 16:24:18.537244</td>
+        <td style="font-family: monospace;">1,927</td>
       </tr>
 
       <tr>
         <td style="font-family: monospace; color: #bac2de;">knf_data</td>
         <td><strong>KNF</strong> - KNF Financial Supervision</td>
         <td><span class="status-badge status-success">SUCCESS</span></td>
-        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 15:46:42.431541</td>
-        <td style="font-family: monospace;">25,980</td>
+        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 16:24:19.052568</td>
+        <td style="font-family: monospace;">3,511</td>
       </tr>
 
       <tr>
         <td style="font-family: monospace; color: #bac2de;">gpw_benchmark</td>
         <td><strong>GPW Benchmark</strong> - WIBOR/WIBID Reference Rates</td>
         <td><span class="status-badge status-success">SUCCESS</span></td>
-        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 15:46:42.938714</td>
-        <td style="font-family: monospace;">39,829</td>
+        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 16:24:19.569440</td>
+        <td style="font-family: monospace;">2,442</td>
       </tr>
 
       <tr>
         <td style="font-family: monospace; color: #bac2de;">stooq_data</td>
         <td><strong>Stooq</strong> - Stooq Market Data</td>
         <td><span class="status-badge status-success">SUCCESS</span></td>
-        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 15:46:43.453718</td>
-        <td style="font-family: monospace;">47,723</td>
+        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 16:24:20.078592</td>
+        <td style="font-family: monospace;">4,374</td>
       </tr>
 
       <tr>
         <td style="font-family: monospace; color: #bac2de;">nfz_api</td>
         <td><strong>NFZ / CeZ</strong> - e-Zdrowie (NFZ) Open Data</td>
         <td><span class="status-badge status-success">SUCCESS</span></td>
-        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 15:46:43.965462</td>
-        <td style="font-family: monospace;">14,460</td>
+        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 16:24:20.591456</td>
+        <td style="font-family: monospace;">1,442</td>
       </tr>
 
       <tr>
         <td style="font-family: monospace; color: #bac2de;">zus_data</td>
         <td><strong>ZUS</strong> - ZUS Social Insurance</td>
         <td><span class="status-badge status-success">SUCCESS</span></td>
-        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 15:46:44.478708</td>
-        <td style="font-family: monospace;">33,775</td>
+        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 16:24:21.103512</td>
+        <td style="font-family: monospace;">3,363</td>
       </tr>
 
       <tr>
         <td style="font-family: monospace; color: #bac2de;">ms_saos</td>
         <td><strong>Ministry of Justice</strong> - SAOS Common Courts</td>
         <td><span class="status-badge status-success">SUCCESS</span></td>
-        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 15:46:44.989071</td>
-        <td style="font-family: monospace;">31,727</td>
+        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 16:24:21.618186</td>
+        <td style="font-family: monospace;">4,163</td>
       </tr>
 
       <tr>
         <td style="font-family: monospace; color: #bac2de;">ms_krs</td>
         <td><strong>Ministry of Justice</strong> - National Court Register (KRS)</td>
         <td><span class="status-badge status-success">SUCCESS</span></td>
-        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 15:46:45.503973</td>
-        <td style="font-family: monospace;">39,536</td>
+        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 16:24:22.128711</td>
+        <td style="font-family: monospace;">4,754</td>
       </tr>
 
       <tr>
         <td style="font-family: monospace; color: #bac2de;">cie_edukacja</td>
         <td><strong>CIE / MEN</strong> - Centrum Informatyczne Edukacji</td>
         <td><span class="status-badge status-success">SUCCESS</span></td>
-        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 15:46:46.014947</td>
-        <td style="font-family: monospace;">10,817</td>
+        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 16:24:22.642499</td>
+        <td style="font-family: monospace;">2,774</td>
       </tr>
 
       <tr>
         <td style="font-family: monospace; color: #bac2de;">opi_radon</td>
         <td><strong>OPI</strong> - RAD-on Science Database</td>
         <td><span class="status-badge status-success">SUCCESS</span></td>
-        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 15:46:46.535246</td>
-        <td style="font-family: monospace;">37,877</td>
+        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 16:24:23.153768</td>
+        <td style="font-family: monospace;">2,407</td>
       </tr>
 
       <tr>
         <td style="font-family: monospace; color: #bac2de;">gddkia_data</td>
         <td><strong>GDDKiA</strong> - GDDKiA Open Data</td>
         <td><span class="status-badge status-success">SUCCESS</span></td>
-        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 15:46:47.047254</td>
-        <td style="font-family: monospace;">24,836</td>
+        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 16:24:23.668672</td>
+        <td style="font-family: monospace;">4,529</td>
       </tr>
 
       <tr>
         <td style="font-family: monospace; color: #bac2de;">gios_api</td>
         <td><strong>GIOŚ</strong> - GIOŚ Air Quality</td>
         <td><span class="status-badge status-success">SUCCESS</span></td>
-        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 15:46:47.561647</td>
-        <td style="font-family: monospace;">35,259</td>
+        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 16:24:24.186345</td>
+        <td style="font-family: monospace;">4,342</td>
       </tr>
 
       <tr>
         <td style="font-family: monospace; color: #bac2de;">ure_data</td>
         <td><strong>URE</strong> - Energy Regulatory Office</td>
         <td><span class="status-badge status-success">SUCCESS</span></td>
-        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 15:46:48.078419</td>
-        <td style="font-family: monospace;">29,485</td>
+        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 16:24:24.701081</td>
+        <td style="font-family: monospace;">3,140</td>
       </tr>
 
       <tr>
         <td style="font-family: monospace; color: #bac2de;">zsrir_api</td>
         <td><strong>MRiRW</strong> - ZSRIR (Agri Market Info System)</td>
         <td><span class="status-badge status-success">SUCCESS</span></td>
-        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 15:46:48.597514</td>
-        <td style="font-family: monospace;">48,781</td>
+        <td style="color: #a6adc8; font-size: 14px;">2026-06-08 16:24:25.215303</td>
+        <td style="font-family: monospace;">4,335</td>
       </tr>
 
     </tbody>
