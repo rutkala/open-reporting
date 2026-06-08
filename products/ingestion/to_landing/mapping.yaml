@@ -1,0 +1,19 @@
+mappings:
+  - domain_id: public_finance
+    source_id: gus_bdl_api
+  - domain_id: public_finance
+    source_id: gov_finanse
+  - domain_id: demographics
+    source_id: gus_bdl_api
+  - domain_id: demographics
+    source_id: gus_db_portal
+  - domain_id: macroeconomy
+    source_id: gus_bdl_api
+  - domain_id: macroeconomy
+    source_id: nbp_web_api
+  - domain_id: macroeconomy
+    source_id: eurostat_api
+  - domain_id: health
+    source_id: gus_db_portal
+  - domain_id: sports_market
+    source_id: gus_db_portal

@@ -1,0 +1,16 @@
+domains:
+  - id: public_finance
+    name: Public Finance
+    description: "National and regional budgets, expenditures, and tax revenues"
+  - id: demographics
+    name: Demographics
+    description: "Population size, births, deaths, and migrations"
+  - id: macroeconomy
+    name: Macroeconomy
+    description: "GDP, Inflation, Interest Rates, and Trade Balances"
+  - id: health
+    name: Health
+    description: "Healthcare expenditures, hospital beds, patient statistics"
+  - id: sports_market
+    name: Sports Market
+    description: "Sports funding, club finances, and league statistics"

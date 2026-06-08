@@ -1,29 +1,36 @@
 sources:
-  - id: gus_macro
-    domain: Public Finance
+  - id: gus_bdl_api
     organization: GUS
-    method: REST API
-    granularity: National
+    name: "BDL API"
+    url: "https://api.stat.gov.pl/Home/BdlApi"
+    method: "REST API"
     status: Active
-    description: "Główny Urząd Statystyczny - wskaźniki makroekonomiczne"
-  - id: eurostat_gdp
-    domain: Economy
+    description: "Main Bank Danych Lokalnych API"
+  - id: gus_db_portal
+    organization: GUS
+    name: "Baza Danych Portal"
+    url: "https://bazydanych.new.stat.gov.pl/"
+    method: "Web Scrape / Bulk CSV"
+    status: "Pending Analysis"
+    description: "New database portal with references to external sources"
+  - id: nbp_web_api
+    organization: NBP
+    name: "NBP Web API"
+    url: "https://nbp.pl/api/"
+    method: "REST API"
+    status: "Pending Analysis"
+    description: "National Bank of Poland official exchange rates and macro data"
+  - id: gov_finanse
+    organization: Ministry of Finance
+    name: "Gov.pl Finanse"
+    url: "https://www.gov.pl/web/finanse"
+    method: "Bulk Excel / CSV"
+    status: "Pending Analysis"
+    description: "Detailed budgetary data published directly by the Ministry"
+  - id: eurostat_api
     organization: Eurostat
-    method: REST API
-    granularity: National
+    name: "Eurostat API"
+    url: "https://ec.europa.eu/eurostat/web/main/data/database"
+    method: "SDMX REST API"
     status: Active
-    description: "Eurostat - Gross Domestic Product"
-  - id: nfz_health
-    domain: Health
-    organization: NFZ
-    method: Bulk CSV
-    granularity: Regional
-    status: Planned
-    description: "Narodowy Fundusz Zdrowia - wydatki i statystyki pacjentów"
-  - id: pse_energy
-    domain: Energy
-    organization: PSE
-    method: REST API
-    granularity: Hourly
-    status: Planned
-    description: "Polskie Sieci Elektroenergetyczne - generacja i zużycie"
+    description: "European Union statistics"
