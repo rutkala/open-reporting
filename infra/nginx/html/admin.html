@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Management Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" 
+          rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #1e1e2e;
+            --text-color: #f8f8f2;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --card-hover: rgba(255, 255, 255, 0.1);
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(98, 114, 164, 0.15), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(139, 233, 253, 0.15), transparent 25%);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            text-align: center;
+            font-weight: 600;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            justify-content: center;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            text-decoration: none;
+            color: var(--text-color);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            background: var(--card-hover);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .card-desc {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            opacity: 0.7;
+            font-weight: 300;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Project Management Hub</h1>
+        <div class="grid">
+            <a href="/po-dashboard.html" class="card">
+                <div class="card-icon">🎯</div>
+                <h2 class="card-title">PO Command Center</h2>
+                <div class="card-desc">Track project metrics, OKRs, and backlog.</div>
+            </a>
+            <a href="/team.html" class="card">
+                <div class="card-icon">🤖</div>
+                <h2 class="card-title">Live AI Team Feed</h2>
+                <div class="card-desc">Monitor autonomous agent activity and logs.</div>
+            </a>
+            <a href="/index.html" class="card">
+                <div class="card-icon">📊</div>
+                <h2 class="card-title">Public Dashboards</h2>
+                <div class="card-desc">View live user-facing analytical products.</div>
+            </a>
+            <a href="/data-catalog.html" class="card">
+                <div class="card-icon">🗂️</div>
+                <h2 class="card-title">Data Catalog</h2>
+                <div class="card-desc">Registry of data sources and ingestion status.</div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

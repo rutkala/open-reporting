@@ -1,0 +1,29 @@
+sources:
+  - id: gus_macro
+    domain: Public Finance
+    organization: GUS
+    method: REST API
+    granularity: National
+    status: Active
+    description: "Główny Urząd Statystyczny - wskaźniki makroekonomiczne"
+  - id: eurostat_gdp
+    domain: Economy
+    organization: Eurostat
+    method: REST API
+    granularity: National
+    status: Active
+    description: "Eurostat - Gross Domestic Product"
+  - id: nfz_health
+    domain: Health
+    organization: NFZ
+    method: Bulk CSV
+    granularity: Regional
+    status: Planned
+    description: "Narodowy Fundusz Zdrowia - wydatki i statystyki pacjentów"
+  - id: pse_energy
+    domain: Energy
+    organization: PSE
+    method: REST API
+    granularity: Hourly
+    status: Planned
+    description: "Polskie Sieci Elektroenergetyczne - generacja i zużycie"
