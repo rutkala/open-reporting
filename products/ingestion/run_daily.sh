@@ -48,11 +48,29 @@ run() {
 
 worst=0
 
-if ! run "NBP exchange rates" "$REPO/products/ingestion/to_raw/nbp_exchange_rates.py"; then
+# Incremental ingestion — API deltas only (bulk runs are manual via bulk/run_bulk.py)
+if ! run "Incremental ingestion" "$REPO/products/ingestion/incremental/run_incremental.py"; then
   worst=1
 fi
 
-if ! run "Eurostat observations" "$REPO/products/ingestion/to_raw/eurostat_observations.py"; then
+log "--- dbt run ---"
+if ! (cd "$REPO/products/warehouse" && DUCKDB_PATH=$REPO/data/warehouse.duckdb dbt run --profiles-dir .) >>"$LOG" 2>&1; then
+  rc=$?
+  log "dbt run: FAILED (exit $rc)"
+  worst=1
+else
+  log "dbt run: OK"
+fi
+
+if ! run "MF OpenBudget extractor" "$REPO/products/ingestion/extractors/mf_extractor.py"; then
+  worst=1
+fi
+
+if ! run "NFZ e-Zdrowie extractor" "$REPO/products/ingestion/extractors/nfz_extractor.py"; then
+  worst=1
+fi
+
+if ! run "ZUS benefits extractor" "$REPO/products/ingestion/extractors/zus_extractor.py"; then
   worst=1
 fi
 
