@@ -140,6 +140,70 @@ def _dane_gov_institution(institution_id: str, source_id: str) -> list[tuple[str
     return result
 
 
+def get_gus_teryt_files() -> list[tuple[str, str]]:
+    """GUS TERYT administrative unit hierarchy via BDL /api/v1/units — 7 levels, ~4714 units.
+
+    BDL limits pageSize to 100. We probe each level for total pages and generate all page URLs.
+    """
+    base = "https://bdl.stat.gov.pl/api/v1/units"
+    result = []
+    for level in range(0, 7):
+        try:
+            resp = requests.get(base, params={"level": level, "page-size": 100, "lang": "pl"},
+                                timeout=20, headers=HEADERS)
+            resp.raise_for_status()
+            data = resp.json()
+            total = data.get("totalRecords", 1)
+            page_size = data.get("pageSize", 100)
+            total_pages = max(1, -(-total // page_size))  # ceiling division
+        except Exception:
+            total_pages = 1
+        for page in range(0, total_pages):
+            suffix = f"_p{page}" if total_pages > 1 else ""
+            result.append((
+                f"units_level_{level}{suffix}.json",
+                f"{base}?level={level}&page-size=100&page={page}&lang=pl"
+            ))
+    logger.info(f"[gus_teryt] {len(result)} page files across 7 levels")
+    return result
+
+
+def get_gus_sdg_files() -> list[tuple[str, str]]:
+    """GUS SDG — national and global indicator data as static JSON from sdg.gov.pl."""
+    return [
+        ("national_data.json", "https://sdg.gov.pl/api/v1/en/national_data.json"),
+        ("global_data.json",   "https://sdg.gov.pl/api/v1/en/global_data.json"),
+    ]
+
+
+def get_gus_biuletyn_files() -> list[tuple[str, str]]:
+    """GUS Biuletyn statystyczny długie szeregi — 62+ XLSX files scraped from publication page.
+
+    Files are at new.stat.gov.pl/sites/default/files/{YYYY-MM}/tabl{NN}_{name}.xlsx.
+    The page embeds exact URLs in <span class="file-url"> elements — no guessing needed.
+    """
+    page = "https://new.stat.gov.pl/biuletyn-statystyczny-dlugie-szeregi"
+    try:
+        resp = requests.get(page, timeout=30, headers=HEADERS)
+        resp.raise_for_status()
+        urls = re.findall(r'<span class="file-url[^"]*">(https?://[^<]+)</span>', resp.text)
+        if urls:
+            result = []
+            seen: set[str] = set()
+            for url in urls:
+                url = url.strip()
+                name = url.split("/")[-1][:150]
+                if name not in seen:
+                    seen.add(name)
+                    result.append((name, url))
+            logger.info(f"[gus_biuletyn] {len(result)} XLSX files")
+            return result
+        logger.warning("[gus_biuletyn] No file-url spans found on page")
+    except Exception as e:
+        logger.warning(f"[gus_biuletyn] page scrape failed: {e}")
+    return []
+
+
 def get_nbp_files() -> list[tuple[str, str]]:
     """NBP exchange rate archival XLSX files 2010–present."""
     current_year = datetime.utcnow().year
@@ -244,9 +308,12 @@ def get_mf_openbudget_files() -> list[tuple[str, str]]:
 
 SOURCES: dict[str, dict] = {
     # GUS
-    "gus_dbw_bulk":  {"fetch": get_gus_hvd_files,                               "workers": 8},
-    "gus_dbw_api":   {"fetch": lambda: [("area_tree.json", "https://api-dbw.stat.gov.pl/api/1.1.0/area/area-area")], "workers": 1},
-    "gus_bdl_api":   {"fetch": lambda: [("subjects.json",  "https://bdl.stat.gov.pl/api/v1/subjects?lang=pl")],      "workers": 1},
+    "gus_dbw_bulk":    {"fetch": get_gus_hvd_files,                               "workers": 8},
+    "gus_dbw_api":     {"fetch": lambda: [("area_tree.json", "https://api-dbw.stat.gov.pl/api/1.1.0/area/area-area")], "workers": 1},
+    "gus_bdl_api":     {"fetch": lambda: [("subjects.json",  "https://bdl.stat.gov.pl/api/v1/subjects?lang=pl")],      "workers": 1},
+    "gus_teryt_bulk":  {"fetch": get_gus_teryt_files,                             "workers": 4},
+    "gus_sdg_bulk":    {"fetch": get_gus_sdg_files,                               "workers": 2},
+    "gus_biuletyn_bulk": {"fetch": get_gus_biuletyn_files,                        "workers": 4},
     # Institutional
     "eurostat_bulk": {"fetch": get_eurostat_files,                              "workers": 12},
     "mf_api":        {"fetch": get_mf_openbudget_files,                         "workers": 2},
