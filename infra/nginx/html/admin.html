@@ -14,17 +14,18 @@
             --text-color: #f8f8f2;
             --card-bg: rgba(255, 255, 255, 0.05);
             --card-border: rgba(255, 255, 255, 0.1);
-            --card-hover: rgba(255, 255, 255, 0.1);
+            --card-hover: rgba(255, 255, 255, 0.12);
+            --accent: #bd93f9;
         }
-        
+
         body {
             margin: 0;
             padding: 0;
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
             background-image: 
-                radial-gradient(circle at 15% 50%, rgba(98, 114, 164, 0.15), transparent 25%),
-                radial-gradient(circle at 85% 30%, rgba(139, 233, 253, 0.15), transparent 25%);
+                radial-gradient(circle at 15% 50%, rgba(189, 147, 249, 0.1), transparent 30%),
+                radial-gradient(circle at 85% 30%, rgba(139, 233, 253, 0.1), transparent 30%);
             color: var(--text-color);
             min-height: 100vh;
             display: flex;
@@ -45,13 +46,16 @@
             font-weight: 600;
             font-size: 2.5rem;
             margin-bottom: 3rem;
-            letter-spacing: 1px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            letter-spacing: -0.5px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(135deg, #f8f8f2, #bd93f9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 2rem;
             justify-content: center;
         }
@@ -59,45 +63,69 @@
         .card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 2rem;
+            border-radius: 20px;
+            padding: 3rem 2rem;
             text-align: center;
             text-decoration: none;
             color: var(--text-color);
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
         }
 
         .card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
             background: var(--card-hover);
-            border-color: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
+            border-color: rgba(189, 147, 249, 0.3);
+            box-shadow: 0 15px 45px 0 rgba(0, 0, 0, 0.4);
+        }
+
+        .card:hover::before {
+            opacity: 1;
         }
 
         .card-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
         }
 
         .card-title {
             font-size: 1.5rem;
             font-weight: 600;
             margin: 0;
+            position: relative;
+            z-index: 1;
         }
-        
+
         .card-desc {
             margin-top: 1rem;
-            font-size: 0.9rem;
+            font-size: 1rem;
             opacity: 0.7;
             font-weight: 300;
+            line-height: 1.5;
+            position: relative;
+            z-index: 1;
         }
     </style>
 </head>
@@ -108,22 +136,32 @@
             <a href="/po-dashboard.html" class="card">
                 <div class="card-icon">🎯</div>
                 <h2 class="card-title">PO Command Center</h2>
-                <div class="card-desc">Track project metrics, OKRs, and backlog.</div>
+                <div class="card-desc">Track project metrics, OKRs, and prioritize the backlog.</div>
             </a>
             <a href="/team.html" class="card">
                 <div class="card-icon">🤖</div>
                 <h2 class="card-title">Live AI Team Feed</h2>
-                <div class="card-desc">Monitor autonomous agent activity and logs.</div>
+                <div class="card-desc">Monitor autonomous agent activity and system logs.</div>
             </a>
             <a href="/index.html" class="card">
                 <div class="card-icon">📊</div>
                 <h2 class="card-title">Public Dashboards</h2>
-                <div class="card-desc">View live user-facing analytical products.</div>
+                <div class="card-desc">Explore the live user-facing analytical products.</div>
             </a>
-            <a href="/data-catalog.html" class="card">
+            <a href="/source-registry.html" class="card">
+                <div class="card-icon">🗃️</div>
+                <h2 class="card-title">Source Registry</h2>
+                <div class="card-desc">All 23 data sources: type, auth, rate limits, extraction status.</div>
+            </a>
+            <a href="/ingestion-plan.html" class="card">
+                <div class="card-icon">📅</div>
+                <h2 class="card-title">Ingestion Plan</h2>
+                <div class="card-desc">API capacity, weekly budget, subject progress, and schedule.</div>
+            </a>
+            <a href="/landing-catalog.html" class="card">
                 <div class="card-icon">🗂️</div>
                 <h2 class="card-title">Data Catalog</h2>
-                <div class="card-desc">Registry of data sources and ingestion status.</div>
+                <div class="card-desc">Landing zone (29k files, 10.5 GB) and DuckDB warehouse.</div>
             </a>
         </div>
     </div>

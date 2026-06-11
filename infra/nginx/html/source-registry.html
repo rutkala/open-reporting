@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Source Registry — Open Reporting Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #1e1e2e; --surface: #181825; --surface2: #313244; --overlay: #6c7086;
+      --text: #cdd6f4; --subtext: #a6adc8;
+      --blue: #89b4fa; --green: #a6e3a1; --yellow: #f9e2af; --red: #f38ba8; --mauve: #cba6f7;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* Top bar */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--surface2);
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .breadcrumb { font-size: 14px; }
+    .breadcrumb a { color: var(--subtext); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--text); }
+    .breadcrumb .sep { color: var(--overlay); margin: 0 4px; }
+    .breadcrumb .current { color: var(--overlay); }
+
+    nav { display: flex; gap: 20px; align-items: center; }
+    nav a { font-size: 14px; color: var(--subtext); text-decoration: none; }
+    nav a:hover { color: var(--text); }
+    nav a.active { color: var(--blue); font-weight: 600; }
+
+    /* Layout */
+    main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 32px 24px 0;
+    }
+
+    h1 { font-size: 24px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .subtitle { font-size: 13px; color: var(--subtext); margin-bottom: 28px; }
+
+    /* Summary strip */
+    .summary-strip {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--surface2);
+      border-radius: 8px;
+      padding: 16px;
+      min-width: 120px;
+    }
+    .stat-number {
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .stat-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--subtext);
+    }
+    .stat-number.green  { color: var(--green); }
+    .stat-number.yellow { color: var(--yellow); }
+    .stat-number.red    { color: var(--red); }
+    .stat-number.gray   { color: var(--subtext); }
+
+    /* Filter bar */
+    .filter-bar {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 24px 0;
+      align-items: center;
+    }
+    .filter-bar input,
+    .filter-bar select {
+      background: var(--surface);
+      border: 1px solid var(--surface2);
+      color: var(--text);
+      padding: 7px 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: 'Inter', system-ui, sans-serif;
+      outline: none;
+    }
+    .filter-bar input { width: 240px; }
+    .filter-bar input::placeholder { color: var(--overlay); }
+    .filter-bar input:focus,
+    .filter-bar select:focus { border-color: var(--blue); }
+    .filter-bar select option { background: var(--surface2); }
+
+    /* Table */
+    .table-wrap {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    thead tr {
+      border-bottom: 1px solid var(--surface2);
+    }
+    th {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--subtext);
+      padding: 8px 12px;
+      text-align: left;
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+    }
+    th:hover { color: var(--text); }
+    th.sort-asc::after  { content: ' ↑'; color: var(--blue); }
+    th.sort-desc::after { content: ' ↓'; color: var(--blue); }
+
+    tbody tr {
+      border-bottom: 1px solid var(--surface2);
+    }
+    tbody tr:hover { background: rgba(49,50,68,0.4); }
+    td {
+      padding: 10px 12px;
+      vertical-align: top;
+    }
+
+    /* Cell types */
+    .cell-source .src-name  { font-size: 14px; font-weight: 600; color: var(--text); }
+    .cell-source .src-key   { font-family: monospace; font-size: 12px; color: var(--overlay); margin-top: 2px; }
+
+    .type-tag {
+      background: var(--surface2);
+      color: var(--subtext);
+      font-family: monospace;
+      font-size: 12px;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    .auth-key { color: var(--yellow); font-size: 13px; }
+    .auth-none { color: var(--overlay); }
+
+    /* Status badges */
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .badge-complete    { background: rgba(166,227,161,.18); color: var(--green); }
+    .badge-partial     { background: rgba(249,226,175,.18); color: var(--yellow); }
+    .badge-blocked     { background: rgba(243,139,168,.18); color: var(--red); }
+    .badge-not_started { background: rgba(108,112,134,.18); color: var(--subtext); }
+    .badge-scheduled   { background: rgba(137,180,250,.18); color: var(--blue); }
+    .badge-unknown     { background: rgba(108,112,134,.18); color: var(--subtext); }
+
+    .status-detail {
+      font-size: 12px;
+      color: var(--subtext);
+      max-width: 220px;
+      margin-top: 3px;
+    }
+
+    .date-old { color: var(--red); }
+    .date-today { color: var(--green); }
+
+    .landing-link {
+      color: var(--blue);
+      text-decoration: none;
+      font-family: monospace;
+      font-size: 12px;
+    }
+    .landing-link:hover { text-decoration: underline; }
+
+    .extractor-path {
+      font-family: monospace;
+      font-size: 12px;
+      color: var(--subtext);
+    }
+
+    /* Empty / error states */
+    .no-results {
+      color: var(--overlay);
+      font-size: 14px;
+      padding: 40px 0;
+      text-align: center;
+    }
+    .error-state {
+      color: var(--red);
+      text-align: center;
+      padding: 60px;
+      font-size: 16px;
+    }
+
+    /* Footer */
+    footer {
+      font-size: 12px;
+      color: var(--overlay);
+      margin-top: 40px;
+      padding-bottom: 32px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="breadcrumb">
+    <a href="/admin.html">Open Reporting</a>
+    <span class="sep">/</span>
+    <a href="/admin.html" style="color:var(--overlay)">Admin</a>
+    <span class="sep">/</span>
+    <span class="current">Sources</span>
+  </div>
+  <nav>
+    <a href="/source-registry.html" class="active">Sources</a>
+    <a href="/ingestion-plan.html">Plan</a>
+    <a href="/landing-catalog.html">Landing</a>
+    <a href="/duckdb-catalog.html">DuckDB</a>
+    <a href="/ingestion-status.html">Status</a>
+  </nav>
+</header>
+
+<main>
+  <h1>Source Registry</h1>
+  <p class="subtitle">
+    Every external data source: type, authentication, rate limits, and ingestion status.
+  </p>
+
+  <div class="summary-strip" id="summary-strip">
+    <!-- Populated by JS -->
+  </div>
+
+  <div class="filter-bar">
+    <input type="text" id="filter-text" placeholder="Filter sources&hellip;">
+    <select id="filter-institution">
+      <option value="">All institutions</option>
+    </select>
+    <select id="filter-type">
+      <option value="">All types</option>
+      <option value="bulk_api">bulk_api</option>
+      <option value="rest_api">rest_api</option>
+      <option value="file_download">file_download</option>
+    </select>
+    <select id="filter-status">
+      <option value="">All statuses</option>
+      <option value="complete">complete</option>
+      <option value="partial">partial</option>
+      <option value="blocked">blocked</option>
+      <option value="not_started">not_started</option>
+    </select>
+  </div>
+
+  <div class="table-wrap">
+    <table id="registry-table">
+      <thead>
+        <tr>
+          <th data-col="name">Source</th>
+          <th data-col="institution">Institution</th>
+          <th data-col="type">Type</th>
+          <th data-col="auth">Auth</th>
+          <th data-col="rate_limit_label">Rate Limit</th>
+          <th data-col="extraction_status">Status</th>
+          <th data-col="last_ingested">Last Ingested</th>
+          <th data-col="landing_folders">Landing</th>
+          <th data-col="extractor_path">Extractor</th>
+        </tr>
+      </thead>
+      <tbody id="registry-body">
+        <tr><td colspan="9" class="no-results">Loading&hellip;</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer id="footer"></footer>
+</main>
+
+<script>
+  // ---- State ----
+  let allSources = [];
+  let generatedAt = '';
+  let sortCol = null;
+  let sortDir = 'asc';
+
+  const STATUS_ORDER = { blocked: 0, partial: 1, not_started: 2, scheduled: 3, complete: 4 };
+
+  // ---- Date helpers ----
+  const TODAY = new Date().toISOString().slice(0, 10);
+
+  function formatDate(dateStr) {
+    if (!dateStr) return null;
+    const date = dateStr.slice(0, 10); // YYYY-MM-DD
+    if (date === TODAY) return { label: 'today', cls: 'date-today' };
+    const diffMs = Date.now() - new Date(date).getTime();
+    const diffDays = Math.floor(diffMs / 86400000);
+    const old = diffDays > 35;
+    const label = diffDays <= 1
+      ? (diffDays === 0 ? 'today' : 'yesterday')
+      : diffDays <= 60
+        ? diffDays + 'd ago'
+        : Math.floor(diffDays / 30) + 'mo ago';
+    return { label, cls: old ? 'date-old' : '' };
+  }
+
+  // ---- Badge ----
+  function badgeHtml(status) {
+    const cls = {
+      complete:    'badge-complete',
+      partial:     'badge-partial',
+      blocked:     'badge-blocked',
+      not_started: 'badge-not_started',
+      scheduled:   'badge-scheduled',
+    }[status] || 'badge-unknown';
+    const label = status ? status.replace('_', ' ') : 'unknown';
+    return '<span class="badge ' + cls + '">' + label + '</span>';
+  }
+
+  // ---- Render summary strip ----
+  function renderSummary(data) {
+    const sc = data.status_counts || {};
+    const notStarted = (sc.not_started || 0) + (sc.scheduled || 0);
+    const strip = document.getElementById('summary-strip');
+    const cards = [
+      { label: 'Total',       value: data.source_count || 0,   cls: '' },
+      { label: 'Complete',    value: sc.complete || 0,          cls: 'green' },
+      { label: 'Partial',     value: sc.partial || 0,           cls: 'yellow' },
+      { label: 'Blocked',     value: sc.blocked || 0,           cls: 'red' },
+      { label: 'Not started', value: notStarted,                cls: 'gray' },
+    ];
+    strip.textContent = '';
+    cards.forEach(function(c) {
+      const card = document.createElement('div');
+      card.className = 'stat-card';
+      const num = document.createElement('div');
+      num.className = 'stat-number' + (c.cls ? ' ' + c.cls : '');
+      num.textContent = c.value;
+      const lbl = document.createElement('div');
+      lbl.className = 'stat-label';
+      lbl.textContent = c.label;
+      card.appendChild(num);
+      card.appendChild(lbl);
+      strip.appendChild(card);
+    });
+  }
+
+  // ---- Populate institution dropdown ----
+  function populateFilters(sources) {
+    const institutions = [...new Set(sources.map(function(s) { return s.institution; }).filter(Boolean))].sort();
+    const sel = document.getElementById('filter-institution');
+    institutions.forEach(function(inst) {
+      const opt = document.createElement('option');
+      opt.value = inst;
+      opt.textContent = inst;
+      sel.appendChild(opt);
+    });
+  }
+
+  // ---- Filter ----
+  function applyFilters(sources) {
+    const text = document.getElementById('filter-text').value.toLowerCase();
+    const inst = document.getElementById('filter-institution').value;
+    const type = document.getElementById('filter-type').value;
+    const status = document.getElementById('filter-status').value;
+
+    return sources.filter(function(s) {
+      if (text) {
+        const haystack = [s.source_key, s.name, s.institution].join(' ').toLowerCase();
+        if (!haystack.includes(text)) return false;
+      }
+      if (inst && s.institution !== inst) return false;
+      if (type && s.type !== type) return false;
+      if (status && s.extraction_status !== status) return false;
+      return true;
+    });
+  }
+
+  // ---- Sort ----
+  function applySort(sources) {
+    if (!sortCol) {
+      // Default: status order, then name
+      return sources.slice().sort(function(a, b) {
+        const os = (STATUS_ORDER[a.extraction_status] ?? 99) - (STATUS_ORDER[b.extraction_status] ?? 99);
+        if (os !== 0) return os;
+        return (a.name || '').localeCompare(b.name || '');
+      });
+    }
+    return sources.slice().sort(function(a, b) {
+      let va = a[sortCol] ?? '';
+      let vb = b[sortCol] ?? '';
+      // Nulls last
+      if (va === '' || va === null) return 1;
+      if (vb === '' || vb === null) return -1;
+      if (typeof va === 'number' && typeof vb === 'number') {
+        return sortDir === 'asc' ? va - vb : vb - va;
+      }
+      va = String(va).toLowerCase();
+      vb = String(vb).toLowerCase();
+      const cmp = va.localeCompare(vb);
+      return sortDir === 'asc' ? cmp : -cmp;
+    });
+  }
+
+  // ---- Render table ----
+  function renderTable() {
+    const filtered = applyFilters(allSources);
+    const sorted   = applySort(filtered);
+    const tbody = document.getElementById('registry-body');
+    tbody.textContent = '';
+
+    if (sorted.length === 0) {
+      const tr = document.createElement('tr');
+      const td = document.createElement('td');
+      td.colSpan = 9;
+      td.className = 'no-results';
+      td.textContent = 'No sources match the current filters.';
+      tr.appendChild(td);
+      tbody.appendChild(tr);
+      return;
+    }
+
+    sorted.forEach(function(src) {
+      const tr = document.createElement('tr');
+
+      // Source
+      const tdSrc = document.createElement('td');
+      tdSrc.className = 'cell-source';
+      const nameDiv = document.createElement('div');
+      nameDiv.className = 'src-name';
+      nameDiv.textContent = src.name || src.source_key;
+      const keyDiv = document.createElement('div');
+      keyDiv.className = 'src-key';
+      keyDiv.textContent = src.source_key;
+      tdSrc.appendChild(nameDiv);
+      tdSrc.appendChild(keyDiv);
+      tr.appendChild(tdSrc);
+
+      // Institution
+      const tdInst = document.createElement('td');
+      tdInst.textContent = src.institution || '—';
+      tr.appendChild(tdInst);
+
+      // Type
+      const tdType = document.createElement('td');
+      if (src.type) {
+        const tag = document.createElement('span');
+        tag.className = 'type-tag';
+        tag.textContent = src.type;
+        tdType.appendChild(tag);
+      } else {
+        tdType.textContent = '—';
+      }
+      tr.appendChild(tdType);
+
+      // Auth
+      const tdAuth = document.createElement('td');
+      if (src.auth === 'key_required') {
+        const span = document.createElement('span');
+        span.className = 'auth-key';
+        span.textContent = '🔑 key';
+        tdAuth.appendChild(span);
+      } else {
+        const span = document.createElement('span');
+        span.className = 'auth-none';
+        span.textContent = '—';
+        tdAuth.appendChild(span);
+      }
+      tr.appendChild(tdAuth);
+
+      // Rate limit
+      const tdRl = document.createElement('td');
+      tdRl.textContent = src.rate_limit_label || '—';
+      tr.appendChild(tdRl);
+
+      // Status
+      const tdStatus = document.createElement('td');
+      const badgeEl = document.createElement('span');
+      const badgeStatus = src.extraction_status || 'unknown';
+      const badgeCls = {
+        complete:    'badge-complete',
+        partial:     'badge-partial',
+        blocked:     'badge-blocked',
+        not_started: 'badge-not_started',
+        scheduled:   'badge-scheduled',
+      }[badgeStatus] || 'badge-unknown';
+      badgeEl.className = 'badge ' + badgeCls;
+      badgeEl.textContent = badgeStatus.replace('_', ' ');
+      tdStatus.appendChild(badgeEl);
+      if (src.status_detail) {
+        const det = document.createElement('div');
+        det.className = 'status-detail';
+        det.textContent = src.status_detail;
+        tdStatus.appendChild(det);
+      }
+      tr.appendChild(tdStatus);
+
+      // Last ingested
+      const tdDate = document.createElement('td');
+      if (src.last_ingested) {
+        const fmt = formatDate(src.last_ingested);
+        if (fmt) {
+          const span = document.createElement('span');
+          span.textContent = src.last_ingested;
+          if (fmt.cls) span.className = fmt.cls;
+          tdDate.appendChild(span);
+          if (fmt.label === 'today') {
+            const suffix = document.createTextNode(' (today)');
+            tdDate.appendChild(suffix);
+          }
+        } else {
+          tdDate.textContent = src.last_ingested;
+        }
+      } else {
+        tdDate.textContent = '—';
+      }
+      tr.appendChild(tdDate);
+
+      // Landing folders
+      const tdLanding = document.createElement('td');
+      const folders = Array.isArray(src.landing_folders) ? src.landing_folders : [];
+      if (folders.length === 0) {
+        tdLanding.textContent = '—';
+      } else {
+        folders.forEach(function(folder, idx) {
+          const a = document.createElement('a');
+          a.className = 'landing-link';
+          a.href = '/landing-catalog.html#' + folder;
+          a.textContent = folder;
+          tdLanding.appendChild(a);
+          if (idx < folders.length - 1) {
+            tdLanding.appendChild(document.createTextNode(', '));
+          }
+        });
+      }
+      tr.appendChild(tdLanding);
+
+      // Extractor
+      const tdExt = document.createElement('td');
+      if (src.extractor_path) {
+        const span = document.createElement('span');
+        span.className = 'extractor-path';
+        // Show only basename
+        const parts = src.extractor_path.split('/');
+        span.textContent = parts[parts.length - 1];
+        span.title = src.extractor_path;
+        tdExt.appendChild(span);
+      } else {
+        tdExt.textContent = '—';
+      }
+      tr.appendChild(tdExt);
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  // ---- Sort headers ----
+  function updateSortHeaders() {
+    document.querySelectorAll('#registry-table th').forEach(function(th) {
+      th.classList.remove('sort-asc', 'sort-desc');
+      if (th.dataset.col === sortCol) {
+        th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+      }
+    });
+  }
+
+  document.querySelectorAll('#registry-table th[data-col]').forEach(function(th) {
+    th.addEventListener('click', function() {
+      const col = th.dataset.col;
+      if (sortCol === col) {
+        sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+      } else {
+        sortCol = col;
+        sortDir = 'asc';
+      }
+      updateSortHeaders();
+      renderTable();
+    });
+  });
+
+  // ---- Filter wiring ----
+  ['filter-text', 'filter-institution', 'filter-type', 'filter-status'].forEach(function(id) {
+    document.getElementById(id).addEventListener('input', renderTable);
+    document.getElementById(id).addEventListener('change', renderTable);
+  });
+
+  // ---- Footer ----
+  function renderFooter() {
+    const f = document.getElementById('footer');
+    f.textContent = 'Generated ' + generatedAt + ' · refreshed by infra/scheduler/refresh_admin_catalogs.py';
+  }
+
+  // ---- Fetch + Bootstrap ----
+  fetch('data/source_registry.json')
+    .then(function(resp) {
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      return resp.json();
+    })
+    .then(function(data) {
+      allSources = Array.isArray(data.sources) ? data.sources : [];
+      generatedAt = data.generated_at || '';
+
+      renderSummary(data);
+      populateFilters(allSources);
+      renderTable();
+      renderFooter();
+    })
+    .catch(function(err) {
+      const tbody = document.getElementById('registry-body');
+      tbody.textContent = '';
+      const tr = document.createElement('tr');
+      const td = document.createElement('td');
+      td.colSpan = 9;
+      td.className = 'error-state';
+      td.textContent = 'Failed to load source_registry.json: ' + err.message;
+      tr.appendChild(td);
+      tbody.appendChild(tr);
+    });
+</script>
+</body>
+</html>

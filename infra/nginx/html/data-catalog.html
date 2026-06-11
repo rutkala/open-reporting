@@ -6,524 +6,66 @@
   <title>Open Reporting — Data Catalog</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: Inter, system-ui, sans-serif; background: #1e1e2e; color: #cdd6f4; min-height: 100vh; }
-    header { background: #181825; border-bottom: 1px solid #313244; padding: 20px 32px; display: flex; justify-content: space-between; align-items: center;}
-    header h1 { font-size: 20px; font-weight: 700; color: #a6e3a1; }
-    main { max-width: 1200px; margin: 40px auto; padding: 0 24px; }
-    
-    .section-title { font-size: 24px; margin-bottom: 24px; color: #f38ba8; border-bottom: 1px solid #313244; padding-bottom: 8px;}
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 24px; margin-bottom: 40px; }
-    
-    .card { background: #181825; border: 1px solid #313244; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-    .card h3 { color: #89b4fa; font-size: 18px; margin-bottom: 8px; }
-    .card p { font-size: 14px; color: #bac2de; margin-bottom: 16px; line-height: 1.4; }
-    
-    .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; margin-right: 6px; margin-bottom: 6px; background: #313244; color: #cdd6f4; }
-    .status-active { color: #a6e3a1; border: 1px solid #a6e3a1; }
-    .status-pending { color: #f9e2af; border: 1px solid #f9e2af; }
-    
-    .btn { background: #89b4fa; color: #11111b; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 600; }
+    body { font-family: Inter, system-ui, sans-serif; background: #1e1e2e; color: #cdd6f4; min-height: 100vh; display: flex; flex-direction: column; }
+    header { background: #181825; border-bottom: 1px solid #313244; padding: 18px 32px; display: flex; justify-content: space-between; align-items: center; }
+    header h1 { font-size: 18px; font-weight: 700; color: #cba6f7; }
+    header a { color: #585b70; text-decoration: none; font-size: 13px; }
+    header a:hover { color: #cdd6f4; }
+    main { max-width: 900px; margin: 60px auto; padding: 0 24px; width: 100%; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 32px; }
+    @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+    .card { background: #181825; border: 1px solid #313244; border-radius: 14px; padding: 32px 28px; text-decoration: none; color: #cdd6f4; transition: border-color .2s, transform .15s; display: flex; flex-direction: column; gap: 10px; }
+    .card:hover { border-color: #89b4fa; transform: translateY(-2px); }
+    .card-icon { font-size: 32px; }
+    .card-title { font-size: 17px; font-weight: 600; color: #cdd6f4; }
+    .card-desc { font-size: 13px; color: #7f849c; line-height: 1.5; }
+    .card-stat { font-size: 12px; color: #585b70; margin-top: 6px; }
+    h2 { font-size: 22px; font-weight: 600; color: #cdd6f4; text-align: center; }
+    p.sub { text-align: center; color: #585b70; font-size: 14px; margin-top: 8px; }
   </style>
 </head>
 <body>
 <header>
-  <div>
-    <h1>Data Catalog & Source Registry</h1>
-    <p style="color: #bac2de; font-size: 13px; margin-top: 4px;">Relational Metadata Graph</p>
-  </div>
-  <div style="display: flex; gap: 12px;">
-    <a href="/ingestion-status.html" class="btn">View Ingestion Status</a>
-    <a href="/admin.html" class="btn">⬅ Back to Admin</a>
-  </div>
+  <h1>Data Catalog</h1>
+  <a href="/admin.html">← Admin</a>
 </header>
 <main>
-
-  <h2 class="section-title">📂 Business Domains</h2>
+  <h2>Data Catalog</h2>
+  <p class="sub">Two views of the data estate: what landed and what's in the warehouse.</p>
   <div class="grid">
-
-    <div class="card">
-      <h3>Public Finance</h3>
-      <p>State/local budgets, revenues, deficit, public debt.</p>
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Mapped Sources:</span>
-<span class="badge">Ministry of Finance - OpenBudget API</span><span class="badge">Ministry of Finance - MF Datasets on dane.gov.pl</span><span class="badge">GUS - DBW Knowledge Databases (HVD Bulk)</span><span class="badge">Eurostat - Eurostat API</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>National Accounts & Macroeconomics</h3>
-      <p>GDP, GNI, economic growth, sector accounts.</p>
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Mapped Sources:</span>
-<span class="badge">GUS - DBW Knowledge Databases (REST API)</span><span class="badge">GUS - DBW Knowledge Databases (HVD Bulk)</span><span class="badge">Eurostat - Eurostat API</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>Prices & Inflation</h3>
-      <p>CPI, HICP, housing prices, purchasing power.</p>
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Mapped Sources:</span>
-<span class="badge">GUS - DBW Knowledge Databases (HVD Bulk)</span><span class="badge">GUS - Bank Danych Lokalnych (BDL)</span><span class="badge">Eurostat - Eurostat API</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>Financial Markets</h3>
-      <p>Exchange rates, interest rates, banking sector.</p>
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Mapped Sources:</span>
-<span class="badge">NBP - NBP Web API</span><span class="badge">KNF - KNF Financial Supervision</span><span class="badge">GPW Benchmark - WIBOR/WIBID Reference Rates</span><span class="badge">Stooq - Stooq Market Data</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>Population & Demographics</h3>
-      <p>Population size, age pyramid, birth/death rates, migrations.</p>
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Mapped Sources:</span>
-<span class="badge">GUS - DBW Knowledge Databases (HVD Bulk)</span><span class="badge">GUS - Bank Danych Lokalnych (BDL)</span><span class="badge">Eurostat - Eurostat API</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>Labour Market</h3>
-      <p>Unemployment, wages, job vacancies.</p>
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Mapped Sources:</span>
-<span class="badge">GUS - DBW Knowledge Databases (HVD Bulk)</span><span class="badge">GUS - Bank Danych Lokalnych (BDL)</span><span class="badge">ZUS - ZUS Social Insurance</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>Health</h3>
-      <p>Healthcare services, reimbursements, waiting lists.</p>
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Mapped Sources:</span>
-<span class="badge">NFZ / CeZ - e-Zdrowie (NFZ) Open Data</span><span class="badge">GUS - Bank Danych Lokalnych (BDL)</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>Education</h3>
-      <p>Schools, students, exams, education spending.</p>
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Mapped Sources:</span>
-<span class="badge">CIE / MEN - Centrum Informatyczne Edukacji</span><span class="badge">GUS - Bank Danych Lokalnych (BDL)</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>Income, Living Conditions & Social Protection</h3>
-      <p>Social transfers, household income, pensions.</p>
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Mapped Sources:</span>
-<span class="badge">GUS - DBW Knowledge Databases (HVD Bulk)</span><span class="badge">GUS - Bank Danych Lokalnych (BDL)</span><span class="badge">ZUS - ZUS Social Insurance</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>Crime & Justice</h3>
-      <p>Crime stats, court cases, prison population, road safety.</p>
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Mapped Sources:</span>
-<span class="badge">Ministry of Justice - SAOS Common Courts</span><span class="badge">Ministry of Justice - National Court Register (KRS)</span><span class="badge">GUS - Bank Danych Lokalnych (BDL)</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>Culture, Tourism & Sport</h3>
-      <p>Museums, cultural spending, tourist arrivals.</p>
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Mapped Sources:</span>
-<span class="badge">GUS - DBW Knowledge Databases (HVD Bulk)</span><span class="badge">GUS - Bank Danych Lokalnych (BDL)</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>Business & Industry</h3>
-      <p>Enterprise stats, business demography, construction.</p>
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Mapped Sources:</span>
-<span class="badge">GUS - DBW Knowledge Databases (HVD Bulk)</span><span class="badge">GUS - Bank Danych Lokalnych (BDL)</span><span class="badge">Ministry of Justice - National Court Register (KRS)</span><span class="badge">Stooq - Stooq Market Data</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>Agriculture & Forestry</h3>
-      <p>Crop production, livestock, farm structure.</p>
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Mapped Sources:</span>
-<span class="badge">GUS - Bank Danych Lokalnych (BDL)</span><span class="badge">Eurostat - Eurostat API</span><span class="badge">MRiRW - ZSRIR (Agri Market Info System)</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>International Trade</h3>
-      <p>Imports/exports by country and commodity, FDI.</p>
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Mapped Sources:</span>
-<span class="badge">GUS - DBW Knowledge Databases (HVD Bulk)</span><span class="badge">Eurostat - Eurostat API</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>Transport</h3>
-      <p>Road/rail transport, infrastructure, public transit.</p>
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Mapped Sources:</span>
-<span class="badge">GUS - Bank Danych Lokalnych (BDL)</span><span class="badge">GDDKiA - GDDKiA Open Data</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>Environment & Climate</h3>
-      <p>Air quality, emissions, waste management.</p>
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Mapped Sources:</span>
-<span class="badge">GUS - Bank Danych Lokalnych (BDL)</span><span class="badge">Eurostat - Eurostat API</span><span class="badge">GIOŚ - GIOŚ Air Quality</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>Energy</h3>
-      <p>Energy production, mix, electricity prices.</p>
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Mapped Sources:</span>
-<span class="badge">GUS - Bank Danych Lokalnych (BDL)</span><span class="badge">Eurostat - Eurostat API</span><span class="badge">URE - Energy Regulatory Office</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>Science, Technology & Digital Society</h3>
-      <p>R&D spending, patents, innovation, internet usage.</p>
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Mapped Sources:</span>
-<span class="badge">GUS - Bank Danych Lokalnych (BDL)</span><span class="badge">Eurostat - Eurostat API</span><span class="badge">OPI - RAD-on Science Database</span>
-      </div>
-    </div>
-
-  </div>
-
-  <h2 class="section-title">📡 Discovered Data Sources</h2>
-  <div class="grid">
-
-    <div class="card">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-        <h3>GUS - DBW Knowledge Databases (HVD Bulk)</h3>
-        <span class="badge status-active">Active</span>
-      </div>
-      <p>Level 1: High-Value Datasets covering GDP, macroeconomics, population, employment.</p>
-      <p style="font-size: 13px; margin-bottom: 4px;"><strong>Method:</strong> Bulk CSV</p>
-      <p style="font-size: 13px; margin-bottom: 16px;"><strong>URL:</strong> <a href="https://dbw.stat.gov.pl/pl/katalog/bulk" style="color: #89b4fa;">https://dbw.stat.gov.pl/pl/katalog/bulk</a></p>
-      
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Feeds into Domains:</span>
-<span class="badge">Public Finance</span><span class="badge">National Accounts & Macroeconomics</span><span class="badge">Prices & Inflation</span><span class="badge">Population & Demographics</span><span class="badge">Labour Market</span><span class="badge">Income, Living Conditions & Social Protection</span><span class="badge">Culture, Tourism & Sport</span><span class="badge">Business & Industry</span><span class="badge">International Trade</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-        <h3>GUS - DBW Knowledge Databases (REST API)</h3>
-        <span class="badge status-pending">Pending Analysis</span>
-      </div>
-      <p>Level 1: Targeted queries for all DBW macro domains.</p>
-      <p style="font-size: 13px; margin-bottom: 4px;"><strong>Method:</strong> REST API</p>
-      <p style="font-size: 13px; margin-bottom: 16px;"><strong>URL:</strong> <a href="https://api-dbw.stat.gov.pl/api/" style="color: #89b4fa;">https://api-dbw.stat.gov.pl/api/</a></p>
-      
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Feeds into Domains:</span>
-<span class="badge">National Accounts & Macroeconomics</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-        <h3>GUS - Bank Danych Lokalnych (BDL)</h3>
-        <span class="badge status-active">Active</span>
-      </div>
-      <p>Level 1: Regional and local statistics across multiple domains.</p>
-      <p style="font-size: 13px; margin-bottom: 4px;"><strong>Method:</strong> REST API</p>
-      <p style="font-size: 13px; margin-bottom: 16px;"><strong>URL:</strong> <a href="https://bdl.stat.gov.pl/api/v1/" style="color: #89b4fa;">https://bdl.stat.gov.pl/api/v1/</a></p>
-      
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Feeds into Domains:</span>
-<span class="badge">Prices & Inflation</span><span class="badge">Population & Demographics</span><span class="badge">Labour Market</span><span class="badge">Health</span><span class="badge">Education</span><span class="badge">Income, Living Conditions & Social Protection</span><span class="badge">Crime & Justice</span><span class="badge">Culture, Tourism & Sport</span><span class="badge">Business & Industry</span><span class="badge">Agriculture & Forestry</span><span class="badge">Transport</span><span class="badge">Environment & Climate</span><span class="badge">Energy</span><span class="badge">Science, Technology & Digital Society</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-        <h3>GUS - GUS Bazy Danych Portal</h3>
-        <span class="badge status-pending">Pending Analysis</span>
-      </div>
-      <p>Level 1: Aggregator for all GUS statistical databases (Demography, Trade, Prices, etc).</p>
-      <p style="font-size: 13px; margin-bottom: 4px;"><strong>Method:</strong> Web Portal</p>
-      <p style="font-size: 13px; margin-bottom: 16px;"><strong>URL:</strong> <a href="https://bazydanych.new.stat.gov.pl/" style="color: #89b4fa;">https://bazydanych.new.stat.gov.pl/</a></p>
-      
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Feeds into Domains:</span>
-<span class="badge">Unassigned</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-        <h3>Eurostat - Eurostat API</h3>
-        <span class="badge status-pending">Pending Analysis</span>
-      </div>
-      <p>Level 1: EU-wide statistics for macro, trade, and demographics.</p>
-      <p style="font-size: 13px; margin-bottom: 4px;"><strong>Method:</strong> JSON-stat API</p>
-      <p style="font-size: 13px; margin-bottom: 16px;"><strong>URL:</strong> <a href="https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/" style="color: #89b4fa;">https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/</a></p>
-      
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Feeds into Domains:</span>
-<span class="badge">Public Finance</span><span class="badge">National Accounts & Macroeconomics</span><span class="badge">Prices & Inflation</span><span class="badge">Population & Demographics</span><span class="badge">Agriculture & Forestry</span><span class="badge">International Trade</span><span class="badge">Environment & Climate</span><span class="badge">Energy</span><span class="badge">Science, Technology & Digital Society</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-        <h3>Ministry of Finance - OpenBudget API</h3>
-        <span class="badge status-pending">Pending Analysis</span>
-      </div>
-      <p>Level 1: State and local budget execution.</p>
-      <p style="font-size: 13px; margin-bottom: 4px;"><strong>Method:</strong> REST API</p>
-      <p style="font-size: 13px; margin-bottom: 16px;"><strong>URL:</strong> <a href="https://openbudget.gov.pl/api/" style="color: #89b4fa;">https://openbudget.gov.pl/api/</a></p>
-      
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Feeds into Domains:</span>
-<span class="badge">Public Finance</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-        <h3>Ministry of Finance - MF Datasets on dane.gov.pl</h3>
-        <span class="badge status-pending">Pending Analysis</span>
-      </div>
-      <p>Level 1: Public debt, tax revenues, state budget reports.</p>
-      <p style="font-size: 13px; margin-bottom: 4px;"><strong>Method:</strong> API / Bulk</p>
-      <p style="font-size: 13px; margin-bottom: 16px;"><strong>URL:</strong> <a href="https://dane.gov.pl/pl/institution/18" style="color: #89b4fa;">https://dane.gov.pl/pl/institution/18</a></p>
-      
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Feeds into Domains:</span>
-<span class="badge">Public Finance</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-        <h3>NBP - NBP Web API</h3>
-        <span class="badge status-pending">Pending Analysis</span>
-      </div>
-      <p>Level 1: Exchange rates, interest rates, gold prices. (Note: does NOT contain broad macro data).</p>
-      <p style="font-size: 13px; margin-bottom: 4px;"><strong>Method:</strong> REST API</p>
-      <p style="font-size: 13px; margin-bottom: 16px;"><strong>URL:</strong> <a href="https://api.nbp.pl/api/" style="color: #89b4fa;">https://api.nbp.pl/api/</a></p>
-      
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Feeds into Domains:</span>
-<span class="badge">Financial Markets</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-        <h3>KNF - KNF Financial Supervision</h3>
-        <span class="badge status-pending">Pending Analysis</span>
-      </div>
-      <p>Level 2: Banking sector stability and financial market supervision.</p>
-      <p style="font-size: 13px; margin-bottom: 4px;"><strong>Method:</strong> Bulk XLSX</p>
-      <p style="font-size: 13px; margin-bottom: 16px;"><strong>URL:</strong> <a href="https://www.knf.gov.pl/dane_statystyczne" style="color: #89b4fa;">https://www.knf.gov.pl/dane_statystyczne</a></p>
-      
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Feeds into Domains:</span>
-<span class="badge">Financial Markets</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-        <h3>GPW Benchmark - WIBOR/WIBID Reference Rates</h3>
-        <span class="badge status-pending">Pending Analysis</span>
-      </div>
-      <p>Level 2: Official interest rate benchmarks.</p>
-      <p style="font-size: 13px; margin-bottom: 4px;"><strong>Method:</strong> Web/Data</p>
-      <p style="font-size: 13px; margin-bottom: 16px;"><strong>URL:</strong> <a href="https://gpwbenchmark.pl/" style="color: #89b4fa;">https://gpwbenchmark.pl/</a></p>
-      
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Feeds into Domains:</span>
-<span class="badge">Financial Markets</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-        <h3>Stooq - Stooq Market Data</h3>
-        <span class="badge status-pending">Pending Analysis</span>
-      </div>
-      <p>Level 4 (Approved): Aggregated historical stock data for GPW (GPW official API is commercial only).</p>
-      <p style="font-size: 13px; margin-bottom: 4px;"><strong>Method:</strong> Bulk CSV</p>
-      <p style="font-size: 13px; margin-bottom: 16px;"><strong>URL:</strong> <a href="https://stooq.pl/" style="color: #89b4fa;">https://stooq.pl/</a></p>
-      
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Feeds into Domains:</span>
-<span class="badge">Financial Markets</span><span class="badge">Business & Industry</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-        <h3>NFZ / CeZ - e-Zdrowie (NFZ) Open Data</h3>
-        <span class="badge status-pending">Pending Analysis</span>
-      </div>
-      <p>Level 1: Healthcare services, disease registries, waiting lists.</p>
-      <p style="font-size: 13px; margin-bottom: 4px;"><strong>Method:</strong> REST API / CSV</p>
-      <p style="font-size: 13px; margin-bottom: 16px;"><strong>URL:</strong> <a href="https://dane.ezdrowie.gov.pl/" style="color: #89b4fa;">https://dane.ezdrowie.gov.pl/</a></p>
-      
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Feeds into Domains:</span>
-<span class="badge">Health</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-        <h3>ZUS - ZUS Social Insurance</h3>
-        <span class="badge status-pending">Pending Analysis</span>
-      </div>
-      <p>Level 2: Social transfers, pensions, sickness benefits, 800+ program.</p>
-      <p style="font-size: 13px; margin-bottom: 4px;"><strong>Method:</strong> Bulk CSV</p>
-      <p style="font-size: 13px; margin-bottom: 16px;"><strong>URL:</strong> <a href="https://dane.gov.pl/pl/institution/47" style="color: #89b4fa;">https://dane.gov.pl/pl/institution/47</a></p>
-      
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Feeds into Domains:</span>
-<span class="badge">Labour Market</span><span class="badge">Income, Living Conditions & Social Protection</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-        <h3>Ministry of Justice - SAOS Common Courts</h3>
-        <span class="badge status-pending">Pending Analysis</span>
-      </div>
-      <p>Level 1: Court judgments and justice system statistics.</p>
-      <p style="font-size: 13px; margin-bottom: 4px;"><strong>Method:</strong> REST API</p>
-      <p style="font-size: 13px; margin-bottom: 16px;"><strong>URL:</strong> <a href="https://saos.org.pl/api/" style="color: #89b4fa;">https://saos.org.pl/api/</a></p>
-      
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Feeds into Domains:</span>
-<span class="badge">Crime & Justice</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-        <h3>Ministry of Justice - National Court Register (KRS)</h3>
-        <span class="badge status-pending">Pending Analysis</span>
-      </div>
-      <p>Level 1: Corporate registry and business demographics.</p>
-      <p style="font-size: 13px; margin-bottom: 4px;"><strong>Method:</strong> REST API</p>
-      <p style="font-size: 13px; margin-bottom: 16px;"><strong>URL:</strong> <a href="https://prs.ms.gov.pl/krs/openApi" style="color: #89b4fa;">https://prs.ms.gov.pl/krs/openApi</a></p>
-      
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Feeds into Domains:</span>
-<span class="badge">Crime & Justice</span><span class="badge">Business & Industry</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-        <h3>CIE / MEN - Centrum Informatyczne Edukacji</h3>
-        <span class="badge status-pending">Pending Analysis</span>
-      </div>
-      <p>Level 1: Official schools registry, student and teacher statistics.</p>
-      <p style="font-size: 13px; margin-bottom: 4px;"><strong>Method:</strong> Bulk Data</p>
-      <p style="font-size: 13px; margin-bottom: 16px;"><strong>URL:</strong> <a href="https://cie.men.gov.pl/otwarte-dane/" style="color: #89b4fa;">https://cie.men.gov.pl/otwarte-dane/</a></p>
-      
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Feeds into Domains:</span>
-<span class="badge">Education</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-        <h3>OPI - RAD-on Science Database</h3>
-        <span class="badge status-pending">Pending Analysis</span>
-      </div>
-      <p>Level 2: Higher education, R&D, and scientific institutions.</p>
-      <p style="font-size: 13px; margin-bottom: 4px;"><strong>Method:</strong> REST API</p>
-      <p style="font-size: 13px; margin-bottom: 16px;"><strong>URL:</strong> <a href="https://radon.nauka.gov.pl/api/" style="color: #89b4fa;">https://radon.nauka.gov.pl/api/</a></p>
-      
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Feeds into Domains:</span>
-<span class="badge">Science, Technology & Digital Society</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-        <h3>GDDKiA - GDDKiA Open Data</h3>
-        <span class="badge status-pending">Pending Analysis</span>
-      </div>
-      <p>Level 2: Traffic measurements, road infrastructure.</p>
-      <p style="font-size: 13px; margin-bottom: 4px;"><strong>Method:</strong> Bulk Data</p>
-      <p style="font-size: 13px; margin-bottom: 16px;"><strong>URL:</strong> <a href="https://dane.gov.pl/pl/institution/106" style="color: #89b4fa;">https://dane.gov.pl/pl/institution/106</a></p>
-      
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Feeds into Domains:</span>
-<span class="badge">Transport</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-        <h3>GIOŚ - GIOŚ Air Quality</h3>
-        <span class="badge status-pending">Pending Analysis</span>
-      </div>
-      <p>Level 2: Environmental monitoring, PM2.5/PM10.</p>
-      <p style="font-size: 13px; margin-bottom: 4px;"><strong>Method:</strong> REST API</p>
-      <p style="font-size: 13px; margin-bottom: 16px;"><strong>URL:</strong> <a href="https://powietrze.gios.gov.pl/pjp/" style="color: #89b4fa;">https://powietrze.gios.gov.pl/pjp/</a></p>
-      
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Feeds into Domains:</span>
-<span class="badge">Environment & Climate</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-        <h3>URE - Energy Regulatory Office</h3>
-        <span class="badge status-pending">Pending Analysis</span>
-      </div>
-      <p>Level 2: Energy markets, tariffs, renewable energy capacity.</p>
-      <p style="font-size: 13px; margin-bottom: 4px;"><strong>Method:</strong> Bulk Data</p>
-      <p style="font-size: 13px; margin-bottom: 16px;"><strong>URL:</strong> <a href="https://www.ure.gov.pl/pl/rynki-energii" style="color: #89b4fa;">https://www.ure.gov.pl/pl/rynki-energii</a></p>
-      
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Feeds into Domains:</span>
-<span class="badge">Energy</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-        <h3>MRiRW - ZSRIR (Agri Market Info System)</h3>
-        <span class="badge status-pending">Pending Analysis</span>
-      </div>
-      <p>Level 1: Official daily/weekly agricultural prices directly from the Ministry.</p>
-      <p style="font-size: 13px; margin-bottom: 4px;"><strong>Method:</strong> API / CSV</p>
-      <p style="font-size: 13px; margin-bottom: 16px;"><strong>URL:</strong> <a href="https://dane.gov.pl/pl/dataset/633,zintegrowany-system-rolniczej-informacji-rynkowej" style="color: #89b4fa;">https://dane.gov.pl/pl/dataset/633,zintegrowany-system-rolniczej-informacji-rynkowej</a></p>
-      
-      <div style="margin-top: 12px; border-top: 1px solid #313244; padding-top: 12px;">
-        <span style="font-size: 12px; color: #6c7086; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 8px;">Feeds into Domains:</span>
-<span class="badge">Agriculture & Forestry</span>
-      </div>
-    </div>
-
+    <a href="/landing-catalog.html" class="card">
+      <div class="card-icon">📁</div>
+      <div class="card-title">Landing Zone</div>
+      <div class="card-desc">Raw files as received: folder inventory, file counts, sizes, freshness, and extraction progress for API sources.</div>
+      <div class="card-stat" id="landing-stat">Loading…</div>
+    </a>
+    <a href="/duckdb-catalog.html" class="card">
+      <div class="card-icon">🦆</div>
+      <div class="card-title">DuckDB Warehouse</div>
+      <div class="card-desc">Analytical warehouse tables and views: schemas, column definitions, row counts, and load timestamps.</div>
+      <div class="card-stat" id="duckdb-stat">Loading…</div>
+    </a>
   </div>
 </main>
+<script>
+async function loadStats() {
+  try {
+    const ls = await fetch('/data/landing_status.json').then(r => r.json());
+    const folders = ls.folders || [];
+    const totalFiles = folders.reduce((s, f) => s + (f.file_count || 0), 0);
+    document.getElementById('landing-stat').textContent =
+      `${folders.length} folders · ${totalFiles.toLocaleString()} files · ${ls.total_size_human || ''}`;
+  } catch { document.getElementById('landing-stat').textContent = 'Status unavailable'; }
+
+  try {
+    const db = await fetch('/data/duckdb_catalog.json').then(r => r.json());
+    const tables = db.tables || [];
+    const totalRows = tables.reduce((s, t) => s + (t.row_count || 0), 0);
+    document.getElementById('duckdb-stat').textContent =
+      `${tables.length} tables/views · ${totalRows.toLocaleString()} rows`;
+  } catch { document.getElementById('duckdb-stat').textContent = 'Status unavailable'; }
+}
+loadStats();
+</script>
 </body>
 </html>

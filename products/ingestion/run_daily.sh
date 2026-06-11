@@ -74,6 +74,10 @@ if ! run "ZUS benefits extractor" "$REPO/products/ingestion/extractors/zus_extra
   worst=1
 fi
 
+if ! run "Admin catalog refresh" "$REPO/infra/scheduler/refresh_admin_catalogs.py"; then
+  worst=1
+fi
+
 log "=== daily ingestion end (exit=$worst) ==="
 
 # On non-zero exit, drop a Telegram outbox file so the bot pings the PO.

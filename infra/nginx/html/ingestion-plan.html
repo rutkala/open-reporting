@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open Reporting — Ingestion Plan</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Inter, system-ui, sans-serif; background: #1e1e2e; color: #cdd6f4; min-height: 100vh; }
+    header { background: #181825; border-bottom: 1px solid #313244; padding: 18px 32px; display: flex; justify-content: space-between; align-items: center; }
+    header h1 { font-size: 18px; font-weight: 700; color: #cba6f7; }
+    header a { color: #585b70; text-decoration: none; font-size: 13px; }
+    header a:hover { color: #cdd6f4; }
+    main { max-width: 1280px; margin: 0 auto; padding: 32px 24px; }
+
+    /* Summary strip */
+    .stats { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 32px; }
+    .stat-card { background: #181825; border: 1px solid #313244; border-radius: 10px; padding: 16px 22px; flex: 1; min-width: 160px; }
+    .stat-card .val { font-size: 26px; font-weight: 700; color: #89b4fa; }
+    .stat-card .lbl { font-size: 12px; color: #585b70; margin-top: 4px; text-transform: uppercase; letter-spacing: .04em; }
+
+    /* Section headings */
+    h2 { font-size: 16px; font-weight: 600; color: #cba6f7; margin-bottom: 16px; margin-top: 32px; }
+    h2:first-of-type { margin-top: 0; }
+    h3 { font-size: 14px; font-weight: 600; color: #89b4fa; margin-bottom: 12px; margin-top: 24px; }
+
+    /* API capacity cards */
+    .api-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(580px, 1fr)); gap: 20px; }
+    .api-card { background: #181825; border: 1px solid #313244; border-radius: 12px; padding: 20px 24px; }
+    .api-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+    .api-name { font-size: 15px; font-weight: 600; color: #cdd6f4; }
+    .api-meta { font-size: 12px; color: #585b70; margin-top: 3px; }
+    .budget-bar-wrap { background: #313244; border-radius: 6px; height: 10px; margin-bottom: 8px; overflow: hidden; }
+    .budget-bar { height: 100%; border-radius: 6px; transition: width .4s; }
+    .budget-label { display: flex; justify-content: space-between; font-size: 12px; color: #7f849c; margin-bottom: 14px; }
+    .cap-row { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 16px; }
+    .cap-item { }
+    .cap-item .c-val { font-size: 20px; font-weight: 700; color: #a6e3a1; }
+    .cap-item .c-lbl { font-size: 11px; color: #585b70; text-transform: uppercase; letter-spacing: .04em; }
+    .cap-item.warn .c-val { color: #f9e2af; }
+    .cap-item.low .c-val { color: #f38ba8; }
+
+    /* Subject table */
+    .subj-table-wrap { overflow-x: auto; }
+    .subj-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .subj-table th { background: #24273a; color: #7f849c; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; font-size: 11px; padding: 8px 12px; text-align: left; position: sticky; top: 0; }
+    .subj-table td { padding: 8px 12px; border-bottom: 1px solid #313244; }
+    .subj-table tr:last-child td { border-bottom: none; }
+    .subj-table tr:hover td { background: rgba(255,255,255,.03); }
+    .prog-bar-wrap { background: #313244; border-radius: 4px; height: 6px; min-width: 80px; overflow: hidden; }
+    .prog-bar { height: 100%; border-radius: 4px; }
+
+    /* Schedule table */
+    .sched-table-wrap { overflow-x: auto; }
+    .sched-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .sched-table th { background: #24273a; color: #7f849c; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; font-size: 11px; padding: 10px 14px; text-align: left; cursor: pointer; user-select: none; }
+    .sched-table th:hover { color: #cdd6f4; }
+    .sched-table td { padding: 10px 14px; border-bottom: 1px solid #313244; }
+    .sched-table tr:last-child td { border-bottom: none; }
+    .sched-table tr:hover td { background: rgba(255,255,255,.03); }
+    .source-key { font-family: 'Fira Mono', monospace; font-size: 12px; color: #89dceb; }
+
+    /* Badges */
+    .badge { display: inline-block; padding: 3px 9px; border-radius: 99px; font-size: 11px; font-weight: 600; }
+    .badge-nightly { background: rgba(166,227,161,.15); color: #a6e3a1; }
+    .badge-weekly  { background: rgba(137,180,250,.15); color: #89b4fa; }
+    .badge-monthly { background: rgba(203,166,247,.15); color: #cba6f7; }
+    .badge-manual  { background: rgba(127,132,156,.15); color: #7f849c; }
+    .badge-complete     { background: rgba(166,227,161,.15); color: #a6e3a1; }
+    .badge-partial      { background: rgba(249,226,175,.15); color: #f9e2af; }
+    .badge-in_progress  { background: rgba(137,180,250,.15); color: #89b4fa; }
+    .badge-pending      { background: rgba(127,132,156,.15); color: #7f849c; }
+    .badge-blocked      { background: rgba(243,139,168,.15); color: #f38ba8; }
+    .badge-failed_partial { background: rgba(250,179,135,.15); color: #fab387; }
+
+    /* Filters */
+    .filters { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; align-items: center; }
+    .filters input { background: #181825; border: 1px solid #313244; color: #cdd6f4; padding: 7px 12px; border-radius: 8px; font-size: 13px; outline: none; width: 200px; }
+    .filters input::placeholder { color: #585b70; }
+    .filters input:focus { border-color: #89b4fa; }
+    .filters select { background: #181825; border: 1px solid #313244; color: #cdd6f4; padding: 7px 12px; border-radius: 8px; font-size: 13px; outline: none; cursor: pointer; }
+    .filters select:focus { border-color: #89b4fa; }
+    .ts { font-size: 11px; color: #585b70; }
+
+    .no-data { color: #585b70; font-style: italic; font-size: 13px; padding: 24px 0; }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Ingestion Plan</h1>
+  <div style="display:flex;gap:24px;align-items:center;">
+    <span id="ts" class="ts"></span>
+    <a href="/admin.html">← Admin</a>
+  </div>
+</header>
+<main>
+  <div class="stats" id="stats"></div>
+
+  <h2>API Capacity</h2>
+  <div class="api-grid" id="api-capacity"></div>
+
+  <h2>Full Ingestion Schedule</h2>
+  <div class="filters">
+    <input type="text" id="search" placeholder="Filter by source key…">
+    <select id="cadence-filter">
+      <option value="">All cadences</option>
+      <option value="nightly">Nightly</option>
+      <option value="weekly">Weekly</option>
+      <option value="monthly">Monthly</option>
+      <option value="manual">Manual</option>
+    </select>
+  </div>
+  <div class="sched-table-wrap">
+    <table class="sched-table" id="sched-table">
+      <thead>
+        <tr>
+          <th data-col="source_key">Source</th>
+          <th data-col="cadence">Cadence</th>
+          <th data-col="window">Window</th>
+          <th data-col="priority">Priority</th>
+          <th>Mechanism</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody id="sched-body"></tbody>
+    </table>
+  </div>
+</main>
+
+<script>
+const PLAN_URL = '/data/ingestion_plan.json';
+const CAP_URL  = '/data/ingestion_capacity.json';
+
+function badge(val, type) {
+  if (!val) return '<span class="ts">—</span>';
+  const cls = `badge badge-${val.replace(/[^a-z_]/g,'').toLowerCase()}`;
+  return `<span class="${cls}">${val}</span>`;
+}
+
+function cadenceBadge(v) {
+  const m = {'nightly':'badge-nightly','weekly':'badge-weekly','monthly':'badge-monthly','manual':'badge-manual'};
+  const cls = `badge ${m[v]||'badge-manual'}`;
+  return `<span class="${cls}">${v||'—'}</span>`;
+}
+
+function pct(done, total) {
+  if (!total || total === 0) return null;
+  return Math.min(100, Math.round(done * 100 / total));
+}
+
+function progressBar(done, total, color) {
+  const p = pct(done, total);
+  if (p === null) return '<span class="ts">unknown</span>';
+  return `<div class="prog-bar-wrap" title="${done}/${total}"><div class="prog-bar" style="width:${p}%;background:${color}"></div></div>`;
+}
+
+function subjectStatus(s) {
+  if (s.done > 0 && s.done >= (s.total||0)) return 'complete';
+  if (s.done > 0) return 'in_progress';
+  if (s.failed > 0) return 'blocked';
+  return 'pending';
+}
+
+async function load() {
+  const [planResp, capResp] = await Promise.all([fetch(PLAN_URL), fetch(CAP_URL)]);
+  const plan = await planResp.json();
+  const cap  = await capResp.json();
+
+  document.getElementById('ts').textContent = 'Generated: ' + (cap.generated_at || plan.generated_at || '').replace('T',' ').replace('Z',' UTC');
+
+  // Stats
+  const entries = plan.entries || [];
+  const cadences = {};
+  entries.forEach(e => { cadences[e.cadence] = (cadences[e.cadence]||0)+1; });
+  const statsEl = document.getElementById('stats');
+  const apiSrc = cap.api_sources || [];
+  const bulkSrc = cap.bulk_sources || [];
+  statsEl.innerHTML = `
+    <div class="stat-card"><div class="val">${entries.length}</div><div class="lbl">Total sources</div></div>
+    <div class="stat-card"><div class="val">${cadences['nightly']||0}</div><div class="lbl">Nightly</div></div>
+    <div class="stat-card"><div class="val">${cadences['weekly']||0}</div><div class="lbl">Weekly</div></div>
+    <div class="stat-card"><div class="val">${cadences['manual']||0}</div><div class="lbl">Manual</div></div>
+    <div class="stat-card"><div class="val">${apiSrc.length}</div><div class="lbl">API sources (rate-limited)</div></div>
+    <div class="stat-card"><div class="val">${bulkSrc.length}</div><div class="lbl">Bulk sources</div></div>
+  `;
+
+  // API capacity cards
+  const capEl = document.getElementById('api-capacity');
+  capEl.innerHTML = apiSrc.map(api => {
+    const usedPct = api.budget_per_week ? Math.min(100, Math.round(api.used_this_week * 100 / api.budget_per_week)) : 0;
+    const barColor = usedPct > 80 ? '#f38ba8' : usedPct > 50 ? '#f9e2af' : '#a6e3a1';
+    const subjects = api.subjects || [];
+    const done5 = subjects.filter(s => subjectStatus(s) === 'complete').length;
+    const inprog = subjects.filter(s => subjectStatus(s) === 'in_progress').length;
+    const pending = subjects.filter(s => subjectStatus(s) === 'pending').length;
+    const blocked = subjects.filter(s => subjectStatus(s) === 'blocked').length;
+
+    const subjRows = subjects.map(s => {
+      const st = subjectStatus(s);
+      const p = pct(s.done, s.total);
+      const bar = s.total ? progressBar(s.done, s.total, '#89b4fa') : '<span class="ts">size unknown</span>';
+      const estReq = s.est_requests ? s.est_requests.toLocaleString() : '?';
+      return `<tr>
+        <td style="font-weight:600">${s.id}</td>
+        <td>${s.label}</td>
+        <td>${bar}</td>
+        <td style="color:#7f849c;font-size:12px">${s.done.toLocaleString()}${s.total ? ' / '+s.total.toLocaleString() : ''}</td>
+        <td><span class="badge badge-${st}">${st}</span></td>
+        <td style="color:#7f849c;font-size:12px">${estReq} req</td>
+        <td style="color:#7f849c;font-size:12px">${s.last_updated ? s.last_updated.substring(0,10) : '—'}</td>
+      </tr>`;
+    }).join('');
+
+    const weeksLabel = api.est_weeks_to_complete != null
+      ? `<span class="cap-item ${api.est_weeks_to_complete > 2 ? 'warn' : ''}"><div class="c-val">${api.est_weeks_to_complete.toFixed(1)}w</div><div class="c-lbl">Est. weeks remaining</div></span>`
+      : '';
+    const confidenceLabel = api.estimate_confidence
+      ? `<span class="cap-item"><div class="c-val" style="font-size:14px;color:#7f849c">${api.estimate_confidence}</div><div class="c-lbl">Estimate confidence</div></span>`
+      : '';
+
+    return `<div class="api-card">
+      <div class="api-header">
+        <div>
+          <div class="api-name">${api.name}</div>
+          <div class="api-meta">${api.source_key} · Budget: ${(api.budget_per_week||0).toLocaleString()} req/week · Week ${api.iso_week||''}</div>
+        </div>
+      </div>
+      <div class="budget-bar-wrap"><div class="budget-bar" style="width:${usedPct}%;background:${barColor}"></div></div>
+      <div class="budget-label">
+        <span>${api.used_this_week.toLocaleString()} used this week (${usedPct}%)</span>
+        <span>Resets ${api.header_reset ? api.header_reset.substring(0,10) : '?'}</span>
+      </div>
+      <div class="cap-row">
+        <span class="cap-item"><div class="c-val">${api.units_done.toLocaleString()}</div><div class="c-lbl">${api.units_label||'units'} done</div></span>
+        <span class="cap-item"><div class="c-val" style="color:#7f849c">${api.units_total_known ? api.units_total_known.toLocaleString() : '?'}</div><div class="c-lbl">total known</div></span>
+        ${weeksLabel}
+        ${confidenceLabel}
+      </div>
+      ${subjects.length ? `
+      <h3>${subjects.length} subjects — ${done5} complete · ${inprog} in progress · ${pending} pending · ${blocked} blocked</h3>
+      <div class="subj-table-wrap">
+        <table class="subj-table">
+          <thead><tr>
+            <th>ID</th><th>Subject</th><th>Progress</th><th>Count</th><th>Status</th><th>Est. req</th><th>Last updated</th>
+          </tr></thead>
+          <tbody>${subjRows}</tbody>
+        </table>
+      </div>` : ''}
+    </div>`;
+  }).join('');
+
+  // Schedule table
+  let sortCol = 'priority', sortAsc = true;
+  let entries2 = [...entries];
+
+  function renderSched() {
+    const q = document.getElementById('search').value.toLowerCase();
+    const cad = document.getElementById('cadence-filter').value;
+    let rows = entries2.filter(e => {
+      if (q && !e.source_key.toLowerCase().includes(q)) return false;
+      if (cad && e.cadence !== cad) return false;
+      return true;
+    });
+    rows.sort((a, b) => {
+      let va = a[sortCol] ?? '', vb = b[sortCol] ?? '';
+      if (typeof va === 'number' && typeof vb === 'number') return sortAsc ? va - vb : vb - va;
+      return sortAsc ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va));
+    });
+    const tbody = document.getElementById('sched-body');
+    tbody.innerHTML = rows.length === 0
+      ? '<tr><td colspan="6" class="no-data">No entries match filters.</td></tr>'
+      : rows.map(e => `<tr>
+          <td><span class="source-key">${e.source_key}</span></td>
+          <td>${cadenceBadge(e.cadence)}</td>
+          <td style="color:#7f849c;font-size:12px">${e.window||'—'}</td>
+          <td style="color:#7f849c;text-align:center">${e.priority ?? '—'}</td>
+          <td style="color:#7f849c;font-size:12px">${e.mechanism||'—'}</td>
+          <td style="color:#7f849c;font-size:12px;max-width:280px">${e.notes||''}</td>
+        </tr>`).join('');
+  }
+
+  document.querySelectorAll('.sched-table th[data-col]').forEach(th => {
+    th.addEventListener('click', () => {
+      const col = th.dataset.col;
+      if (sortCol === col) { sortAsc = !sortAsc; } else { sortCol = col; sortAsc = true; }
+      renderSched();
+    });
+  });
+  document.getElementById('search').addEventListener('input', renderSched);
+  document.getElementById('cadence-filter').addEventListener('change', renderSched);
+  renderSched();
+}
+
+load().catch(e => { document.querySelector('main').innerHTML = `<p style="color:#f38ba8;padding:40px">Failed to load: ${e.message}</p>`; });
+</script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+version: 1
+entries:
+  - source_key: nbp_api
+    cadence: nightly
+    window: "22:00 UTC"
+    mechanism: "cron: products/ingestion/run_daily.sh"
+    priority: 1
+    notes: "FX + interest rates; upsert, idempotent"
+
+  - source_key: eurostat_bulk
+    cadence: nightly
+    window: "22:00 UTC"
+    mechanism: "cron: products/ingestion/run_daily.sh"
+    priority: 1
+    notes: null
+
+  - source_key: mf_api
+    cadence: nightly
+    window: "22:00 UTC"
+    mechanism: "cron: products/ingestion/run_daily.sh"
+    priority: 1
+    notes: null
+
+  - source_key: gus_bdl_api
+    cadence: weekly
+    window: "Mon 03:00 UTC"
+    mechanism: "products/ingestion/extractors/bdl_extractor.py (resumable checkpoint)"
+    priority: 2
+    notes: "Budget-paced: 50k req/week; API down for maintenance as of 2026-06-11"
+    subject_meta:
+      K27: {label: "Finanse publiczne", est_requests: 4599}
+      K40: {label: "Wynagrodzenia i świadczenia", est_requests: 593}
+      K3:  {label: "Ludność", est_requests: 10119}
+      K15: {label: "Ceny", est_requests: 4214}
+      K11: {label: "Mieszkalnictwo", est_requests: 1107}
+      K1:  {label: "Podział terytorialny", est_requests: 752}
+      K2:  {label: "Samorząd terytorialny", est_requests: 2222}
+      K4:  {label: "Rynek pracy", est_requests: 32000}
+      K6:  {label: "Rolnictwo", est_requests: null}
+      K8:  {label: "Transport i łączność", est_requests: null}
+      K9:  {label: "Stan i ochrona środowiska", est_requests: null}
+      K10: {label: "Nauka i technika", est_requests: null}
+      K12: {label: "Przemysł i budownictwo", est_requests: null}
+      K13: {label: "Rynek materiałowy i energetyczny", est_requests: null}
+      K16: {label: "Handel i gastronomia", est_requests: null}
+      K18: {label: "Turystyka", est_requests: null}
+      K19: {label: "Wychowanie przedszkolne", est_requests: null}
+      K20: {label: "Szkolnictwo", est_requests: null}
+      K21: {label: "Szkolnictwo wyższe", est_requests: null}
+      K22: {label: "Ochrona zdrowia i opieka społeczna", est_requests: null}
+      K23: {label: "Kultura", est_requests: null}
+      K24: {label: "Kultura fizyczna i sport", est_requests: null}
+      K25: {label: "Podmioty gospodarcze", est_requests: null}
+      K28: {label: "Inwestycje i środki trwałe", est_requests: null}
+      K29: {label: "Rachunki regionalne", est_requests: null}
+      K31: {label: "Narodowe spisy powszechne", est_requests: null}
+      K34: {label: "Spisy rolne", est_requests: null}
+      K37: {label: "Organizacja państwa i wymiar sprawiedliwości", est_requests: null}
+      K43: {label: "Finanse przedsiębiorstw", est_requests: null}
+      K44: {label: "Gospodarka społeczna", est_requests: null}
+      K47: {label: "Fundusze unijne", est_requests: null}
+      K48: {label: "Rynek nieruchomości", est_requests: null}
+      K54: {label: "Leśnictwo i łowiectwo", est_requests: null}
+
+  - source_key: gus_dbw_api
+    cadence: weekly
+    window: "Tue 03:00 UTC"
+    mechanism: "products/ingestion/extractors/dbw_extractor.py (resumable checkpoint)"
+    priority: 3
+    notes: "Blocked: burst limit ~300 req/session; 13 indicators 404 on section endpoint"
+    subject_meta:
+      "727": {label: "Gospodarka"}
+      "728": {label: "Społeczeństwo"}
+      "729": {label: "Środowisko"}
+
+  - source_key: zus_bulk
+    cadence: monthly
+    window: "1st of month, 00:00 UTC"
+    mechanism: "cron: products/ingestion/universal_bulk_downloader.py"
+    priority: 4
+    notes: null
+
+  - source_key: nfz_bulk
+    cadence: monthly
+    window: "1st of month, 00:00 UTC"
+    mechanism: "cron: products/ingestion/universal_bulk_downloader.py"
+    priority: 4
+    notes: null
+
+  - source_key: knf_bulk
+    cadence: monthly
+    window: "1st of month, 00:00 UTC"
+    mechanism: "cron: products/ingestion/universal_bulk_downloader.py"
+    priority: 5
+    notes: null
+
+  - source_key: ure_bulk
+    cadence: monthly
+    window: "1st of month, 00:00 UTC"
+    mechanism: "cron: products/ingestion/universal_bulk_downloader.py"
+    priority: 5
+    notes: null
+
+  - source_key: krs_api
+    cadence: monthly
+    window: "1st of month, 00:00 UTC"
+    mechanism: "cron: products/ingestion/universal_bulk_downloader.py"
+    priority: 5
+    notes: null
+
+  - source_key: saos_api
+    cadence: monthly
+    window: "1st of month, 00:00 UTC"
+    mechanism: "cron: products/ingestion/universal_bulk_downloader.py"
+    priority: 5
+    notes: null
+
+  - source_key: men_api
+    cadence: monthly
+    window: "1st of month, 00:00 UTC"
+    mechanism: "cron: products/ingestion/universal_bulk_downloader.py"
+    priority: 5
+    notes: null
+
+  - source_key: mrirw_api
+    cadence: monthly
+    window: "1st of month, 00:00 UTC"
+    mechanism: "cron: products/ingestion/universal_bulk_downloader.py"
+    priority: 5
+    notes: "Landing folder empty — extractor not yet implemented"
+
+  - source_key: opi_radon_api
+    cadence: monthly
+    window: "1st of month, 00:00 UTC"
+    mechanism: "cron: products/ingestion/universal_bulk_downloader.py"
+    priority: 5
+    notes: null
+
+  - source_key: stooq_api
+    cadence: monthly
+    window: "1st of month, 00:00 UTC"
+    mechanism: "cron: products/ingestion/universal_bulk_downloader.py"
+    priority: 5
+    notes: null
+
+  - source_key: gddkia_bulk
+    cadence: monthly
+    window: "1st of month, 00:00 UTC"
+    mechanism: "cron: products/ingestion/universal_bulk_downloader.py"
+    priority: 5
+    notes: null
+
+  - source_key: gios_bulk
+    cadence: monthly
+    window: "1st of month, 00:00 UTC"
+    mechanism: "cron: products/ingestion/universal_bulk_downloader.py"
+    priority: 5
+    notes: null
+
+  - source_key: gpw_benchmark_bulk
+    cadence: monthly
+    window: "1st of month, 00:00 UTC"
+    mechanism: "cron: products/ingestion/universal_bulk_downloader.py"
+    priority: 5
+    notes: null
+
+  - source_key: gus_dbw_hvd_bulk
+    cadence: manual
+    window: null
+    mechanism: "products/ingestion/extractors/gus_extractor.py (one-shot, complete)"
+    priority: 9
+    notes: "426 HVD ZIP files; complete"
+
+  - source_key: gus_biuletyn_bulk
+    cadence: manual
+    window: null
+    mechanism: "products/ingestion/extractors/gus_extractor.py (one-shot, complete)"
+    priority: 9
+    notes: "64 XLSX files; complete"
+
+  - source_key: gus_teryt_bulk
+    cadence: manual
+    window: null
+    mechanism: "products/ingestion/extractors/gus_extractor.py (one-shot, complete)"
+    priority: 9
+    notes: "52 JSON files; complete"
+
+  - source_key: gus_sdg_bulk
+    cadence: manual
+    window: null
+    mechanism: "products/ingestion/extractors/gus_extractor.py (one-shot, complete)"
+    priority: 9
+    notes: "3 JSON files; complete"
+
+  - source_key: mf_bulk
+    cadence: monthly
+    window: "1st of month, 00:00 UTC"
+    mechanism: "cron: products/ingestion/universal_bulk_downloader.py"
+    priority: 5
+    notes: null

@@ -1,0 +1,306 @@
+version: 1
+sources:
+  - source_key: gus_bdl_api
+    name: "Bank Danych Lokalnych (BDL API)"
+    institution: "GUS"
+    type: rest_api
+    auth: key_required
+    rate_limit:
+      requests: 50000
+      period: week
+      burst_note: null
+    landing_folders: [gus_bdl_api]
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/bdl_extractor.py
+    manifest_kind: bdl
+    docs_url: https://bdl.stat.gov.pl/api/v1/
+    default_status: partial
+
+  - source_key: gus_dbw_api
+    name: "Dziedzinowe Bazy Wiedzy (DBW REST API)"
+    institution: "GUS"
+    type: rest_api
+    auth: key_required
+    rate_limit:
+      requests: 10000
+      period: week
+      burst_note: "burst limit ~300 req/session"
+    landing_folders: [gus_dbw_api]
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/dbw_extractor.py
+    manifest_kind: dbw
+    docs_url: https://api-dbw.stat.gov.pl/
+    default_status: blocked
+
+  - source_key: eurostat_bulk
+    name: "Eurostat Bulk Download (TSV.GZ)"
+    institution: "Eurostat"
+    type: bulk_api
+    auth: none
+    rate_limit: null
+    landing_folders: [eurostat_bulk]
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/eurostat_extractor.py
+    manifest_kind: null
+    docs_url: https://ec.europa.eu/eurostat/
+    default_status: complete
+
+  - source_key: gus_dbw_hvd_bulk
+    name: "DBW High-Value Datasets (ZIP bulk)"
+    institution: "GUS"
+    type: file_download
+    auth: none
+    rate_limit: null
+    landing_folders: [gus_dbw_hvd_bulk]
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/gus_extractor.py
+    manifest_kind: null
+    docs_url: https://dbw.stat.gov.pl/pl/katalog/bulk
+    default_status: complete
+
+  - source_key: gus_biuletyn_bulk
+    name: "Biuletyn Statystyczny (XLSX)"
+    institution: "GUS"
+    type: file_download
+    auth: none
+    rate_limit: null
+    landing_folders: [gus_biuletyn_bulk]
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/gus_extractor.py
+    manifest_kind: null
+    docs_url: https://stat.gov.pl/
+    default_status: complete
+
+  - source_key: gus_teryt_bulk
+    name: "TERYT Territorial Register (JSON)"
+    institution: "GUS"
+    type: file_download
+    auth: none
+    rate_limit: null
+    landing_folders: [gus_teryt_bulk]
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/gus_extractor.py
+    manifest_kind: null
+    docs_url: https://eteryt.stat.gov.pl/
+    default_status: complete
+
+  - source_key: gus_sdg_bulk
+    name: "SDG Indicators (JSON)"
+    institution: "GUS"
+    type: file_download
+    auth: none
+    rate_limit: null
+    landing_folders: [gus_sdg_bulk]
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/gus_extractor.py
+    manifest_kind: null
+    docs_url: https://sdg.gov.pl/
+    default_status: complete
+
+  - source_key: nbp_api
+    name: "NBP Web API (FX, rates, gold)"
+    institution: "NBP"
+    type: rest_api
+    auth: none
+    rate_limit: null
+    landing_folders: [nbp_api]
+    extractor_kind: bulk_config
+    extractor_path: products/ingestion/to_landing/sources.yaml
+    manifest_kind: null
+    docs_url: https://api.nbp.pl/
+    default_status: complete
+
+  - source_key: mf_api
+    name: "MF OpenBudget API"
+    institution: "Ministerstwo Finansów"
+    type: rest_api
+    auth: none
+    rate_limit: null
+    landing_folders: [mf_api]
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/mf_extractor.py
+    manifest_kind: null
+    docs_url: https://openbudget.gov.pl/
+    default_status: complete
+
+  - source_key: mf_bulk
+    name: "MF Datasets (dane.gov.pl bulk)"
+    institution: "Ministerstwo Finansów"
+    type: file_download
+    auth: none
+    rate_limit: null
+    landing_folders: [mf_bulk]
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/mf_extractor.py
+    manifest_kind: null
+    docs_url: https://dane.gov.pl/pl/institution/18
+    default_status: complete
+
+  - source_key: nfz_bulk
+    name: "NFZ Health Fund Statistics"
+    institution: "NFZ"
+    type: file_download
+    auth: none
+    rate_limit: null
+    landing_folders: [nfz_bulk]
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/nfz_extractor.py
+    manifest_kind: null
+    docs_url: https://www.nfz.gov.pl/
+    default_status: complete
+
+  - source_key: zus_bulk
+    name: "ZUS Social Insurance Statistics"
+    institution: "ZUS"
+    type: file_download
+    auth: none
+    rate_limit: null
+    landing_folders: [zus_bulk]
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/zus_extractor.py
+    manifest_kind: null
+    docs_url: https://www.zus.pl/
+    default_status: complete
+
+  - source_key: knf_bulk
+    name: "KNF Financial Supervision Data"
+    institution: "KNF"
+    type: file_download
+    auth: none
+    rate_limit: null
+    landing_folders: [knf_bulk]
+    extractor_kind: bulk_config
+    extractor_path: products/ingestion/to_landing/sources.yaml
+    manifest_kind: null
+    docs_url: https://www.knf.gov.pl/
+    default_status: complete
+
+  - source_key: ure_bulk
+    name: "URE Energy Regulation Data"
+    institution: "URE"
+    type: file_download
+    auth: none
+    rate_limit: null
+    landing_folders: [ure_bulk]
+    extractor_kind: bulk_config
+    extractor_path: products/ingestion/to_landing/sources.yaml
+    manifest_kind: null
+    docs_url: https://www.ure.gov.pl/
+    default_status: complete
+
+  - source_key: krs_api
+    name: "KRS National Court Register API"
+    institution: "Ministerstwo Sprawiedliwości"
+    type: rest_api
+    auth: none
+    rate_limit: null
+    landing_folders: [krs_api]
+    extractor_kind: bulk_config
+    extractor_path: products/ingestion/to_landing/sources.yaml
+    manifest_kind: null
+    docs_url: https://api-krs.ms.gov.pl/
+    default_status: complete
+
+  - source_key: saos_api
+    name: "SAOS Court Judgements API"
+    institution: "SAOS"
+    type: rest_api
+    auth: none
+    rate_limit: null
+    landing_folders: [saos_api]
+    extractor_kind: bulk_config
+    extractor_path: products/ingestion/to_landing/sources.yaml
+    manifest_kind: null
+    docs_url: https://www.saos.org.pl/
+    default_status: complete
+
+  - source_key: men_api
+    name: "MEN Education Data API"
+    institution: "MEN"
+    type: rest_api
+    auth: none
+    rate_limit: null
+    landing_folders: [men_api]
+    extractor_kind: bulk_config
+    extractor_path: products/ingestion/to_landing/sources.yaml
+    manifest_kind: null
+    docs_url: https://dane.gov.pl/
+    default_status: complete
+
+  - source_key: mrirw_api
+    name: "MRiRW Agriculture Ministry Data"
+    institution: "MRiRW"
+    type: rest_api
+    auth: none
+    rate_limit: null
+    landing_folders: [mrirw_api]
+    extractor_kind: bulk_config
+    extractor_path: products/ingestion/to_landing/sources.yaml
+    manifest_kind: null
+    docs_url: https://www.gov.pl/web/rolnictwo
+    default_status: not_started
+
+  - source_key: opi_radon_api
+    name: "OPI RAD-on Research Database"
+    institution: "OPI PIB"
+    type: rest_api
+    auth: none
+    rate_limit: null
+    landing_folders: [opi_radon_api]
+    extractor_kind: bulk_config
+    extractor_path: products/ingestion/to_landing/sources.yaml
+    manifest_kind: null
+    docs_url: https://radon.nauka.gov.pl/
+    default_status: complete
+
+  - source_key: stooq_api
+    name: "Stooq Market Data"
+    institution: "Stooq"
+    type: rest_api
+    auth: none
+    rate_limit: null
+    landing_folders: [stooq_api]
+    extractor_kind: bulk_config
+    extractor_path: products/ingestion/to_landing/sources.yaml
+    manifest_kind: null
+    docs_url: https://stooq.pl/
+    default_status: complete
+
+  - source_key: gddkia_bulk
+    name: "GDDKiA Road Infrastructure Data"
+    institution: "GDDKiA"
+    type: file_download
+    auth: none
+    rate_limit: null
+    landing_folders: [gddkia_bulk]
+    extractor_kind: bulk_config
+    extractor_path: products/ingestion/to_landing/sources.yaml
+    manifest_kind: null
+    docs_url: https://www.gov.pl/web/gddkia
+    default_status: complete
+
+  - source_key: gios_bulk
+    name: "GIOŚ Environmental Data"
+    institution: "GIOŚ"
+    type: file_download
+    auth: none
+    rate_limit: null
+    landing_folders: [gios_bulk]
+    extractor_kind: bulk_config
+    extractor_path: products/ingestion/to_landing/sources.yaml
+    manifest_kind: null
+    docs_url: https://www.gios.gov.pl/
+    default_status: complete
+
+  - source_key: gpw_benchmark_bulk
+    name: "GPW Benchmark (WIBOR/WIBID Rates)"
+    institution: "GPW Benchmark"
+    type: file_download
+    auth: none
+    rate_limit: null
+    landing_folders: [gpw_benchmark_bulk]
+    extractor_kind: bulk_config
+    extractor_path: products/ingestion/to_landing/sources.yaml
+    manifest_kind: null
+    docs_url: https://gpwbenchmark.pl/
+    default_status: complete
