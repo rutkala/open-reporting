@@ -16,7 +16,7 @@ under "Bazy danych" on stat.gov.pl, plus 9 programmatic APIs, and 8 thematic das
 | 4 | Bank Danych Polska (BDP) | Data Bank Poland | bdp.stat.gov.pl | JS SPA — content unknown | Unknown | None | Unclear — may aggregate cross-GUS data for Poland-level view | **Not started** |
 | 5 | Baza organizacji polskich za granicą | Polish organisations abroad | new.stat.gov.pl (menu link only) | Web UI | No | None | Directory of Polish organisations and institutions abroad | Not a priority data source |
 | 6 | Demografia | Demographics | demografia.stat.gov.pl | Web UI (redirects, JS SPA) | Unknown | None | Population, births, deaths, migration, projections | **Not started** |
-| 7 | Dziedzinowe Bazy Wiedzy (DBW) | Domain Knowledge Bases | dbw.stat.gov.pl | Two modes: (a) static file downloads via `/api_app/getCatalogValues` for HVD subset; (b) REST API via `/api_app/wsk/getIndicatorsTree` + `/api_app/getTimeSeries` for full indicator set | **Yes (HVD only)** | None | GDP, labour, finance, poverty, demographics, environment. HVD: 21 categories, 426 ZIP/CSV files. Full API: 1547 indicators across Gospodarka (800), Społeczeństwo (632), Środowisko (115) | **DONE (HVD)** — 426 files in `landing/gus_dbw_bulk/`. Non-HVD API (1547 indicators) not yet pulled → `gus_dbw_api` |
+| 7 | Dziedzinowe Bazy Wiedzy (DBW) | Domain Knowledge Bases | dbw.stat.gov.pl | Two modes: (a) static file downloads via `/api_app/getCatalogValues` for HVD subset; (b) REST API via `/api_app/wsk/getIndicatorsTree` + `/api_app/getTimeSeries` for full indicator set | **Yes (HVD only)** | None | GDP, labour, finance, poverty, demographics, environment. HVD: 21 categories, 426 ZIP/CSV files. Full API: 1547 indicators across Gospodarka (800), Społeczeństwo (632), Środowisko (115) | **DONE (HVD)** — 426 files in `landing/gus_dbw_hvd_bulk/`. Non-HVD API (1547 indicators) not yet pulled → `gus_dbw_api` |
 | 8 | SDDS — Dane gospodarcze i finansowe | Special Data Dissemination Standard | dsbb.imf.org (Poland entry at IMF) | IMF portal link | IMF bulk export | None | Fiscal, monetary, external sector data submitted to IMF under SDDS+ | Covered by IMF/Eurostat sources; not a separate GUS database |
 | 9 | SDG — Cele Zrównoważonego Rozwoju | Sustainable Development Goals | sdg.gov.pl | Excel bulk download + REST API (`api.stat.gov.pl/Home/SDGApi`) | **Yes** (Excel per category) | None | ~250 UN SDG indicators for Poland, CC BY 4.0 | **Not started** |
 | 10 | SMUP | Public Services Monitoring | smup.gov.pl | REST API (`api.stat.gov.pl/Home/SMUPApi`) | Via API | None | Education, healthcare, transport, social services at gmina level | **Not started** |
@@ -63,7 +63,7 @@ under "Bazy danych" on stat.gov.pl, plus 9 programmatic APIs, and 8 thematic das
 
 | Source ID | Files in landing | Method | Gap |
 |-----------|-----------------|--------|-----|
-| `gus_dbw_bulk` | 426 files | `bulk/run_bulk.py` → `get_gus_hvd_files()` | HVD complete. Non-HVD (1547 indicators) = API only, separate source |
+| `gus_dbw_hvd_bulk` | 426 files | `bulk/run_bulk.py` → `get_gus_hvd_files()` | HVD complete. Non-HVD (1547 indicators) = API only, separate source |
 | `gus_dbw_api` | 1 file (area tree) | `bulk/run_bulk.py` (1 URL) | Full 1547-indicator pull via `getTimeSeries` not yet built |
 | `gus_bdl_api` | 1 file (subjects tree) | `bulk/run_bulk.py` (1 URL) | **Full variable data missing** |
 | `gus_teryt_bulk` | 51 JSON pages | `bulk/run_bulk.py` → `get_gus_teryt_files()` | **DONE** — 7 admin levels, BDL page-size=100, ceiling-paged |

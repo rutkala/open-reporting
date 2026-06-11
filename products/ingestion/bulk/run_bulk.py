@@ -308,7 +308,7 @@ def get_mf_openbudget_files() -> list[tuple[str, str]]:
 
 SOURCES: dict[str, dict] = {
     # GUS
-    "gus_dbw_bulk":    {"fetch": get_gus_hvd_files,                               "workers": 8},
+    "gus_dbw_hvd_bulk": {"fetch": get_gus_hvd_files,                              "workers": 8},
     "gus_dbw_api":     {"fetch": lambda: [("area_tree.json", "https://api-dbw.stat.gov.pl/api/1.1.0/area/area-area")], "workers": 1},
     "gus_bdl_api":     {"fetch": lambda: [("subjects.json",  "https://bdl.stat.gov.pl/api/v1/subjects?lang=pl")],      "workers": 1},
     "gus_teryt_bulk":  {"fetch": get_gus_teryt_files,                             "workers": 4},
