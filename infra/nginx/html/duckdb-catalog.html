@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DuckDB Catalog — Open Reporting Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #1e1e2e; --surface: #181825; --surface2: #313244; --overlay: #6c7086;
+      --text: #cdd6f4; --subtext: #a6adc8;
+      --blue: #89b4fa; --green: #a6e3a1; --yellow: #f9e2af; --red: #f38ba8; --mauve: #cba6f7;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* Top bar */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--surface2);
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .breadcrumb { font-size: 14px; }
+    .breadcrumb a { color: var(--subtext); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--text); }
+    .breadcrumb .sep { color: var(--overlay); margin: 0 4px; }
+    .breadcrumb .current { color: var(--overlay); }
+
+    nav { display: flex; gap: 20px; align-items: center; }
+    nav a { font-size: 14px; color: var(--subtext); text-decoration: none; }
+    nav a:hover { color: var(--text); }
+    nav a.active { color: var(--blue); font-weight: 600; }
+
+    /* Layout */
+    main {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px 24px 0;
+    }
+
+    h1 { font-size: 24px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .subtitle { font-size: 13px; color: var(--subtext); margin-bottom: 28px; font-family: monospace; }
+
+    /* Filter bar */
+    .filter-bar {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 28px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .filter-bar input, .filter-bar select {
+      background: var(--surface);
+      border: 1px solid var(--surface2);
+      color: var(--text);
+      padding: 7px 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: 'Inter', system-ui, sans-serif;
+      outline: none;
+    }
+    .filter-bar input { width: 260px; }
+    .filter-bar input::placeholder { color: var(--overlay); }
+    .filter-bar input:focus, .filter-bar select:focus { border-color: var(--blue); }
+    .filter-bar select option { background: var(--surface); }
+
+    /* Schema section */
+    .schema-section { margin-bottom: 36px; }
+    .schema-heading {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .schema-name {
+      font-family: monospace;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--mauve);
+    }
+    .schema-meta { font-size: 12px; color: var(--subtext); }
+
+    /* Table */
+    .catalog-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--surface);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .catalog-table th {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--subtext);
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--surface2);
+      background: var(--surface);
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+    .catalog-table th:hover { color: var(--text); }
+    .catalog-table th.sort-asc::after  { content: ' ↑'; color: var(--blue); }
+    .catalog-table th.sort-desc::after { content: ' ↓'; color: var(--blue); }
+    .catalog-table th.no-sort { cursor: default; }
+
+    .catalog-table td {
+      padding: 10px 14px;
+      font-size: 13px;
+      border-bottom: 1px solid var(--surface2);
+      color: var(--text);
+      vertical-align: middle;
+    }
+    .catalog-table tr:last-child td { border-bottom: none; }
+    .catalog-table tr.data-row:hover td { background: rgba(255,255,255,.025); }
+
+    .cell-name { font-family: monospace; }
+    .cell-rows { text-align: right; font-family: monospace; }
+    .cell-cols { text-align: right; font-family: monospace; }
+    .cell-loaded { color: var(--subtext); }
+    .cell-null { color: var(--overlay); }
+
+    .tag-view {
+      color: var(--blue);
+      background: rgba(137,180,250,.15);
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin-left: 6px;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 500;
+    }
+
+    /* Expand button */
+    .expand-btn {
+      background: none;
+      border: none;
+      color: var(--subtext);
+      cursor: pointer;
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+    .expand-btn:hover { color: var(--text); background: var(--surface2); }
+
+    /* Expansion row */
+    .expand-row td {
+      background: var(--surface2) !important;
+      padding: 12px 14px !important;
+      border-bottom: 1px solid var(--surface2) !important;
+    }
+    .col-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+    .col-tag {
+      background: var(--surface);
+      color: var(--subtext);
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-size: 12px;
+      font-family: monospace;
+    }
+    .col-tag-more { color: var(--overlay); }
+
+    /* Error / empty states */
+    .error-state { color: var(--red); text-align: center; padding: 60px; font-size: 16px; }
+    .no-results   { color: var(--overlay); font-size: 14px; padding: 40px 0; text-align: center; }
+
+    /* Badges */
+    .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .badge-complete    { background: rgba(166,227,161,.18); color: #a6e3a1; }
+    .badge-partial     { background: rgba(249,226,175,.18); color: #f9e2af; }
+    .badge-in_progress { background: rgba(249,226,175,.18); color: #f9e2af; }
+    .badge-blocked     { background: rgba(243,139,168,.18); color: #f38ba8; }
+    .badge-pending     { background: rgba(108,112,134,.18); color: #a6adc8; }
+    .badge-not_started { background: rgba(108,112,134,.18); color: #a6adc8; }
+
+    /* Footer */
+    footer { font-size: 12px; color: var(--overlay); margin-top: 40px; padding-bottom: 32px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="breadcrumb">
+    <a href="/admin.html">Open Reporting</a>
+    <span class="sep">/</span>
+    <a href="/admin.html" style="color:var(--overlay)">Admin</a>
+    <span class="sep">/</span>
+    <span class="current">DuckDB Catalog</span>
+  </div>
+  <nav>
+    <a href="/source-registry.html">Sources</a>
+    <a href="/ingestion-plan.html">Plan</a>
+    <a href="/landing-catalog.html">Landing</a>
+    <a href="/duckdb-catalog.html" class="active">DuckDB</a>
+    <a href="/ingestion-status.html">Status</a>
+  </nav>
+</header>
+
+<main>
+  <h1>DuckDB Warehouse Catalog</h1>
+  <p class="subtitle" id="subtitle">Loading&hellip;</p>
+
+  <div class="filter-bar">
+    <input type="text" id="filter-input" placeholder="Filter tables&hellip;">
+    <select id="schema-select">
+      <option value="">All schemas</option>
+    </select>
+  </div>
+
+  <div id="schemas-container"></div>
+
+  <footer id="footer"></footer>
+</main>
+
+<script>
+  // ---- Utilities ----
+
+  function humanSize(bytes) {
+    if (bytes == null) return '—';
+    const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+    let i = 0;
+    let val = bytes;
+    while (val >= 1024 && i < units.length - 1) { val /= 1024; i++; }
+    return (i === 0 ? val.toFixed(0) : val.toFixed(1)) + ' ' + units[i];
+  }
+
+  function formatRows(n) {
+    if (n == null) return null;
+    if (n >= 1000000) return (n / 1000000).toFixed(1) + ' M';
+    if (n >= 1000) return (n / 1000).toFixed(0) + ' k';
+    return String(n);
+  }
+
+  function formatDate(s) {
+    if (!s) return '—';
+    return s;
+  }
+
+  // ---- Schema sort order ----
+  const SCHEMA_ORDER = ['raw', 'staging', 'curated', 'main'];
+
+  function schemaRank(name) {
+    const idx = SCHEMA_ORDER.indexOf(name);
+    return idx === -1 ? SCHEMA_ORDER.length : idx;
+  }
+
+  function sortSchemas(schemas) {
+    return schemas.slice().sort(function(a, b) {
+      const ra = schemaRank(a.name);
+      const rb = schemaRank(b.name);
+      if (ra !== rb) return ra - rb;
+      return a.name.localeCompare(b.name);
+    });
+  }
+
+  // ---- State ----
+
+  let allData = null;
+  let activeExpandRow = null;  // { tr, tableEl }
+  let generatedAt = '';
+
+  // Per-schema sort state: { [schemaName]: { col: string, dir: 'asc'|'desc' } }
+  const sortState = {};
+
+  // ---- Table sort ----
+
+  function sortTables(tables, col, dir) {
+    return tables.slice().sort(function(a, b) {
+      let va, vb;
+      if (col === 'name') {
+        va = a.name || '';
+        vb = b.name || '';
+        const cmp = va.localeCompare(vb);
+        return dir === 'asc' ? cmp : -cmp;
+      } else if (col === 'rows') {
+        va = a.row_count != null ? a.row_count : -1;
+        vb = b.row_count != null ? b.row_count : -1;
+      } else if (col === 'cols') {
+        va = a.column_count != null ? a.column_count : -1;
+        vb = b.column_count != null ? b.column_count : -1;
+      } else if (col === 'loaded') {
+        va = a.last_loaded || '';
+        vb = b.last_loaded || '';
+        const cmp = va.localeCompare(vb);
+        return dir === 'asc' ? cmp : -cmp;
+      }
+      return dir === 'asc' ? va - vb : vb - va;
+    });
+  }
+
+  // ---- Close any open expansion ----
+
+  function closeExpansion() {
+    if (activeExpandRow) {
+      if (activeExpandRow.tr.parentNode) {
+        activeExpandRow.tr.parentNode.removeChild(activeExpandRow.tr);
+      }
+      if (activeExpandRow.btn) {
+        activeExpandRow.btn.textContent = '▶';
+      }
+      activeExpandRow = null;
+    }
+  }
+
+  // ---- Build expansion row ----
+
+  function buildExpandRow(table, colspan) {
+    const tr = document.createElement('tr');
+    tr.className = 'expand-row';
+    const td = document.createElement('td');
+    td.colSpan = colspan;
+
+    const wrap = document.createElement('div');
+    wrap.className = 'col-tags';
+
+    const cols = table.columns || [];
+    cols.forEach(function(c) {
+      const tag = document.createElement('span');
+      tag.className = 'col-tag';
+      tag.textContent = c;
+      wrap.appendChild(tag);
+    });
+
+    // If exactly 25 shown, add +more indicator
+    if (cols.length === 25) {
+      const more = document.createElement('span');
+      more.className = 'col-tag col-tag-more';
+      more.textContent = '+more';
+      wrap.appendChild(more);
+    }
+
+    td.appendChild(wrap);
+    tr.appendChild(td);
+    return tr;
+  }
+
+  // ---- Build a schema table element ----
+
+  function buildSchemaTable(schema, tables) {
+    const tableEl = document.createElement('table');
+    tableEl.className = 'catalog-table';
+
+    // Header
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+
+    const cols = [
+      { key: 'name',   label: 'Name' },
+      { key: 'rows',   label: 'Rows' },
+      { key: 'cols',   label: 'Cols' },
+      { key: 'loaded', label: 'Last Loaded' },
+      { key: null,     label: '' }
+    ];
+
+    const state = sortState[schema.name] || { col: 'name', dir: 'asc' };
+
+    cols.forEach(function(col) {
+      const th = document.createElement('th');
+      if (!col.key) {
+        th.className = 'no-sort';
+        th.style.width = '48px';
+      } else {
+        th.textContent = col.label;
+        if (state.col === col.key) {
+          th.className = state.dir === 'asc' ? 'sort-asc' : 'sort-desc';
+        }
+        th.addEventListener('click', function() {
+          const cur = sortState[schema.name] || { col: 'name', dir: 'asc' };
+          const newDir = cur.col === col.key && cur.dir === 'asc' ? 'desc' : 'asc';
+          sortState[schema.name] = { col: col.key, dir: newDir };
+          closeExpansion();
+          rerenderSchema(schema);
+        });
+      }
+      headerRow.appendChild(th);
+    });
+
+    thead.appendChild(headerRow);
+    tableEl.appendChild(thead);
+
+    // Body
+    const tbody = document.createElement('tbody');
+    tableEl.appendChild(tbody);
+
+    function fillBody(sortedTables) {
+      while (tbody.firstChild) { tbody.removeChild(tbody.firstChild); }
+
+      sortedTables.forEach(function(tbl) {
+        const tr = document.createElement('tr');
+        tr.className = 'data-row';
+
+        // Name
+        const nameTd = document.createElement('td');
+        nameTd.className = 'cell-name';
+        nameTd.textContent = tbl.name;
+        if (tbl.object_type === 'view') {
+          const viewTag = document.createElement('span');
+          viewTag.className = 'tag-view';
+          viewTag.textContent = 'view';
+          nameTd.appendChild(viewTag);
+        }
+        tr.appendChild(nameTd);
+
+        // Rows
+        const rowsTd = document.createElement('td');
+        rowsTd.className = 'cell-rows';
+        if (tbl.row_count == null) {
+          rowsTd.textContent = 'n/a';
+          rowsTd.className += ' cell-null';
+        } else {
+          rowsTd.textContent = formatRows(tbl.row_count);
+        }
+        tr.appendChild(rowsTd);
+
+        // Cols
+        const colsTd = document.createElement('td');
+        colsTd.className = 'cell-cols';
+        colsTd.textContent = tbl.column_count != null ? tbl.column_count : '—';
+        tr.appendChild(colsTd);
+
+        // Last loaded
+        const loadedTd = document.createElement('td');
+        loadedTd.className = 'cell-loaded';
+        loadedTd.textContent = formatDate(tbl.last_loaded);
+        tr.appendChild(loadedTd);
+
+        // Expand button
+        const expandTd = document.createElement('td');
+        expandTd.style.textAlign = 'center';
+        const btn = document.createElement('button');
+        btn.className = 'expand-btn';
+        btn.textContent = '▶';
+        btn.setAttribute('aria-label', 'Expand columns for ' + tbl.name);
+
+        btn.addEventListener('click', function() {
+          // If this row is already expanded, close it
+          if (activeExpandRow && activeExpandRow.dataRow === tr) {
+            closeExpansion();
+            return;
+          }
+          // Close previous
+          closeExpansion();
+          // Open new
+          btn.textContent = '▼';
+          const expTr = buildExpandRow(tbl, 5);
+          tr.parentNode.insertBefore(expTr, tr.nextSibling);
+          activeExpandRow = { tr: expTr, btn: btn, dataRow: tr };
+        });
+
+        expandTd.appendChild(btn);
+        tr.appendChild(expandTd);
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    const st = sortState[schema.name] || { col: 'name', dir: 'asc' };
+    fillBody(sortTables(tables, st.col, st.dir));
+
+    // Attach fillBody so we can call it on re-sort
+    tableEl._fillBody = function() {
+      const st2 = sortState[schema.name] || { col: 'name', dir: 'asc' };
+      // Update header classes
+      const ths = tableEl.querySelectorAll('th');
+      const colKeys = ['name', 'rows', 'cols', 'loaded', null];
+      ths.forEach(function(th, i) {
+        const key = colKeys[i];
+        if (!key) return;
+        th.className = '';
+        if (st2.col === key) {
+          th.className = st2.dir === 'asc' ? 'sort-asc' : 'sort-desc';
+        }
+      });
+      fillBody(sortTables(tables, st2.col, st2.dir));
+    };
+
+    return tableEl;
+  }
+
+  // ---- Schema section element cache ----
+  const schemaTableEls = {};  // { schemaName: tableEl }
+
+  function rerenderSchema(schema) {
+    const filterText   = document.getElementById('filter-input').value.toLowerCase();
+    const schemaFilter = document.getElementById('schema-select').value;
+
+    // Skip if this schema is hidden by schema filter
+    if (schemaFilter && schema.name !== schemaFilter) return;
+
+    const tables = (schema.tables || []).filter(function(t) {
+      return !filterText || t.name.toLowerCase().indexOf(filterText) !== -1;
+    });
+
+    const tableEl = schemaTableEls[schema.name];
+    if (tableEl) {
+      tableEl._tables = tables;
+      const st = sortState[schema.name] || { col: 'name', dir: 'asc' };
+      const sorted = sortTables(tables, st.col, st.dir);
+      // Rebuild header classes
+      const ths = tableEl.querySelectorAll('th');
+      const colKeys = ['name', 'rows', 'cols', 'loaded', null];
+      ths.forEach(function(th, i) {
+        const key = colKeys[i];
+        if (!key) return;
+        th.className = '';
+        if (st.col === key) {
+          th.className = st.dir === 'asc' ? 'sort-asc' : 'sort-desc';
+        }
+      });
+      // Rebuild body
+      tableEl._fillBody(sorted);
+    }
+  }
+
+  // ---- Full render ----
+
+  function renderAll() {
+    if (!allData) return;
+
+    const filterText   = document.getElementById('filter-input').value.toLowerCase();
+    const schemaFilter = document.getElementById('schema-select').value;
+
+    closeExpansion();
+
+    const container = document.getElementById('schemas-container');
+    while (container.firstChild) { container.removeChild(container.firstChild); }
+
+    const sortedSchemas = sortSchemas(allData.schemas || []);
+    let anyVisible = false;
+
+    sortedSchemas.forEach(function(schema) {
+      if (schemaFilter && schema.name !== schemaFilter) return;
+
+      const tables = (schema.tables || []).filter(function(t) {
+        return !filterText || t.name.toLowerCase().indexOf(filterText) !== -1;
+      });
+
+      // Hide schema section if filter removes all tables
+      if (filterText && tables.length === 0) return;
+
+      anyVisible = true;
+
+      const section = document.createElement('div');
+      section.className = 'schema-section';
+
+      // Heading
+      const heading = document.createElement('div');
+      heading.className = 'schema-heading';
+
+      const nameEl = document.createElement('span');
+      nameEl.className = 'schema-name';
+      nameEl.textContent = schema.name;
+
+      const metaEl = document.createElement('span');
+      metaEl.className = 'schema-meta';
+      const visibleRows = tables.reduce(function(sum, t) {
+        return sum + (t.row_count || 0);
+      }, 0);
+      metaEl.textContent = tables.length + ' tables · ' + formatRows(visibleRows) + ' rows';
+      heading.appendChild(nameEl);
+      heading.appendChild(metaEl);
+      section.appendChild(heading);
+
+      // Table
+      const st = sortState[schema.name] || { col: 'name', dir: 'asc' };
+      const sorted = sortTables(tables, st.col, st.dir);
+      const tableEl = buildSchemaTable(schema, tables);
+      // Override fillBody to use current sorted tables
+      const origFillBody = tableEl._fillBody;
+      tableEl._fillBody = function() {
+        const st2 = sortState[schema.name] || { col: 'name', dir: 'asc' };
+        const ths = tableEl.querySelectorAll('th');
+        const colKeys2 = ['name', 'rows', 'cols', 'loaded', null];
+        ths.forEach(function(th, i) {
+          const key = colKeys2[i];
+          if (!key) return;
+          th.className = '';
+          if (st2.col === key) {
+            th.className = st2.dir === 'asc' ? 'sort-asc' : 'sort-desc';
+          }
+        });
+        const tbody2 = tableEl.querySelector('tbody');
+        while (tbody2.firstChild) { tbody2.removeChild(tbody2.firstChild); }
+
+        const currentTables = (schema.tables || []).filter(function(t) {
+          const ft = document.getElementById('filter-input').value.toLowerCase();
+          return !ft || t.name.toLowerCase().indexOf(ft) !== -1;
+        });
+        const resorted = sortTables(currentTables, st2.col, st2.dir);
+        // re-use body building
+        resorted.forEach(function(tbl) {
+          const tr = document.createElement('tr');
+          tr.className = 'data-row';
+          appendTableRow(tr, tbl, tableEl);
+          tbody2.appendChild(tr);
+        });
+      };
+
+      schemaTableEls[schema.name] = tableEl;
+      section.appendChild(tableEl);
+      container.appendChild(section);
+    });
+
+    if (!anyVisible) {
+      const msg = document.createElement('p');
+      msg.className = 'no-results';
+      msg.textContent = 'No tables match the filter.';
+      container.appendChild(msg);
+    }
+  }
+
+  // ---- Row builder (extracted for reuse) ----
+
+  function appendTableRow(tr, tbl, tableEl) {
+    // Name
+    const nameTd = document.createElement('td');
+    nameTd.className = 'cell-name';
+    nameTd.textContent = tbl.name;
+    if (tbl.object_type === 'view') {
+      const viewTag = document.createElement('span');
+      viewTag.className = 'tag-view';
+      viewTag.textContent = 'view';
+      nameTd.appendChild(viewTag);
+    }
+    tr.appendChild(nameTd);
+
+    // Rows
+    const rowsTd = document.createElement('td');
+    rowsTd.className = 'cell-rows';
+    if (tbl.row_count == null) {
+      rowsTd.textContent = 'n/a';
+      rowsTd.className += ' cell-null';
+    } else {
+      rowsTd.textContent = formatRows(tbl.row_count);
+    }
+    tr.appendChild(rowsTd);
+
+    // Cols
+    const colsTd = document.createElement('td');
+    colsTd.className = 'cell-cols';
+    colsTd.textContent = tbl.column_count != null ? tbl.column_count : '—';
+    tr.appendChild(colsTd);
+
+    // Last loaded
+    const loadedTd = document.createElement('td');
+    loadedTd.className = 'cell-loaded';
+    loadedTd.textContent = formatDate(tbl.last_loaded);
+    tr.appendChild(loadedTd);
+
+    // Expand
+    const expandTd = document.createElement('td');
+    expandTd.style.textAlign = 'center';
+    const btn = document.createElement('button');
+    btn.className = 'expand-btn';
+    btn.textContent = '▶';
+    btn.setAttribute('aria-label', 'Expand columns for ' + tbl.name);
+    btn.addEventListener('click', function() {
+      if (activeExpandRow && activeExpandRow.dataRow === tr) {
+        closeExpansion();
+        return;
+      }
+      closeExpansion();
+      btn.textContent = '▼';
+      const expTr = buildExpandRow(tbl, 5);
+      tr.parentNode.insertBefore(expTr, tr.nextSibling);
+      activeExpandRow = { tr: expTr, btn: btn, dataRow: tr };
+    });
+    expandTd.appendChild(btn);
+    tr.appendChild(expandTd);
+  }
+
+  // ---- Populate schema select ----
+
+  function populateSchemaSelect(schemas) {
+    const sel = document.getElementById('schema-select');
+    // Keep "All schemas" option
+    sortSchemas(schemas).forEach(function(s) {
+      const opt = document.createElement('option');
+      opt.value = s.name;
+      opt.textContent = s.name;
+      sel.appendChild(opt);
+    });
+  }
+
+  // ---- Subtitle ----
+
+  function renderSubtitle(data) {
+    const subtitle = document.getElementById('subtitle');
+    const parts = [];
+    if (data.db_path) parts.push(data.db_path);
+    parts.push(humanSize(data.db_size_bytes));
+    if (data.db_file_modified) parts.push('file modified ' + data.db_file_modified);
+    if (data.table_count != null) parts.push(data.table_count + ' tables');
+    if (data.total_rows != null) parts.push(formatRows(data.total_rows) + ' rows');
+    subtitle.textContent = parts.join(' · ');
+  }
+
+  function renderFooter() {
+    const footer = document.getElementById('footer');
+    footer.textContent =
+      'Generated ' + generatedAt + ' · refreshed by infra/scheduler/refresh_admin_catalogs.py';
+  }
+
+  // ---- Main ----
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const filterInput  = document.getElementById('filter-input');
+    const schemaSelect = document.getElementById('schema-select');
+
+    filterInput.addEventListener('input', function() {
+      closeExpansion();
+      renderAll();
+    });
+    schemaSelect.addEventListener('change', function() {
+      closeExpansion();
+      renderAll();
+    });
+
+    fetch('data/duckdb_catalog.json')
+      .then(function(r) {
+        if (!r.ok) throw new Error('not ok');
+        return r.json();
+      })
+      .then(function(data) {
+        allData = data;
+        generatedAt = data.generated_at || '';
+
+        renderSubtitle(data);
+        populateSchemaSelect(data.schemas || []);
+        renderAll();
+        renderFooter();
+      })
+      .catch(function() {
+        const mainEl = document.querySelector('main');
+        while (mainEl.firstChild) { mainEl.removeChild(mainEl.firstChild); }
+        const errEl = document.createElement('div');
+        errEl.className = 'error-state';
+        errEl.textContent = 'Data file missing — run refresh_admin_catalogs.py';
+        mainEl.appendChild(errEl);
+      });
+  });
+</script>
+</body>
+</html>

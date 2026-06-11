@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Landing Zone — Open Reporting Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #1e1e2e; --surface: #181825; --surface2: #313244; --overlay: #6c7086;
+      --text: #cdd6f4; --subtext: #a6adc8;
+      --blue: #89b4fa; --green: #a6e3a1; --yellow: #f9e2af; --red: #f38ba8; --mauve: #cba6f7;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* Top bar */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--surface2);
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .breadcrumb { font-size: 14px; }
+    .breadcrumb a { color: var(--subtext); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--text); }
+    .breadcrumb .sep { color: var(--overlay); margin: 0 4px; }
+    .breadcrumb .current { color: var(--overlay); }
+
+    nav { display: flex; gap: 20px; align-items: center; }
+    nav a { font-size: 14px; color: var(--subtext); text-decoration: none; }
+    nav a:hover { color: var(--text); }
+    nav a.active { color: var(--blue); font-weight: 600; }
+
+    /* Layout */
+    main {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px 24px 0;
+    }
+
+    h1 { font-size: 24px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .subtitle { font-size: 13px; color: var(--subtext); margin-bottom: 28px; }
+    .subtitle code { font-family: monospace; color: var(--blue); }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .controls input, .controls select {
+      background: var(--surface);
+      border: 1px solid var(--surface2);
+      color: var(--text);
+      padding: 7px 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: 'Inter', system-ui, sans-serif;
+      outline: none;
+    }
+    .controls input { width: 240px; }
+    .controls input::placeholder { color: var(--overlay); }
+    .controls input:focus, .controls select:focus { border-color: var(--blue); }
+    .controls select option { background: var(--surface); }
+
+    /* Folder grid */
+    .folder-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 20px;
+    }
+
+    /* Folder card */
+    .folder-card {
+      background: var(--surface);
+      border: 1px solid var(--surface2);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .folder-card.highlight {
+      outline: 2px solid var(--blue);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .folder-name {
+      font-family: monospace;
+      font-size: 14px;
+      color: var(--blue);
+      font-weight: 500;
+    }
+    .file-chip {
+      background: var(--surface2);
+      color: var(--subtext);
+      font-size: 12px;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    .meta-line {
+      font-size: 12px;
+      color: var(--subtext);
+      margin-top: 8px;
+    }
+    .meta-line .date-old { color: var(--red); }
+
+    .empty-label { font-style: italic; color: var(--overlay); margin-top: 8px; font-size: 13px; }
+
+    /* Progress section */
+    .subjects-heading {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--overlay);
+      margin: 12px 0 8px;
+    }
+    .pbar-row { margin-bottom: 6px; }
+    .pbar-row-label { font-size: 12px; color: var(--subtext); margin-bottom: 3px; }
+    .pbar-wrap { display: flex; align-items: center; gap: 8px; }
+    .pbar-track {
+      flex: 1;
+      height: 8px;
+      background: var(--surface2);
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+    .pbar-fill {
+      height: 100%;
+      background: var(--blue);
+      border-radius: 4px;
+    }
+    .pbar-fill.complete { background: var(--green); }
+    .pbar-fail {
+      position: absolute;
+      right: 0;
+      top: 0;
+      height: 100%;
+      background: var(--red);
+    }
+    .pbar-label {
+      font-size: 12px;
+      color: var(--subtext);
+      white-space: nowrap;
+      min-width: 70px;
+      text-align: right;
+    }
+
+    .show-more {
+      background: none;
+      border: 1px solid var(--surface2);
+      color: var(--subtext);
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 8px;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+    .show-more:hover { color: var(--text); border-color: var(--blue); }
+
+    /* Badges */
+    .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .badge-complete    { background: rgba(166,227,161,.18); color: #a6e3a1; }
+    .badge-partial     { background: rgba(249,226,175,.18); color: #f9e2af; }
+    .badge-in_progress { background: rgba(249,226,175,.18); color: #f9e2af; }
+    .badge-blocked     { background: rgba(243,139,168,.18); color: #f38ba8; }
+    .badge-pending     { background: rgba(108,112,134,.18); color: #a6adc8; }
+    .badge-not_started { background: rgba(108,112,134,.18); color: #a6adc8; }
+
+    /* Error state */
+    .error-state { color: var(--red); text-align: center; padding: 60px; font-size: 16px; }
+
+    /* Footer */
+    footer { font-size: 12px; color: var(--overlay); margin-top: 40px; padding-bottom: 32px; }
+
+    /* Empty filter result */
+    .no-results { color: var(--overlay); font-size: 14px; padding: 40px 0; text-align: center; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="breadcrumb">
+    <a href="/admin.html">Open Reporting</a>
+    <span class="sep">/</span>
+    <a href="/admin.html" style="color:var(--overlay)">Admin</a>
+    <span class="sep">/</span>
+    <span class="current">Landing Zone</span>
+  </div>
+  <nav>
+    <a href="/source-registry.html">Sources</a>
+    <a href="/ingestion-plan.html">Plan</a>
+    <a href="/landing-catalog.html" class="active">Landing</a>
+    <a href="/duckdb-catalog.html">DuckDB</a>
+    <a href="/ingestion-status.html">Status</a>
+  </nav>
+</header>
+
+<main>
+  <h1>Landing Zone</h1>
+  <p class="subtitle" id="subtitle">Loading&hellip;</p>
+
+  <div class="controls">
+    <input type="text" id="filter-input" placeholder="Filter folders&hellip;">
+    <select id="sort-select">
+      <option value="name">Name A&rarr;Z</option>
+      <option value="size">Size &darr;</option>
+      <option value="files">Files &darr;</option>
+      <option value="modified">Modified &darr;</option>
+    </select>
+  </div>
+
+  <div class="folder-grid" id="folder-grid"></div>
+
+  <footer id="footer"></footer>
+</main>
+
+<script>
+  // ---- Utilities ----
+
+  function humanSize(bytes) {
+    if (bytes == null) return '&mdash;';
+    const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+    let i = 0;
+    let val = bytes;
+    while (val >= 1024 && i < units.length - 1) { val /= 1024; i++; }
+    return (i === 0 ? val.toFixed(0) : val.toFixed(1)) + ' ' + units[i];
+  }
+
+  function relativeDate(isoStr) {
+    if (!isoStr) return null;
+    const now = new Date();
+    const d = new Date(isoStr);
+    const diffMs = now - d;
+    const diffDays = Math.floor(diffMs / 86400000);
+    if (diffDays === 0) return { label: 'today', old: false };
+    if (diffDays === 1) return { label: 'yesterday', old: false };
+    if (diffDays <= 14) return { label: diffDays + 'd ago', old: diffDays > 35 };
+    if (diffDays <= 60) return { label: Math.floor(diffDays / 7) + 'w ago', old: diffDays > 35 };
+    return { label: Math.floor(diffDays / 30) + 'm ago', old: true };
+  }
+
+  function formatNum(n) {
+    if (n == null) return '—';
+    return n.toLocaleString('en-US');
+  }
+
+  function parseSizeLabel(label) {
+    if (!label) return 0;
+    const m = label.match(/([\d.]+)\s*(B|KB|MB|GB|TB)?/i);
+    if (!m) return 0;
+    const num = parseFloat(m[1]);
+    const unit = (m[2] || 'B').toUpperCase();
+    const map = { 'B': 1, 'KB': 1024, 'MB': 1048576, 'GB': 1073741824, 'TB': 1099511627776 };
+    return num * (map[unit] || 1);
+  }
+
+  // ---- Build DOM nodes ----
+
+  function buildProgressRow(entry) {
+    const wrap = document.createElement('div');
+    wrap.className = 'pbar-row';
+
+    const labelEl = document.createElement('div');
+    labelEl.className = 'pbar-row-label';
+    labelEl.textContent = entry.id + (entry.label ? ' · ' + entry.label : '');
+    wrap.appendChild(labelEl);
+
+    const pbarWrap = document.createElement('div');
+    pbarWrap.className = 'pbar-wrap';
+
+    const track = document.createElement('div');
+    track.className = 'pbar-track';
+
+    const total = entry.total || 0;
+    const done = entry.done || 0;
+    const failed = entry.failed || 0;
+
+    const fill = document.createElement('div');
+    fill.className = 'pbar-fill' + (done === total && total > 0 ? ' complete' : '');
+    fill.style.width = total > 0 ? ((done / total) * 100).toFixed(1) + '%' : '0%';
+    track.appendChild(fill);
+
+    if (failed > 0 && total > 0) {
+      const failEl = document.createElement('div');
+      failEl.className = 'pbar-fail';
+      failEl.style.width = ((failed / total) * 100).toFixed(1) + '%';
+      track.appendChild(failEl);
+    }
+
+    pbarWrap.appendChild(track);
+
+    const lbl = document.createElement('span');
+    lbl.className = 'pbar-label';
+    lbl.textContent = done + '/' + (total != null ? total : '?');
+    pbarWrap.appendChild(lbl);
+
+    wrap.appendChild(pbarWrap);
+    return wrap;
+  }
+
+  function buildCard(folder) {
+    const card = document.createElement('div');
+    card.className = 'folder-card';
+    card.id = folder.name;
+
+    // Header
+    const headerEl = document.createElement('div');
+    headerEl.className = 'card-header';
+
+    const nameEl = document.createElement('span');
+    nameEl.className = 'folder-name';
+    nameEl.textContent = folder.name;
+
+    const chip = document.createElement('span');
+    chip.className = 'file-chip';
+    chip.textContent = formatNum(folder.file_count) + ' files';
+
+    headerEl.appendChild(nameEl);
+    headerEl.appendChild(chip);
+    card.appendChild(headerEl);
+
+    if (folder.file_count === 0) {
+      const empty = document.createElement('p');
+      empty.className = 'empty-label';
+      empty.textContent = 'empty';
+      card.appendChild(empty);
+      return card;
+    }
+
+    // Meta line
+    const meta = document.createElement('div');
+    meta.className = 'meta-line';
+    meta.appendChild(document.createTextNode(folder.size_label + ' · modified '));
+
+    const rel = relativeDate(folder.last_modified);
+    if (rel) {
+      const dateSpan = document.createElement('span');
+      if (rel.old) dateSpan.className = 'date-old';
+      dateSpan.textContent = rel.label;
+      meta.appendChild(dateSpan);
+    }
+    card.appendChild(meta);
+
+    // Progress
+    if (folder.progress && folder.progress.length > 0) {
+      const heading = document.createElement('div');
+      heading.className = 'subjects-heading';
+      heading.textContent = 'Subjects';
+      card.appendChild(heading);
+
+      const LIMIT = 8;
+      const entries = folder.progress;
+
+      entries.slice(0, LIMIT).forEach(function(e) { card.appendChild(buildProgressRow(e)); });
+
+      if (entries.length > LIMIT) {
+        const hidden = entries.slice(LIMIT);
+        const btn = document.createElement('button');
+        btn.className = 'show-more';
+        btn.textContent = 'Show all ' + entries.length;
+        btn.addEventListener('click', function() {
+          hidden.forEach(function(e) { card.insertBefore(buildProgressRow(e), btn); });
+          btn.remove();
+        });
+        card.appendChild(btn);
+      }
+    }
+
+    return card;
+  }
+
+  // ---- State ----
+
+  let allFolders = [];
+  let generatedAt = '';
+
+  // ---- Render ----
+
+  function renderGrid(filterText, sortKey) {
+    const grid = document.getElementById('folder-grid');
+    // Clear safely
+    while (grid.firstChild) { grid.removeChild(grid.firstChild); }
+
+    let items = allFolders.slice();
+
+    if (filterText) {
+      const q = filterText.toLowerCase();
+      items = items.filter(function(f) { return f.name.toLowerCase().indexOf(q) !== -1; });
+    }
+
+    if (sortKey === 'name') {
+      items.sort(function(a, b) { return a.name.localeCompare(b.name); });
+    } else if (sortKey === 'size') {
+      items.sort(function(a, b) { return parseSizeLabel(b.size_label) - parseSizeLabel(a.size_label); });
+    } else if (sortKey === 'files') {
+      items.sort(function(a, b) { return (b.file_count || 0) - (a.file_count || 0); });
+    } else if (sortKey === 'modified') {
+      items.sort(function(a, b) {
+        const dA = a.last_modified ? new Date(a.last_modified) : new Date(0);
+        const dB = b.last_modified ? new Date(b.last_modified) : new Date(0);
+        return dB - dA;
+      });
+    }
+
+    if (items.length === 0) {
+      const msg = document.createElement('p');
+      msg.className = 'no-results';
+      msg.textContent = 'No folders match the filter.';
+      grid.appendChild(msg);
+      return;
+    }
+
+    items.forEach(function(f) { grid.appendChild(buildCard(f)); });
+  }
+
+  function renderSubtitle(data) {
+    const subtitle = document.getElementById('subtitle');
+    while (subtitle.firstChild) { subtitle.removeChild(subtitle.firstChild); }
+    const t = data.totals || {};
+    const code = document.createElement('code');
+    code.textContent = data.landing_root || '';
+    subtitle.appendChild(code);
+    subtitle.appendChild(document.createTextNode(
+      ' · ' + (t.folders || 0) + ' folders' +
+      ' · ' + formatNum(t.files) + ' files' +
+      ' · ' + humanSize(t.bytes)
+    ));
+  }
+
+  function renderFooter() {
+    const footer = document.getElementById('footer');
+    footer.textContent =
+      'Generated ' + generatedAt + ' · refreshed by infra/scheduler/refresh_admin_catalogs.py';
+  }
+
+  // ---- Main ----
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const filterInput = document.getElementById('filter-input');
+    const sortSelect  = document.getElementById('sort-select');
+
+    function rerender() {
+      renderGrid(filterInput.value, sortSelect.value);
+    }
+
+    filterInput.addEventListener('input', rerender);
+    sortSelect.addEventListener('change', rerender);
+
+    fetch('data/landing_status.json')
+      .then(function(r) {
+        if (!r.ok) throw new Error('not ok');
+        return r.json();
+      })
+      .then(function(data) {
+        generatedAt = data.generated_at || '';
+        allFolders  = data.folders || [];
+
+        renderSubtitle(data);
+        renderGrid(filterInput.value, sortSelect.value);
+        renderFooter();
+
+        // Hash anchor scroll + highlight
+        const hash = location.hash;
+        if (hash) {
+          const id   = hash.slice(1);
+          const card = document.getElementById(id);
+          if (card) {
+            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            card.classList.add('highlight');
+            setTimeout(function() {
+              card.style.transition = 'outline-color 0.6s ease';
+              card.style.outlineColor = 'transparent';
+              setTimeout(function() {
+                card.classList.remove('highlight');
+                card.style.transition = '';
+                card.style.outlineColor = '';
+              }, 700);
+            }, 2000);
+          }
+        }
+      })
+      .catch(function() {
+        const mainEl = document.querySelector('main');
+        while (mainEl.firstChild) { mainEl.removeChild(mainEl.firstChild); }
+        const errEl = document.createElement('div');
+        errEl.className = 'error-state';
+        errEl.textContent = 'Data file missing — run refresh_admin_catalogs.py';
+        mainEl.appendChild(errEl);
+      });
+  });
+</script>
+</body>
+</html>
