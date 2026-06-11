@@ -74,7 +74,7 @@ def fetch_nbp(state: dict) -> dict:
         resp.raise_for_status()
         data = resp.json()
         rows = sum(len(t.get("rates", [])) for t in data)
-        _write_delta("nbp", f"rates_A_{TODAY}.json", resp.content)
+        _write_delta("nbp_api", f"rates_A_{TODAY}.json", resp.content)
         logger.info(f"[nbp] {rows} rates fetched for {last}..{TODAY}")
         return {"last_date": TODAY, "rows": rows}
     except Exception as e:
@@ -107,7 +107,7 @@ def fetch_eurostat_recent(state: dict) -> dict:
 
         logger.info(f"[eurostat] {len(updated)} datasets updated since {last} — re-fetching")
         ok = failed = 0
-        dest_dir = LANDING_DIR / "eurostat"
+        dest_dir = LANDING_DIR / "eurostat_bulk"
         dest_dir.mkdir(parents=True, exist_ok=True)
 
         def _fetch_one(code):
@@ -152,7 +152,7 @@ def fetch_gus_bdl(state: dict) -> dict:
             "https://bdl.stat.gov.pl/api/v1/subjects?lang=pl", timeout=30, headers=HEADERS
         )
         resp.raise_for_status()
-        _write_delta("gus_bdl", f"subjects_{TODAY}.json", resp.content)
+        _write_delta("gus_bdl_api", f"subjects_{TODAY}.json", resp.content)
         logger.info(f"[gus_bdl] Subjects tree refreshed")
         return {"last_date": TODAY}
     except Exception as e:
@@ -180,7 +180,7 @@ def fetch_gios(state: dict) -> dict:
             except Exception:
                 pass
 
-        _write_delta("gios", f"aq_index_{TODAY}.json", json.dumps(readings).encode())
+        _write_delta("gios_api", f"aq_index_{TODAY}.json", json.dumps(readings).encode())
         logger.info(f"[gios] {len(readings)} station readings for {TODAY}")
         return {"last_date": TODAY, "stations": len(readings)}
     except Exception as e:
@@ -243,16 +243,16 @@ def fetch_dane_gov_updates(source_id: str, institution_id: str, state: dict) -> 
 # ---------------------------------------------------------------------------
 
 SOURCES: dict[str, callable] = {
-    "nbp":           fetch_nbp,
-    "eurostat":      fetch_eurostat_recent,
-    "gus_bdl":       fetch_gus_bdl,
-    "gios":          fetch_gios,
-    "mf_dane":       lambda s: fetch_dane_gov_updates("mf_dane",  "18",  s),
-    "nfz":           lambda s: fetch_dane_gov_updates("nfz",      "31",  s),
-    "zus":           lambda s: fetch_dane_gov_updates("zus",      "47",  s),
-    "gddkia":        lambda s: fetch_dane_gov_updates("gddkia",   "106", s),
-    "ure":           lambda s: fetch_dane_gov_updates("ure",      "58",  s),
-    "mrirw":         lambda s: fetch_dane_gov_updates("mrirw",    "204", s),
+    "nbp_api":       fetch_nbp,
+    "eurostat_bulk": fetch_eurostat_recent,
+    "gus_bdl_api":   fetch_gus_bdl,
+    "gios_api":      fetch_gios,
+    "mf_bulk":       lambda s: fetch_dane_gov_updates("mf_bulk",      "18",  s),
+    "nfz_bulk":      lambda s: fetch_dane_gov_updates("nfz_bulk",     "31",  s),
+    "zus_bulk":      lambda s: fetch_dane_gov_updates("zus_bulk",     "47",  s),
+    "gddkia_bulk":   lambda s: fetch_dane_gov_updates("gddkia_bulk",  "106", s),
+    "ure_bulk":      lambda s: fetch_dane_gov_updates("ure_bulk",     "58",  s),
+    "mrirw_api":     lambda s: fetch_dane_gov_updates("mrirw_api",    "204", s),
 }
 
 

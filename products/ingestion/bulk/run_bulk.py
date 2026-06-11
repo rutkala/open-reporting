@@ -243,26 +243,29 @@ def get_mf_openbudget_files() -> list[tuple[str, str]]:
 # ---------------------------------------------------------------------------
 
 SOURCES: dict[str, dict] = {
-    "eurostat":      {"fetch": get_eurostat_files,                              "workers": 12},
-    "gus_hvd":       {"fetch": get_gus_hvd_files,                               "workers": 8},
-    "gus_api":       {"fetch": lambda: [("area_tree.json", "https://api-dbw.stat.gov.pl/api/1.1.0/area/area-area")], "workers": 1},
-    "gus_bdl":       {"fetch": lambda: [("subjects.json",  "https://bdl.stat.gov.pl/api/v1/subjects?lang=pl")],      "workers": 1},
-    "mf_openbudget": {"fetch": get_mf_openbudget_files,                         "workers": 2},
-    "mf_dane":       {"fetch": lambda: _dane_gov_institution("18", "mf_dane"),  "workers": 4},
-    "nbp":           {"fetch": get_nbp_files,                                   "workers": 4},
-    "stooq":         {"fetch": get_stooq_files,                                 "workers": 1},
-    "nfz":           {"fetch": lambda: _dane_gov_institution("31", "nfz"),      "workers": 4},
-    "zus":           {"fetch": lambda: _dane_gov_institution("47", "zus"),      "workers": 4},
-    "cie_men":       {"fetch": lambda: _dane_gov_institution("15", "cie_men"),  "workers": 4},
-    "gddkia":        {"fetch": lambda: _dane_gov_institution("106", "gddkia"),  "workers": 4},
-    "ure":           {"fetch": lambda: _dane_gov_institution("58", "ure"),      "workers": 4},
-    "mrirw":         {"fetch": lambda: _dane_gov_institution("204", "mrirw"),   "workers": 4},
-    "gios":          {"fetch": get_gios_files,                                  "workers": 8},
-    "gpw_benchmark": {"fetch": get_gpw_benchmark_files,                         "workers": 4},
-    "saos":          {"fetch": get_saos_files,                                  "workers": 2},
-    "krs":           {"fetch": get_krs_files,                                   "workers": 1},
-    "opi_radon":     {"fetch": get_opi_radon_files,                             "workers": 2},
-    "knf":           {"fetch": lambda: [("stats_page.html", "https://www.knf.gov.pl/dane_statystyczne")], "workers": 1},
+    # GUS
+    "gus_dbw_bulk":  {"fetch": get_gus_hvd_files,                               "workers": 8},
+    "gus_dbw_api":   {"fetch": lambda: [("area_tree.json", "https://api-dbw.stat.gov.pl/api/1.1.0/area/area-area")], "workers": 1},
+    "gus_bdl_api":   {"fetch": lambda: [("subjects.json",  "https://bdl.stat.gov.pl/api/v1/subjects?lang=pl")],      "workers": 1},
+    # Institutional
+    "eurostat_bulk": {"fetch": get_eurostat_files,                              "workers": 12},
+    "mf_api":        {"fetch": get_mf_openbudget_files,                         "workers": 2},
+    "mf_bulk":       {"fetch": lambda: _dane_gov_institution("18", "mf_bulk"),  "workers": 4},
+    "nbp_bulk":      {"fetch": get_nbp_files,                                   "workers": 4},
+    "nfz_bulk":      {"fetch": lambda: _dane_gov_institution("31", "nfz_bulk"), "workers": 4},
+    "zus_bulk":      {"fetch": lambda: _dane_gov_institution("47", "zus_bulk"), "workers": 4},
+    "men_api":       {"fetch": lambda: _dane_gov_institution("15", "men_api"),  "workers": 4},
+    "gddkia_bulk":   {"fetch": lambda: _dane_gov_institution("106", "gddkia_bulk"), "workers": 4},
+    "ure_bulk":      {"fetch": lambda: _dane_gov_institution("58", "ure_bulk"), "workers": 4},
+    "mrirw_api":     {"fetch": lambda: _dane_gov_institution("204", "mrirw_api"), "workers": 4},
+    "gios_bulk":     {"fetch": get_gios_files,                                  "workers": 8},
+    "gpw_benchmark_bulk": {"fetch": get_gpw_benchmark_files,                    "workers": 4},
+    "knf_bulk":      {"fetch": lambda: [("stats_page.html", "https://www.knf.gov.pl/dane_statystyczne")], "workers": 1},
+    # API / other
+    "saos_api":      {"fetch": get_saos_files,                                  "workers": 2},
+    "krs_api":       {"fetch": get_krs_files,                                   "workers": 1},
+    "opi_radon_api": {"fetch": get_opi_radon_files,                             "workers": 2},
+    "stooq_api":     {"fetch": get_stooq_files,                                 "workers": 1},
 }
 
 
