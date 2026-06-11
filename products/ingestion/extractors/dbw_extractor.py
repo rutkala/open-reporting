@@ -18,6 +18,7 @@ import json
 import logging
 import os
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -268,7 +269,7 @@ def main(
 
     LANDING.mkdir(parents=True, exist_ok=True)
     limiter = WeeklyRateLimiter("dbw", 10_000, RATELIMIT_PATH,
-                                min_interval_s=0.5, reserve=200)
+                                min_interval_s=1.5, reserve=200)
     session = requests.Session()
     session.headers.update({
         "X-ApiKey": api_key,
@@ -304,12 +305,24 @@ def main(
                     all_indicators.extend(indicators)
                 except FetchSkip as e:
                     logger.warning(f"[dbw] Skip area {area_id}: {e}")
+                time.sleep(0.3)  # brief inter-area pause to avoid burst limits
 
-            logger.info(f"[dbw] {root_name}: {len(all_indicators)} indicators discovered")
+            # Deduplicate by indicator ID — same indicator can appear in multiple leaf areas
+            seen_ids: set[str] = set()
+            unique_indicators: list[dict] = []
+            for ind in all_indicators:
+                iid = str(ind.get("id", ind.get("id-zmienna", "")))
+                if iid and iid not in seen_ids:
+                    seen_ids.add(iid)
+                    unique_indicators.append(ind)
+            logger.info(
+                f"[dbw] {root_name}: {len(unique_indicators)} unique indicators "
+                f"({len(all_indicators)} total across areas)"
+            )
 
             if dry_run:
                 sections_est = 2
-                req_est = len(all_indicators) * (1 + sections_est * 2)
+                req_est = len(unique_indicators) * (1 + sections_est * 2)
                 logger.info(f"[dbw] DRY RUN {root_name}: ~{req_est} requests estimated")
                 continue
 
@@ -319,10 +332,15 @@ def main(
                 if v.get("sections_done") and v.get("sections_done") == v.get("sections_total")
                 and not force
             }
+            # Also skip indicators already known to have failed (404/permanent errors)
+            failed_set = {
+                k for k, v in manifest["indicators"].items()
+                if v.get("failed") and not force
+            }
 
-            for indicator in all_indicators:
+            for indicator in unique_indicators:
                 ind_id = str(indicator.get("id", indicator.get("id-zmienna", "")))
-                if ind_id in done_set:
+                if ind_id in done_set or ind_id in failed_set:
                     skipped += 1
                     continue
                 if max_requests and limiter.used_this_run >= max_requests:
@@ -342,6 +360,7 @@ def main(
                     ind_key = str(indicator.get("id", "?"))
                     if ind_key in manifest["indicators"]:
                         manifest["indicators"][ind_key]["failed"] = str(e)
+                    failed_set.add(ind_id)
                     failed += 1
                     logger.warning(f"[dbw] Skip indicator {ind_id}: {e}")
                 finally:
