@@ -234,7 +234,11 @@ def main(
                 leaves = state["leaf_subjects"]
 
             # Fetch variable list
-            variables = fetch_variables(session, limiter, subject_id, leaves, force)
+            try:
+                variables = fetch_variables(session, limiter, subject_id, leaves, force)
+            except FetchSkip as e:
+                logger.warning(f"[bdl] Skip subject {subject_id} (variable list failed): {e}")
+                continue
             state["vars_total"] = len(variables)
             save_manifest(manifest)
 
