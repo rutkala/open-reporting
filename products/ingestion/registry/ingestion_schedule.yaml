@@ -28,7 +28,10 @@ entries:
     priority: 2
     notes: "Budget-paced: 50k req/week; no-ops when weekly quota spent, resumes on ISO-week reset"
     quota_tiers:
-      - {label: "Weekly", limit: "50,000 req / 7 days"}
+      - {label: "Burst", limit: "10 req / s", note: "documented; not observed enforced"}
+      - {label: "15-min", limit: "500 req / 15 min", note: "documented; not observed enforced (we ran 2.4x over, no 429)"}
+      - {label: "12-hour", limit: "5,000 req / 12h", note: "documented; not observed enforced (36k in one window, no 429)"}
+      - {label: "Weekly", limit: "50,000 req / 7 days", note: "ENFORCED — tracked via X-Rate-Limit headers"}
     subject_meta:
       K27: {label: "Finanse publiczne", est_requests: 4599}
       K40: {label: "Wynagrodzenia i świadczenia", est_requests: 593}

@@ -16,7 +16,7 @@ sources:
     rate_limit:
       requests: 50000
       period: week
-      burst_note: null
+      burst_note: "docs also list 10/s, 500/15min, 5000/12h — only the weekly cap observed enforced"
     base_url: https://bdl.stat.gov.pl/api/v1/
     endpoints:
       - "GET /subjects — root K-subject list (33 categories)"
