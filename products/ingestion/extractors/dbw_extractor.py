@@ -1,24 +1,35 @@
 #!/usr/bin/env python3
 """
-GUS DBW non-HVD extractor.
+GUS DBW (Dziedzinowe Bazy Wiedzy) extractor — API 1.2.0.
 
-Pulls time-series data for all 1,547 indicators via api-dbw.stat.gov.pl/api/1.1.0.
-Writes to data/landing/gus_dbw_api/{root_area_id}/{indicator_id}.json.
+Pulls time-series data for ~1,518 variables via api-dbw.stat.gov.pl/api/1.2.0.
+Spec: https://api-dbw.stat.gov.pl/apidocs/ (auth header X-ClientId; registered
+key = 50,000 req/7d, 5,000 req/12h, 500 req/15min).
+
+Flow:
+  1. /variable/variable-section-periods (paged) — catalog of every valid
+     (id-zmienna, id-przekroj, id-okres) combination. Cached in _catalog.json.
+  2. /variable/variable-meta per variable — przekroje with szereg-czasowy
+     ("2006 - 2024") giving exact year coverage. Cached per variable.
+  3. /variable/variable-data-section per (zmienna, przekroj, rok, okres) —
+     all four params required by the API. One file per (variable, przekroj, rok).
+
+Writes to data/landing/gus_dbw_api/variables/{id}/{przekroj}_{rok}.json.
 
 Usage:
-    python3 dbw_extractor.py                     # all areas (727, 728, 729)
-    python3 dbw_extractor.py --areas 727         # specific root area
-    python3 dbw_extractor.py --dry-run           # estimate requests, no fetch
-    python3 dbw_extractor.py --max-requests 8000
-    python3 dbw_extractor.py --force             # re-fetch all indicators
+    python3 dbw_extractor.py                       # all variables
+    python3 dbw_extractor.py --variables 814,815   # specific variables
+    python3 dbw_extractor.py --dry-run             # estimate requests, no fetch
+    python3 dbw_extractor.py --max-requests 4500   # per-run cap (12h quota is 5,000)
+    python3 dbw_extractor.py --force               # re-fetch everything
 """
 
 import argparse
 import json
 import logging
 import os
+import re
 import sys
-import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -35,13 +46,16 @@ from products.ingestion.extractors.gus_ratelimit import (
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
 
-BASE = "https://api-dbw.stat.gov.pl/api/1.1.0"
+BASE = "https://api-dbw.stat.gov.pl/api/1.2.0"
 LANDING = Path("/opt/open-reporting/data/landing/gus_dbw_api")
-AREA_TREE_PATH = LANDING / "area_tree.json"
+CATALOG_PATH = LANDING / "_catalog.json"
 MANIFEST_PATH = LANDING / "_manifest.json"
 RATELIMIT_PATH = LANDING / "_ratelimit.json"
 
-ROOT_AREAS = {727: "gospodarka", 728: "spoleczenstwo", 729: "srodowisko"}
+WEEKLY_CAP = 50_000      # registered key, confirmed via X-Rate-Limit-Remaining
+MIN_INTERVAL_S = 1.9     # ≤474 req/15min — under the 500/15min burst cap
+PAGE_SIZE = 5000
+MIN_YEAR = 1995          # clamp szereg-czasowy lower bound
 
 
 def _now() -> str:
@@ -58,208 +72,154 @@ def _atomic_write(path: Path, data: dict | list) -> None:
 def load_manifest() -> dict:
     if MANIFEST_PATH.exists():
         try:
-            return json.loads(MANIFEST_PATH.read_text())
+            m = json.loads(MANIFEST_PATH.read_text())
+            if m.get("version") == 2:
+                return m
+            logger.info("[dbw] v1 manifest found (old extractor) — starting fresh v2")
         except Exception:
             pass
-    return {"version": 1, "indicators": {}}
+    return {"version": 2, "variables": {}}
 
 
 def save_manifest(manifest: dict) -> None:
     _atomic_write(MANIFEST_PATH, manifest)
 
 
-def load_area_tree() -> list[dict]:
-    if not AREA_TREE_PATH.exists():
-        raise FileNotFoundError(
-            f"area_tree.json not found at {AREA_TREE_PATH}. "
-            "Run bulk ingestion for gus_dbw_api first."
-        )
-    data = json.loads(AREA_TREE_PATH.read_text())
-    # Unwrap envelope if present
-    if isinstance(data, dict) and "results" in data:
-        return data["results"]
-    if isinstance(data, list):
-        return data
-    return []
-
-
-def leaf_areas(tree: list[dict], root_id: int) -> list[dict]:
-    """Return all areas under root_id where czy-zmienne is true (have indicators)."""
-    index: dict[int, dict] = {int(n.get("id", 0)): n for n in tree}
-    leaves = []
-
-    def _walk(node_id: int) -> None:
-        node = index.get(node_id)
-        if not node:
-            return
-        if node.get("czy-zmienne"):
-            leaves.append(node)
-        # Find children (nodes whose id-nadrzedny-element == node_id)
-        for n in tree:
-            if int(n.get("id-nadrzedny-element", -1)) == node_id:
-                _walk(int(n.get("id", 0)))
-
-    _walk(root_id)
-    return leaves
-
-
-def discover_indicators(
+def fetch_catalog(
     session: requests.Session,
     limiter: WeeklyRateLimiter,
-    area_id: int,
-    root_id: int,
     force: bool = False,
 ) -> list[dict]:
-    """Fetch indicator list for a leaf area. Cached per area."""
-    cache = LANDING / str(root_id) / f"_indicators_{area_id}.json"
-    if cache.exists() and not force:
-        data = json.loads(cache.read_text())
-        return data.get("results", [])
+    """Full (zmienna, przekroj, okres) catalog from variable-section-periods."""
+    if CATALOG_PATH.exists() and not force:
+        return json.loads(CATALOG_PATH.read_text())["rows"]
 
-    data = get_json(
-        session, f"{BASE}/area/area-variable",
-        {"id-obszaru": area_id, "lang": "pl"},
-        limiter,
-    )
-    results = data if isinstance(data, list) else data.get("results", [])
-    envelope = {
-        "_meta": {
-            "source": "gus_dbw_api", "endpoint": "/area/area-variable",
-            "area_id": area_id, "root_area_id": root_id, "fetched_at": _now(),
-        },
-        "results": results,
-    }
-    _atomic_write(cache, envelope)
-    return results
-
-
-def fetch_sections(
-    session: requests.Session,
-    limiter: WeeklyRateLimiter,
-    indicator_id: int,
-) -> list[dict]:
-    """Fetch available sections (przekroje) for an indicator.
-
-    Note: endpoint uses id-zmiennej (not id-zmienna — that's the data endpoint).
-    """
-    data = get_json(
-        session, f"{BASE}/variable/variable-section",
-        {"id-zmiennej": indicator_id, "lang": "pl"},
-        limiter,
-    )
-    return data if isinstance(data, list) else data.get("results", [])
-
-
-def fetch_section_data(
-    session: requests.Session,
-    limiter: WeeklyRateLimiter,
-    indicator_id: int,
-    section_id: int,
-) -> list[dict]:
-    """Pull all pages for one indicator+section. Omit id-wymiar/id-pozycja = full pull."""
     rows: list[dict] = []
     page = 0
     while True:
         data = get_json(
-            session, f"{BASE}/variable/variable-data-section",
-            {
-                "id-zmienna": indicator_id,   # NOTE: id-zmienna here (not id-zmiennej)
-                "id-przekroj": section_id,
-                "ile-na-stronie": 100,
-                "numer-strony": page,
-                "lang": "pl",
-            },
+            session, f"{BASE}/variable/variable-section-periods",
+            {"ile-na-stronie": PAGE_SIZE, "numer-strony": page, "lang": "pl"},
             limiter,
         )
-        page_rows = data if isinstance(data, list) else data.get("data", data.get("results", []))
-        if not page_rows:
-            break
-        rows.extend(page_rows)
+        rows.extend(data.get("data", []))
         page += 1
-        # Stop when page returned fewer than full page (or on explicit total)
-        total = data.get("total") or data.get("totalRecords") if isinstance(data, dict) else None
-        if total is not None and page * 100 >= total:
+        if page >= int(data.get("page-count", 1)):
             break
-        if isinstance(page_rows, list) and len(page_rows) < 100:
-            break
+
+    _atomic_write(CATALOG_PATH, {
+        "_meta": {"source": "gus_dbw_api", "endpoint": "/variable/variable-section-periods",
+                  "fetched_at": _now(), "total_rows": len(rows)},
+        "rows": rows,
+    })
+    logger.info(f"[dbw] catalog: {len(rows)} (variable, przekroj, okres) combinations")
     return rows
 
 
-def fetch_indicator_data(
+def parse_year_range(szereg: str) -> tuple[int, int] | None:
+    """'2006 - 2024' → (2006, 2024). Single year '2020' → (2020, 2020)."""
+    if not szereg:
+        return None
+    years = re.findall(r"\d{4}", szereg)
+    if not years:
+        return None
+    lo, hi = int(years[0]), int(years[-1])
+    return (max(lo, MIN_YEAR), hi)
+
+
+def fetch_meta(
     session: requests.Session,
     limiter: WeeklyRateLimiter,
-    indicator: dict,
-    root_id: int,
-    manifest: dict,
-    force: bool,
-) -> int:
-    """Pull all sections for one indicator. Returns total rows. Updates manifest in-place."""
-    ind_id = int(indicator.get("id", indicator.get("id-zmienna", 0)))
-    ind_key = str(ind_id)
-    area_id = int(indicator.get("id-obszaru", 0))
-
-    if ind_key not in manifest["indicators"]:
-        manifest["indicators"][ind_key] = {
-            "area_id": area_id, "root_area_id": root_id,
-            "sections_total": [], "sections_done": [],
-            "rows": 0, "failed": None, "last_updated": "",
-        }
-    state = manifest["indicators"][ind_key]
-
-    # Discover sections
-    if not state["sections_total"] or force:
-        sections = fetch_sections(session, limiter, ind_id)
-        state["sections_total"] = [s.get("id", s.get("id-przekroj")) for s in sections]
-        if force:
-            state["sections_done"] = []
-
-    sections_todo = [
-        s for s in state["sections_total"]
-        if s not in state["sections_done"]
-    ]
-    if not sections_todo:
-        return state.get("rows", 0)
-
-    # Load existing file if partially done
-    dest = LANDING / str(root_id) / f"{ind_id}.json"
-    if dest.exists() and not force and state["sections_done"]:
-        existing = json.loads(dest.read_text())
-        sections_data: dict = existing.get("sections", {})
+    var_id: int,
+    force: bool = False,
+) -> dict:
+    """Fetch variable-meta. Returns {przekroj_id: (year_lo, year_hi)}. Cached on disk."""
+    cache = LANDING / "variables" / str(var_id) / "_meta.json"
+    if cache.exists() and not force:
+        meta = json.loads(cache.read_text())
     else:
-        sections_data = {}
+        # First call for a variable can be slow server-side — generous timeout
+        data = get_json(
+            session, f"{BASE}/variable/variable-meta",
+            {"id-zmiennej": var_id, "lang": "pl"},
+            limiter, timeout_s=120,
+        )
+        meta = data[0] if isinstance(data, list) and data else data
+        if not isinstance(meta, dict):
+            raise FetchSkip(f"variable-meta for {var_id}: unexpected shape")
+        meta["_meta"] = {"source": "gus_dbw_api", "endpoint": "/variable/variable-meta",
+                         "fetched_at": _now()}
+        _atomic_write(cache, meta)
 
-    total_rows = sum(len(v.get("rows", [])) for v in sections_data.values())
+    ranges: dict[str, tuple[int, int]] = {}
+    for prz in meta.get("przekroje", []):
+        rng = parse_year_range(prz.get("szereg-czasowy", ""))
+        if rng:
+            # Same przekroj can appear per-frequency with different ranges — merge
+            key = str(prz.get("id-przekroj"))
+            old = ranges.get(key)
+            ranges[key] = (min(old[0], rng[0]), max(old[1], rng[1])) if old else rng
+    return ranges
 
-    for sec_id in sections_todo:
-        rows = fetch_section_data(session, limiter, ind_id, sec_id)
-        sections_data[str(sec_id)] = {
-            "section_meta": {"id-przekroj": sec_id},
-            "rows": rows,
+
+def fetch_year_data(
+    session: requests.Session,
+    limiter: WeeklyRateLimiter,
+    var_id: int,
+    przekroj_id: int,
+    rok: int,
+    okresy: list[int],
+) -> int:
+    """Pull all okres slices for one (variable, przekroj, year). Returns row count."""
+    slices: dict[str, list] = {}
+    total = 0
+    for okres in okresy:
+        rows: list[dict] = []
+        page = 0
+        while True:
+            try:
+                data = get_json(
+                    session, f"{BASE}/variable/variable-data-section",
+                    {"id-zmienna": var_id, "id-przekroj": przekroj_id,
+                     "id-rok": rok, "id-okres": okres,
+                     "ile-na-stronie": PAGE_SIZE, "numer-strony": page, "lang": "pl"},
+                    limiter,
+                )
+            except FetchSkip:
+                # 404 = no data for this (year, okres) slice — normal (e.g. future months)
+                break
+            rows.extend(data.get("data", []))
+            page += 1
+            if page >= int(data.get("page-count", 1)):
+                break
+        if rows:
+            slices[str(okres)] = rows
+            total += len(rows)
+
+    if slices:
+        dest = LANDING / "variables" / str(var_id) / f"{przekroj_id}_{rok}.json"
+        _atomic_write(dest, {
+            "_meta": {"source": "gus_dbw_api", "endpoint": "/variable/variable-data-section",
+                      "variable_id": var_id, "przekroj_id": przekroj_id, "rok": rok,
+                      "okresy": okresy, "fetched_at": _now(), "total_records": total},
+            "slices": slices,
+        })
+    return total
+
+
+def _var_state(manifest: dict, var_id: int) -> dict:
+    key = str(var_id)
+    if key not in manifest["variables"]:
+        manifest["variables"][key] = {
+            "name": "", "meta_done": False, "przekroje": {}, "last_updated": "",
         }
-        total_rows += len(rows)
-        state["sections_done"].append(sec_id)
-        state["rows"] = total_rows
-        state["last_updated"] = _now()
-
-        # Atomic write after each completed section (resume-safe mid-indicator)
-        envelope = {
-            "_meta": {
-                "source": "gus_dbw_api",
-                "indicator_id": ind_id, "area_id": area_id, "root_area_id": root_id,
-                "fetched_at": _now(),
-                "sections": state["sections_total"],
-            },
-            "sections": sections_data,
-        }
-        _atomic_write(dest, envelope)
-
-    return total_rows
+    return manifest["variables"][key]
 
 
 def main(
-    root_areas: list[int],
+    variables: list[int] | None = None,
     force: bool = False,
-    max_requests: int | None = None,
+    max_requests: int | None = 4500,
     dry_run: bool = False,
 ) -> int:
     api_key = os.environ.get("DBW_API_KEY")
@@ -268,107 +228,101 @@ def main(
         return 2
 
     LANDING.mkdir(parents=True, exist_ok=True)
-    limiter = WeeklyRateLimiter("dbw", 10_000, RATELIMIT_PATH,
-                                min_interval_s=1.5, reserve=200)
+    limiter = WeeklyRateLimiter("dbw", WEEKLY_CAP, RATELIMIT_PATH,
+                                min_interval_s=MIN_INTERVAL_S, reserve=500)
     session = requests.Session()
     session.headers.update({
-        "X-ApiKey": api_key,
+        "X-ClientId": api_key,
         "User-Agent": "OpenReporting-DataPipeline/1.0 (open-reporting.dev)",
         "Accept": "application/json",
     })
     manifest = load_manifest()
 
     try:
-        tree = load_area_tree()
-    except FileNotFoundError as e:
-        logger.error(str(e))
-        return 2
+        catalog = fetch_catalog(session, limiter, force)
 
-    try:
-        for root_id in root_areas:
-            root_name = ROOT_AREAS.get(root_id, str(root_id))
-            (LANDING / str(root_id)).mkdir(parents=True, exist_ok=True)
+        # Group: var_id -> przekroj_id -> [okres, ...]
+        combos: dict[int, dict[int, list[int]]] = {}
+        names: dict[int, str] = {}
+        for row in catalog:
+            vid = int(row["id-zmienna"])
+            pid = int(row["id-przekroj"])
+            combos.setdefault(vid, {}).setdefault(pid, []).append(int(row["id-okres"]))
+            names[vid] = row.get("nazwa-zmienna", "")
 
-            leaves = leaf_areas(tree, root_id)
-            logger.info(f"[dbw] {root_name} ({root_id}): {len(leaves)} leaf areas")
+        todo_vars = sorted(combos) if not variables else [v for v in variables if v in combos]
+        if variables:
+            missing = [v for v in variables if v not in combos]
+            if missing:
+                logger.warning(f"[dbw] not in catalog, skipping: {missing}")
+        logger.info(f"[dbw] {len(todo_vars)} variables to process")
 
-            # Discover all indicators across leaf areas
-            all_indicators: list[dict] = []
-            for area in leaves:
-                area_id = int(area.get("id", 0))
-                if max_requests and limiter.used_this_run >= max_requests:
-                    raise BudgetExhausted(f"per-run cap of {max_requests} reached")
-                try:
-                    indicators = discover_indicators(
-                        session, limiter, area_id, root_id, force
-                    )
-                    all_indicators.extend(indicators)
-                except FetchSkip as e:
-                    logger.warning(f"[dbw] Skip area {area_id}: {e}")
-                time.sleep(0.3)  # brief inter-area pause to avoid burst limits
+        if dry_run:
+            est = 0
+            for vid in todo_vars:
+                state = manifest["variables"].get(str(vid), {})
+                if not state.get("meta_done"):
+                    est += 1  # meta call; year counts unknown until meta — rough lower bound
+                for pid, okresy in combos[vid].items():
+                    pstate = state.get("przekroje", {}).get(str(pid), {})
+                    done_years = set(pstate.get("years_done", []))
+                    rng = pstate.get("year_range")
+                    n_years = (rng[1] - rng[0] + 1 - len(done_years)) if rng else 10
+                    est += max(0, n_years) * len(okresy)
+            logger.info(f"[dbw] DRY RUN: ~{est} requests estimated "
+                        f"(remaining this week: {limiter.remaining})")
+            return 0
 
-            # Deduplicate by indicator ID — same indicator can appear in multiple leaf areas
-            seen_ids: set[str] = set()
-            unique_indicators: list[dict] = []
-            for ind in all_indicators:
-                iid = str(ind.get("id", ind.get("id-zmienna", "")))
-                if iid and iid not in seen_ids:
-                    seen_ids.add(iid)
-                    unique_indicators.append(ind)
-            logger.info(
-                f"[dbw] {root_name}: {len(unique_indicators)} unique indicators "
-                f"({len(all_indicators)} total across areas)"
-            )
+        pulled = skipped = 0
+        for vid in todo_vars:
+            if max_requests and limiter.used_this_run >= max_requests:
+                raise BudgetExhausted(f"per-run cap of {max_requests} reached")
 
-            if dry_run:
-                sections_est = 2
-                req_est = len(unique_indicators) * (1 + sections_est * 2)
-                logger.info(f"[dbw] DRY RUN {root_name}: ~{req_est} requests estimated")
+            state = _var_state(manifest, vid)
+            state["name"] = names.get(vid, state["name"])
+
+            # Year coverage per przekroj from variable-meta
+            try:
+                ranges = fetch_meta(session, limiter, vid, force)
+                state["meta_done"] = True
+            except FetchSkip as e:
+                logger.warning(f"[dbw] Skip var {vid} (meta failed): {e}")
+                state["meta_failed"] = str(e)
+                save_manifest(manifest)
                 continue
 
-            pulled = failed = skipped = 0
-            done_set = {
-                k for k, v in manifest["indicators"].items()
-                if v.get("sections_done") and v.get("sections_done") == v.get("sections_total")
-                and not force
-            }
-            # Also skip indicators already known to have failed (404/permanent errors)
-            failed_set = {
-                k for k, v in manifest["indicators"].items()
-                if v.get("failed") and not force
-            }
+            current_year = datetime.now(timezone.utc).year
+            for pid, okresy in sorted(combos[vid].items()):
+                pkey = str(pid)
+                if pkey not in state["przekroje"]:
+                    state["przekroje"][pkey] = {"years_done": [], "year_range": None}
+                pstate = state["przekroje"][pkey]
 
-            for indicator in unique_indicators:
-                ind_id = str(indicator.get("id", indicator.get("id-zmienna", "")))
-                if ind_id in done_set or ind_id in failed_set:
-                    skipped += 1
-                    continue
-                if max_requests and limiter.used_this_run >= max_requests:
-                    raise BudgetExhausted(f"per-run cap of {max_requests} reached")
+                rng = ranges.get(pkey)
+                if rng is None:
+                    # In section-periods catalog but not in meta przekroje — try
+                    # a recent window rather than skipping silently
+                    rng = (current_year - 5, current_year)
+                pstate["year_range"] = list(rng)
 
-                try:
-                    rows = fetch_indicator_data(
-                        session, limiter, indicator, root_id, manifest, force
-                    )
+                done_years = set(pstate["years_done"]) if not force else set()
+                for rok in range(rng[0], min(rng[1], current_year) + 1):
+                    if rok in done_years:
+                        skipped += 1
+                        continue
+                    if max_requests and limiter.used_this_run >= max_requests:
+                        raise BudgetExhausted(f"per-run cap of {max_requests} reached")
+                    rows = fetch_year_data(session, limiter, vid, pid, rok, okresy)
+                    pstate["years_done"].append(rok)
                     pulled += 1
-                    if pulled % 50 == 0:
-                        logger.info(
-                            f"[dbw] {root_name}: {pulled} done, "
-                            f"{limiter.remaining} req remaining"
-                        )
-                except FetchSkip as e:
-                    ind_key = str(indicator.get("id", "?"))
-                    if ind_key in manifest["indicators"]:
-                        manifest["indicators"][ind_key]["failed"] = str(e)
-                    failed_set.add(ind_id)
-                    failed += 1
-                    logger.warning(f"[dbw] Skip indicator {ind_id}: {e}")
-                finally:
-                    save_manifest(manifest)
+                    if pulled % 25 == 0:
+                        logger.info(f"[dbw] {pulled} (var,przekroj,rok) slices done, "
+                                    f"{limiter.remaining} req remaining (var {vid})")
+                state["last_updated"] = _now()
+                save_manifest(manifest)
 
-            logger.info(
-                f"[dbw] {root_name}: {pulled} pulled, {skipped} skipped, {failed} failed"
-            )
+        logger.info(f"[dbw] Done. {pulled} slices pulled, {skipped} skipped. "
+                    f"Requests this run: {limiter.used_this_run}")
 
     except BudgetExhausted as e:
         logger.info(f"[dbw] Budget stop: {e} — manifest saved, resume next run")
@@ -379,24 +333,23 @@ def main(
         save_manifest(manifest)
         return 2
 
-    logger.info(f"[dbw] Done. Requests this run: {limiter.used_this_run}")
+    save_manifest(manifest)
     return 0
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="GUS DBW non-HVD extractor")
-    parser.add_argument(
-        "--areas", default=",".join(str(a) for a in ROOT_AREAS),
-        help="Comma-separated root area IDs (default: 727,728,729)"
-    )
-    parser.add_argument("--force", action="store_true", help="Re-fetch existing indicators")
-    parser.add_argument("--max-requests", type=int, default=9000)
+    parser = argparse.ArgumentParser(description="GUS DBW extractor (API 1.2.0)")
+    parser.add_argument("--variables", default="",
+                        help="Comma-separated variable IDs (default: all in catalog)")
+    parser.add_argument("--force", action="store_true", help="Re-fetch everything")
+    parser.add_argument("--max-requests", type=int, default=4500,
+                        help="Per-run cap; API allows 5,000 per 12h")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
-    areas = [int(a.strip()) for a in args.areas.split(",") if a.strip()]
+    var_list = [int(v.strip()) for v in args.variables.split(",") if v.strip()] or None
     sys.exit(main(
-        root_areas=areas,
+        variables=var_list,
         force=args.force,
         max_requests=args.max_requests,
         dry_run=args.dry_run,

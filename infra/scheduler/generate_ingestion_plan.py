@@ -38,9 +38,9 @@ CAPACITY_OUT = OUT / "ingestion_capacity.json"
 
 # Static metadata for capacity output
 _BDL_NAME = "Bank Danych Lokalnych (BDL API)"
-_DBW_NAME = "Bank Danych Regionalnych — DBW (API)"
+_DBW_NAME = "Dziedzinowe Bazy Wiedzy — DBW (API 1.2.0)"
 _BDL_BUDGET = 50_000
-_DBW_BUDGET = 10_000
+_DBW_BUDGET = 50_000
 
 _STATUS_ORDER = {"blocked": 0, "failed_partial": 1, "in_progress": 2, "pending": 3, "complete": 4}
 
@@ -259,56 +259,37 @@ def _build_dbw_capacity(schedule_entry: dict) -> dict:
             except ValueError:
                 header_reset = raw_reset
 
-    # Group indicators by root_area_id (str key)
-    groups: dict[str, dict] = {}  # area_id -> {total, done, failed}
-    if manifest:
-        indicators: dict = manifest.get("indicators", {})
-        for _ind_id, ind in indicators.items():
-            root_id = str(ind.get("root_area_id", ""))
-            if root_id not in groups:
-                groups[root_id] = {"total": 0, "done": 0, "failed": 0}
-            groups[root_id]["total"] += 1
+    # v2 manifest (API 1.2.0 extractor): per-variable year tracking.
+    # Variable counts come from the manifest; the catalog gives the full universe.
+    catalog = _load_json_safe(dbw_folder / "_catalog.json")
+    vars_in_catalog = None
+    if catalog:
+        vars_in_catalog = len({r["id-zmienna"] for r in catalog.get("rows", [])})
 
-            sections_done: list = ind.get("sections_done", [])
-            sections_total: list = ind.get("sections_total", [])
-            failed_str: str = ind.get("failed", "")
+    vars_started = vars_complete = vars_failed = 0
+    years_done_total = years_total_known = 0
+    if manifest and "variables" in manifest:
+        for _vid, var in manifest["variables"].items():
+            vars_started += 1
+            if var.get("meta_failed"):
+                vars_failed += 1
+            v_done = v_total = 0
+            for _pid, pstate in var.get("przekroje", {}).items():
+                v_done += len(pstate.get("years_done", []))
+                rng = pstate.get("year_range")
+                if rng:
+                    v_total += rng[1] - rng[0] + 1
+            years_done_total += v_done
+            years_total_known += v_total
+            if v_total and v_done >= v_total:
+                vars_complete += 1
+    elif manifest and "indicators" in manifest:
+        # Legacy v1 manifest — count only
+        vars_started = len(manifest["indicators"])
 
-            if sections_total and len(sections_done) == len(sections_total):
-                groups[root_id]["done"] += 1
-            if failed_str:
-                groups[root_id]["failed"] += 1
-
-    # Build subject rows: union of manifest groups and subject_meta keys
-    all_ids = set(groups.keys()) | set(str(k) for k in subject_meta.keys())
-    subjects_out: list[dict] = []
-    units_done_total = 0
-    units_total_known = 0
-
-    for sid in all_ids:
-        g = groups.get(sid, {})
-        meta = subject_meta.get(sid) or subject_meta.get(int(sid) if sid.isdigit() else sid, {})
-
-        done = g.get("done", 0)
-        total_count = g.get("total") or None  # None if no indicators seen
-        failed = g.get("failed", 0)
-        status = _subject_status(done, total_count, failed)
-        label = meta.get("label") if meta else None
-
-        units_done_total += done
-        if total_count:
-            units_total_known += total_count
-
-        subjects_out.append({
-            "id": sid,
-            "label": label,
-            "done": done,
-            "total": total_count,
-            "failed": failed,
-            "status": status,
-            "est_requests": None,
-        })
-
-    subjects_out.sort(key=_sort_key_for_subject)
+    progress_pct = None
+    if vars_in_catalog:
+        progress_pct = round(vars_complete * 100 / vars_in_catalog, 1)
 
     return {
         "source_key": "gus_dbw_api",
@@ -318,14 +299,14 @@ def _build_dbw_capacity(schedule_entry: dict) -> dict:
         "used_this_week": used_this_week,
         "header_remaining": header_remaining,
         "header_reset": header_reset,
-        "units_label": "indicators",
-        "units_done": units_done_total,
-        "units_total_known": units_total_known if units_total_known else None,
-        "progress_pct": None,
+        "units_label": "variables",
+        "units_done": vars_complete,
+        "units_total_known": vars_in_catalog,
+        "progress_pct": progress_pct,
         "est_requests_remaining": None,
         "est_weeks_to_complete": None,
-        "estimate_confidence": "unknown",
-        "subjects": subjects_out,
+        "estimate_confidence": "low",
+        "subjects": [],
     }
 
 

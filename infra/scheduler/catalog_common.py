@@ -116,6 +116,9 @@ def parse_manifest(folder: Path) -> "tuple[str | None, list[dict]]":
     if "subjects" in data:
         return "bdl", _parse_bdl_progress(data["subjects"])
 
+    if "variables" in data:
+        return "dbw", _parse_dbw_v2_progress(data["variables"])
+
     if "indicators" in data:
         return "dbw", _parse_dbw_progress(data["indicators"])
 
@@ -137,6 +140,30 @@ def _parse_bdl_progress(subjects: dict) -> list[dict]:
             "failed": len(vars_failed),
         })
     rows.sort(key=lambda r: r["id"])
+    return rows
+
+
+def _parse_dbw_v2_progress(variables: dict) -> list[dict]:
+    """One progress row per variable (v2 manifest: extractor against API 1.2.0).
+
+    done = years pulled across all przekroje; total = years in known ranges.
+    """
+    rows: list[dict] = []
+    for var_id, var in variables.items():
+        done = total = 0
+        for _pid, pstate in var.get("przekroje", {}).items():
+            done += len(pstate.get("years_done", []))
+            rng = pstate.get("year_range")
+            if rng:
+                total += rng[1] - rng[0] + 1
+        rows.append({
+            "id": var_id,
+            "label": var.get("name") or None,
+            "done": done,
+            "total": total,
+            "failed": 1 if var.get("meta_failed") else 0,
+        })
+    rows.sort(key=lambda r: int(r["id"]))
     return rows
 
 

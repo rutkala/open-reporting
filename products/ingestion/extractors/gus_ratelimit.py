@@ -139,13 +139,14 @@ def get_json(
     params: dict,
     limiter: WeeklyRateLimiter,
     max_attempts: int = 4,
+    timeout_s: float = 30,
 ) -> dict | list:
     attempt = 0
     rate_limited_once = False
     while True:
         limiter.acquire()
         try:
-            resp = session.get(url, params=params, timeout=30)
+            resp = session.get(url, params=params, timeout=timeout_s)
             limiter.update_from_headers(resp.headers)
 
             if resp.status_code == 429:

@@ -17,20 +17,20 @@ sources:
     default_status: partial
 
   - source_key: gus_dbw_api
-    name: "Dziedzinowe Bazy Wiedzy (DBW REST API)"
+    name: "Dziedzinowe Bazy Wiedzy (DBW REST API 1.2.0)"
     institution: "GUS"
     type: rest_api
     auth: key_required
     rate_limit:
-      requests: 10000
+      requests: 50000
       period: week
-      burst_note: "burst limit ~300 req/session"
+      burst_note: "500 req/15min, 5000 req/12h — per-run cap 4500"
     landing_folders: [gus_dbw_api]
     extractor_kind: script
     extractor_path: products/ingestion/extractors/dbw_extractor.py
     manifest_kind: dbw
-    docs_url: https://api-dbw.stat.gov.pl/
-    default_status: blocked
+    docs_url: https://api-dbw.stat.gov.pl/apidocs/
+    default_status: partial
 
   - source_key: eurostat_bulk
     name: "Eurostat Bulk Download (TSV.GZ)"
