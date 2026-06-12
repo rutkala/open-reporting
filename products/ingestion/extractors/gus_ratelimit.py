@@ -78,6 +78,7 @@ class WeeklyRateLimiter:
             logger.info(f"[{self.name}] New week {current_week} — resetting counter")
             self._state["week"] = current_week
             self._state["used"] = 0
+            self._state["header_remaining"] = self.weekly_cap
             self._save()
 
     @property
@@ -111,8 +112,10 @@ class WeeklyRateLimiter:
         reset_hdr = headers.get("X-Rate-Limit-Reset", "")
         if remaining_hdr is not None:
             try:
+                # Trust the server header as authoritative — it can go UP after
+                # the API-side window resets (which is not aligned to ISO weeks)
                 hdr_val = int(remaining_hdr)
-                if hdr_val < self._state.get("header_remaining", self.weekly_cap):
+                if hdr_val != self._state.get("header_remaining"):
                     self._state["header_remaining"] = hdr_val
                     self._state["header_reset"] = reset_hdr
                     self._save()
