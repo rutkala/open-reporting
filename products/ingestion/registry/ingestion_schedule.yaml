@@ -22,11 +22,11 @@ entries:
     notes: null
 
   - source_key: gus_bdl_api
-    cadence: weekly
-    window: "Mon 03:00 UTC"
-    mechanism: "products/ingestion/extractors/bdl_extractor.py (resumable checkpoint)"
+    cadence: nightly
+    window: "03:30 UTC"
+    mechanism: "cron: products/ingestion/run_gus_bulk.sh bdl (resumable, --subjects all, 7k req/run)"
     priority: 2
-    notes: "Budget-paced: 50k req/week; API down for maintenance as of 2026-06-11"
+    notes: "Budget-paced: 50k req/week; no-ops when weekly quota spent, resumes on ISO-week reset"
     subject_meta:
       K27: {label: "Finanse publiczne", est_requests: 4599}
       K40: {label: "Wynagrodzenia i świadczenia", est_requests: 593}
@@ -63,15 +63,11 @@ entries:
       K54: {label: "Leśnictwo i łowiectwo", est_requests: null}
 
   - source_key: gus_dbw_api
-    cadence: weekly
-    window: "Tue 03:00 UTC"
-    mechanism: "products/ingestion/extractors/dbw_extractor.py (resumable checkpoint)"
+    cadence: nightly
+    window: "04:00 + 16:00 UTC"
+    mechanism: "cron: products/ingestion/run_gus_bulk.sh dbw (resumable, 4.5k req/run vs 5k/12h cap)"
     priority: 3
-    notes: "Blocked: burst limit ~300 req/session; 13 indicators 404 on section endpoint"
-    subject_meta:
-      "727": {label: "Gospodarka"}
-      "728": {label: "Społeczeństwo"}
-      "729": {label: "Środowisko"}
+    notes: "API 1.2.0; 1,518 variables; 50k req/week; full mirror ~3 weeks, then incremental"
 
   - source_key: zus_bulk
     cadence: monthly

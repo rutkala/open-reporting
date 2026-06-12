@@ -194,6 +194,23 @@ def fetch_variable_data(
     return len(rows)
 
 
+def fetch_all_root_subjects(
+    session: requests.Session,
+    limiter: WeeklyRateLimiter,
+) -> list[str]:
+    """Fetch the full list of root (K-level) subject IDs from /subjects."""
+    ids: list[str] = []
+    page = 0
+    while True:
+        data = get_json(session, f"{BASE}/subjects",
+                        {"lang": "pl", "page-size": 100, "page": page}, limiter)
+        ids.extend(s["id"] for s in data.get("results", []))
+        page += 1
+        if page * 100 >= data.get("totalRecords", 0):
+            break
+    return ids
+
+
 def main(
     subjects: list[str],
     unit_level: int = DEFAULT_UNIT_LEVEL,
@@ -221,6 +238,11 @@ def main(
     manifest["years"] = [years[0], years[-1]]
 
     try:
+        if subjects == ["all"]:
+            subjects = fetch_all_root_subjects(session, limiter)
+            logger.info(f"[bdl] 'all' resolved to {len(subjects)} root subjects: "
+                        f"{','.join(subjects)}")
+
         for subject_id in subjects:
             state = _subject_state(manifest, subject_id)
 
@@ -301,7 +323,8 @@ def main(
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="GUS BDL extractor")
     parser.add_argument("--subjects", default=",".join(PRIORITY_SUBJECTS),
-                        help="Comma-separated subject IDs (default: priority list)")
+                        help="Comma-separated subject IDs, or 'all' to fetch the "
+                             "full root list from /subjects (default: priority list)")
     parser.add_argument("--unit-level", type=int, default=DEFAULT_UNIT_LEVEL,
                         help="BDL unit level (2=województwo, 4=powiat, 5=gmina)")
     parser.add_argument("--years", default=f"{YEARS[0]}-{YEARS[-1]}",
