@@ -268,10 +268,12 @@ def _build_dbw_capacity(schedule_entry: dict) -> dict:
 
     vars_started = vars_complete = vars_failed = 0
     years_done_total = years_total_known = 0
+    frontier: list[dict] = []  # in-progress / failed variables — the active edge
     if manifest and "variables" in manifest:
-        for _vid, var in manifest["variables"].items():
+        for vid, var in manifest["variables"].items():
             vars_started += 1
-            if var.get("meta_failed"):
+            failed = bool(var.get("meta_failed"))
+            if failed:
                 vars_failed += 1
             v_done = v_total = 0
             for _pid, pstate in var.get("przekroje", {}).items():
@@ -281,11 +283,26 @@ def _build_dbw_capacity(schedule_entry: dict) -> dict:
                     v_total += rng[1] - rng[0] + 1
             years_done_total += v_done
             years_total_known += v_total
-            if v_total and v_done >= v_total:
+            complete = bool(v_total) and v_done >= v_total
+            if complete:
                 vars_complete += 1
+            if not complete or failed:
+                frontier.append({
+                    "id": vid,
+                    "label": var.get("name") or None,
+                    "done": v_done,
+                    "total": v_total or None,
+                    "failed": 1 if failed else 0,
+                    "status": "blocked" if failed else
+                              ("in_progress" if v_done else "pending"),
+                    "est_requests": None,
+                    "last_updated": var.get("last_updated") or None,
+                })
     elif manifest and "indicators" in manifest:
         # Legacy v1 manifest — count only
         vars_started = len(manifest["indicators"])
+
+    frontier.sort(key=lambda r: (0 if r["status"] == "in_progress" else 1, int(r["id"])))
 
     progress_pct = None
     if vars_in_catalog:
@@ -302,11 +319,15 @@ def _build_dbw_capacity(schedule_entry: dict) -> dict:
         "units_label": "variables",
         "units_done": vars_complete,
         "units_total_known": vars_in_catalog,
+        "vars_started": vars_started,
+        "years_done": years_done_total,
+        "years_total_known": years_total_known or None,
         "progress_pct": progress_pct,
         "est_requests_remaining": None,
         "est_weeks_to_complete": None,
         "estimate_confidence": "low",
-        "subjects": [],
+        "subjects_label": "active variables (in progress / failed) — complete ones omitted",
+        "subjects": frontier,
     }
 
 

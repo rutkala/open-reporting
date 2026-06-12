@@ -155,6 +155,7 @@ function progressBar(done, total, color) {
 }
 
 function subjectStatus(s) {
+  if (s.status) return s.status;
   if (s.done > 0 && s.done >= (s.total||0)) return 'complete';
   if (s.done > 0) return 'in_progress';
   if (s.failed > 0) return 'blocked';
@@ -217,6 +218,12 @@ async function load() {
     const confidenceLabel = api.estimate_confidence
       ? `<span class="cap-item"><div class="c-val" style="font-size:14px;color:#7f849c">${api.estimate_confidence}</div><div class="c-lbl">Estimate confidence</div></span>`
       : '';
+    const startedLabel = api.vars_started != null
+      ? `<span class="cap-item"><div class="c-val" style="color:#89b4fa">${api.vars_started.toLocaleString()}</div><div class="c-lbl">started</div></span>`
+      : '';
+    const yearsLabel = api.years_done != null
+      ? `<span class="cap-item"><div class="c-val" style="color:#89b4fa">${api.years_done.toLocaleString()}${api.years_total_known ? ' / ' + api.years_total_known.toLocaleString() : ''}</div><div class="c-lbl">year-slices pulled</div></span>`
+      : '';
 
     return `<div class="api-card">
       <div class="api-header">
@@ -233,11 +240,13 @@ async function load() {
       <div class="cap-row">
         <span class="cap-item"><div class="c-val">${api.units_done.toLocaleString()}</div><div class="c-lbl">${api.units_label||'units'} done</div></span>
         <span class="cap-item"><div class="c-val" style="color:#7f849c">${api.units_total_known ? api.units_total_known.toLocaleString() : '?'}</div><div class="c-lbl">total known</div></span>
+        ${startedLabel}
+        ${yearsLabel}
         ${weeksLabel}
         ${confidenceLabel}
       </div>
       ${subjects.length ? `
-      <h3>${subjects.length} subjects — ${done5} complete · ${inprog} in progress · ${pending} pending · ${blocked} blocked</h3>
+      <h3>${api.subjects_label || `${subjects.length} subjects — ${done5} complete · ${inprog} in progress · ${pending} pending · ${blocked} blocked`}</h3>
       <div class="subj-table-wrap">
         <table class="subj-table">
           <thead><tr>

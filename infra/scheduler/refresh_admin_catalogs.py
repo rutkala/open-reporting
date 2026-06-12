@@ -14,8 +14,9 @@ Usage:
     python3 infra/scheduler/refresh_admin_catalogs.py --skip landing
 """
 import argparse
-import importlib.util
 import logging
+import os
+import subprocess
 import sys
 import time
 from pathlib import Path
@@ -26,28 +27,34 @@ log = logging.getLogger(__name__)
 SCHED_DIR = Path(__file__).parent
 REPO = SCHED_DIR.parents[1]
 
+# (name, script, timeout_s) — landing scans ~50k files over the rclone FUSE
+# mount and can take >30 min when the cache is cold
 STEPS = [
-    ("landing",   SCHED_DIR / "generate_landing_status.py"),
-    ("duckdb",    SCHED_DIR / "generate_duckdb_catalog.py"),
-    ("registry",  SCHED_DIR / "generate_source_registry.py"),
-    ("plan",      SCHED_DIR / "generate_ingestion_plan.py"),
+    ("landing",   SCHED_DIR / "generate_landing_status.py", 3300),
+    ("duckdb",    SCHED_DIR / "generate_duckdb_catalog.py", 600),
+    ("registry",  SCHED_DIR / "generate_source_registry.py", 600),
+    ("plan",      SCHED_DIR / "generate_ingestion_plan.py", 600),
 ]
 
 
-def run_script(name: str, path: Path) -> bool:
-    spec = importlib.util.spec_from_file_location(name, path)
-    mod = importlib.util.module_from_spec(spec)
+def run_script(name: str, path: Path, timeout_s: int) -> bool:
+    # Subprocess (not importlib): the generators do their work under
+    # `if __name__ == "__main__":`, which never fires for an imported module.
+    env = dict(os.environ, PYTHONPATH=str(REPO))
     try:
-        spec.loader.exec_module(mod)
-        return True
-    except SystemExit as e:
-        if e.code and e.code != 0:
-            log.error(f"{name}: exited with code {e.code}")
-            return False
-        return True
-    except Exception as e:
-        log.error(f"{name}: {e}")
+        proc = subprocess.run(
+            [sys.executable, str(path)],
+            env=env, capture_output=True, text=True, timeout=timeout_s,
+        )
+    except subprocess.TimeoutExpired:
+        log.error(f"{name}: timed out after {timeout_s}s")
         return False
+    for line in (proc.stdout + proc.stderr).splitlines():
+        log.info(f"  {name}: {line}")
+    if proc.returncode != 0:
+        log.error(f"{name}: exited with code {proc.returncode}")
+        return False
+    return True
 
 
 def main() -> int:
@@ -60,12 +67,12 @@ def main() -> int:
     sys.path.insert(0, str(SCHED_DIR))
 
     failed = []
-    for name, path in STEPS:
+    for name, path, timeout_s in STEPS:
         if name in skip:
             log.info(f"skip: {name}")
             continue
         t0 = time.monotonic()
-        ok = run_script(name, path)
+        ok = run_script(name, path, timeout_s)
         elapsed = time.monotonic() - t0
         if ok:
             log.info(f"ok: {name} ({elapsed:.1f}s)")
