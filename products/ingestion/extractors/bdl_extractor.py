@@ -227,7 +227,11 @@ def main(
             # Resolve leaf subjects
             if not state["leaf_subjects"] or force:
                 logger.info(f"[bdl] Resolving subject tree for {subject_id}...")
-                leaves = resolve_leaf_subjects(session, limiter, subject_id)
+                try:
+                    leaves = resolve_leaf_subjects(session, limiter, subject_id)
+                except FetchSkip as e:
+                    logger.warning(f"[bdl] Skip subject {subject_id} (subject tree failed): {e}")
+                    continue
                 state["leaf_subjects"] = leaves
                 save_manifest(manifest)
             else:
