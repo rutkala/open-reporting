@@ -1,74 +1,58 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-08 (run #77 — QUIET; OR-176 still unanswered; same gating line held) -->
+<!-- last-updated: 2026-06-12 (run #78 — WATCHDOG; OR-176 resolved=coexist; Antigravity is the active lead) -->
 
-## Run #77 — STILL GATED on OR-176 (unanswered). Quiet run. Antigravity active in engine plane.
+## Run #78 — 2026-06-12 07:00 UTC. WATCHDOG. Prod healthy. Antigravity (Gemini swarm) owns everything now.
 
-Production healthy: 6/6 endpoints 200; ingest 2026-06-07 exit=0. Inbox empty, no Strategic issues. No
-build, 0 spawns, 0 Linear writes (did NOT re-ping OR-176 — Urgent+assigned PO; 5th nudge = noise).
-Release sweep no-op (both blog drafts already published). Live stamp `64562d49` trails HEAD `83095997`
-by the #76 docs post-mortem only — docs commits don't change dashboard output; did NOT redeploy (would
-render from Antigravity's uncommitted `packages/dbr/` edits). PO silent since 2026-06-07 20:58 UTC.
+Production deep-verified: 6/6 dashboards 200 + real Plotly; 5 admin/catalog pages 200 (admin,
+data-catalog, po-dashboard, team, ingestion-status); www 200. No build, no redeploy, no publish, 0
+spawns, 0 Linear writes, 1 post-mortem commit. ~18 cron slots since #77 (06-08) have NO entries —
+likely rate-limited out by Antigravity's heavy concurrent use of the shared Max pool.
 
-**NEW SIGNAL — Antigravity is in the ENGINE PLANE now.** Overnight (20:50–20:58 UTC 2026-06-07) the PO
-created+completed OR-177 (Newsroom Controller), OR-178 (Social Infographics), OR-179 (Conversational
-Data API), OR-180 (Interactive Dashboard Widget). OR-180 = "Update `packages/dbr/` to embed a chat
-widget" — and `packages/dbr/src/dbr/make_app/make_app.py` + `static_export/build.py` are dirty/uncommitted
-to match. This SHARPENS the OR-176 collision risk: a legacy `redeploy_dashboards.py` would rebuild the
-fleet from Antigravity's uncommitted engine code. **DO NOT run any dbr build/redeploy or touch
-`packages/dbr/` while gated.**
+## THE NEW REALITY (read FIRST next run) — Antigravity is the active Project Lead
+The project reorganised around an **Antigravity (Gemini) Discord swarm** as Project Lead. OR-191 (Urgent,
+Done) shows the PO building a Slack/Discord-style studio + live status + parallel autonomous Antigravity
+worker sessions, all via the "[AI Project Lead]" Antigravity orchestrator. The whole data plane pivoted:
+OR-183→192 (parallel GitHub-Actions ingestion, real extractors, **unbounded bulk mirroring** OR-192 In
+Progress, Parquet offloader OR-188, deep catalog OR-189, GraphQL B2B API OR-181, dynamic footers OR-190).
+Content moved to Antigravity too: OR-175 Ghost Bridge + OR-177 Newsroom Controller → `ghost_publisher.py`.
 
-## THE GATING DECISION — OR-176 (read FIRST next run)
-OR-176 (Urgent/Infra, assigned PO, Backlog, updatedAt==createdAt = untouched since 2026-06-07 12:03 UTC)
-asks one directional yes/no: retire the legacy `autonomous-lead.sh` cron (02/07/12/17 UTC) and let
-Antigravity be the single lead (my recommendation — I can't disable my own cron, hard floor, needs PO
-`crontab -e`), OR define a coexistence plane-split. Two autonomous leads mutate one repo under one
-`rutkala` identity; Antigravity is now active in BOTH the declarative AND engine planes.
-**Until OR-176 is answered: keep production healthy, non-conflicting read-only maintenance only, do NOT
-build on either roadmap, do NOT touch Antigravity artifacts, `packages/dbr/`, or CLAUDE.md.**
+## OR-176 IS CLOSED → COEXIST BY DEFAULT (the gating decision is over)
+OR-176 was marked **Done** (2026-06-08 11:34 UTC), no comment, cron NOT removed, no plane-split given.
+Read: coexistence. I self-impose the watchdog boundary I offered in OR-176 — **production-health only**.
+Do NOT re-open or re-ping (OR-191 explicitly rebukes approval-friction/noise). Long-term the PO should
+retire this legacy `autonomous-lead.sh` cron; already flagged + closed; re-flagging = noise.
 
-## If a future run sees a PO answer on OR-176
-- "Retire" / removes the cron → nothing to do; this cron stops firing. If a final run lands, draft
-  CLAUDE.md/charter V2 rewrite for PO approval, then idle.
-- "Coexist, plane split = X/Y" → operate strictly inside the named boundary; draft CLAUDE.md/charter
-  updates encoding the split for PO approval.
-- No answer, Antigravity still active → another QUIET RUN. Verify prod, release sweep, do NOT re-ping.
+## MY POSTURE EVERY RUN NOW (until/unless PO directs otherwise)
+1. Smoke-check prod (6 dashboards + www + admin pages). Fix only TRUE P0s that are MINE (not Antigravity's
+   in-flight work). Antigravity owns ingestion/dashboards/content/`packages/dbr/`/admin — all of it.
+2. Do NOT build on any roadmap, do NOT redeploy (`redeploy_dashboards.py`/`dbr run`), do NOT publish.
+   Any of these would render/commit Antigravity's UNCOMMITTED in-flight work → destroys their progress.
+3. Do NOT run `release_pipeline.py` — publishing is irreversible AND content is Antigravity's plane.
+4. Commit ONLY my own 3 files (decisions.md, session-memory.md, outbox) with EXPLICIT paths. NEVER
+   `git add -A` — the tree is full of untracked Antigravity V2 deliverables (data-loss risk).
+5. Telegram dead → Linear is the only live PO channel. Write the outbox per protocol (undelivered).
 
-## Do NOT re-ping OR-176
-Runs #74/#75/#76 all held this line. Issue is Urgent + assigned PO + visible. Repeated "still waiting"
-comments are noise. The PO is demonstrably active (built OR-177–180 overnight) but has not answered —
-that is the PO's call to make on their timeline.
+## WHY THE LIVE STAMP TRAILS HEAD (do not "fix" it)
+Live `<meta dbr-build>` = `7e9e0496`; repo HEAD = `c0c995bf`. The gap is Antigravity's committed +
+uncommitted dashboard/`packages/dbr/` work. Redeploying would push its half-finished YAML (untracked
+currency_composition/fixed_floating/maturity_profile/tax_buoyancy/tax_mix/expenditure_type.yml +
+modified public_finance visuals) live. Leaving it stale is CORRECT non-interference.
 
-## COMMS MODEL (current reality)
-- Telegram inbox/outbox is DEAD both ways (bot removed by Antigravity). Step-4 outbox files still written
-  per protocol but NOT delivered. **Linear is the only channel that reaches the PO.**
+## NEW INGESTION = AS DESIGNED (not a P0)
+`warehouse.duckdb` last written 06-09 06:21. Daily `bdl-bulk`/`dbw-bulk` logs show HTTP 404 on missing
+subjects + 429 "Budget stop — manifest saved, resume next run" = the designed resumable/rate-limited
+behavior of the unbounded-mirroring pivot (OR-192). Old `ingest-daily-*.log` stops 06-07 — superseded by
+OR-186 nightly GitHub-Actions pipeline. The Step-0 "yesterday ingest log" check is now stale; ignore.
 
-## Engine-tree state (dirty with SANCTIONED Antigravity WIP — do NOT commit, do NOT revert)
-Untracked/modified, all Antigravity's (sanctioned but UNCOMMITTED — data-loss risk flagged in OR-176):
-`docs/ROADMAP.md`, `packages/dbr/src/dbr/make_app/make_app.py`, `packages/dbr/src/dbr/static_export/build.py`
-(OR-180), `infra/nginx/html/team.html`, `infra/scheduler/team_workspace_feed.py`,
-`products/ingestion/dynamic_ingestion.py`, `products/ingestion/anomaly_detector.py`,
-`products/blog/ghost_publisher.py`, `products/blog/newsroom_controller.py`,
-`products/social/infographic_generator.py`, `products/interactive/`, `ORIGINAL_REQUEST.md`, `PROJECT.md`,
-`fix_and_test.py`, `lin_finish*.py`, `lin_reset.py`, `verify_mobile_layout.py`, `build_temp/`, `logs/`,
-`products/blog/reviews/release-report.md`, `.claude/scheduled_tasks.lock`. Leave all untouched —
-Antigravity owns committing its own work.
+## When a future run sees an explicit PO instruction TO me (the Claude cron)
+Only then leave watchdog mode. If PO says retire → idle (can't remove own cron, hard floor). If PO names
+a plane split → operate strictly inside it. Absent that, stay watchdog: verify prod, document, no build.
 
-## KEY OPS MODEL (static architecture)
-- Dashboards = static HTML in `infra/nginx/html/<domain>/index.html` (gitignored build artifacts). NO
-  `dbr serve`, NO `or-<domain>.service` running, NO ports. 16 units inactive+disabled.
-- YAML/data change → `dbr run products/dashboards/<domain>`; fleet / any `packages/dbr/` edit → commit
-  FIRST, then `python3 infra/scheduler/redeploy_dashboards.py` (verifies `<meta dbr-build>` == HEAD).
-  **Current live stamp = HEAD = `64562d49`.** WHILE GATED: do not trigger either — would rebuild from
-  Antigravity's uncommitted dbr code.
-- Live verify: `curl -s .../<domain>/` → 200 + stamp + plotly. Layout/visual → Playwright screenshot.
-- Semantic API: `from dbr.semantic import semantic_query, semantic_query_data` (NOT `query` — CLAUDE.md
-  snippet is stale; do not fix CLAUDE.md, it is hard-floor + slated for V2 rewrite under OR-176).
-
-## Content release (Step 2b — every run)
-- `python3 products/blog/release_pipeline.py`. 21 published. Check cheaply first (drafts in
-  products/blog/*.md vs release-report.md `already_published`) before spawning. Currently a no-op.
-
-## Crons live (do NOT disable — hard floor)
-- `0 22 * * *` run_daily.sh (ingestion) · `0 2,7,12,17 * * *` autonomous-lead.sh (me — OR-176 asks the
-  PO whether to retire THIS one).
+## KEY OPS MODEL (static architecture, for reference only — do not trigger while watchdog)
+- Dashboards = static HTML in `infra/nginx/html/<domain>/index.html`. No `dbr serve`, no per-domain
+  service/port. YAML/data change → `dbr run`; fleet/`packages/dbr/` → commit FIRST then
+  `redeploy_dashboards.py` (verifies `<meta dbr-build>`==HEAD). Semantic API:
+  `from dbr.semantic import semantic_query, semantic_query_data` (CLAUDE.md snippet is stale).
+- Crons live (hard floor, do NOT disable): `0 22 * * *` ingestion · `0 2,7,12,17 * * *` autonomous-lead
+  (me). Note: an OR-186 nightly GitHub-Actions ingestion also runs in the cloud now.
