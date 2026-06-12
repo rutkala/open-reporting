@@ -1,4 +1,12 @@
-version: 1
+version: 2
+# Source registry — one entry per external data source system.
+# Fields:
+#   base_url          — the system's root URL (clickable entry point for review)
+#   endpoints         — concrete endpoints/files we actually call
+#   scope             — what slice of the source we ingest (and what we skip)
+#   description       — what the source is, who publishes it
+#   extraction_logic  — how the extractor works, in one paragraph
+#   verification      — how to manually check ingested data against the source
 sources:
   - source_key: gus_bdl_api
     name: "Bank Danych Lokalnych (BDL API)"
@@ -9,11 +17,36 @@ sources:
       requests: 50000
       period: week
       burst_note: null
+    base_url: https://bdl.stat.gov.pl/api/v1/
+    endpoints:
+      - "GET /subjects — root K-subject list (33 categories)"
+      - "GET /subjects/{id} — subject tree walk to P-level leaves"
+      - "GET /variables?subject-id={P} — variable list per leaf subject"
+      - "GET /data/by-variable/{id}?unit-level=2&year=… — observations"
+    scope: >-
+      All 33 root subject categories (K1…K54), every variable under them,
+      unit-level 2 (województwa) observations for years 2000-2025.
+      Powiat/gmina levels (4/5) NOT pulled — would multiply volume ~20x.
+    description: >-
+      GUS's regional statistics bank — the largest Polish public statistics API.
+      ~65,000 variables across labour, population, public finance, prices,
+      housing, environment and more, at national/voivodeship/county/commune level.
+    extraction_logic: >-
+      Resumable mirror via products/ingestion/extractors/bdl_extractor.py:
+      walks each K-subject tree to leaves, lists variables, then pulls one JSON
+      file per variable (all years, unit-level 2). Manifest checkpoint per
+      subject; weekly budget pacing (50k req); cron daily 03:30 UTC, no-ops
+      when quota spent.
+    landing_layout: "gus_bdl_api/{K-subject}/{variable_id}.json"
+    verification: >-
+      Pick a variable file, note _meta.variable_id, then compare values at
+      https://bdl.stat.gov.pl/bdl/dane/podgrup/temat (search by variable name)
+      or GET /data/by-variable/{id}?unit-level=2&lang=pl in a browser.
     landing_folders: [gus_bdl_api]
     extractor_kind: script
     extractor_path: products/ingestion/extractors/bdl_extractor.py
     manifest_kind: bdl
-    docs_url: https://bdl.stat.gov.pl/api/v1/
+    docs_url: https://api.stat.gov.pl/Home/BdlApi
     default_status: partial
 
   - source_key: gus_dbw_api
@@ -25,12 +58,70 @@ sources:
       requests: 50000
       period: week
       burst_note: "500 req/15min, 5000 req/12h — per-run cap 4500"
+    base_url: https://api-dbw.stat.gov.pl/api/1.2.0/
+    endpoints:
+      - "GET /variable/variable-section-periods — catalog of valid (variable, przekrój, okres) combos"
+      - "GET /variable/variable-meta?id-zmiennej= — year coverage per przekrój"
+      - "GET /variable/variable-data-section?id-zmienna=&id-przekroj=&id-rok=&id-okres= — data"
+    scope: >-
+      All 1,518 variables in the DBW catalog, every przekrój (cross-section)
+      and okres (period type), full year range per variable-meta szereg-czasowy.
+    description: >-
+      GUS Domain Knowledge Bases — curated macroeconomic and social indicators
+      (production, prices, labour market, demography) with richer
+      dimensionality than BDL: each variable carries cross-sections (przekroje)
+      and period types (monthly/quarterly/annual).
+    extraction_logic: >-
+      Resumable mirror via products/ingestion/extractors/dbw_extractor.py:
+      fetches the section-periods catalog once, then per variable reads
+      variable-meta for exact year coverage and pulls one JSON per
+      (variable, przekrój, year) with all period slices. Manifest v2 checkpoint;
+      cron 04:00+16:00 UTC, 4,500 req/run.
+    landing_layout: "gus_dbw_api/variables/{variable_id}/{przekroj}_{rok}.json"
+    verification: >-
+      Take a file's _meta (variable_id, przekroj_id, rok), then browse
+      https://dbw.stat.gov.pl/ → find the variable by name (manifest stores
+      names) and compare values for that year/przekrój.
     landing_folders: [gus_dbw_api]
     extractor_kind: script
     extractor_path: products/ingestion/extractors/dbw_extractor.py
     manifest_kind: dbw
-    docs_url: https://api-dbw.stat.gov.pl/apidocs/
+    docs_url: https://api.stat.gov.pl/Home/DBWApi
     default_status: partial
+
+  - source_key: gus_dbw_hvd_bulk
+    name: "GUS DBW High-Value Datasets (bulk CSV/XLSX)"
+    institution: "GUS"
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://dbw.stat.gov.pl/pl/katalog/bulk
+    endpoints:
+      - "GET dbw.stat.gov.pl/api_app/getCatalogValues — bulk file catalogue"
+      - "GET {file}.zip — one zip per dataset, csv_pl + xlsx_pl variants"
+    scope: >-
+      The full HVD bulk catalogue (~213 datasets × 2 formats = 426 zips):
+      GDP, macro aggregates, population, employment — EU High-Value-Dataset
+      designated statistics.
+    description: >-
+      Pre-packaged bulk exports of DBW data designated as EU High-Value
+      Datasets. Same id_zmienna/id_przekroj identifiers as the DBW API, but
+      delivered as complete CSV dumps with dictionary files (Slowniki).
+    extraction_logic: >-
+      universal_bulk_downloader.py reads the bulk catalogue and mirrors every
+      zip into landing. Overlaps with gus_dbw_api content — kept both because
+      bulk is complete-but-monthly while the API is current.
+    landing_layout: "gus_dbw_hvd_bulk/{dataset_id}_{csv|xlsx}_pl.zip"
+    verification: >-
+      Unzip any file: {id}_pl.csv has the data, {id}_Slowniki.csv maps
+      dimension ids to labels. Compare with the same dataset at
+      https://dbw.stat.gov.pl/pl/katalog/bulk (dataset id in filename).
+    landing_folders: [gus_dbw_hvd_bulk]
+    extractor_kind: bulk_downloader
+    extractor_path: products/ingestion/bulk/run_bulk.py
+    manifest_kind: null
+    docs_url: https://dbw.stat.gov.pl/pl/katalog/bulk
+    default_status: complete
 
   - source_key: eurostat_bulk
     name: "Eurostat Bulk Download (TSV.GZ)"
@@ -38,269 +129,544 @@ sources:
     type: bulk_api
     auth: none
     rate_limit: null
+    base_url: https://ec.europa.eu/eurostat/api/dissemination/
+    endpoints:
+      - "GET /catalogue/toc/txt?lang=en — table of contents (dataset list)"
+      - "GET /sdmx/2.1/data/{code}/?format=TSV&compressed=true — one file per dataset"
+    scope: >-
+      EVERY dataset and table in the Eurostat TOC (~7,600 files) — full mirror,
+      all EU countries, not filtered to Poland.
+    description: >-
+      The EU statistical office's complete public database: national accounts,
+      labour, prices, demography, trade — comparable across all member states.
+      Poland-vs-EU benchmarking comes from here.
+    extraction_logic: >-
+      universal_bulk_downloader.py walks the TOC and downloads each dataset as
+      compressed TSV. Re-running refreshes changed datasets. Nightly
+      incremental (run_incremental.py) additionally upserts selected series
+      into DuckDB raw.eurostat_observations.
+    landing_layout: "eurostat_bulk/{dataset_code}.tsv.gz"
+    verification: >-
+      Any file's dataset code maps to
+      https://ec.europa.eu/eurostat/databrowser/view/{code}/default/table —
+      compare values directly in the data browser.
     landing_folders: [eurostat_bulk]
-    extractor_kind: script
-    extractor_path: products/ingestion/extractors/eurostat_extractor.py
+    extractor_kind: bulk_downloader
+    extractor_path: products/ingestion/bulk/run_bulk.py
     manifest_kind: null
-    docs_url: https://ec.europa.eu/eurostat/
-    default_status: complete
-
-  - source_key: gus_dbw_hvd_bulk
-    name: "DBW High-Value Datasets (ZIP bulk)"
-    institution: "GUS"
-    type: file_download
-    auth: none
-    rate_limit: null
-    landing_folders: [gus_dbw_hvd_bulk]
-    extractor_kind: script
-    extractor_path: products/ingestion/extractors/gus_extractor.py
-    manifest_kind: null
-    docs_url: https://dbw.stat.gov.pl/pl/katalog/bulk
+    docs_url: https://wikis.ec.europa.eu/display/EUROSTATHELP/API+-+Getting+started
     default_status: complete
 
   - source_key: gus_biuletyn_bulk
-    name: "Biuletyn Statystyczny (XLSX)"
+    name: "GUS Biuletyn Statystyczny — długie szeregi (XLSX)"
     institution: "GUS"
-    type: file_download
+    type: bulk_download
     auth: none
     rate_limit: null
+    base_url: https://new.stat.gov.pl/biuletyn-statystyczny-dlugie-szeregi
+    endpoints:
+      - "Scrape of the page's file-url spans — one XLSX per long-series table"
+    scope: >-
+      All long-series XLSX tables published on the Biuletyn Statystyczny page
+      (~64 files): monthly macro indicators back to the 1990s.
+    description: >-
+      GUS Statistical Bulletin long time series — the canonical monthly macro
+      tables (production, prices, wages, employment, trade) in Excel form,
+      maintained as continuously-extended series.
+    extraction_logic: >-
+      run_bulk.py scrapes the page for file links and mirrors every XLSX.
+      Files are versioned by GUS in place — re-download overwrites with the
+      extended series.
+    landing_layout: "gus_biuletyn_bulk/{original_filename}.xlsx"
+    verification: >-
+      Open the landing XLSX next to the same file downloaded manually from the
+      page — names match 1:1.
     landing_folders: [gus_biuletyn_bulk]
-    extractor_kind: script
-    extractor_path: products/ingestion/extractors/gus_extractor.py
+    extractor_kind: bulk_downloader
+    extractor_path: products/ingestion/bulk/run_bulk.py
     manifest_kind: null
-    docs_url: https://stat.gov.pl/
+    docs_url: https://new.stat.gov.pl/biuletyn-statystyczny-dlugie-szeregi
     default_status: complete
 
   - source_key: gus_teryt_bulk
-    name: "TERYT Territorial Register (JSON)"
+    name: "GUS BDL units register (TERYT geography)"
     institution: "GUS"
-    type: file_download
+    type: rest_api
     auth: none
     rate_limit: null
+    base_url: https://bdl.stat.gov.pl/api/v1/units
+    endpoints:
+      - "GET /units?level={0..6}&page-size=100 — administrative units per level"
+    scope: >-
+      All administrative units at every level (country, macroregion,
+      voivodeship, region, subregion, powiat, gmina) — the geographic dimension
+      for joining BDL data.
+    description: >-
+      The TERYT-coded register of Polish administrative units as exposed by the
+      BDL API — unit ids, names, levels, parent links. Source for dim_geo.
+    extraction_logic: >-
+      run_bulk.py pages through /units per level and stores raw JSON pages.
+      Changes rarely (administrative reform cadence) — manual/monthly refresh
+      is enough.
+    landing_layout: "gus_teryt_bulk/level{N}_page{M}.json"
+    verification: >-
+      Compare unit counts per level with
+      https://bdl.stat.gov.pl/api/v1/units?level=2&lang=pl (16 voivodeships
+      expected at level 2).
     landing_folders: [gus_teryt_bulk]
-    extractor_kind: script
-    extractor_path: products/ingestion/extractors/gus_extractor.py
+    extractor_kind: bulk_downloader
+    extractor_path: products/ingestion/bulk/run_bulk.py
     manifest_kind: null
-    docs_url: https://eteryt.stat.gov.pl/
+    docs_url: https://api.stat.gov.pl/Home/BdlApi
     default_status: complete
 
   - source_key: gus_sdg_bulk
-    name: "SDG Indicators (JSON)"
+    name: "GUS SDG indicators (sdg.gov.pl)"
     institution: "GUS"
-    type: file_download
+    type: bulk_download
     auth: none
     rate_limit: null
+    base_url: https://sdg.gov.pl/
+    endpoints:
+      - "GET /api/v1/en/national_data.json — Polish national SDG indicator set"
+      - "GET /api/v1/en/global_data.json — UN global indicator set for Poland"
+    scope: >-
+      Both complete indicator files (national + global) — UN Sustainable
+      Development Goals monitoring data for Poland.
+    description: >-
+      Poland's official SDG monitoring platform — indicator values for the 17
+      UN goals, national and globally-comparable variants.
+    extraction_logic: >-
+      run_bulk.py downloads the two static JSON exports as-is. Updated by GUS
+      a few times a year.
+    landing_layout: "gus_sdg_bulk/{national|global}_data.json"
+    verification: "Compare any indicator with its page at https://sdg.gov.pl/statistics_nat/"
     landing_folders: [gus_sdg_bulk]
-    extractor_kind: script
-    extractor_path: products/ingestion/extractors/gus_extractor.py
+    extractor_kind: bulk_downloader
+    extractor_path: products/ingestion/bulk/run_bulk.py
     manifest_kind: null
     docs_url: https://sdg.gov.pl/
     default_status: complete
 
   - source_key: nbp_api
-    name: "NBP Web API (FX, rates, gold)"
+    name: "NBP statistics (rates, FX archives)"
     institution: "NBP"
-    type: rest_api
+    type: mixed
     auth: none
     rate_limit: null
+    base_url: https://api.nbp.pl/
+    endpoints:
+      - "GET api.nbp.pl/api/exchangerates/tables/A — daily FX table (incremental, nightly)"
+      - "GET nbp.pl/wp-content/uploads/…/archiwum_tab_a_{year}.xlsx — FX archives (bulk)"
+      - "Scrape of nbp.pl statystyka pages — monetary statistics XLSX files"
+    scope: >-
+      Daily FX rates (table A) upserted into DuckDB nightly; yearly FX archive
+      spreadsheets and monetary statistics files mirrored in bulk.
+    description: >-
+      The central bank's open data: exchange rates, interest rates, monetary
+      aggregates. The FX series feeds currency conversion in the warehouse.
+    extraction_logic: >-
+      Two paths: run_incremental.py (nightly 22:00) upserts current rates into
+      raw.nbp_exchange_rates keyed by currency+date; run_bulk.py mirrors
+      archive XLSX files for history.
+    landing_layout: "nbp_api/{archive xlsx + scraped statistics files}"
+    verification: >-
+      Compare a date's rate in DuckDB raw.nbp_exchange_rates with
+      https://api.nbp.pl/api/exchangerates/tables/A/{date}/ in a browser.
     landing_folders: [nbp_api]
-    extractor_kind: bulk_config
-    extractor_path: products/ingestion/to_landing/sources.yaml
+    extractor_kind: mixed
+    extractor_path: products/ingestion/incremental/run_incremental.py
     manifest_kind: null
     docs_url: https://api.nbp.pl/
     default_status: complete
 
   - source_key: mf_api
-    name: "MF OpenBudget API"
+    name: "MF OpenBudget"
     institution: "Ministerstwo Finansów"
     type: rest_api
     auth: none
     rate_limit: null
+    base_url: https://openbudget.gov.pl/
+    endpoints:
+      - "GET /api/v1/datasets — dataset catalogue (only this is real so far)"
+    scope: >-
+      Currently only the dataset catalogue JSON. Budget execution figures NOT
+      yet ingested.
+    description: >-
+      Ministry of Finance OpenBudget — state and local budget plans and
+      execution. Intended source for fact_finance budget actuals.
+    extraction_logic: >-
+      run_bulk.py stores /api/v1/datasets.
+      WARNING: products/ingestion/extractors/mf_extractor.py (nightly cron) is
+      a MOCK — it writes hardcoded fake rows into raw_mf_budget. Do not trust
+      raw_mf_budget until a real extractor replaces it.
+    landing_layout: "mf_api/datasets.json"
+    verification: >-
+      raw_mf_budget currently contains FAKE data (3 hardcoded 2023 rows) —
+      verify nothing against it. Catalogue file vs
+      https://openbudget.gov.pl/api/v1/datasets.
     landing_folders: [mf_api]
     extractor_kind: script
     extractor_path: products/ingestion/extractors/mf_extractor.py
     manifest_kind: null
     docs_url: https://openbudget.gov.pl/
-    default_status: complete
+    default_status: blocked
 
   - source_key: mf_bulk
-    name: "MF Datasets (dane.gov.pl bulk)"
+    name: "MF datasets on dane.gov.pl"
     institution: "Ministerstwo Finansów"
-    type: file_download
+    type: bulk_download
     auth: none
     rate_limit: null
+    base_url: https://dane.gov.pl/pl/institution/18
+    endpoints:
+      - "GET api.dane.gov.pl/1.4/institutions/18/datasets — catalogue walk"
+      - "GET {resource file urls} — every downloadable resource"
+    scope: >-
+      All downloadable resources MF publishes on dane.gov.pl: public debt,
+      tax revenue, budget reports (~19 files).
+    description: >-
+      Ministry of Finance open-data uploads on the national portal — official
+      debt and tax statistics in XLSX/CSV form.
+    extraction_logic: >-
+      universal_bulk_downloader.py walks the dane.gov.pl API for institution 18
+      and mirrors every resource file.
+    landing_layout: "mf_bulk/{resource_filename}"
+    verification: >-
+      Filenames map to resources listed at
+      https://dane.gov.pl/pl/institution/18 — spot-check totals against the
+      portal preview.
     landing_folders: [mf_bulk]
-    extractor_kind: script
-    extractor_path: products/ingestion/extractors/mf_extractor.py
+    extractor_kind: bulk_downloader
+    extractor_path: products/ingestion/universal_bulk_downloader.py
     manifest_kind: null
     docs_url: https://dane.gov.pl/pl/institution/18
     default_status: complete
 
   - source_key: nfz_bulk
-    name: "NFZ Health Fund Statistics"
-    institution: "NFZ"
-    type: file_download
+    name: "NFZ datasets on dane.gov.pl"
+    institution: "Narodowy Fundusz Zdrowia"
+    type: bulk_download
     auth: none
     rate_limit: null
+    base_url: https://dane.gov.pl/pl/institution/31
+    endpoints:
+      - "GET api.dane.gov.pl/1.4/institutions/31/datasets — catalogue walk"
+    scope: "All NFZ resources on dane.gov.pl (~61 files): contracts, queues, health statistics."
+    description: >-
+      National Health Fund open data — healthcare contracting, waiting lists,
+      service statistics.
+    extraction_logic: >-
+      universal_bulk_downloader.py mirrors institution 31 resources.
+      WARNING: products/ingestion/extractors/nfz_extractor.py (nightly cron) is
+      a MOCK writing fake rows into raw_nfz_health — ignore that table.
+    landing_layout: "nfz_bulk/{resource_filename}"
+    verification: "Match filenames against https://dane.gov.pl/pl/institution/31 resources."
     landing_folders: [nfz_bulk]
-    extractor_kind: script
-    extractor_path: products/ingestion/extractors/nfz_extractor.py
+    extractor_kind: bulk_downloader
+    extractor_path: products/ingestion/universal_bulk_downloader.py
     manifest_kind: null
-    docs_url: https://www.nfz.gov.pl/
+    docs_url: https://dane.gov.pl/pl/institution/31
     default_status: complete
 
   - source_key: zus_bulk
-    name: "ZUS Social Insurance Statistics"
+    name: "ZUS datasets on dane.gov.pl"
     institution: "ZUS"
-    type: file_download
+    type: bulk_download
     auth: none
     rate_limit: null
+    base_url: https://dane.gov.pl/pl/institution/47
+    endpoints:
+      - "GET api.dane.gov.pl/1.4/institutions/47/datasets — catalogue walk"
+    scope: "All ZUS resources on dane.gov.pl (~17 files): pensions, benefits, contributions."
+    description: >-
+      Social Insurance Institution open data — pension and benefit statistics,
+      insured-person counts.
+    extraction_logic: >-
+      universal_bulk_downloader.py mirrors institution 47 resources.
+      WARNING: products/ingestion/extractors/zus_extractor.py (nightly cron) is
+      a MOCK writing fake rows into raw_zus_benefits — ignore that table.
+    landing_layout: "zus_bulk/{resource_filename}"
+    verification: "Match filenames against https://dane.gov.pl/pl/institution/47 resources."
     landing_folders: [zus_bulk]
-    extractor_kind: script
-    extractor_path: products/ingestion/extractors/zus_extractor.py
+    extractor_kind: bulk_downloader
+    extractor_path: products/ingestion/universal_bulk_downloader.py
     manifest_kind: null
-    docs_url: https://www.zus.pl/
+    docs_url: https://dane.gov.pl/pl/institution/47
     default_status: complete
 
-  - source_key: knf_bulk
-    name: "KNF Financial Supervision Data"
-    institution: "KNF"
-    type: file_download
+  - source_key: men_api
+    name: "CIE/MEN datasets on dane.gov.pl"
+    institution: "Ministerstwo Edukacji (CIE)"
+    type: bulk_download
     auth: none
     rate_limit: null
-    landing_folders: [knf_bulk]
-    extractor_kind: bulk_config
-    extractor_path: products/ingestion/to_landing/sources.yaml
+    base_url: https://dane.gov.pl/pl/institution/15
+    endpoints:
+      - "GET api.dane.gov.pl/1.4/institutions/15/datasets — catalogue walk"
+    scope: "All CIE/MEN education resources on dane.gov.pl (school, pupil, teacher statistics)."
+    description: "Education ministry open data via Centrum Informatyki Edukacji."
+    extraction_logic: "universal_bulk_downloader.py mirrors institution 15 resources."
+    landing_layout: "men_api/{resource_filename}"
+    verification: "Match filenames against https://dane.gov.pl/pl/institution/15 resources."
+    landing_folders: [men_api]
+    extractor_kind: bulk_downloader
+    extractor_path: products/ingestion/universal_bulk_downloader.py
     manifest_kind: null
-    docs_url: https://www.knf.gov.pl/
+    docs_url: https://dane.gov.pl/pl/institution/15
+    default_status: partial
+
+  - source_key: gddkia_bulk
+    name: "GDDKiA datasets on dane.gov.pl"
+    institution: "GDDKiA"
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://dane.gov.pl/pl/institution/106
+    endpoints:
+      - "GET api.dane.gov.pl/1.4/institutions/106/datasets — catalogue walk"
+    scope: "All GDDKiA resources (~14 files): road network, traffic measurement."
+    description: "National roads directorate open data — road traffic and infrastructure."
+    extraction_logic: "universal_bulk_downloader.py mirrors institution 106 resources."
+    landing_layout: "gddkia_bulk/{resource_filename}"
+    verification: "Match filenames against https://dane.gov.pl/pl/institution/106 resources."
+    landing_folders: [gddkia_bulk]
+    extractor_kind: bulk_downloader
+    extractor_path: products/ingestion/universal_bulk_downloader.py
+    manifest_kind: null
+    docs_url: https://dane.gov.pl/pl/institution/106
     default_status: complete
 
   - source_key: ure_bulk
-    name: "URE Energy Regulation Data"
-    institution: "URE"
-    type: file_download
+    name: "URE datasets on dane.gov.pl"
+    institution: "Urząd Regulacji Energetyki"
+    type: bulk_download
     auth: none
     rate_limit: null
+    base_url: https://dane.gov.pl/pl/institution/58
+    endpoints:
+      - "GET api.dane.gov.pl/1.4/institutions/58/datasets — catalogue walk"
+    scope: "All URE resources (~3 files): energy market, tariffs, concessions."
+    description: "Energy Regulatory Office open data."
+    extraction_logic: "universal_bulk_downloader.py mirrors institution 58 resources."
+    landing_layout: "ure_bulk/{resource_filename}"
+    verification: "Match filenames against https://dane.gov.pl/pl/institution/58 resources."
     landing_folders: [ure_bulk]
-    extractor_kind: bulk_config
-    extractor_path: products/ingestion/to_landing/sources.yaml
+    extractor_kind: bulk_downloader
+    extractor_path: products/ingestion/universal_bulk_downloader.py
     manifest_kind: null
-    docs_url: https://www.ure.gov.pl/
+    docs_url: https://dane.gov.pl/pl/institution/58
     default_status: complete
 
+  - source_key: mrirw_api
+    name: "MRiRW datasets on dane.gov.pl"
+    institution: "Ministerstwo Rolnictwa i Rozwoju Wsi"
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://dane.gov.pl/pl/institution/204
+    endpoints:
+      - "GET api.dane.gov.pl/1.4/institutions/204/datasets — catalogue walk"
+    scope: "All MRiRW agriculture resources on dane.gov.pl. Currently 0 files landed — needs investigation."
+    description: "Agriculture ministry open data — farm, production, subsidy statistics."
+    extraction_logic: >-
+      universal_bulk_downloader.py mirrors institution 204 resources. Landing
+      folder is empty — either the institution id is wrong or it publishes no
+      downloadable resources; review needed.
+    landing_layout: "mrirw_api/{resource_filename}"
+    verification: "Check https://dane.gov.pl/pl/institution/204 lists any downloadable resources at all."
+    landing_folders: [mrirw_api]
+    extractor_kind: bulk_downloader
+    extractor_path: products/ingestion/universal_bulk_downloader.py
+    manifest_kind: null
+    docs_url: https://dane.gov.pl/pl/institution/204
+    default_status: not_started
+
+  - source_key: knf_bulk
+    name: "KNF statistics pages"
+    institution: "Komisja Nadzoru Finansowego"
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.knf.gov.pl/dane_statystyczne
+    endpoints:
+      - "GET /dane_statystyczne — landing page HTML (file discovery only)"
+    scope: >-
+      Currently only the statistics landing page snapshot (~3 files). Actual
+      sector statistics files (banking, insurance, pension funds) not yet
+      systematically pulled.
+    description: >-
+      Financial Supervision Authority statistics — banking sector, insurance,
+      investment funds data, published as files linked from portal pages.
+    extraction_logic: >-
+      universal_bulk_downloader.py stores the stats page HTML as a discovery
+      seed. A real per-file scraper is still to be built.
+    landing_layout: "knf_bulk/stats_page.html"
+    verification: "Open https://www.knf.gov.pl/dane_statystyczne and compare linked files vs landing."
+    landing_folders: [knf_bulk]
+    extractor_kind: bulk_downloader
+    extractor_path: products/ingestion/universal_bulk_downloader.py
+    manifest_kind: null
+    docs_url: https://www.knf.gov.pl/dane_statystyczne
+    default_status: partial
+
   - source_key: krs_api
-    name: "KRS National Court Register API"
+    name: "KRS open API (Ministerstwo Sprawiedliwości)"
     institution: "Ministerstwo Sprawiedliwości"
     type: rest_api
     auth: none
     rate_limit: null
+    base_url: https://prs.ms.gov.pl/krs/openApi
+    endpoints:
+      - "GET /krs/openApi — OpenAPI spec (discovery only; per-entity lookups by KRS number)"
+    scope: >-
+      Only the API spec snapshot. The API is per-entity lookup (single company
+      records by KRS number) — not bulk-mirrorable; usable for enrichment, not
+      statistics.
+    description: >-
+      National Court Register API — company registration records. Lookup-style
+      API, no aggregate statistics.
+    extraction_logic: "run_bulk.py stores the OpenAPI spec; no data pull implemented (by design)."
+    landing_layout: "krs_api/openapi.json"
+    verification: "https://prs.ms.gov.pl/krs/openApi renders the same spec."
     landing_folders: [krs_api]
-    extractor_kind: bulk_config
-    extractor_path: products/ingestion/to_landing/sources.yaml
+    extractor_kind: bulk_downloader
+    extractor_path: products/ingestion/bulk/run_bulk.py
     manifest_kind: null
-    docs_url: https://api-krs.ms.gov.pl/
-    default_status: complete
+    docs_url: https://prs.ms.gov.pl/krs/openApi
+    default_status: partial
 
   - source_key: saos_api
-    name: "SAOS Court Judgements API"
-    institution: "SAOS"
+    name: "SAOS court judgments API"
+    institution: "SAOS (ICM UW)"
     type: rest_api
     auth: none
     rate_limit: null
+    base_url: https://www.saos.org.pl/api
+    endpoints:
+      - "GET /api/judgments?pageSize=100&pageNumber={n} — judgment pages"
+      - "GET /api/courts — court directory"
+    scope: >-
+      Currently only the first 1-2 judgment pages + courts directory (sample).
+      Full corpus (~400k judgments) not mirrored — decide if needed before
+      pulling.
+    description: >-
+      System Analizy Orzeczeń Sądowych — searchable corpus of Polish court
+      judgments with metadata.
+    extraction_logic: "run_bulk.py stores sample pages; full pagination crawl not implemented."
+    landing_layout: "saos_api/judgments_p{n}.json, courts.json"
+    verification: "Compare a judgment id with https://www.saos.org.pl/judgments/{id}."
     landing_folders: [saos_api]
-    extractor_kind: bulk_config
-    extractor_path: products/ingestion/to_landing/sources.yaml
+    extractor_kind: bulk_downloader
+    extractor_path: products/ingestion/bulk/run_bulk.py
     manifest_kind: null
-    docs_url: https://www.saos.org.pl/
-    default_status: complete
-
-  - source_key: men_api
-    name: "MEN Education Data API"
-    institution: "MEN"
-    type: rest_api
-    auth: none
-    rate_limit: null
-    landing_folders: [men_api]
-    extractor_kind: bulk_config
-    extractor_path: products/ingestion/to_landing/sources.yaml
-    manifest_kind: null
-    docs_url: https://dane.gov.pl/
-    default_status: complete
-
-  - source_key: mrirw_api
-    name: "MRiRW Agriculture Ministry Data"
-    institution: "MRiRW"
-    type: rest_api
-    auth: none
-    rate_limit: null
-    landing_folders: [mrirw_api]
-    extractor_kind: bulk_config
-    extractor_path: products/ingestion/to_landing/sources.yaml
-    manifest_kind: null
-    docs_url: https://www.gov.pl/web/rolnictwo
-    default_status: not_started
+    docs_url: https://www.saos.org.pl/help/index.php/dokumentacja-api
+    default_status: partial
 
   - source_key: opi_radon_api
-    name: "OPI RAD-on Research Database"
+    name: "OPI RAD-on science & higher-education API"
     institution: "OPI PIB"
     type: rest_api
     auth: none
     rate_limit: null
+    base_url: https://radon.nauka.gov.pl/opendata/polon
+    endpoints:
+      - "GET /institutions — research institutions"
+      - "GET /universities — universities"
+      - "GET /institutes — institutes"
+    scope: "Directory snapshots of the three entity types (~3 files); detailed statistics not pulled."
+    description: >-
+      RAD-on — official register of Polish science and higher education:
+      institutions, staff, studies.
+    extraction_logic: "run_bulk.py stores the three directory JSON exports."
+    landing_layout: "opi_radon_api/{institutions|universities|institutes}.json"
+    verification: "Compare counts with https://radon.nauka.gov.pl/dane/instytucje-systemu-szkolnictwa-wyzszego-i-nauki"
     landing_folders: [opi_radon_api]
-    extractor_kind: bulk_config
-    extractor_path: products/ingestion/to_landing/sources.yaml
+    extractor_kind: bulk_downloader
+    extractor_path: products/ingestion/bulk/run_bulk.py
     manifest_kind: null
-    docs_url: https://radon.nauka.gov.pl/
-    default_status: complete
+    docs_url: https://radon.nauka.gov.pl/opendata
+    default_status: partial
 
   - source_key: stooq_api
-    name: "Stooq Market Data"
-    institution: "Stooq"
+    name: "Stooq daily quotes (CSV)"
+    institution: "Stooq (private)"
+    type: csv_endpoint
+    auth: none
+    rate_limit: null
+    base_url: https://stooq.pl/
+    endpoints:
+      - "GET /q/d/l/?s={ticker}&i=d — daily OHLC CSV per ticker"
+    scope: >-
+      Selected market tickers (WIG20, indices, commodities — 1 file landed so
+      far). Non-official source: convenient but unlicensed for redistribution;
+      use for context, not publication.
+    description: >-
+      Free market-data portal with stable CSV endpoints — equity indices, FX,
+      commodities at daily resolution.
+    extraction_logic: "universal_bulk_downloader.py downloads per-ticker daily CSVs from a hardcoded ticker list."
+    landing_layout: "stooq_api/{ticker}_daily.csv"
+    verification: "https://stooq.pl/q/d/?s={ticker} shows the same daily table."
+    landing_folders: [stooq_api]
+    extractor_kind: bulk_downloader
+    extractor_path: products/ingestion/universal_bulk_downloader.py
+    manifest_kind: null
+    docs_url: https://stooq.pl/db/
+    default_status: partial
+
+  - source_key: gios_bulk
+    name: "GIOŚ air-quality API"
+    institution: "GIOŚ"
     type: rest_api
     auth: none
     rate_limit: null
-    landing_folders: [stooq_api]
-    extractor_kind: bulk_config
-    extractor_path: products/ingestion/to_landing/sources.yaml
-    manifest_kind: null
-    docs_url: https://stooq.pl/
-    default_status: complete
-
-  - source_key: gddkia_bulk
-    name: "GDDKiA Road Infrastructure Data"
-    institution: "GDDKiA"
-    type: file_download
-    auth: none
-    rate_limit: null
-    landing_folders: [gddkia_bulk]
-    extractor_kind: bulk_config
-    extractor_path: products/ingestion/to_landing/sources.yaml
-    manifest_kind: null
-    docs_url: https://www.gov.pl/web/gddkia
-    default_status: complete
-
-  - source_key: gios_bulk
-    name: "GIOŚ Environmental Data"
-    institution: "GIOŚ"
-    type: file_download
-    auth: none
-    rate_limit: null
+    base_url: https://api.gios.gov.pl/pjp-api/rest
+    endpoints:
+      - "GET /station/findAll — measurement station directory"
+      - "GET /station/sensors/{stationId} — sensors per station"
+    scope: >-
+      Station + sensor directories (~2 files). Measurement readings
+      (/data/getData/{sensorId}) not yet pulled — needed before any air-quality
+      product.
+    description: >-
+      Chief Inspectorate of Environmental Protection — national air-quality
+      monitoring network (PM10, PM2.5, NO2, O3 …).
+    extraction_logic: >-
+      universal_bulk_downloader.py stores directories; a readings puller with
+      time-window pagination is still to be built.
+    landing_layout: "gios_bulk/stations.json, sensors_{id}.json"
+    verification: "Compare station list with the map at https://powietrze.gios.gov.pl/pjp/current"
     landing_folders: [gios_bulk]
-    extractor_kind: bulk_config
-    extractor_path: products/ingestion/to_landing/sources.yaml
+    extractor_kind: bulk_downloader
+    extractor_path: products/ingestion/universal_bulk_downloader.py
     manifest_kind: null
-    docs_url: https://www.gios.gov.pl/
-    default_status: complete
+    docs_url: https://powietrze.gios.gov.pl/pjp/content/api
+    default_status: partial
 
   - source_key: gpw_benchmark_bulk
-    name: "GPW Benchmark (WIBOR/WIBID Rates)"
+    name: "GPW Benchmark — WIBOR/WIBID rates"
     institution: "GPW Benchmark"
-    type: file_download
+    type: bulk_download
     auth: none
     rate_limit: null
+    base_url: https://gpwbenchmark.pl/
+    endpoints:
+      - "GET /pobierz/WIBOR_{tenor}.csv, WIBID_{tenor}.csv — historic rate CSVs"
+    scope: >-
+      WIBOR (ON,1W,1M,3M,6M,12M) and WIBID tenors as full-history CSVs
+      (~2 files landed; some tenor URLs failing — review).
+    description: >-
+      The administrator of Polish interbank reference rates. WIBOR history is
+      essential for any credit/mortgage analysis.
+    extraction_logic: >-
+      universal_bulk_downloader.py downloads per-tenor CSVs from the public
+      download links; licence permits non-commercial redistribution with
+      attribution — verify before publishing derived charts.
+    landing_layout: "gpw_benchmark_bulk/wibor_{tenor}.csv"
+    verification: "Compare last rows with https://gpwbenchmark.pl/ rate tables."
     landing_folders: [gpw_benchmark_bulk]
-    extractor_kind: bulk_config
-    extractor_path: products/ingestion/to_landing/sources.yaml
+    extractor_kind: bulk_downloader
+    extractor_path: products/ingestion/universal_bulk_downloader.py
     manifest_kind: null
     docs_url: https://gpwbenchmark.pl/
-    default_status: complete
+    default_status: partial

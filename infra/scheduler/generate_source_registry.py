@@ -210,6 +210,35 @@ def _compute_dbw_status(
         return "blocked", "landing folder unreadable (mount error)", None, 0
 
     raw = _read_manifest(landing_folder)
+
+    # v2 manifest (API 1.2.0 extractor): per-variable year tracking
+    if raw is not None and "variables" in raw:
+        variables = raw["variables"]
+        complete = failed = 0
+        for var in variables.values():
+            if var.get("meta_failed"):
+                failed += 1
+            done = total = 0
+            for pstate in var.get("przekroje", {}).values():
+                done += len(pstate.get("years_done", []))
+                rng = pstate.get("year_range")
+                if rng:
+                    total += rng[1] - rng[0] + 1
+            if total and done >= total:
+                complete += 1
+        started = len(variables)
+        status = "partial" if started else default_status
+        detail = f"{complete} variables complete, {started} started; {failed} failing"
+        last_ing = None
+        dates = [v.get("last_updated", "") for v in variables.values() if v.get("last_updated")]
+        if dates:
+            last_ing = max(dates)[:10]
+        try:
+            fc, _, _ = scan_folder(landing_folder)
+        except OSError:
+            fc = 0
+        return status, detail, last_ing, fc
+
     if raw is None or "indicators" not in raw:
         log.warning("dbw manifest missing or invalid in %s; falling back to file scan",
                     landing_folder)
@@ -380,6 +409,14 @@ def generate() -> Path:
             "extractor_path": src["extractor_path"],
             "docs_url": src["docs_url"],
             "file_count": file_count,
+            # Review/detail fields (registry v2) — passed through verbatim
+            "base_url": src.get("base_url"),
+            "endpoints": src.get("endpoints") or [],
+            "scope": src.get("scope"),
+            "description": src.get("description"),
+            "extraction_logic": src.get("extraction_logic"),
+            "landing_layout": src.get("landing_layout"),
+            "verification": src.get("verification"),
         })
 
     # Sort: blocked < partial < not_started < scheduled < complete; within group: alpha by key

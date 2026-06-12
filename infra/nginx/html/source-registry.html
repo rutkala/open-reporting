@@ -201,6 +201,38 @@
       color: var(--subtext);
     }
 
+    /* Expandable detail row */
+    tbody tr.src-row { cursor: pointer; }
+    .chev { display: inline-block; width: 14px; color: var(--overlay); font-size: 11px; transition: transform .15s; }
+    tr.expanded .chev { transform: rotate(90deg); color: var(--blue); }
+    tr.detail-row { background: rgba(24,24,37,.7); }
+    tr.detail-row:hover { background: rgba(24,24,37,.7); }
+    tr.detail-row > td { padding: 0 12px 18px 26px; }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 14px 28px;
+      padding: 14px 16px;
+      background: var(--surface);
+      border: 1px solid var(--surface2);
+      border-radius: 8px;
+    }
+    .detail-item .d-label {
+      font-size: 11px; text-transform: uppercase; letter-spacing: .06em;
+      color: var(--overlay); margin-bottom: 4px;
+    }
+    .detail-item .d-value { font-size: 13px; color: var(--text); line-height: 1.55; }
+    .detail-item .d-value a { color: var(--blue); text-decoration: none; word-break: break-all; }
+    .detail-item .d-value a:hover { text-decoration: underline; }
+    .detail-item .d-value code {
+      font-family: monospace; font-size: 12px; color: var(--subtext);
+      background: var(--surface2); padding: 1px 5px; border-radius: 3px;
+    }
+    .detail-item ul { margin: 0; padding-left: 18px; }
+    .detail-item li { font-size: 12.5px; color: var(--subtext); font-family: monospace; margin-bottom: 3px; }
+    .detail-warn { color: var(--red); font-weight: 600; }
+    .detail-span2 { grid-column: 1 / -1; }
+
     /* Empty / error states */
     .no-results {
       color: var(--overlay);
@@ -247,6 +279,7 @@
   <h1>Source Registry</h1>
   <p class="subtitle">
     Every external data source: type, authentication, rate limits, and ingestion status.
+    Click a row to see the source's URL, endpoints, scope, extraction logic, and how to verify the ingested data.
   </p>
 
   <div class="summary-strip" id="summary-strip">
@@ -303,6 +336,7 @@
   let generatedAt = '';
   let sortCol = null;
   let sortDir = 'asc';
+  const expandedKeys = new Set();
 
   const STATUS_ORDER = { blocked: 0, partial: 1, not_started: 2, scheduled: 3, complete: 4 };
 
@@ -442,13 +476,18 @@
 
     sorted.forEach(function(src) {
       const tr = document.createElement('tr');
+      tr.className = 'src-row' + (expandedKeys.has(src.source_key) ? ' expanded' : '');
 
       // Source
       const tdSrc = document.createElement('td');
       tdSrc.className = 'cell-source';
       const nameDiv = document.createElement('div');
       nameDiv.className = 'src-name';
-      nameDiv.textContent = src.name || src.source_key;
+      const chev = document.createElement('span');
+      chev.className = 'chev';
+      chev.textContent = '▶';
+      nameDiv.appendChild(chev);
+      nameDiv.appendChild(document.createTextNode(src.name || src.source_key));
       const keyDiv = document.createElement('div');
       keyDiv.className = 'src-key';
       keyDiv.textContent = src.source_key;
@@ -570,8 +609,96 @@
       }
       tr.appendChild(tdExt);
 
+      tr.addEventListener('click', function(ev) {
+        if (ev.target.closest('a')) return;  // links keep their own behaviour
+        if (expandedKeys.has(src.source_key)) expandedKeys.delete(src.source_key);
+        else expandedKeys.add(src.source_key);
+        renderTable();
+      });
+
       tbody.appendChild(tr);
+      if (expandedKeys.has(src.source_key)) {
+        tbody.appendChild(buildDetailRow(src));
+      }
     });
+  }
+
+  // ---- Detail row ----
+  function detailItem(label, valueNode, span2) {
+    const item = document.createElement('div');
+    item.className = 'detail-item' + (span2 ? ' detail-span2' : '');
+    const l = document.createElement('div');
+    l.className = 'd-label';
+    l.textContent = label;
+    const v = document.createElement('div');
+    v.className = 'd-value';
+    v.appendChild(valueNode);
+    item.appendChild(l);
+    item.appendChild(v);
+    return item;
+  }
+
+  function textNode(text, warnIfMock) {
+    const span = document.createElement('span');
+    if (warnIfMock && /MOCK|FAKE/.test(text)) span.className = 'detail-warn';
+    span.textContent = text;
+    return span;
+  }
+
+  function linkNode(url) {
+    const a = document.createElement('a');
+    a.href = url;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.textContent = url;
+    return a;
+  }
+
+  function buildDetailRow(src) {
+    const tr = document.createElement('tr');
+    tr.className = 'detail-row';
+    const td = document.createElement('td');
+    td.colSpan = 9;
+    const grid = document.createElement('div');
+    grid.className = 'detail-grid';
+
+    if (src.description) grid.appendChild(detailItem('What it is', textNode(src.description)));
+    if (src.scope)       grid.appendChild(detailItem('Scope (what we ingest)', textNode(src.scope)));
+
+    if (src.base_url) grid.appendChild(detailItem('Base URL', linkNode(src.base_url)));
+    if (src.docs_url && src.docs_url !== src.base_url) {
+      grid.appendChild(detailItem('Documentation', linkNode(src.docs_url)));
+    }
+
+    if (Array.isArray(src.endpoints) && src.endpoints.length) {
+      const ul = document.createElement('ul');
+      src.endpoints.forEach(function(e) {
+        const li = document.createElement('li');
+        li.textContent = e;
+        ul.appendChild(li);
+      });
+      grid.appendChild(detailItem('Endpoints / files used', ul, true));
+    }
+
+    if (src.extraction_logic) {
+      grid.appendChild(detailItem('Extraction logic', textNode(src.extraction_logic, true), true));
+    }
+    if (src.landing_layout) {
+      const code = document.createElement('code');
+      code.textContent = src.landing_layout;
+      grid.appendChild(detailItem('Landing layout', code));
+    }
+    if (src.verification) {
+      grid.appendChild(detailItem('How to verify', textNode(src.verification, true)));
+    }
+
+    if (!grid.children.length) {
+      grid.appendChild(detailItem('Details', textNode('No detail metadata for this source yet — add it in products/ingestion/registry/source_registry.yaml.')));
+    }
+
+    td.appendChild(grid);
+    tr.appendChild(td);
+    return tr;
   }
 
   // ---- Sort headers ----
