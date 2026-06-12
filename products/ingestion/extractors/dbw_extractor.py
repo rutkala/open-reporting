@@ -40,7 +40,8 @@ load_dotenv(override=True)
 sys.path.insert(0, str(Path(__file__).parents[3]))
 
 from products.ingestion.extractors.gus_ratelimit import (
-    BudgetExhausted, FetchAbort, FetchSkip, WeeklyRateLimiter, get_json,
+    BudgetExhausted, FetchAbort, FetchSkip, WeeklyRateLimiter,
+    classify_stop, get_json, write_laststatus,
 )
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -327,13 +328,16 @@ def main(
     except BudgetExhausted as e:
         logger.info(f"[dbw] Budget stop: {e} — manifest saved, resume next run")
         save_manifest(manifest)
+        write_laststatus(LANDING / "_laststatus.json", classify_stop(e), limiter.used_this_run)
         return 0
     except FetchAbort as e:
         logger.error(f"[dbw] Abort: {e}")
         save_manifest(manifest)
+        write_laststatus(LANDING / "_laststatus.json", "error", limiter.used_this_run)
         return 2
 
     save_manifest(manifest)
+    write_laststatus(LANDING / "_laststatus.json", "completed", limiter.used_this_run)
     return 0
 
 

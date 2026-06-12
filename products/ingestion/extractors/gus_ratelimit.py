@@ -136,6 +136,29 @@ class WeeklyRateLimiter:
         time.sleep(wait)
 
 
+def classify_stop(exc: "Exception | None") -> str:
+    """Map a run-ending exception to a stop-reason code for _laststatus.json."""
+    if exc is None:
+        return "completed"
+    msg = str(exc)
+    if "per-run cap" in msg:
+        return "run_cap"
+    if "429" in msg:
+        return "quota_429"
+    if "Weekly budget exhausted" in msg:
+        return "weekly_budget"
+    return "error"
+
+
+def write_laststatus(path: Path, reason: str, requests_this_run: int) -> None:
+    """Record how the last run ended — surfaced on the admin ingestion-plan page."""
+    _atomic_write(path, {
+        "ended_at": datetime.now(timezone.utc).isoformat(),
+        "reason": reason,
+        "requests_this_run": requests_this_run,
+    })
+
+
 def get_json(
     session: requests.Session,
     url: str,

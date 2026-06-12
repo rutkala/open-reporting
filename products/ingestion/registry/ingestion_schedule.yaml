@@ -27,6 +27,8 @@ entries:
     mechanism: "cron: products/ingestion/run_gus_bulk.sh bdl (resumable, --subjects all, 7k req/run)"
     priority: 2
     notes: "Budget-paced: 50k req/week; no-ops when weekly quota spent, resumes on ISO-week reset"
+    quota_tiers:
+      - {label: "Weekly", limit: "50,000 req / 7 days"}
     subject_meta:
       K27: {label: "Finanse publiczne", est_requests: 4599}
       K40: {label: "Wynagrodzenia i świadczenia", est_requests: 593}
@@ -68,6 +70,10 @@ entries:
     mechanism: "cron: products/ingestion/run_gus_bulk.sh dbw (resumable, 4.5k req/run vs 5k/12h cap)"
     priority: 3
     notes: "API 1.2.0; 1,518 variables; 50k req/week; full mirror ~3 weeks, then incremental"
+    quota_tiers:
+      - {label: "Burst", limit: "500 req / 15 min", note: "avoided by 1.9s pacing"}
+      - {label: "12-hour", limit: "5,000 req / rolling 12h", note: "binding tier — caps effective pace at ~5k/day"}
+      - {label: "Weekly", limit: "50,000 req / 7 days"}
 
   - source_key: zus_bulk
     cadence: monthly

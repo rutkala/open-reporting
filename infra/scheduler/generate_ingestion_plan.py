@@ -44,6 +44,37 @@ _DBW_BUDGET = 50_000
 
 _STATUS_ORDER = {"blocked": 0, "failed_partial": 1, "in_progress": 2, "pending": 3, "complete": 4}
 
+_STOP_REASON_LABELS = {
+    "completed":     "up to date — last run completed with nothing left to pull",
+    "run_cap":       "paused — per-run cap reached; resumes at the next scheduled run",
+    "quota_429":     "paused — API sub-quota hit (429); resumes at the next scheduled run",
+    "weekly_budget": "paused — weekly quota spent",
+    "error":         "stopped on error — check the extractor log",
+}
+
+
+def _runtime_state(folder: Path, used: "int | None", header_remaining: "int | None",
+                   budget: int, header_reset: "str | None", window: "str | None") -> "dict":
+    """Plain-language current state for the capacity card, from _laststatus.json + quota."""
+    last = _load_json_safe(folder / "_laststatus.json") or {}
+    reason = last.get("reason")
+    remaining = min(budget - (used or 0),
+                    header_remaining if header_remaining is not None else budget)
+    if remaining <= 600:  # at/under the limiter reserve — weekly quota is the binding fact
+        line = "paused — weekly quota spent"
+        if header_reset:
+            line += f"; resumes after {header_reset[:16].replace('T', ' ')} UTC"
+    else:
+        line = _STOP_REASON_LABELS.get(reason, "no run recorded yet")
+        if reason in ("run_cap", "quota_429") and window:
+            line += f" ({window})"
+    return {
+        "state_line": line,
+        "last_run_ended": last.get("ended_at"),
+        "last_run_reason": reason,
+        "last_run_requests": last.get("requests_this_run"),
+    }
+
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -216,6 +247,8 @@ def _build_bdl_capacity(schedule_entry: dict) -> dict:
     if est_requests_remaining is not None:
         est_weeks_to_complete = round(est_requests_remaining / budget_per_week, 1)
 
+    state = _runtime_state(LANDING / "gus_bdl_api", used_this_week, header_remaining,
+                           budget_per_week, header_reset, schedule_entry.get("window"))
     return {
         "source_key": "gus_bdl_api",
         "name": _BDL_NAME,
@@ -224,6 +257,9 @@ def _build_bdl_capacity(schedule_entry: dict) -> dict:
         "used_this_week": used_this_week,
         "header_remaining": header_remaining,
         "header_reset": header_reset,
+        "quota_tiers": schedule_entry.get("quota_tiers") or [],
+        "schedule_window": schedule_entry.get("window"),
+        **state,
         "units_label": "variables",
         "units_done": units_done_total,
         "units_total_known": units_total_known,
@@ -308,6 +344,8 @@ def _build_dbw_capacity(schedule_entry: dict) -> dict:
     if vars_in_catalog:
         progress_pct = round(vars_complete * 100 / vars_in_catalog, 1)
 
+    state = _runtime_state(dbw_folder, used_this_week, header_remaining,
+                           budget_per_week, header_reset, schedule_entry.get("window"))
     return {
         "source_key": "gus_dbw_api",
         "name": _DBW_NAME,
@@ -316,6 +354,9 @@ def _build_dbw_capacity(schedule_entry: dict) -> dict:
         "used_this_week": used_this_week,
         "header_remaining": header_remaining,
         "header_reset": header_reset,
+        "quota_tiers": schedule_entry.get("quota_tiers") or [],
+        "schedule_window": schedule_entry.get("window"),
+        **state,
         "units_label": "variables",
         "units_done": vars_complete,
         "units_total_known": vars_in_catalog,

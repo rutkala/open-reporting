@@ -33,6 +33,16 @@
     .budget-bar-wrap { background: #313244; border-radius: 6px; height: 10px; margin-bottom: 8px; overflow: hidden; }
     .budget-bar { height: 100%; border-radius: 6px; transition: width .4s; }
     .budget-label { display: flex; justify-content: space-between; font-size: 12px; color: #7f849c; margin-bottom: 14px; }
+    .state-line { font-size: 13px; padding: 8px 12px; border-radius: 8px; margin-bottom: 14px;
+                  background: rgba(137,180,250,.08); border: 1px solid #313244; color: #cdd6f4; }
+    .state-line.paused { background: rgba(249,226,175,.08); color: #f9e2af; }
+    .state-line.ok { background: rgba(166,227,161,.08); color: #a6e3a1; }
+    .state-line.error { background: rgba(243,139,168,.10); color: #f38ba8; }
+    .state-line .state-meta { color: #585b70; font-size: 11px; margin-top: 3px; }
+    .tier-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+    .tier { background: #24273a; border: 1px solid #313244; border-radius: 8px; padding: 6px 10px; font-size: 11px; color: #7f849c; }
+    .tier b { color: #cdd6f4; font-weight: 600; display: block; font-size: 12px; }
+    .tier .t-note { color: #585b70; }
     .cap-row { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 16px; }
     .cap-item { }
     .cap-item .c-val { font-size: 20px; font-weight: 700; color: #a6e3a1; }
@@ -237,6 +247,12 @@ async function load() {
         <span>${api.used_this_week.toLocaleString()} used this week (${usedPct}%)</span>
         <span>Resets ${api.header_reset ? api.header_reset.substring(0,10) : '?'}</span>
       </div>
+      ${api.state_line ? `<div class="state-line ${api.state_line.startsWith('up to date') ? 'ok' : api.state_line.startsWith('stopped') ? 'error' : 'paused'}">
+        ${api.state_line}
+        ${api.last_run_ended ? `<div class="state-meta">last run ended ${api.last_run_ended.substring(0,16).replace('T',' ')} UTC · ${(api.last_run_requests ?? 0).toLocaleString()} requests · schedule: ${api.schedule_window || '—'}</div>` : ''}
+      </div>` : ''}
+      ${(api.quota_tiers && api.quota_tiers.length) ? `<div class="tier-row">${api.quota_tiers.map(t =>
+        `<span class="tier"><b>${t.label}</b>${t.limit}${t.note ? `<div class="t-note">${t.note}</div>` : ''}</span>`).join('')}</div>` : ''}
       <div class="cap-row">
         <span class="cap-item"><div class="c-val">${api.units_done.toLocaleString()}</div><div class="c-lbl">${api.units_label||'units'} done</div></span>
         <span class="cap-item"><div class="c-val" style="color:#7f849c">${api.units_total_known ? api.units_total_known.toLocaleString() : '?'}</div><div class="c-lbl">total known</div></span>
