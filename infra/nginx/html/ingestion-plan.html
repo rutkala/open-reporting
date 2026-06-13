@@ -69,6 +69,17 @@
     .sched-table tr:last-child td { border-bottom: none; }
     .sched-table tr:hover td { background: rgba(255,255,255,.03); }
     .source-key { font-family: 'Fira Mono', monospace; font-size: 12px; color: #89dceb; }
+    .mode { display:inline-block; padding:2px 7px; border-radius:4px; font-size:11px; font-weight:600; white-space:nowrap; }
+    .mode-bulk { background:rgba(137,180,250,.18); color:#89b4fa; }
+    .mode-incr { background:rgba(203,166,247,.18); color:#cba6f7; }
+    .mode-both { background:rgba(166,227,161,.18); color:#a6e3a1; }
+    .mode-api  { background:rgba(148,226,213,.18); color:#94e2d5; }
+    .mode-none { background:rgba(108,112,134,.15); color:#6c7086; }
+    .badge-complete{background:rgba(166,227,161,.18);color:#a6e3a1;} .badge-partial{background:rgba(249,226,175,.18);color:#f9e2af;}
+    .badge-blocked{background:rgba(243,139,168,.18);color:#f38ba8;} .badge-not_started{background:rgba(108,112,134,.18);color:#a6adc8;}
+    .badge-skipped{background:rgba(108,112,134,.12);color:#6c7086;text-decoration:line-through;}
+    tr.cat-row td { padding:20px 12px 7px; font-size:12px; font-weight:700; color:#cba6f7; text-transform:uppercase; letter-spacing:.06em; border-bottom:2px solid #313244; }
+    tr.cat-row .ch { font-weight:400; text-transform:none; letter-spacing:0; color:#585b70; margin-left:10px; }
 
     /* Badges */
     .badge { display: inline-block; padding: 3px 9px; border-radius: 99px; font-size: 11px; font-weight: 600; }
@@ -109,30 +120,47 @@
   <h2>API Capacity</h2>
   <div class="api-grid" id="api-capacity"></div>
 
-  <h2>Full Ingestion Schedule</h2>
+  <h2>Master Ingestion Tracker — all sources</h2>
+  <p style="color:#7f849c;font-size:13px;margin:-8px 0 16px">Every source across the four categories: ingestion mode, when it runs, current status and volume. Grouped by category.</p>
   <div class="filters">
     <input type="text" id="search" placeholder="Filter by source key…">
-    <select id="cadence-filter">
-      <option value="">All cadences</option>
-      <option value="nightly">Nightly</option>
-      <option value="weekly">Weekly</option>
-      <option value="monthly">Monthly</option>
-      <option value="manual">Manual</option>
+    <select id="cat-filter">
+      <option value="">All categories</option>
+      <option value="a_pl_gov_central">a — PL gov, combined (GUS)</option>
+      <option value="b_pl_gov_institutional">b — PL gov, institutional</option>
+      <option value="c_pl_private">c — PL private</option>
+      <option value="d_international">d — International</option>
+    </select>
+    <select id="mode-filter">
+      <option value="">All modes</option>
+      <option value="bulk">bulk</option>
+      <option value="incremental">incremental</option>
+      <option value="bulk+incremental">bulk + incremental</option>
+      <option value="api_full">API (full)</option>
+      <option value="none">none</option>
+    </select>
+    <select id="status-filter">
+      <option value="">All statuses</option>
+      <option value="complete">complete</option>
+      <option value="partial">partial</option>
+      <option value="blocked">blocked</option>
+      <option value="not_started">not_started</option>
+      <option value="skipped">skipped</option>
     </select>
   </div>
   <div class="sched-table-wrap">
-    <table class="sched-table" id="sched-table">
+    <table class="sched-table" id="master-table">
       <thead>
         <tr>
-          <th data-col="source_key">Source</th>
-          <th data-col="cadence">Cadence</th>
-          <th data-col="window">Window</th>
-          <th data-col="priority">Priority</th>
-          <th>Mechanism</th>
-          <th>Notes</th>
+          <th>Source</th>
+          <th>Mode</th>
+          <th>Schedule</th>
+          <th>Status</th>
+          <th>Files / volume</th>
+          <th>Last ingested</th>
         </tr>
       </thead>
-      <tbody id="sched-body"></tbody>
+      <tbody id="master-body"></tbody>
     </table>
   </div>
 </main>
@@ -140,6 +168,21 @@
 <script>
 const PLAN_URL = '/data/ingestion_plan.json';
 const CAP_URL  = '/data/ingestion_capacity.json';
+const REG_URL  = '/data/source_registry.json';
+
+const CATS = {
+  'a_pl_gov_central':       'a — Polish government, combined (GUS)',
+  'b_pl_gov_institutional': 'b — Polish government, institutional',
+  'c_pl_private':           'c — Polish private',
+  'd_international':         'd — International, combined',
+};
+const MODES = {
+  'bulk': ['bulk','mode-bulk'], 'incremental': ['incremental','mode-incr'],
+  'bulk+incremental': ['bulk + incr','mode-both'], 'api_full': ['API (full)','mode-api'],
+  'none': ['—','mode-none'],
+};
+function modeChip(m) { const x = MODES[m]||MODES['none']; return `<span class="mode ${x[1]}">${x[0]}</span>`; }
+function statusBadge(s) { return `<span class="badge badge-${s||'unknown'}">${(s||'unknown').replace('_',' ')}</span>`; }
 
 function badge(val, type) {
   if (!val) return '<span class="ts">—</span>';
@@ -173,26 +216,26 @@ function subjectStatus(s) {
 }
 
 async function load() {
-  const [planResp, capResp] = await Promise.all([fetch(PLAN_URL), fetch(CAP_URL)]);
+  const [planResp, capResp, regResp] = await Promise.all([fetch(PLAN_URL), fetch(CAP_URL), fetch(REG_URL)]);
   const plan = await planResp.json();
   const cap  = await capResp.json();
+  const reg  = await regResp.json();
 
   document.getElementById('ts').textContent = 'Generated: ' + (cap.generated_at || plan.generated_at || '').replace('T',' ').replace('Z',' UTC');
 
-  // Stats
+  // Stats — from the full registry (all 44 sources)
   const entries = plan.entries || [];
-  const cadences = {};
-  entries.forEach(e => { cadences[e.cadence] = (cadences[e.cadence]||0)+1; });
-  const statsEl = document.getElementById('stats');
+  const sources = reg.sources || [];
+  const sc = reg.status_counts || {};
   const apiSrc = cap.api_sources || [];
-  const bulkSrc = cap.bulk_sources || [];
+  const statsEl = document.getElementById('stats');
   statsEl.innerHTML = `
-    <div class="stat-card"><div class="val">${entries.length}</div><div class="lbl">Total sources</div></div>
-    <div class="stat-card"><div class="val">${cadences['nightly']||0}</div><div class="lbl">Nightly</div></div>
-    <div class="stat-card"><div class="val">${cadences['weekly']||0}</div><div class="lbl">Weekly</div></div>
-    <div class="stat-card"><div class="val">${cadences['manual']||0}</div><div class="lbl">Manual</div></div>
-    <div class="stat-card"><div class="val">${apiSrc.length}</div><div class="lbl">API sources (rate-limited)</div></div>
-    <div class="stat-card"><div class="val">${bulkSrc.length}</div><div class="lbl">Bulk sources</div></div>
+    <div class="stat-card"><div class="val">${reg.source_count||sources.length}</div><div class="lbl">Total sources</div></div>
+    <div class="stat-card"><div class="val" style="color:#a6e3a1">${sc.complete||0}</div><div class="lbl">Complete</div></div>
+    <div class="stat-card"><div class="val" style="color:#f9e2af">${sc.partial||0}</div><div class="lbl">In progress</div></div>
+    <div class="stat-card"><div class="val" style="color:#f38ba8">${sc.blocked||0}</div><div class="lbl">Blocked</div></div>
+    <div class="stat-card"><div class="val" style="color:#585b70">${(sc.not_started||0)}</div><div class="lbl">Not started</div></div>
+    <div class="stat-card"><div class="val">${apiSrc.length}</div><div class="lbl">Rate-limited APIs</div></div>
   `;
 
   // API capacity cards
@@ -274,46 +317,70 @@ async function load() {
     </div>`;
   }).join('');
 
-  // Schedule table
-  let sortCol = 'priority', sortAsc = true;
-  let entries2 = [...entries];
+  // Master tracker — join registry (all 44) with schedule cadence/window
+  const schedByKey = {};
+  entries.forEach(e => { schedByKey[e.source_key] = e; });
 
-  function renderSched() {
-    const q = document.getElementById('search').value.toLowerCase();
-    const cad = document.getElementById('cadence-filter').value;
-    let rows = entries2.filter(e => {
-      if (q && !e.source_key.toLowerCase().includes(q)) return false;
-      if (cad && e.cadence !== cad) return false;
-      return true;
-    });
-    rows.sort((a, b) => {
-      let va = a[sortCol] ?? '', vb = b[sortCol] ?? '';
-      if (typeof va === 'number' && typeof vb === 'number') return sortAsc ? va - vb : vb - va;
-      return sortAsc ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va));
-    });
-    const tbody = document.getElementById('sched-body');
-    tbody.innerHTML = rows.length === 0
-      ? '<tr><td colspan="6" class="no-data">No entries match filters.</td></tr>'
-      : rows.map(e => `<tr>
-          <td><span class="source-key">${e.source_key}</span></td>
-          <td>${cadenceBadge(e.cadence)}</td>
-          <td style="color:#7f849c;font-size:12px">${e.window||'—'}</td>
-          <td style="color:#7f849c;text-align:center">${e.priority ?? '—'}</td>
-          <td style="color:#7f849c;font-size:12px">${e.mechanism||'—'}</td>
-          <td style="color:#7f849c;font-size:12px;max-width:280px">${e.notes||''}</td>
-        </tr>`).join('');
+  function scheduleCell(src) {
+    const e = schedByKey[src.source_key];
+    if (src.extraction_status === 'skipped') return '<span class="ts">skipped by design</span>';
+    if (src.ingestion_mode === 'none' || !e) {
+      if (src.extraction_status === 'blocked') return '<span class="ts">blocked — not scheduled</span>';
+      return '<span class="ts">not scheduled</span>';
+    }
+    const cad = e.cadence ? `<span class="badge badge-${e.cadence==='nightly'?'nightly':e.cadence==='weekly'?'weekly':e.cadence==='monthly'?'monthly':'manual'}" style="background:rgba(137,180,250,.15);color:#89b4fa">${e.cadence}</span>` : '';
+    return `${cad} <span style="color:#7f849c;font-size:12px">${e.window||''}</span>`;
   }
 
-  document.querySelectorAll('.sched-table th[data-col]').forEach(th => {
-    th.addEventListener('click', () => {
-      const col = th.dataset.col;
-      if (sortCol === col) { sortAsc = !sortAsc; } else { sortCol = col; sortAsc = true; }
-      renderSched();
+  function volumeCell(src) {
+    if (src.file_count != null && src.file_count > 0) return `<span style="color:#cdd6f4">${src.file_count.toLocaleString()}</span> <span class="ts">files</span>`;
+    if (src.status_detail) return `<span class="ts">${src.status_detail}</span>`;
+    return '<span class="ts">—</span>';
+  }
+
+  function renderMaster() {
+    const q = document.getElementById('search').value.toLowerCase();
+    const fcat = document.getElementById('cat-filter').value;
+    const fmode = document.getElementById('mode-filter').value;
+    const fstat = document.getElementById('status-filter').value;
+    let rows = sources.filter(s => {
+      if (q && !(s.source_key+' '+(s.name||'')).toLowerCase().includes(q)) return false;
+      if (fcat && s.category !== fcat) return false;
+      if (fmode && s.ingestion_mode !== fmode) return false;
+      if (fstat && s.extraction_status !== fstat) return false;
+      return true;
     });
+    const SORD = { complete:0, partial:1, blocked:2, not_started:3, skipped:4 };
+    rows.sort((a,b) => (a.category||'9').localeCompare(b.category||'9')
+      || (SORD[a.extraction_status]??9)-(SORD[b.extraction_status]??9)
+      || (a.name||'').localeCompare(b.name||''));
+
+    const tbody = document.getElementById('master-body');
+    if (!rows.length) { tbody.innerHTML = '<tr><td colspan="6" class="no-data">No sources match filters.</td></tr>'; return; }
+    let html = '', lastCat = null;
+    rows.forEach(s => {
+      if (s.category !== lastCat) {
+        lastCat = s.category;
+        html += `<tr class="cat-row"><td colspan="6">${CATS[s.category]||'Uncategorised'}<span class="ch">${rows.filter(r=>r.category===s.category).length} sources</span></td></tr>`;
+      }
+      html += `<tr>
+        <td><span class="source-key">${s.source_key}</span><div style="font-size:12px;color:#cdd6f4">${s.name||''}</div></td>
+        <td>${modeChip(s.ingestion_mode)}</td>
+        <td>${scheduleCell(s)}</td>
+        <td>${statusBadge(s.extraction_status)}</td>
+        <td>${volumeCell(s)}</td>
+        <td style="color:#7f849c;font-size:12px">${s.last_ingested||'—'}</td>
+      </tr>`;
+    });
+    tbody.innerHTML = html;
+  }
+
+  ['search','cat-filter','mode-filter','status-filter'].forEach(id => {
+    const el = document.getElementById(id);
+    el.addEventListener('input', renderMaster);
+    el.addEventListener('change', renderMaster);
   });
-  document.getElementById('search').addEventListener('input', renderSched);
-  document.getElementById('cadence-filter').addEventListener('change', renderSched);
-  renderSched();
+  renderMaster();
 }
 
 load().catch(e => { document.querySelector('main').innerHTML = `<p style="color:#f38ba8;padding:40px">Failed to load: ${e.message}</p>`; });
