@@ -1,0 +1,45 @@
+# Curated indicator sets for international (category-d) sources.
+# Focus: Poland + EU/regional comparators for benchmarking. Read by intl_extractor.py.
+# These are public, generous-quota APIs — one run pulls full history; re-run refreshes.
+
+# ISO3 comparator set used across World Bank + IMF (Poland + CEE/EU peers + EU aggregate)
+comparators: [POL, DEU, CZE, SVK, HUN, FRA, ITA, ESP, EUU]
+
+sources:
+  worldbank_wdi:
+    kind: worldbank
+    base: https://api.worldbank.org/v2
+    indicators:
+      NY.GDP.MKTP.CD:     "GDP (current US$)"
+      NY.GDP.PCAP.CD:     "GDP per capita (current US$)"
+      NY.GDP.MKTP.KD.ZG:  "GDP growth (annual %)"
+      FP.CPI.TOTL.ZG:     "Inflation, consumer prices (annual %)"
+      SL.UEM.TOTL.ZS:     "Unemployment, total (% of labour force)"
+      SP.POP.TOTL:        "Population, total"
+      SP.DYN.LE00.IN:     "Life expectancy at birth (years)"
+      SP.DYN.TFRT.IN:     "Fertility rate, total (births per woman)"
+      GC.DOD.TOTL.GD.ZS:  "Central government debt, total (% of GDP)"
+      SI.POV.GINI:        "Gini index"
+      BX.KLT.DINV.WD.GD.ZS: "Foreign direct investment, net inflows (% of GDP)"
+      NE.EXP.GNFS.ZS:     "Exports of goods and services (% of GDP)"
+
+  imf_weo:
+    kind: imf_datamapper
+    base: https://www.imf.org/external/datamapper/api/v1
+    indicators:
+      NGDP_RPCH:     "Real GDP growth (annual % change)"
+      NGDPDPC:       "GDP per capita (current USD)"
+      PCPIPCH:       "Inflation, average consumer prices (annual % change)"
+      LUR:           "Unemployment rate (% of labour force)"
+      GGXWDG_NGDP:   "General government gross debt (% of GDP)"
+      GGXCNL_NGDP:   "General government net lending/borrowing (% of GDP)"
+      BCA_NGDPD:     "Current account balance (% of GDP)"
+
+  ecb_sdw:
+    kind: ecb_sdmx
+    base: https://data-api.ecb.europa.eu/service/data
+    series:
+      "EXR.D.PLN.EUR.SP00.A":            "EUR/PLN reference exchange rate (daily)"
+      "EXR.M.PLN.EUR.SP00.A":            "EUR/PLN reference exchange rate (monthly avg)"
+      "FM.B.U2.EUR.4F.KR.MRR_FR.LEV":    "ECB main refinancing operations rate"
+      "IRS.M.PL.L.L40.CI.0000.PLN.N.Z":  "Poland long-term interest rate for convergence (monthly)"

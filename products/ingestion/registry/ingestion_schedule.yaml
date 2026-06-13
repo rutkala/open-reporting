@@ -1,5 +1,26 @@
 version: 1
 entries:
+  - source_key: worldbank_wdi
+    cadence: weekly
+    window: "Mon 05:00 UTC"
+    mechanism: "cron: products/ingestion/extractors/intl_extractor.py --sources worldbank_wdi"
+    priority: 2
+    notes: "Curated 12-indicator Poland-comparison set; full refresh each run"
+
+  - source_key: imf_weo
+    cadence: weekly
+    window: "Mon 05:10 UTC"
+    mechanism: "cron: products/ingestion/extractors/intl_extractor.py --sources imf_weo"
+    priority: 2
+    notes: "WEO via DataMapper; includes forecasts; full refresh each run"
+
+  - source_key: ecb_sdw
+    cadence: weekly
+    window: "Mon 05:20 UTC"
+    mechanism: "cron: products/ingestion/extractors/intl_extractor.py --sources ecb_sdw"
+    priority: 2
+    notes: "EUR/PLN + policy rates; full refresh each run"
+
   - source_key: nbp_api
     cadence: nightly
     window: "22:00 UTC"

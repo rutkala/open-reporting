@@ -996,48 +996,69 @@ sources:
 
   - source_key: worldbank_wdi
     category: d_international
-    ingestion_mode: none
+    ingestion_mode: api_full
     name: "World Bank — World Development Indicators"
     institution: "World Bank"
-    type: bulk_api
+    type: rest_api
     auth: none
     rate_limit: null
-    base_url: https://api.worldbank.org/V2/
+    base_url: https://api.worldbank.org/v2/
     endpoints:
-      - "GET full WDI ZIP from data.worldbank.org/data-catalog"
-      - "GET /country/POL/indicator/{code}?downloadformat=csv"
-    scope: "Nothing ingested yet. Target: GDP per capita, Gini, debt, unemployment for POL + comparators."
-    description: "1,400+ development indicators, 200+ countries, 1960–present."
-    extraction_logic: "NOT STARTED — full-ZIP mirror is the cheapest path."
-    verification: "n/a until ingested"
-    landing_folders: []
-    extractor_kind: none
-    extractor_path: null
+      - "GET /country/{POL;DEU;CZE;…}/indicator/{code}?format=json&per_page=1000 — one indicator, all comparators, full history"
+    scope: >-
+      Curated 12-indicator comparison set (GDP, GDP/capita, growth, inflation,
+      unemployment, population, life expectancy, fertility, govt debt, Gini, FDI,
+      exports) for Poland + 8 comparators (DEU, CZE, SVK, HUN, FRA, ITA, ESP, EU).
+      Not the full 1,400-indicator catalogue — a benchmarking subset.
+    description: "1,400+ development indicators, 200+ countries, 1960–present. We pull a Poland-comparison subset."
+    extraction_logic: >-
+      intl_extractor.py (kind=worldbank): one REST call per indicator returning
+      all comparator countries × full history as JSON. Re-run refreshes. Curated
+      indicator list in registry/intl_indicators.yaml.
+    landing_layout: "worldbank_wdi/{indicator_code}.json"
+    verification: >-
+      Any file's indicator code maps to
+      https://data.worldbank.org/indicator/{code}?locations=PL — compare Poland's
+      series directly.
+    landing_folders: [worldbank_wdi]
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/intl_extractor.py
     manifest_kind: null
-    docs_url: https://databank.worldbank.org/source/world-development-indicators
-    default_status: not_started
+    docs_url: https://datahelpdesk.worldbank.org/knowledgebase/articles/889392
+    default_status: partial
 
   - source_key: imf_weo
     category: d_international
-    ingestion_mode: none
-    name: "IMF World Economic Outlook"
+    ingestion_mode: api_full
+    name: "IMF World Economic Outlook (via DataMapper)"
     institution: "IMF"
-    type: bulk_download
+    type: rest_api
     auth: none
     rate_limit: null
-    base_url: https://www.imf.org/en/Publications/SPROLLs/world-economic-outlook-databases
+    base_url: https://www.imf.org/external/datamapper/api/v1/
     endpoints:
-      - "Static XLS/CSV releases, April + October each year"
-    scope: "Nothing ingested yet. Target: macro aggregates + 5-year forecasts for Poland."
-    description: "~50 macro indicators, 190 countries, 1980–present + forecasts. No live API — file releases."
-    extraction_logic: "NOT STARTED — twice-yearly manual-cadence download."
-    verification: "n/a until ingested"
-    landing_folders: []
-    extractor_kind: none
-    extractor_path: null
+      - "GET /{indicator}/{POL}/{DEU}/… — one WEO indicator, listed countries, full history + 5yr forecast"
+    scope: >-
+      Curated 7-indicator WEO set (real GDP growth, GDP/capita USD, inflation,
+      unemployment, govt gross debt, govt net lending, current account) for
+      Poland + comparators. Includes IMF's forward forecasts.
+    description: >-
+      ~50 macro indicators, 190 countries, 1980–present + 5-year forecast. The
+      DataMapper API serves WEO data as JSON (simpler than the SDMX service).
+    extraction_logic: >-
+      intl_extractor.py (kind=imf_datamapper): one call per indicator returning
+      all requested countries × full history+forecast. Curated list in
+      registry/intl_indicators.yaml.
+    landing_layout: "imf_weo/{indicator_code}.json"
+    verification: >-
+      Compare against https://www.imf.org/external/datamapper/{code}@WEO — same
+      values, same forecast horizon.
+    landing_folders: [imf_weo]
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/intl_extractor.py
     manifest_kind: null
-    docs_url: https://www.imf.org/en/Publications/SPROLLs/world-economic-outlook-databases
-    default_status: not_started
+    docs_url: https://www.imf.org/external/datamapper/api/help
+    default_status: partial
 
   - source_key: imf_ifs
     category: d_international
@@ -1063,25 +1084,33 @@ sources:
 
   - source_key: ecb_sdw
     category: d_international
-    ingestion_mode: none
+    ingestion_mode: api_full
     name: "ECB Data Portal (SDMX)"
     institution: "ECB"
     type: rest_api
     auth: none
     rate_limit: null
-    base_url: https://data-api.ecb.europa.eu/service/
+    base_url: https://data-api.ecb.europa.eu/service/data/
     endpoints:
-      - "GET /data/{flow}/{key}?format=csvdata"
-    scope: "Nothing ingested yet. Target: PLN exchange rates, EDP debt/deficit notifications, bond yields."
-    description: "Euro-area and EU monetary statistics."
-    extraction_logic: "NOT STARTED."
-    verification: "n/a until ingested"
-    landing_folders: []
-    extractor_kind: none
-    extractor_path: null
+      - "GET /{flow}/{series_key}?format=csvdata — one series, full history, CSV"
+    scope: >-
+      Curated 4-series set: EUR/PLN reference rate (daily + monthly), ECB main
+      refinancing rate, Poland long-term convergence interest rate. Poland-
+      relevant slice of the ECB warehouse, not the full euro-area catalogue.
+    description: "Euro-area and EU monetary statistics — FX, policy rates, yields, EDP debt/deficit."
+    extraction_logic: >-
+      intl_extractor.py (kind=ecb_sdmx): one SDMX call per series key returning
+      full history as CSV. Curated series list in registry/intl_indicators.yaml.
+    landing_layout: "ecb_sdw/{series_key}.csv"
+    verification: >-
+      Each series key resolves at
+      https://data.ecb.europa.eu/data/datasets/{flow} — compare the series chart.
+    landing_folders: [ecb_sdw]
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/intl_extractor.py
     manifest_kind: null
-    docs_url: https://data.ecb.europa.eu
-    default_status: not_started
+    docs_url: https://data.ecb.europa.eu/help/api/overview
+    default_status: partial
 
   - source_key: ilostat
     category: d_international
