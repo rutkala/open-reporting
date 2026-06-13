@@ -21,6 +21,13 @@ entries:
     priority: 2
     notes: "EUR/PLN + policy rates; full refresh each run"
 
+  - source_key: wto_stats
+    cadence: weekly
+    window: "Mon 05:00 UTC"
+    mechanism: "cron: products/ingestion/extractors/intl_extractor.py (all sources)"
+    priority: 2
+    notes: "Poland trade (reporter 616); key in .env; blocked until rclone mount restored"
+
   - source_key: nbp_api
     cadence: nightly
     window: "22:00 UTC"

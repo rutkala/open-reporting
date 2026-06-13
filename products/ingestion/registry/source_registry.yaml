@@ -1177,24 +1177,29 @@ sources:
 
   - source_key: wto_stats
     category: d_international
-    ingestion_mode: none
-    name: "WTO trade statistics"
+    ingestion_mode: api_full
+    name: "WTO trade statistics (Timeseries API)"
     institution: "WTO"
     type: rest_api
     auth: key_required
     rate_limit: null
     base_url: https://api.wto.org/timeseries/v1/
     endpoints:
-      - "Timeseries API — requires free key (register at api.wto.org)"
-    scope: "Nothing ingested yet. Target: Polish exports/imports by product and partner."
+      - "GET /data?i={indicator}&r=616&fmt=json&mode=full — Poland series, full history (header Ocp-Apim-Subscription-Key)"
+    scope: >-
+      Curated 4-indicator set for Poland (reporter 616): merchandise exports &
+      imports by product group, commercial services exports & imports by sector.
     description: "Merchandise and services trade, tariffs; 170+ countries, 1980–present."
-    extraction_logic: "NOT STARTED — key registration is a PO action."
-    verification: "n/a until ingested"
-    landing_folders: []
-    extractor_kind: none
-    extractor_path: null
+    extraction_logic: >-
+      intl_extractor.py (kind=wto): one call per indicator for Poland, full
+      history. Key in .env as WTO_API_KEY. Curated list in registry/intl_indicators.yaml.
+    landing_layout: "wto_stats/{indicator_code}.json"
+    verification: "Compare against https://stats.wto.org (Poland reporter) per indicator."
+    landing_folders: [wto_stats]
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/intl_extractor.py
     manifest_kind: null
-    docs_url: https://stats.wto.org
+    docs_url: https://apiportal.wto.org
     default_status: not_started
 
   - source_key: undata

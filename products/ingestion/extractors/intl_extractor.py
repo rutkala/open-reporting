@@ -23,6 +23,7 @@ Usage:
 import argparse
 import json
 import logging
+import os
 import sys
 import time
 from datetime import datetime, timezone
@@ -30,6 +31,9 @@ from pathlib import Path
 
 import requests
 import yaml
+from dotenv import load_dotenv
+
+load_dotenv(override=True)
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
@@ -144,6 +148,33 @@ def fetch_ecb_sdmx(session, source_key, cfg, dry_run) -> int:
     return n
 
 
+def fetch_wto(session, source_key, cfg, dry_run) -> int:
+    base = cfg["base"]
+    reporter = cfg["reporter"]
+    key = os.environ.get(cfg.get("api_key_env", "WTO_API_KEY"))
+    if not key:
+        raise RuntimeError(f"{cfg.get('api_key_env','WTO_API_KEY')} not set in environment")
+    hdr = {**HEADERS, "Ocp-Apim-Subscription-Key": key}
+    n = 0
+    for code, label in cfg["indicators"].items():
+        dest = LANDING / source_key / f"{code}.json"
+        if dry_run:
+            logger.info(f"[{source_key}] would fetch {code} ({label})")
+            n += 1
+            continue
+        r = session.get(f"{base}/data",
+                        params={"i": code, "r": reporter, "fmt": "json", "mode": "full",
+                                "max": 1000000, "lang": 1},
+                        headers=hdr, timeout=TIMEOUT)
+        r.raise_for_status()
+        rows = r.json().get("Dataset", [])
+        _atomic_write(dest, _envelope(source_key, f"/data?i={code}&r={reporter}", code, label, rows))
+        logger.info(f"[{source_key}] {code}: {len(rows)} obs ({label})")
+        n += 1
+        time.sleep(0.5)
+    return n
+
+
 def main(sources: list[str] | None, dry_run: bool) -> int:
     cfg_all = yaml.safe_load(CONFIG.read_text())
     comparators = cfg_all["comparators"]
@@ -165,6 +196,8 @@ def main(sources: list[str] | None, dry_run: bool) -> int:
                 cnt = fetch_imf_datamapper(session, sk, cfg, comparators, dry_run)
             elif kind == "ecb_sdmx":
                 cnt = fetch_ecb_sdmx(session, sk, cfg, dry_run)
+            elif kind == "wto":
+                cnt = fetch_wto(session, sk, cfg, dry_run)
             else:
                 logger.error(f"[{sk}] unknown kind {kind}")
                 worst = 1

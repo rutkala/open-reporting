@@ -43,3 +43,14 @@ sources:
       "EXR.M.PLN.EUR.SP00.A":            "EUR/PLN reference exchange rate (monthly avg)"
       "FM.B.U2.EUR.4F.KR.MRR_FR.LEV":    "ECB main refinancing operations rate"
       "IRS.M.PL.L.L40.CI.0000.PLN.N.Z":  "Poland long-term interest rate for convergence (monthly)"
+
+  wto_stats:
+    kind: wto
+    base: https://api.wto.org/timeseries/v1
+    reporter: "616"        # Poland
+    api_key_env: WTO_API_KEY
+    indicators:
+      ITS_MTV_AX:  "Merchandise exports by product group (annual, US$)"
+      ITS_MTV_AM:  "Merchandise imports by product group (annual, US$)"
+      ITS_CS_AX:   "Commercial services exports by sector (annual, US$)"
+      ITS_CS_AM:   "Commercial services imports by sector (annual, US$)"
