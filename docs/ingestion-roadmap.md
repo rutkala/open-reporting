@@ -15,6 +15,10 @@ Complete list of public sources, grouped into four provider types:
 
 44 sources in `products/ingestion/registry/source_registry.yaml`, mirrored to the admin portal.
 
+> **Progress 2026-06-13:** International extractor built (World Bank, IMF WEO, ECB live —
+> category-d coverage 1→4 of 11). The 3 mock extractors (MF/NFZ/ZUS) removed and their fake
+> tables dropped. Master tracker (all 44 sources) live on the ingestion-plan page.
+
 ### 2. Bulk + incremental per source — **PARTIAL (model done, build mostly open)**
 Each source declares an `ingestion_mode`:
 - `bulk` — full historical load (raw file download)
@@ -39,12 +43,20 @@ Target: every viable source has a bulk mode (full history) and, where the source
 
 ## Sequenced backlog (highest value first)
 
-1. **Master schedule view** — extend `ingestion-plan.html` to list all 44 sources: category, mode, cadence, status, last/next run. Delivers milestone 4's "see when each runs."
-2. **International bulk loaders (category d, 11 sources)** — mostly easy: Eurostat-style bulk (World Bank ZIP, IMF WEO files, UN WPP) and SDMX APIs (OECD, ECB, IMF IFS, ILOSTAT). Biggest coverage gain.
-3. **Replace the 3 mock extractors** with real dane.gov.pl loaders (data already in `*_bulk/` landing).
+1. ~~**Master schedule view**~~ — **DONE.** `ingestion-plan.html` lists all 44 sources grouped a/b/c/d.
+2. **International loaders (category d)** — **4 of 11 DONE** (Eurostat, World Bank, IMF WEO, ECB via `intl_extractor.py`). Remaining 7, with the discovered next-step for each:
+   - **OECD** — new SDMX at `sdmx.oecd.org/public/rest/data/{agency},{dataflow},{version}/{key}`; needs the exact dataflow IDs (browse the OECD Data Explorer "developer API" panel per dataset). Header `Accept: application/vnd.sdmx.data+csv`.
+   - **ILOSTAT** — bulk via `rplumber.ilo.org/data/indicator/?id={CODE}&ref_area=POL&format=.csv`; the test returned 200/0-bytes → needs a valid indicator id (list at `rplumber.ilo.org/metadata/indicator/`).
+   - **UN WPP** — `population.un.org/dataportalapi/api/v1/` works (indicators list 200); data endpoint `/data/indicators/{id}/locations/{loc}/start/{y}/end/{y}` returned empty → confirm Poland loc code + indicator id from `/locations/` and `/indicators/`.
+   - **IMF IFS** — SDMX JSON at `dataservices.imf.org/REST/SDMX_JSON.svc/CompactData/IFS/{key}`; same DataMapper pattern may also cover key series.
+   - **FAOSTAT** — bulk CSV ZIP per domain at `fenixservices.fao.org/faostat/api/v1/en/data/{domain}?area=173` (Poland=173). Lower priority.
+   - **WTO** — needs a free API key (register at api.wto.org) → **PO action**.
+   - **UNdata** — deprioritised; prefer agency-specific sources above.
+3. ~~**Replace the 3 mock extractors**~~ — **DONE.** Removed from nightly run, fake tables dropped, files `.mock-disabled`. Real incremental loaders for MF/NFZ/ZUS still to build (data is in the `*_bulk/` mirrors).
 4. **Incremental modes** for bulk-only Polish sources that update (dane.gov.pl resource diffing).
-5. **Unblock the 5 GUS SPA systems** (STRATEG, SMUP, BDM, BDP, TranStat) via browser network capture.
+5. **Unblock the 5 GUS SPA systems** (STRATEG, SMUP, BDM, BDP, TranStat) — fetch the Swagger/OpenAPI JSON the way DBW was unblocked (the apidocs page references a spec JSON; capture it via browser network panel, then the real `/api/...` paths follow).
 6. **Category-c approval** — confirm Stooq/GPW with PO or drop (policy requires explicit approval).
+7. **Real MF/NFZ/ZUS loaders** — model the heterogeneous dane.gov.pl files in `*_bulk/` into typed raw tables.
 
 ## Cron (live)
 - `03:30` BDL · `04:00 + 16:00` DBW · `22:00` nightly incremental + dbt + catalog refresh · `:15` hourly catalog refresh.
