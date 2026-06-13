@@ -314,15 +314,12 @@ sources:
       Ministry of Finance OpenBudget — state and local budget plans and
       execution. Intended source for fact_finance budget actuals.
     extraction_logic: >-
-      run_bulk.py stores /api/v1/datasets.
-      WARNING: products/ingestion/extractors/mf_extractor.py (nightly cron) is
-      a MOCK — it writes hardcoded fake rows into raw_mf_budget. Do not trust
-      raw_mf_budget until a real extractor replaces it.
+      run_bulk.py stores /api/v1/datasets (catalogue only). The former
+      mf_extractor.py mock (fake rows into raw_mf_budget) was DISABLED 2026-06-13
+      and the fake table dropped. A real OpenBudget execution-data loader is still
+      to be built — real MF history is available via the mf_bulk dane.gov.pl mirror.
     landing_layout: "mf_api/datasets.json"
-    verification: >-
-      raw_mf_budget currently contains FAKE data (3 hardcoded 2023 rows) —
-      verify nothing against it. Catalogue file vs
-      https://openbudget.gov.pl/api/v1/datasets.
+    verification: "Catalogue file vs https://openbudget.gov.pl/api/v1/datasets. (No fake table any more.)"
     landing_folders: [mf_api]
     extractor_kind: script
     extractor_path: products/ingestion/extractors/mf_extractor.py

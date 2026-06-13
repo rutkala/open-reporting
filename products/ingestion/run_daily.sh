@@ -62,17 +62,11 @@ else
   log "dbt run: OK"
 fi
 
-if ! run "MF OpenBudget extractor" "$REPO/products/ingestion/extractors/mf_extractor.py"; then
-  worst=1
-fi
-
-if ! run "NFZ e-Zdrowie extractor" "$REPO/products/ingestion/extractors/nfz_extractor.py"; then
-  worst=1
-fi
-
-if ! run "ZUS benefits extractor" "$REPO/products/ingestion/extractors/zus_extractor.py"; then
-  worst=1
-fi
+# NOTE: mf_extractor.py / nfz_extractor.py / zus_extractor.py were MOCKS that
+# wrote 3 hardcoded fake rows each into raw_mf_budget / raw_nfz_services /
+# raw_zus_benefits. Removed from the nightly run (2026-06-13) — real MF/NFZ/ZUS
+# data lands via the bulk dane.gov.pl mirror (mf_bulk/nfz_bulk/zus_bulk); a real
+# incremental loader for those tables is tracked in docs/ingestion-roadmap.md.
 
 if ! run "Admin catalog refresh" "$REPO/infra/scheduler/refresh_admin_catalogs.py"; then
   worst=1
