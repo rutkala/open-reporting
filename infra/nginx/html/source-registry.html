@@ -161,6 +161,14 @@
     .auth-key { color: var(--yellow); font-size: 13px; }
     .auth-none { color: var(--overlay); }
 
+    /* Ingestion-mode chips */
+    .mode { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+    .mode-bulk { background: rgba(137,180,250,.18); color: var(--blue); }
+    .mode-incr { background: rgba(203,166,247,.18); color: var(--mauve); }
+    .mode-both { background: rgba(166,227,161,.18); color: var(--green); }
+    .mode-api  { background: rgba(148,226,213,.18); color: #94e2d5; }
+    .mode-none { background: rgba(108,112,134,.15); color: var(--overlay); }
+
     /* Status badges */
     .badge {
       display: inline-block;
@@ -320,10 +328,18 @@
     </select>
     <select id="filter-category">
       <option value="">All categories</option>
-      <option value="1_gus">1 — GUS</option>
-      <option value="2_institutional">2 — Institutional</option>
-      <option value="3_international">3 — International</option>
-      <option value="4_market">4 — Market</option>
+      <option value="a_pl_gov_central">a — PL gov, combined (GUS)</option>
+      <option value="b_pl_gov_institutional">b — PL gov, institutional</option>
+      <option value="c_pl_private">c — PL private</option>
+      <option value="d_international">d — International</option>
+    </select>
+    <select id="filter-mode">
+      <option value="">All modes</option>
+      <option value="bulk">bulk</option>
+      <option value="incremental">incremental</option>
+      <option value="bulk+incremental">bulk + incremental</option>
+      <option value="api_full">API (full)</option>
+      <option value="none">none</option>
     </select>
   </div>
 
@@ -334,6 +350,7 @@
           <th data-col="name">Source</th>
           <th data-col="institution">Institution</th>
           <th data-col="type">Type</th>
+          <th data-col="ingestion_mode">Mode</th>
           <th data-col="auth">Auth</th>
           <th data-col="rate_limit_label">Rate Limit</th>
           <th data-col="extraction_status">Status</th>
@@ -343,7 +360,7 @@
         </tr>
       </thead>
       <tbody id="registry-body">
-        <tr><td colspan="9" class="no-results">Loading&hellip;</td></tr>
+        <tr><td colspan="10" class="no-results">Loading&hellip;</td></tr>
       </tbody>
     </table>
   </div>
@@ -362,10 +379,18 @@
   const STATUS_ORDER = { blocked: 0, partial: 1, not_started: 2, scheduled: 3, complete: 4, skipped: 5 };
 
   const CATEGORY_LABELS = {
-    '1_gus':           { title: '1 — GUS', hint: 'Statistics Poland — default for all Polish data' },
-    '2_institutional': { title: '2 — Institutional', hint: 'Polish agencies, ministries, regulators — when GUS lacks the topic' },
-    '3_international': { title: '3 — International', hint: 'Multinational aggregators — cross-country comparisons' },
-    '4_market':        { title: '4 — Market', hint: 'Private/commercial — requires explicit PO approval' },
+    'a_pl_gov_central':       { title: 'a — Polish government, combined', hint: 'GUS — the central statistical aggregator (BDL, DBW, …)' },
+    'b_pl_gov_institutional': { title: 'b — Polish government, institutional', hint: 'NBP, ministries, registers, regulators — one institution each' },
+    'c_pl_private':           { title: 'c — Polish private', hint: 'Private/market organisations (Stooq, GPW) — needs PO approval' },
+    'd_international':         { title: 'd — International, combined', hint: 'Multinational aggregators (Eurostat, OECD, IMF, …)' },
+  };
+
+  const MODE_LABELS = {
+    'bulk':             { txt: 'bulk', cls: 'mode-bulk', title: 'Full historical load via file/bulk download' },
+    'incremental':      { txt: 'incremental', cls: 'mode-incr', title: 'Ongoing updates via API' },
+    'bulk+incremental': { txt: 'bulk + incr', cls: 'mode-both', title: 'Both: bulk history + incremental API updates' },
+    'api_full':         { txt: 'API (full)', cls: 'mode-api', title: 'API serves both full history and updates — no separate bulk source' },
+    'none':             { txt: '—', cls: 'mode-none', title: 'No ingestion mode configured yet' },
   };
 
   // ---- Date helpers ----
@@ -457,6 +482,8 @@
       if (status && s.extraction_status !== status) return false;
       const cat = document.getElementById('filter-category').value;
       if (cat && s.category !== cat) return false;
+      const mode = document.getElementById('filter-mode').value;
+      if (mode && s.ingestion_mode !== mode) return false;
       return true;
     });
   }
@@ -499,7 +526,7 @@
     if (sorted.length === 0) {
       const tr = document.createElement('tr');
       const td = document.createElement('td');
-      td.colSpan = 9;
+      td.colSpan = 10;
       td.className = 'no-results';
       td.textContent = 'No sources match the current filters.';
       tr.appendChild(td);
@@ -516,7 +543,7 @@
         const htr = document.createElement('tr');
         htr.className = 'cat-header';
         const htd = document.createElement('td');
-        htd.colSpan = 9;
+        htd.colSpan = 10;
         htd.textContent = cmeta.title;
         if (cmeta.hint) {
           const hint = document.createElement('span');
@@ -564,6 +591,16 @@
         tdType.textContent = '—';
       }
       tr.appendChild(tdType);
+
+      // Ingestion mode
+      const tdMode = document.createElement('td');
+      const mm = MODE_LABELS[src.ingestion_mode] || MODE_LABELS['none'];
+      const mspan = document.createElement('span');
+      mspan.className = 'mode ' + mm.cls;
+      mspan.textContent = mm.txt;
+      mspan.title = mm.title;
+      tdMode.appendChild(mspan);
+      tr.appendChild(tdMode);
 
       // Auth
       const tdAuth = document.createElement('td');
@@ -712,7 +749,7 @@
     const tr = document.createElement('tr');
     tr.className = 'detail-row';
     const td = document.createElement('td');
-    td.colSpan = 9;
+    td.colSpan = 10;
     const grid = document.createElement('div');
     grid.className = 'detail-grid';
 
@@ -780,7 +817,7 @@
   });
 
   // ---- Filter wiring ----
-  ['filter-text', 'filter-institution', 'filter-type', 'filter-status', 'filter-category'].forEach(function(id) {
+  ['filter-text', 'filter-institution', 'filter-type', 'filter-status', 'filter-category', 'filter-mode'].forEach(function(id) {
     document.getElementById(id).addEventListener('input', renderTable);
     document.getElementById(id).addEventListener('change', renderTable);
   });
@@ -811,7 +848,7 @@
       tbody.textContent = '';
       const tr = document.createElement('tr');
       const td = document.createElement('td');
-      td.colSpan = 9;
+      td.colSpan = 10;
       td.className = 'error-state';
       td.textContent = 'Failed to load source_registry.json: ' + err.message;
       tr.appendChild(td);

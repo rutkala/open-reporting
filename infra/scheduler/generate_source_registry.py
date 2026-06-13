@@ -398,6 +398,7 @@ def generate() -> Path:
         output_sources.append({
             "source_key": source_key,
             "category": src.get("category"),
+            "ingestion_mode": src.get("ingestion_mode"),
             "name": src["name"],
             "institution": src["institution"],
             "type": src["type"],
