@@ -1,5 +1,11 @@
 # Open Reporting — Data Sources
 
+> **Live operational status:** this document is the research catalogue (what exists, what we decided).
+> The *current* ingestion state of every source — status, file counts, quotas, last run — lives in the
+> admin portal: [portal.open-reporting.dev/source-registry.html](https://portal.open-reporting.dev/source-registry.html),
+> generated from `products/ingestion/registry/source_registry.yaml`. All 44 sources below are mirrored
+> there under the same 4-category grouping. When statuses here and there disagree, the portal is right.
+
 ## Policy & Rules
 
 All data used in Open Reporting must come from official, publicly accessible sources.
@@ -34,7 +40,7 @@ GUS is Poland's central statistical office. It operates 13 database systems, 9 p
 - **Catalogue API**: `https://dbw.stat.gov.pl/api_app/getCatalogValues` — returns all download links (no auth)
 - **REST API**: `https://api-dbw.stat.gov.pl/api/` · Docs: https://api.stat.gov.pl/Home/DBWApi
 - **Bulk download**: **Yes** — 426 files (ZIP/CSV), 21 HVD categories (EU regulation 2023/138)
-- **Auth**: None for bulk; free key (`DBW_API_KEY`, `X-ClientId` header) for API — 10 req/s, 5 000 req/12h
+- **Auth**: None for bulk; free key (`DBW_API_KEY`, `X-ClientId` header) for API — 500 req/15min, 5,000 req/12h, 50,000 req/7d (all actively enforced). API mirror in progress (2026-06) via `extractors/dbw_extractor.py` (API 1.2.0): 1,518 variables, cron 04:00+16:00 UTC
 - **Coverage**: GDP, government expenditure/debt, employment, unemployment, population, poverty, HICP, tourism, industrial production; 1995–2026
 - **File format**: ZIP → `<id>.csv` (semicolon-delimited, comma decimal) + `<id>_Dict.csv` (dimension labels)
 - **Ingestion status**: **DONE** — 426 files in `data/landing/gus_hvd/` via `bulk/run_bulk.py`
@@ -49,8 +55,8 @@ GUS is Poland's central statistical office. It operates 13 database systems, 9 p
 - **Format**: JSON or XML
 - **Coverage**: 40 000+ variables, all admin levels (kraj → województwo → powiat → gmina → miejscowość), 1995–present, CC BY 4.0
 - **Key endpoints**: `/subjects` (topic tree) · `/variables?subject-id={id}` · `/data/by-variable/{varId}?unit-level={0-6}`
-- **Ingestion status**: **Partial** — subjects tree only (`data/landing/gus_bdl/subjects.json`); full 40k variable pull not implemented
-- **Notes**: Full pull takes ~6 days at registered rate. Incremental by subject recommended, prioritising dashboard-relevant domains. Register for key first.
+- **Ingestion status**: **In progress (2026-06)** — resumable full mirror via `extractors/bdl_extractor.py`; 17/33 subjects complete, 46k+ variables in `gus_bdl_api/`; daily cron 03:30 UTC, weekly-budget paced
+- **Notes**: Only the weekly 50k cap is observed enforced (docs also list 10/s, 500/15min, 5k/12h tiers). Unit-level 2 (województwa) only.
 
 #### GUS / BDM — Bank Danych Makroekonomicznych (Macroeconomic Data Bank)
 - **URL**: https://bdm.stat.gov.pl

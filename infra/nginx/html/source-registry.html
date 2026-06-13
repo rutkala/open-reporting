@@ -175,7 +175,20 @@
     .badge-blocked     { background: rgba(243,139,168,.18); color: var(--red); }
     .badge-not_started { background: rgba(108,112,134,.18); color: var(--subtext); }
     .badge-scheduled   { background: rgba(137,180,250,.18); color: var(--blue); }
+    .badge-skipped     { background: rgba(108,112,134,.12); color: var(--overlay); text-decoration: line-through; }
     .badge-unknown     { background: rgba(108,112,134,.18); color: var(--subtext); }
+
+    /* Category group header rows */
+    tr.cat-header td {
+      padding: 22px 12px 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--mauve);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      border-bottom: 2px solid var(--surface2);
+    }
+    tr.cat-header .cat-hint { font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--overlay); margin-left: 10px; }
 
     .status-detail {
       font-size: 12px;
@@ -303,6 +316,14 @@
       <option value="partial">partial</option>
       <option value="blocked">blocked</option>
       <option value="not_started">not_started</option>
+      <option value="skipped">skipped</option>
+    </select>
+    <select id="filter-category">
+      <option value="">All categories</option>
+      <option value="1_gus">1 — GUS</option>
+      <option value="2_institutional">2 — Institutional</option>
+      <option value="3_international">3 — International</option>
+      <option value="4_market">4 — Market</option>
     </select>
   </div>
 
@@ -338,7 +359,14 @@
   let sortDir = 'asc';
   const expandedKeys = new Set();
 
-  const STATUS_ORDER = { blocked: 0, partial: 1, not_started: 2, scheduled: 3, complete: 4 };
+  const STATUS_ORDER = { blocked: 0, partial: 1, not_started: 2, scheduled: 3, complete: 4, skipped: 5 };
+
+  const CATEGORY_LABELS = {
+    '1_gus':           { title: '1 — GUS', hint: 'Statistics Poland — default for all Polish data' },
+    '2_institutional': { title: '2 — Institutional', hint: 'Polish agencies, ministries, regulators — when GUS lacks the topic' },
+    '3_international': { title: '3 — International', hint: 'Multinational aggregators — cross-country comparisons' },
+    '4_market':        { title: '4 — Market', hint: 'Private/commercial — requires explicit PO approval' },
+  };
 
   // ---- Date helpers ----
   const TODAY = new Date().toISOString().slice(0, 10);
@@ -382,6 +410,7 @@
       { label: 'Partial',     value: sc.partial || 0,           cls: 'yellow' },
       { label: 'Blocked',     value: sc.blocked || 0,           cls: 'red' },
       { label: 'Not started', value: notStarted,                cls: 'gray' },
+      { label: 'Skipped',     value: sc.skipped || 0,           cls: 'gray' },
     ];
     strip.textContent = '';
     cards.forEach(function(c) {
@@ -426,6 +455,8 @@
       if (inst && s.institution !== inst) return false;
       if (type && s.type !== type) return false;
       if (status && s.extraction_status !== status) return false;
+      const cat = document.getElementById('filter-category').value;
+      if (cat && s.category !== cat) return false;
       return true;
     });
   }
@@ -433,8 +464,10 @@
   // ---- Sort ----
   function applySort(sources) {
     if (!sortCol) {
-      // Default: status order, then name
+      // Default: category, then status order, then name
       return sources.slice().sort(function(a, b) {
+        const oc = (a.category || '9').localeCompare(b.category || '9');
+        if (oc !== 0) return oc;
         const os = (STATUS_ORDER[a.extraction_status] ?? 99) - (STATUS_ORDER[b.extraction_status] ?? 99);
         if (os !== 0) return os;
         return (a.name || '').localeCompare(b.name || '');
@@ -474,7 +507,27 @@
       return;
     }
 
+    let lastCat = null;
     sorted.forEach(function(src) {
+      // Category group header — only in default (category-grouped) sort
+      if (!sortCol && src.category !== lastCat) {
+        lastCat = src.category;
+        const cmeta = CATEGORY_LABELS[src.category] || { title: 'Uncategorised', hint: '' };
+        const htr = document.createElement('tr');
+        htr.className = 'cat-header';
+        const htd = document.createElement('td');
+        htd.colSpan = 9;
+        htd.textContent = cmeta.title;
+        if (cmeta.hint) {
+          const hint = document.createElement('span');
+          hint.className = 'cat-hint';
+          hint.textContent = cmeta.hint;
+          htd.appendChild(hint);
+        }
+        htr.appendChild(htd);
+        tbody.appendChild(htr);
+      }
+
       const tr = document.createElement('tr');
       tr.className = 'src-row' + (expandedKeys.has(src.source_key) ? ' expanded' : '');
 
@@ -542,6 +595,7 @@
         blocked:     'badge-blocked',
         not_started: 'badge-not_started',
         scheduled:   'badge-scheduled',
+        skipped:     'badge-skipped',
       }[badgeStatus] || 'badge-unknown';
       badgeEl.className = 'badge ' + badgeCls;
       badgeEl.textContent = badgeStatus.replace('_', ' ');
@@ -726,7 +780,7 @@
   });
 
   // ---- Filter wiring ----
-  ['filter-text', 'filter-institution', 'filter-type', 'filter-status'].forEach(function(id) {
+  ['filter-text', 'filter-institution', 'filter-type', 'filter-status', 'filter-category'].forEach(function(id) {
     document.getElementById(id).addEventListener('input', renderTable);
     document.getElementById(id).addEventListener('change', renderTable);
   });

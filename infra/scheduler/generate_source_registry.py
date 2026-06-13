@@ -42,7 +42,8 @@ log = logging.getLogger(__name__)
 REGISTRY_YAML = Path(__file__).parents[2] / "products/ingestion/registry/source_registry.yaml"
 
 # Sort order: blocked first, then partial, not_started, scheduled, complete
-_STATUS_ORDER = {"blocked": 0, "partial": 1, "not_started": 2, "scheduled": 3, "complete": 4}
+_STATUS_ORDER = {"blocked": 0, "partial": 1, "not_started": 2, "scheduled": 3,
+                 "complete": 4, "skipped": 5}
 
 
 def _rate_limit_label(source: dict) -> str:
@@ -396,6 +397,7 @@ def generate() -> Path:
 
         output_sources.append({
             "source_key": source_key,
+            "category": src.get("category"),
             "name": src["name"],
             "institution": src["institution"],
             "type": src["type"],
@@ -421,7 +423,8 @@ def generate() -> Path:
 
     # Sort: blocked < partial < not_started < scheduled < complete; within group: alpha by key
     output_sources.sort(
-        key=lambda s: (_STATUS_ORDER.get(s["extraction_status"], 99), s["source_key"])
+        key=lambda s: (s.get("category") or "9", _STATUS_ORDER.get(s["extraction_status"], 99),
+                       s["source_key"])
     )
 
     # Build status_counts — always include all 5 keys even if 0
@@ -431,6 +434,7 @@ def generate() -> Path:
         "scheduled": 0,
         "not_started": 0,
         "blocked": 0,
+        "skipped": 0,
     }
     for s in output_sources:
         st = s["extraction_status"]

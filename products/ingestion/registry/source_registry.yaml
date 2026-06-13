@@ -9,6 +9,7 @@ version: 2
 #   verification      — how to manually check ingested data against the source
 sources:
   - source_key: gus_bdl_api
+    category: 1_gus
     name: "Bank Danych Lokalnych (BDL API)"
     institution: "GUS"
     type: rest_api
@@ -50,6 +51,7 @@ sources:
     default_status: partial
 
   - source_key: gus_dbw_api
+    category: 1_gus
     name: "Dziedzinowe Bazy Wiedzy (DBW REST API 1.2.0)"
     institution: "GUS"
     type: rest_api
@@ -90,6 +92,7 @@ sources:
     default_status: partial
 
   - source_key: gus_dbw_hvd_bulk
+    category: 1_gus
     name: "GUS DBW High-Value Datasets (bulk CSV/XLSX)"
     institution: "GUS"
     type: bulk_download
@@ -124,6 +127,7 @@ sources:
     default_status: complete
 
   - source_key: eurostat_bulk
+    category: 3_international
     name: "Eurostat Bulk Download (TSV.GZ)"
     institution: "Eurostat"
     type: bulk_api
@@ -158,6 +162,7 @@ sources:
     default_status: complete
 
   - source_key: gus_biuletyn_bulk
+    category: 1_gus
     name: "GUS Biuletyn Statystyczny — długie szeregi (XLSX)"
     institution: "GUS"
     type: bulk_download
@@ -189,6 +194,7 @@ sources:
     default_status: complete
 
   - source_key: gus_teryt_bulk
+    category: 1_gus
     name: "GUS BDL units register (TERYT geography)"
     institution: "GUS"
     type: rest_api
@@ -221,6 +227,7 @@ sources:
     default_status: complete
 
   - source_key: gus_sdg_bulk
+    category: 1_gus
     name: "GUS SDG indicators (sdg.gov.pl)"
     institution: "GUS"
     type: bulk_download
@@ -249,6 +256,7 @@ sources:
     default_status: complete
 
   - source_key: nbp_api
+    category: 2_institutional
     name: "NBP statistics (rates, FX archives)"
     institution: "NBP"
     type: mixed
@@ -281,6 +289,7 @@ sources:
     default_status: complete
 
   - source_key: mf_api
+    category: 2_institutional
     name: "MF OpenBudget"
     institution: "Ministerstwo Finansów"
     type: rest_api
@@ -313,6 +322,7 @@ sources:
     default_status: blocked
 
   - source_key: mf_bulk
+    category: 2_institutional
     name: "MF datasets on dane.gov.pl"
     institution: "Ministerstwo Finansów"
     type: bulk_download
@@ -344,6 +354,7 @@ sources:
     default_status: complete
 
   - source_key: nfz_bulk
+    category: 2_institutional
     name: "NFZ datasets on dane.gov.pl"
     institution: "Narodowy Fundusz Zdrowia"
     type: bulk_download
@@ -370,6 +381,7 @@ sources:
     default_status: complete
 
   - source_key: zus_bulk
+    category: 2_institutional
     name: "ZUS datasets on dane.gov.pl"
     institution: "ZUS"
     type: bulk_download
@@ -396,6 +408,7 @@ sources:
     default_status: complete
 
   - source_key: men_api
+    category: 2_institutional
     name: "CIE/MEN datasets on dane.gov.pl"
     institution: "Ministerstwo Edukacji (CIE)"
     type: bulk_download
@@ -417,6 +430,7 @@ sources:
     default_status: partial
 
   - source_key: gddkia_bulk
+    category: 2_institutional
     name: "GDDKiA datasets on dane.gov.pl"
     institution: "GDDKiA"
     type: bulk_download
@@ -438,6 +452,7 @@ sources:
     default_status: complete
 
   - source_key: ure_bulk
+    category: 2_institutional
     name: "URE datasets on dane.gov.pl"
     institution: "Urząd Regulacji Energetyki"
     type: bulk_download
@@ -459,6 +474,7 @@ sources:
     default_status: complete
 
   - source_key: mrirw_api
+    category: 2_institutional
     name: "MRiRW datasets on dane.gov.pl"
     institution: "Ministerstwo Rolnictwa i Rozwoju Wsi"
     type: bulk_download
@@ -483,6 +499,7 @@ sources:
     default_status: not_started
 
   - source_key: knf_bulk
+    category: 2_institutional
     name: "KNF statistics pages"
     institution: "Komisja Nadzoru Finansowego"
     type: scrape
@@ -511,6 +528,7 @@ sources:
     default_status: partial
 
   - source_key: krs_api
+    category: 2_institutional
     name: "KRS open API (Ministerstwo Sprawiedliwości)"
     institution: "Ministerstwo Sprawiedliwości"
     type: rest_api
@@ -537,6 +555,7 @@ sources:
     default_status: partial
 
   - source_key: saos_api
+    category: 2_institutional
     name: "SAOS court judgments API"
     institution: "SAOS (ICM UW)"
     type: rest_api
@@ -564,6 +583,7 @@ sources:
     default_status: partial
 
   - source_key: opi_radon_api
+    category: 2_institutional
     name: "OPI RAD-on science & higher-education API"
     institution: "OPI PIB"
     type: rest_api
@@ -589,6 +609,7 @@ sources:
     default_status: partial
 
   - source_key: stooq_api
+    category: 4_market
     name: "Stooq daily quotes (CSV)"
     institution: "Stooq (private)"
     type: csv_endpoint
@@ -615,6 +636,7 @@ sources:
     default_status: partial
 
   - source_key: gios_bulk
+    category: 2_institutional
     name: "GIOŚ air-quality API"
     institution: "GIOŚ"
     type: rest_api
@@ -644,6 +666,7 @@ sources:
     default_status: partial
 
   - source_key: gpw_benchmark_bulk
+    category: 4_market
     name: "GPW Benchmark — WIBOR/WIBID rates"
     institution: "GPW Benchmark"
     type: bulk_download
@@ -670,3 +693,460 @@ sources:
     manifest_kind: null
     docs_url: https://gpwbenchmark.pl/
     default_status: partial
+
+  # ── Sources defined in docs/DATA_SOURCES.md, not yet ingested ──────────────
+
+  - source_key: gus_bdm
+    category: 1_gus
+    name: "Bank Danych Makroekonomicznych (BDM)"
+    institution: "GUS"
+    type: web_portal
+    auth: none
+    rate_limit: null
+    base_url: https://bdm.stat.gov.pl
+    endpoints: []
+    scope: "Nothing ingested — no API or file export found."
+    description: >-
+      GUS macroeconomic time-series bank: national accounts, money supply, CPI,
+      trade, employment. Likely overlaps heavily with BDL and DBW.
+    extraction_logic: >-
+      BLOCKED: JS single-page app (server returns a 1 KB skeleton); no documented
+      REST endpoint, no XLS/CSV links in source. Assess BDL/DBW overlap before
+      investing in browser automation.
+    verification: "Browse https://bdm.stat.gov.pl manually; check if needed series already exist in BDL/DBW."
+    landing_folders: []
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://bdm.stat.gov.pl
+    default_status: blocked
+
+  - source_key: gus_bdp
+    category: 1_gus
+    name: "Bank Danych Polska (BDP)"
+    institution: "GUS"
+    type: web_portal
+    auth: none
+    rate_limit: null
+    base_url: https://bdp.stat.gov.pl
+    endpoints: []
+    scope: "Nothing ingested."
+    description: "Poland-aggregated view over GUS databases; coverage unclear."
+    extraction_logic: "BLOCKED: JS SPA, content not accessible without browser rendering."
+    verification: "Browse https://bdp.stat.gov.pl manually."
+    landing_folders: []
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://bdp.stat.gov.pl
+    default_status: blocked
+
+  - source_key: gus_strateg
+    category: 1_gus
+    name: "STRATEG — development strategy indicators"
+    institution: "GUS"
+    type: rest_api
+    auth: key_optional
+    rate_limit:
+      requests: 500
+      period: 15min
+      burst_note: "registered tier 10 req/s"
+    base_url: https://strateg.stat.gov.pl
+    endpoints: []
+    scope: "Nothing ingested — endpoint paths unknown."
+    description: >-
+      EU cohesion-policy and national development-strategy indicators at NUTS2.
+    extraction_logic: >-
+      BLOCKED: documented API paths return 404 via curl; Swagger UI is JS-only.
+      Needs a browser network-inspector session to capture real endpoint paths
+      (same pattern that unblocked DBW).
+    verification: "Open https://strateg.stat.gov.pl/apidocs/ in a browser and capture the spec URL."
+    landing_folders: []
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://strateg.stat.gov.pl/apidocs/
+    default_status: blocked
+
+  - source_key: gus_smup
+    category: 1_gus
+    name: "SMUP — public services monitoring"
+    institution: "GUS"
+    type: rest_api
+    auth: key_optional
+    rate_limit:
+      requests: 500
+      period: 15min
+      burst_note: "registered tier 10 req/s"
+    base_url: https://api.smup.gov.pl
+    endpoints: []
+    scope: "Nothing ingested — endpoint paths unknown."
+    description: >-
+      Education, healthcare, transport and social services quality metrics at
+      gmina level.
+    extraction_logic: >-
+      BLOCKED: API live (rate-limit headers respond) but documented paths 404;
+      Swagger UI JS-only. Same unblock path as STRATEG.
+    verification: "Open https://api.smup.gov.pl/apidocs/index.html in a browser and capture the spec URL."
+    landing_folders: []
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://api.smup.gov.pl/apidocs/index.html
+    default_status: blocked
+
+  - source_key: gus_transtat
+    category: 1_gus
+    name: "TranStat — transport statistics (experimental)"
+    institution: "GUS"
+    type: rest_api
+    auth: none
+    rate_limit: null
+    base_url: https://api-transtat.stat.gov.pl
+    endpoints: []
+    scope: "Nothing ingested."
+    description: "Experimental road and maritime transport statistics."
+    extraction_logic: "BLOCKED: portal returns HTTP 500; API paths unknown; GUS marks the series experimental."
+    verification: "Check if https://transtat.stat.gov.pl is back up."
+    landing_folders: []
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://api-transtat.stat.gov.pl/apidocs/index.html
+    default_status: blocked
+
+  - source_key: gus_regon
+    category: 1_gus
+    name: "REGON — business register API"
+    institution: "GUS"
+    type: rest_api
+    auth: key_required
+    rate_limit:
+      requests: 6000
+      period: hour
+      burst_note: "10,000/h off-peak"
+    base_url: https://api.stat.gov.pl/Home/RegonApi
+    endpoints: []
+    scope: "Nothing ingested — entity-level lookups only (by REGON/NIP/KRS), no bulk export."
+    description: "Full Polish business register; useful for company enrichment, not aggregate statistics."
+    extraction_logic: "NOT STARTED: key requires email to regon_bir@stat.gov.pl (PO action). Enrichment use case only."
+    verification: "n/a until ingested"
+    landing_folders: []
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://api.stat.gov.pl/Home/RegonApi
+    default_status: not_started
+
+  - source_key: gus_sdp
+    category: 1_gus
+    name: "SDP — statistical publications index"
+    institution: "GUS"
+    type: rest_api
+    auth: none
+    rate_limit: null
+    base_url: https://api.stat.gov.pl/Home/SDPApi
+    endpoints: []
+    scope: "Nothing ingested."
+    description: "Index of GUS statistical publications — links, not data series."
+    extraction_logic: "NOT STARTED: low priority — publication metadata, no statistical observations."
+    verification: "n/a until ingested"
+    landing_folders: []
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://api.stat.gov.pl/Home/SDPApi
+    default_status: not_started
+
+  - source_key: gus_svs
+    category: 1_gus
+    name: "SVS — Statystyczne Vademecum Samorządowca"
+    institution: "GUS"
+    type: web_portal
+    auth: none
+    rate_limit: null
+    base_url: https://svs.stat.gov.pl
+    endpoints: []
+    scope: "Deliberately skipped."
+    description: "Per-unit profile sheets (~100 indicators per gmina/powiat/województwo)."
+    extraction_logic: "SKIPPED: data originates from BDL/BDM — we source it there instead."
+    verification: "n/a — skipped by design"
+    landing_folders: []
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://svs.stat.gov.pl
+    default_status: skipped
+
+  - source_key: gus_atlas
+    category: 1_gus
+    name: "Atlas Regionów"
+    institution: "GUS"
+    type: web_portal
+    auth: none
+    rate_limit: null
+    base_url: https://atlas.stat.gov.pl
+    endpoints: []
+    scope: "Deliberately skipped."
+    description: "Map visualisation layer over BDL data; connection refused as of 2026-06 (possibly retired)."
+    extraction_logic: "SKIPPED: no separate content — pure visualisation of BDL."
+    verification: "n/a — skipped by design"
+    landing_folders: []
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://atlas.stat.gov.pl
+    default_status: skipped
+
+  - source_key: gus_sdds
+    category: 1_gus
+    name: "SDDS — IMF Special Data Dissemination Standard"
+    institution: "GUS"
+    type: web_portal
+    auth: none
+    rate_limit: null
+    base_url: https://stat.gov.pl/banki-i-bazy-danych/sdds/
+    endpoints: []
+    scope: "Deliberately skipped."
+    description: "Poland's SDDS submission to the IMF."
+    extraction_logic: "SKIPPED: same data covered by IMF/Eurostat sources."
+    verification: "n/a — skipped by design"
+    landing_folders: []
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://stat.gov.pl/banki-i-bazy-danych/sdds/
+    default_status: skipped
+
+  - source_key: gus_polonia
+    category: 1_gus
+    name: "Baza organizacji polskich za granicą"
+    institution: "GUS"
+    type: web_portal
+    auth: none
+    rate_limit: null
+    base_url: https://polonia.stat.gov.pl
+    endpoints: []
+    scope: "Deliberately skipped."
+    description: "Directory of Polish organisations abroad — reference list, not statistical series."
+    extraction_logic: "SKIPPED: not a statistics source."
+    verification: "n/a — skipped by design"
+    landing_folders: []
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://polonia.stat.gov.pl
+    default_status: skipped
+
+  - source_key: oecd_api
+    category: 3_international
+    name: "OECD Data Explorer (SDMX)"
+    institution: "OECD"
+    type: rest_api
+    auth: none
+    rate_limit: null
+    base_url: https://sdmx.oecd.org/public/rest/
+    endpoints:
+      - "GET /data/{dataset}/{filter}?contentType=csv — SDMX REST, CSV output"
+    scope: "Nothing ingested yet. Target: National Accounts, Labour Force, Government Finance for Poland."
+    description: "OECD member statistics — strong for internationally-comparable fiscal and labour series."
+    extraction_logic: "NOT STARTED."
+    verification: "n/a until ingested"
+    landing_folders: []
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://data-explorer.oecd.org
+    default_status: not_started
+
+  - source_key: worldbank_wdi
+    category: 3_international
+    name: "World Bank — World Development Indicators"
+    institution: "World Bank"
+    type: bulk_api
+    auth: none
+    rate_limit: null
+    base_url: https://api.worldbank.org/V2/
+    endpoints:
+      - "GET full WDI ZIP from data.worldbank.org/data-catalog"
+      - "GET /country/POL/indicator/{code}?downloadformat=csv"
+    scope: "Nothing ingested yet. Target: GDP per capita, Gini, debt, unemployment for POL + comparators."
+    description: "1,400+ development indicators, 200+ countries, 1960–present."
+    extraction_logic: "NOT STARTED — full-ZIP mirror is the cheapest path."
+    verification: "n/a until ingested"
+    landing_folders: []
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://databank.worldbank.org/source/world-development-indicators
+    default_status: not_started
+
+  - source_key: imf_weo
+    category: 3_international
+    name: "IMF World Economic Outlook"
+    institution: "IMF"
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://www.imf.org/en/Publications/SPROLLs/world-economic-outlook-databases
+    endpoints:
+      - "Static XLS/CSV releases, April + October each year"
+    scope: "Nothing ingested yet. Target: macro aggregates + 5-year forecasts for Poland."
+    description: "~50 macro indicators, 190 countries, 1980–present + forecasts. No live API — file releases."
+    extraction_logic: "NOT STARTED — twice-yearly manual-cadence download."
+    verification: "n/a until ingested"
+    landing_folders: []
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.imf.org/en/Publications/SPROLLs/world-economic-outlook-databases
+    default_status: not_started
+
+  - source_key: imf_ifs
+    category: 3_international
+    name: "IMF International Financial Statistics"
+    institution: "IMF"
+    type: rest_api
+    auth: none
+    rate_limit: null
+    base_url: https://dataservices.imf.org/REST/SDMX_JSON.svc/
+    endpoints:
+      - "SDMX JSON service — CompactData/{dataset}/{filter}"
+    scope: "Nothing ingested yet."
+    description: "Monetary, fiscal, external sector, interest rates; 190 countries, 1948–present."
+    extraction_logic: "NOT STARTED."
+    verification: "n/a until ingested"
+    landing_folders: []
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://data.imf.org
+    default_status: not_started
+
+  - source_key: ecb_sdw
+    category: 3_international
+    name: "ECB Data Portal (SDMX)"
+    institution: "ECB"
+    type: rest_api
+    auth: none
+    rate_limit: null
+    base_url: https://data-api.ecb.europa.eu/service/
+    endpoints:
+      - "GET /data/{flow}/{key}?format=csvdata"
+    scope: "Nothing ingested yet. Target: PLN exchange rates, EDP debt/deficit notifications, bond yields."
+    description: "Euro-area and EU monetary statistics."
+    extraction_logic: "NOT STARTED."
+    verification: "n/a until ingested"
+    landing_folders: []
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://data.ecb.europa.eu
+    default_status: not_started
+
+  - source_key: ilostat
+    category: 3_international
+    name: "ILOSTAT — labour statistics"
+    institution: "ILO"
+    type: bulk_api
+    auth: none
+    rate_limit: null
+    base_url: https://sdmx.ilo.org/rest/
+    endpoints:
+      - "Bulk CSV per indicator from ilostat.ilo.org/data; SDMX REST for queries"
+    scope: "Nothing ingested yet. Target: employment by sector, wages, working hours for Poland."
+    description: "Global labour-market statistics, 200+ countries, 1969–present."
+    extraction_logic: "NOT STARTED."
+    verification: "n/a until ingested"
+    landing_folders: []
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://ilostat.ilo.org/data/
+    default_status: not_started
+
+  - source_key: un_wpp
+    category: 3_international
+    name: "UN World Population Prospects"
+    institution: "UN DESA"
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://population.un.org/wpp/
+    endpoints:
+      - "Static Excel/CSV per indicator group; new edition every 2 years (latest WPP 2024)"
+    scope: "Nothing ingested yet. Target: Poland population projections to 2100, age structure, fertility."
+    description: "The canonical demographic projection dataset, 1950–2100, all countries."
+    extraction_logic: "NOT STARTED — biennial static download."
+    verification: "n/a until ingested"
+    landing_folders: []
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://population.un.org/wpp/
+    default_status: not_started
+
+  - source_key: faostat
+    category: 3_international
+    name: "FAOSTAT — food & agriculture"
+    institution: "FAO"
+    type: bulk_api
+    auth: none
+    rate_limit: null
+    base_url: https://fenixservices.fao.org/faostat/api/v1/
+    endpoints:
+      - "Bulk CSV ZIP per domain (Production, Trade, Prices, Land)"
+    scope: "Nothing ingested yet — agriculture is not a primary domain."
+    description: "Food production, agricultural trade, land use; 245 countries, 1961–present."
+    extraction_logic: "NOT STARTED — lower priority."
+    verification: "n/a until ingested"
+    landing_folders: []
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.fao.org/faostat/en/#data
+    default_status: not_started
+
+  - source_key: wto_stats
+    category: 3_international
+    name: "WTO trade statistics"
+    institution: "WTO"
+    type: rest_api
+    auth: key_required
+    rate_limit: null
+    base_url: https://api.wto.org/timeseries/v1/
+    endpoints:
+      - "Timeseries API — requires free key (register at api.wto.org)"
+    scope: "Nothing ingested yet. Target: Polish exports/imports by product and partner."
+    description: "Merchandise and services trade, tariffs; 170+ countries, 1980–present."
+    extraction_logic: "NOT STARTED — key registration is a PO action."
+    verification: "n/a until ingested"
+    landing_folders: []
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://stats.wto.org
+    default_status: not_started
+
+  - source_key: undata
+    category: 3_international
+    name: "UNdata aggregator"
+    institution: "UN"
+    type: rest_api
+    auth: none
+    rate_limit: null
+    base_url: https://data.un.org
+    endpoints:
+      - "SDMX at data.un.org/ws/rest/; CSV per dataset"
+    scope: "Nothing ingested — deliberately deprioritised."
+    description: "Cross-agency UN aggregator (UNSD, UNICEF, WHO …)."
+    extraction_logic: >-
+      NOT STARTED: prefer agency-specific sources (ILOSTAT, FAOSTAT, WDI) which
+      are better documented; use UNdata only for gaps.
+    verification: "n/a until ingested"
+    landing_folders: []
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://data.un.org
+    default_status: not_started
