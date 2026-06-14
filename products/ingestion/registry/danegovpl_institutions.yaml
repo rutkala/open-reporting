@@ -1,0 +1,17 @@
+# Sources whose data is an institution's catalogue on dane.gov.pl.
+# institution_id = VERIFIED dane.gov.pl portal id (the old hardcoded ids were wrong).
+# Consumed by danegovpl_institution_extractor.py.
+sources:
+  nfz_bulk:                       {institution_id: 32}    # NFZ (was wrongly 31)
+  zus_bulk:                       {institution_id: 20}    # ZUS (was wrongly 47)
+  ure_bulk:                       {institution_id: 107}   # URE (was wrongly 58)
+  men_api:                        {institution_id: 165}   # MEN (was wrongly 15)
+  gddkia_bulk:                    {institution_id: 55}    # GDDKiA (was wrongly 106)
+  mf_bulk:                        {institution_id: 13}    # MF
+  urzad_ochrony_konkurencji:      {institution_id: 26}    # UOKiK
+  polska_agencja_rozwoju:         {institution_id: 212}   # PARP
+  urzad_lotnictwa_cywilnego:      {institution_id: 242}   # ULC
+  wyzszy_urzad_gorniczy:          {institution_id: 550}   # WUG
+  kancelaria_prezesa_rady:        {institution_id: 39}    # KPRM
+  sanitarny:                      {institution_id: 63}    # GIS
+  kasa_rolniczego_ubezpieczeni:   {institution_id: 14}    # KRUS

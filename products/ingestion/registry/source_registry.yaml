@@ -354,8 +354,8 @@ sources:
       https://dane.gov.pl/pl/institution/18 — spot-check totals against the
       portal preview.
     landing_folders: [mf_bulk]
-    extractor_kind: bulk_downloader
-    extractor_path: products/ingestion/universal_bulk_downloader.py
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://dane.gov.pl/pl/institution/18
     default_status: complete
@@ -382,8 +382,8 @@ sources:
     landing_layout: "nfz_bulk/{resource_filename}"
     verification: "Match filenames against https://dane.gov.pl/pl/institution/31 resources."
     landing_folders: [nfz_bulk]
-    extractor_kind: bulk_downloader
-    extractor_path: products/ingestion/universal_bulk_downloader.py
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://dane.gov.pl/pl/institution/31
     default_status: complete
@@ -410,8 +410,8 @@ sources:
     landing_layout: "zus_bulk/{resource_filename}"
     verification: "Match filenames against https://dane.gov.pl/pl/institution/47 resources."
     landing_folders: [zus_bulk]
-    extractor_kind: bulk_downloader
-    extractor_path: products/ingestion/universal_bulk_downloader.py
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://dane.gov.pl/pl/institution/47
     default_status: complete
@@ -433,8 +433,8 @@ sources:
     landing_layout: "men_api/{resource_filename}"
     verification: "Match filenames against https://dane.gov.pl/pl/institution/15 resources."
     landing_folders: [men_api]
-    extractor_kind: bulk_downloader
-    extractor_path: products/ingestion/universal_bulk_downloader.py
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://dane.gov.pl/pl/institution/15
     default_status: partial
@@ -456,8 +456,8 @@ sources:
     landing_layout: "gddkia_bulk/{resource_filename}"
     verification: "Match filenames against https://dane.gov.pl/pl/institution/106 resources."
     landing_folders: [gddkia_bulk]
-    extractor_kind: bulk_downloader
-    extractor_path: products/ingestion/universal_bulk_downloader.py
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://dane.gov.pl/pl/institution/106
     default_status: complete
@@ -479,8 +479,8 @@ sources:
     landing_layout: "ure_bulk/{resource_filename}"
     verification: "Match filenames against https://dane.gov.pl/pl/institution/58 resources."
     landing_folders: [ure_bulk]
-    extractor_kind: bulk_downloader
-    extractor_path: products/ingestion/universal_bulk_downloader.py
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://dane.gov.pl/pl/institution/58
     default_status: complete
@@ -2313,8 +2313,8 @@ sources:
     verification: See https://www.gov.pl/web/gis
     landing_folders:
     - sanitarny
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://www.gov.pl/web/gis
     default_status: not_started
@@ -2382,8 +2382,8 @@ sources:
     verification: See https://www.premier.gov.pl
     landing_folders:
     - kancelaria_prezesa_rady
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://www.premier.gov.pl
     default_status: not_started
@@ -2589,8 +2589,8 @@ sources:
     verification: See https://www.gov.pl/web/krus
     landing_folders:
     - kasa_rolniczego_ubezpieczeni
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://www.gov.pl/web/krus
     default_status: not_started
@@ -2957,8 +2957,8 @@ sources:
     verification: See https://WWW.PARP.GOV.PL
     landing_folders:
     - polska_agencja_rozwoju
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://WWW.PARP.GOV.PL
     default_status: not_started
@@ -3302,8 +3302,8 @@ sources:
     verification: See https://www.ulc.gov.pl
     landing_folders:
     - urzad_lotnictwa_cywilnego
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://www.ulc.gov.pl
     default_status: not_started
@@ -3348,8 +3348,8 @@ sources:
     verification: See https://www.uokik.gov.pl/
     landing_folders:
     - urzad_ochrony_konkurencji
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://www.uokik.gov.pl/
     default_status: not_started
@@ -3417,8 +3417,8 @@ sources:
     verification: See https://www.wug.gov.pl
     landing_folders:
     - wyzszy_urzad_gorniczy
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://www.wug.gov.pl
     default_status: not_started
