@@ -3976,3 +3976,88 @@ sources:
     manifest_kind: null
     docs_url: https://www.gpw.pl/komunikaty
     default_status: not_started
+
+  # ── Commercial & market-data platforms (category c expansion) ─────────────
+
+  - source_key: allegro
+    category: c_pl_private
+    ingestion_mode: api_full
+    name: "Allegro — e-commerce marketplace (REST API)"
+    institution: "Allegro.pl sp. z o.o."
+    type: rest_api
+    auth: key_required
+    rate_limit: null
+    base_url: https://api.allegro.pl/
+    endpoints:
+      - "GET /sale/offers, /sale/product-offers — public offer & product search (JSON)"
+      - "OAuth token required (free app registration at developer.allegro.pl)"
+    scope: "Marketplace offers, products, prices, categories — Poland's largest e-commerce platform."
+    description: >-
+      Allegro public REST API — product/offer/price data. PRIVATE platform: OAuth
+      app registration needed (PO credential action) and use is bound by Allegro's
+      commercial API terms. Use for market-price context, not redistribution.
+    extraction_logic: "TO BUILD — OAuth client-credentials flow + paged /sale offer search."
+    landing_layout: "allegro/{category}/{date}.json"
+    verification: "Compare with allegro.pl listings"
+    landing_folders: [allegro]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://developer.allegro.pl/
+    default_status: not_started
+
+  - source_key: pap_mediaroom
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "PAP MediaRoom — press releases (open access)"
+    institution: "Polska Agencja Prasowa S.A."
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://pap-mediaroom.pl/
+    endpoints:
+      - "pap-mediaroom.pl — open-access press releases & multimedia for media"
+    scope: >-
+      Open press-release feed. NB: PAP's main news wire is subscription/paid;
+      only MediaRoom is open. News text is copyrighted — metadata/context use only.
+    description: >-
+      Polish Press Agency MediaRoom — the openly-accessible slice of PAP (press
+      materials). The core news service is paid (licence needed for the wire).
+    extraction_logic: "TO BUILD — scrape MediaRoom release index. Respect copyright/ToS."
+    landing_layout: "pap_mediaroom/{date}/{release}.html"
+    verification: "https://pap-mediaroom.pl/nasze-uslugi"
+    landing_folders: [pap_mediaroom]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://pap-mediaroom.pl/
+    default_status: not_started
+
+  - source_key: rcn_property
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "Property transaction prices (Rejestr Cen Nieruchomości)"
+    institution: "Starostwa / geodesy (per powiat)"
+    type: mixed
+    auth: none
+    rate_limit: null
+    base_url: https://www.geoportal.gov.pl/
+    endpoints:
+      - "Rejestr Cen Nieruchomości (RCN) — notarial transaction prices, per powiat geodesy portals"
+      - "many powiaty expose RCN via their geoportals / WMS-WFS"
+    scope: >-
+      Actual real-estate transaction prices from notarial deeds (type, location,
+      area, price) — the authoritative public property-price data. Fragmented
+      across powiat geodesy services. (Otodom Analytics is the commercial alt.)
+    description: >-
+      Register of Property Prices — public transaction-level property data held by
+      county geodesy offices; the public counterpart to commercial portals.
+    extraction_logic: "TO BUILD — per-powiat RCN endpoints (fragmented); start with the big-city open registers."
+    landing_layout: "rcn_property/{powiat}/{period}.csv"
+    verification: "Compare with a city RCN, e.g. Warsaw Biuro Geodezji"
+    landing_folders: [rcn_property]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.geoportal.gov.pl/
+    default_status: not_started
