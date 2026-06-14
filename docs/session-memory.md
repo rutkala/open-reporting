@@ -34,8 +34,10 @@ to build now or let the scheduled crons populate the working fleet (nightly 01:0
 ### Same session, later — international + KRS extractors built (PO-directed)
 **International (commit 8bba3af5):** wired 3 of the 6 missing category-d sources into intl_extractor.py
 via 2 new reusable kinds — `sdmx_csv` (OECD 5 GDP measures + ILOSTAT 4 labour dataflows) and
-`unsd_sdg` (UN SDG 6 series for Poland). All landed on Drive. The other 3 are genuinely blocked
-(kind=blocked, documented): un_wpp (Bearer token — free registration = PO action), imf_ifs (legacy
+`unsd_sdg` (UN SDG 6 series for Poland). All landed on Drive. un_wpp later UNBLOCKED
+(commit 7109dc31): PO provided a UN WPP data portal Bearer token → stored in .env UN_WPP_TOKEN
+(gitignored), kind=un_wpp wired (7 demographic indicators, PL+7 comparators, 1990-2050, verified).
+So international = 4 of 6 working (+ original ecb/imf_weo/wb/wto). Still blocked: imf_ifs (legacy
 SDMX host decommissioned), faostat (auth/521/403). One delegation to data-engineer agent FAILED
 (probed 51 calls, wrote nothing) — did it inline instead.
 
