@@ -4557,3 +4557,70 @@ sources:
     manifest_kind: null
     docs_url: https://www.ebilet.pl/
     default_status: not_started
+
+  # ── Category c, by domain: DIGITAL/WEB, CREDIT, ADVERTISING, RETAIL ────────
+  - source_key: gemius_pbi
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "Gemius / PBI Mediapanel — internet & cross-media audience"
+    institution: "Gemius / Polskie Badania Internetu"
+    type: reports
+    auth: key_optional
+    rate_limit: null
+    base_url: https://media-panel.pl/pl/internet/
+    endpoints: ["Mediapanel — website/app/streaming audience, reach, demographics (monthly); detailed paid"]
+    scope: "The PL internet-audience standard — site/app reach, users (29.9M), time, demographics."
+    description: "Gemius/PBI Mediapanel — the web-traffic measurement currency. Headline rankings public; full data paid."
+    extraction_logic: "TO BUILD — monthly Mediapanel rankings; full data commercial."
+    landing_layout: "gemius_pbi/{month}.json"
+    verification: "https://media-panel.pl/pl/internet/"
+    landing_folders: [gemius_pbi]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://pbi.org.pl/mediapanel/
+    default_status: not_started
+
+  - source_key: bik
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "BIK — credit market data"
+    institution: "Biuro Informacji Kredytowej S.A."
+    type: reports
+    auth: key_optional
+    rate_limit: null
+    base_url: https://media.bik.pl/analizy-rynkowe
+    endpoints: ["monthly credit-market reports: mortgage/consumer loan volumes, indices (BIK Index)"]
+    scope: "Credit market — mortgage & consumer-loan volumes, demand indices, NPL (the lending reference)."
+    description: "Credit Information Bureau market analytics. Monthly reports public; microdata private/regulated."
+    extraction_logic: "TO BUILD — scrape monthly market reports."
+    landing_layout: "bik/{month}.json"
+    verification: "https://media.bik.pl/analizy-rynkowe"
+    landing_folders: [bik]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://media.bik.pl/analizy-rynkowe
+    default_status: not_started
+
+  - source_key: ad_market
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "Advertising market reports (Publicis / Kantar)"
+    institution: "Publicis Groupe / Kantar Media"
+    type: reports
+    auth: key_optional
+    rate_limit: null
+    base_url: https://www.publicisgroupe.pl/
+    endpoints: ["quarterly ad-market value & split by medium (Publicis); Kantar Media ad monitoring"]
+    scope: "Advertising-market value (~14bn zł) by medium (TV/online/radio/OOH/press). Headlines public."
+    description: "Ad-market tracking by media agencies. Summary figures public; detailed data paid."
+    extraction_logic: "TO BUILD — scrape published ad-market summaries."
+    landing_layout: "ad_market/{period}.json"
+    verification: "Publicis Groupe PL ad-market reports"
+    landing_folders: [ad_market]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.publicisgroupe.pl/
+    default_status: not_started
