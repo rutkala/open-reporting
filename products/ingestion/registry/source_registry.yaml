@@ -3889,3 +3889,90 @@ sources:
     manifest_kind: null
     docs_url: https://www.ppej.pl/
     default_status: not_started
+
+  # ── Financial-statement filing obligations (5th pass) ─────────────────────
+
+  - source_key: krs_rdf
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "KRS — Repozytorium Dokumentów Finansowych (financial statements)"
+    institution: "Ministerstwo Sprawiedliwości"
+    type: rest_api
+    auth: none
+    rate_limit: null
+    base_url: https://ekrs.ms.gov.pl/rdf/rd/
+    endpoints:
+      - "ekrs.ms.gov.pl/rdf/rd/ — financial statements per KRS number (XML + PDF), free"
+      - "api-krs.ms.gov.pl/api/krs/OdpisAktualny/{krs} — entity register data (JSON)"
+      - "PRS-eKRS bulk/automatic-exchange API for professional users (registration)"
+    scope: >-
+      Annual financial statements of EVERY KRS-registered entity (~600k: spółki
+      kapitałowe & osobowe, fundacje, stowarzyszenia) — the universal filing
+      obligation. Plus ESG/sustainability reports (from 2024). The single largest
+      financial dataset in Poland.
+    description: >-
+      National Court Register Financial Documents Repository — where all
+      registered entities file annual statements. Pair with the KRS OpenAPI for
+      the entity universe + the per-entity financial docs.
+    extraction_logic: >-
+      TO BUILD — enumerate KRS numbers (KRS OpenAPI / bulk dump), then pull each
+      entity's financial documents from RDF. Large; prioritise by sector/size.
+    landing_layout: "krs_rdf/{krs}/{document}.{xml|pdf}"
+    verification: "Search a KRS number at https://ekrs.ms.gov.pl/rdf/rd/#/search"
+    landing_folders: [krs_rdf]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.gov.pl/web/sprawiedliwosc/bezplatne-wyszukanie-i-pobranie-dokumentu-finansowego-podmiotu-wpisanego-do-rejestru-przedsiebiorcow-krajowego-rejestru-sadowego
+    default_status: not_started
+
+  - source_key: opp_niw
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: "OPP financial & activity reports (NIW database)"
+    institution: "Narodowy Instytut Wolności (NIW-CRSO)"
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://sprawozdaniaopp.niw.gov.pl/
+    endpoints:
+      - "sprawozdaniaopp.niw.gov.pl — public benefit orgs' financial + substantive reports"
+    scope: "Annual financial + activity reports of all ~9,000 public-benefit organisations (OPP)."
+    description: >-
+      National Freedom Institute OPP reports database — every public-benefit
+      organisation must file financial + activity reports here (deadline 15 Jul).
+    extraction_logic: "TO BUILD — scrape/iterate the NIW OPP reports database."
+    landing_layout: "opp_niw/{org}/{year}.{xml|pdf}"
+    verification: "Search at https://sprawozdaniaopp.niw.gov.pl/"
+    landing_folders: [opp_niw]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://niw.gov.pl/opp/sprawozdania-opp/
+    default_status: not_started
+
+  - source_key: gpw_espi
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "GPW — listed-company disclosures (ESPI/EBI)"
+    institution: "Giełda Papierów Wartościowych"
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://www.gpw.pl/komunikaty
+    endpoints:
+      - "GPW komunikaty (ESPI/EBI) — regulatory & periodic disclosures of all listed issuers"
+      - "Main market + NewConnect + Catalyst"
+    scope: "Current & periodic reports of all GPW/NewConnect/Catalyst issuers (~750 companies)."
+    description: >-
+      Warsaw Stock Exchange disclosure feed — listed companies' mandatory ESPI
+      (regulated) and EBI (alternative-market) reports.
+    extraction_logic: "TO BUILD — pull the GPW komunikaty feed; per-issuer periodic reports."
+    landing_layout: "gpw_espi/{issuer}/{report}.{pdf|xml}"
+    verification: "Compare with https://www.gpw.pl/komunikaty"
+    landing_folders: [gpw_espi]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.gpw.pl/komunikaty
+    default_status: not_started
