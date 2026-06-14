@@ -543,30 +543,34 @@ sources:
 
   - source_key: krs_api
     category: b_pl_gov_institutional
-    ingestion_mode: none
+    ingestion_mode: incremental
     name: "KRS open API (Ministerstwo Sprawiedliwości)"
     institution: "Ministerstwo Sprawiedliwości"
     type: rest_api
     auth: none
     rate_limit: null
-    base_url: https://prs.ms.gov.pl/krs/openApi
+    base_url: https://api-krs.ms.gov.pl/api/krs
     endpoints:
-      - "GET /krs/openApi — OpenAPI spec (discovery only; per-entity lookups by KRS number)"
+      - "GET /OdpisAktualny/{krs}?rejestr=P&format=json — current register extract per entity"
     scope: >-
-      Only the API spec snapshot. The API is per-entity lookup (single company
-      records by KRS number) — not bulk-mirrorable; usable for enrichment, not
-      statistics.
+      Register extracts (company name, address, share capital, board, PKD codes,
+      status, filed-document mentions) for a curated, bounded entity set — major
+      state-owned + listed companies in krs_targets.yaml. The KRS API is per-entity
+      lookup by KRS number, not bulk-mirrorable; the target list is the scope and is
+      expandable. NOTE: register data, NOT financial statements — the RDF statement
+      documents sit behind anti-bot protection (Imperva Incapsula) with no free
+      programmatic access (see decisions log).
     description: >-
-      National Court Register API — company registration records. Lookup-style
-      API, no aggregate statistics.
-    extraction_logic: "run_bulk.py stores the OpenAPI spec; no data pull implemented (by design)."
-    landing_layout: "krs_api/openapi.json"
-    verification: "https://prs.ms.gov.pl/krs/openApi renders the same spec."
+      National Court Register (KRS) open API — company registration records via the
+      sanctioned api-krs.ms.gov.pl endpoint (not the Incapsula-protected RDF browser).
+    extraction_logic: "krs_extractor.py reads krs_targets.yaml and pulls OdpisAktualny per entity."
+    landing_layout: "krs_api/{krs}.json"
+    verification: "Each file's _meta.name matches the company; re-run refreshes."
     landing_folders: [krs_api]
-    extractor_kind: bulk_downloader
-    extractor_path: products/ingestion/bulk/run_bulk.py
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/krs_extractor.py
     manifest_kind: null
-    docs_url: https://prs.ms.gov.pl/krs/openApi
+    docs_url: https://api-krs.ms.gov.pl/
     default_status: partial
 
   - source_key: saos_api
@@ -980,11 +984,11 @@ sources:
     base_url: https://sdmx.oecd.org/public/rest/
     endpoints:
       - "GET /data/{dataset}/{filter}?contentType=csv — SDMX REST, CSV output"
-    scope: "Nothing ingested yet. Target: National Accounts, Labour Force, Government Finance for Poland."
+    scope: "National Accounts at a Glance (DF_NAAG_I) — 5 GDP measures for Poland + EU/CEE comparators (SDMX-CSV). Expandable to more OECD dataflows."
     description: "OECD member statistics — strong for internationally-comparable fiscal and labour series."
-    extraction_logic: "NOT STARTED."
-    verification: "n/a until ingested"
-    landing_folders: []
+    extraction_logic: "intl_extractor.py kind=sdmx_csv; series defined in intl_indicators.yaml."
+    verification: "data/landing/oecd_api/*.csv contain Poland rows"
+    landing_folders: [oecd_api]
     extractor_kind: script
     extractor_path: products/ingestion/extractors/intl_extractor.py
     manifest_kind: null
@@ -1120,11 +1124,11 @@ sources:
     base_url: https://sdmx.ilo.org/rest/
     endpoints:
       - "Bulk CSV per indicator from ilostat.ilo.org/data; SDMX REST for queries"
-    scope: "Nothing ingested yet. Target: employment by sector, wages, working hours for Poland."
+    scope: "4 labour dataflows (unemployment, employment ratio, participation, employment) for Poland + comparators via SDMX-CSV. Expandable."
     description: "Global labour-market statistics, 200+ countries, 1969–present."
-    extraction_logic: "NOT STARTED."
-    verification: "n/a until ingested"
-    landing_folders: []
+    extraction_logic: "intl_extractor.py kind=sdmx_csv; series defined in intl_indicators.yaml."
+    verification: "data/landing/ilostat/*.csv contain Poland rows"
+    landing_folders: [ilostat]
     extractor_kind: script
     extractor_path: products/ingestion/extractors/intl_extractor.py
     manifest_kind: null
@@ -1213,13 +1217,11 @@ sources:
     base_url: https://data.un.org
     endpoints:
       - "SDMX at data.un.org/ws/rest/; CSV per dataset"
-    scope: "Nothing ingested — deliberately deprioritised."
+    scope: "6 UN SDG series for Poland (poverty, mortality, renewables, unemployment, women-in-parliament, education) via the UNSD SDG REST API. Expandable."
     description: "Cross-agency UN aggregator (UNSD, UNICEF, WHO …)."
-    extraction_logic: >-
-      NOT STARTED: prefer agency-specific sources (ILOSTAT, FAOSTAT, WDI) which
-      are better documented; use UNdata only for gaps.
-    verification: "n/a until ingested"
-    landing_folders: []
+    extraction_logic: "intl_extractor.py kind=unsd_sdg; series defined in intl_indicators.yaml."
+    verification: "data/landing/undata/*.json contain Poland observations"
+    landing_folders: [undata]
     extractor_kind: script
     extractor_path: products/ingestion/extractors/intl_extractor.py
     manifest_kind: null

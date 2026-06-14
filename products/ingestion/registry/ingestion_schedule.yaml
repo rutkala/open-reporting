@@ -642,10 +642,10 @@ entries:
 - source_key: krs_api
   cadence: monthly
   window: 03:36 UTC 1st
-  engine: run_bulk.py
+  engine: krs_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
-  notes: Only the API spec snapshot. The API is per-entity lookup (single company records
+  notes: Register extracts (OdpisAktualny) for a curated entity set in krs_targets.yaml
 - source_key: lasy_bdl
   cadence: monthly
   window: 10:39 UTC 1st

@@ -1,0 +1,17 @@
+# Curated KRS entity targets for the register-extract pull (krs_extractor.py).
+# The KRS API is per-entity lookup (by KRS number), not bulk — so we maintain a
+# bounded, high-value set: state-owned + major listed companies we already track
+# as sources. Verified live against api-krs.ms.gov.pl (name confirmed). Expand
+# freely — add {krs, name, rejestr} rows. rejestr: P=przedsiębiorcy (default),
+# S=stowarzyszenia/fundacje.
+targets:
+  - {krs: "0000023302", name: "KGHM Polska Miedź S.A.", rejestr: P}
+  - {krs: "0000028860", name: "ORLEN S.A.", rejestr: P}
+  - {krs: "0000059307", name: "PGE Polska Grupa Energetyczna S.A.", rejestr: P}
+  - {krs: "0000026438", name: "PKO Bank Polski S.A.", rejestr: P}
+  - {krs: "0000014843", name: "Bank Pekao S.A.", rejestr: P}
+  - {krs: "0000271562", name: "Tauron Polska Energia S.A.", rejestr: P}
+  - {krs: "0000012483", name: "Enea S.A.", rejestr: P}
+  - {krs: "0000072093", name: "Jastrzębska Spółka Węglowa S.A.", rejestr: P}
+  - {krs: "0000075450", name: "Grupa Azoty S.A.", rejestr: P}
+  - {krs: "0000334972", name: "Poczta Polska S.A.", rejestr: P}

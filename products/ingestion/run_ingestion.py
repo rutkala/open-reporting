@@ -41,6 +41,7 @@ ENGINE_MODE = {
     "pl_api_extractor.py": "sources",
     "wfs_extractor.py": "sources",
     "uzp_extractor.py": "single",
+    "krs_extractor.py": "single",
     "danegovpl_harvester.py": "single",
     "run_incremental.py": "skip",   # owned by run_daily.sh (22:00 nightly + dbt)
     "run_bulk.py": "single",
