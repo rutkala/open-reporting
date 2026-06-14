@@ -4802,3 +4802,833 @@ sources:
     manifest_kind: null
     docs_url: https://piit.org.pl/
     default_status: not_started
+
+  # ── Category c — remaining FREE candidates (per-domain menu) ──
+  - source_key: money_pl
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: Money.pl — financial portal
+    institution: Wirtualna Polska Media
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.money.pl/
+    endpoints:
+    - finance/markets — free reports/data (HTML/PDF; ToS for reuse)
+    scope: finance/markets — private/association data, free.
+    description: Money.pl — financial portal — free finance/markets data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: money_pl/
+    verification: See https://www.money.pl/
+    landing_folders:
+    - money_pl
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.money.pl/
+    default_status: not_started
+  - source_key: notoria
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: Notoria — listed-company financial data
+    institution: Notoria Serwis
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://ir.notoria.pl/
+    endpoints:
+    - finance/markets — free reports/data (HTML/PDF; ToS for reuse)
+    scope: finance/markets — private/association data, free.
+    description: Notoria — listed-company financial data — free finance/markets data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: notoria/
+    verification: See https://ir.notoria.pl/
+    landing_folders:
+    - notoria
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://ir.notoria.pl/
+    default_status: not_started
+  - source_key: big_infomonitor
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: BIG InfoMonitor — debt/payment data
+    institution: BIG InfoMonitor
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://media.big.pl/
+    endpoints:
+    - finance/credit — free reports/data (HTML/PDF; ToS for reuse)
+    scope: finance/credit — private/association data, free.
+    description: BIG InfoMonitor — debt/payment data — free finance/credit data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: big_infomonitor/
+    verification: See https://media.big.pl/
+    landing_folders:
+    - big_infomonitor
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://media.big.pl/
+    default_status: not_started
+  - source_key: krd
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: KRD — National Debt Register (market reports)
+    institution: Krajowy Rejestr Długów
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://krd.pl/centrum-prasowe
+    endpoints:
+    - finance/credit — free reports/data (HTML/PDF; ToS for reuse)
+    scope: finance/credit — private/association data, free.
+    description: KRD — National Debt Register (market reports) — free finance/credit data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: krd/
+    verification: See https://krd.pl/centrum-prasowe
+    landing_folders:
+    - krd
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://krd.pl/centrum-prasowe
+    default_status: not_started
+  - source_key: analizy_pl
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: Analizy.pl — investment funds data
+    institution: Analizy.pl
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.analizy.pl/
+    endpoints:
+    - finance/funds — free reports/data (HTML/PDF; ToS for reuse)
+    scope: finance/funds — private/association data, free.
+    description: Analizy.pl — investment funds data — free finance/funds data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: analizy_pl/
+    verification: See https://www.analizy.pl/
+    landing_folders:
+    - analizy_pl
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.analizy.pl/
+    default_status: not_started
+  - source_key: amron
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: AMRON — mortgage & property valuation DB
+    institution: Centrum AMRON (ZBP)
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.amron.pl/
+    endpoints:
+    - real estate — free reports/data (HTML/PDF; ToS for reuse)
+    scope: real estate — private/association data, free.
+    description: AMRON — mortgage & property valuation DB — free real estate data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: amron/
+    verification: See https://www.amron.pl/
+    landing_folders:
+    - amron
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.amron.pl/
+    default_status: not_started
+  - source_key: otodom_analytics
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: Otodom Analytics — housing market data
+    institution: Otodom (OLX Group)
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://analytics.otodom.pl/
+    endpoints:
+    - real estate — free reports/data (HTML/PDF; ToS for reuse)
+    scope: real estate — private/association data, free.
+    description: Otodom Analytics — housing market data — free real estate data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: otodom_analytics/
+    verification: See https://analytics.otodom.pl/
+    landing_folders:
+    - otodom_analytics
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://analytics.otodom.pl/
+    default_status: not_started
+  - source_key: morizon
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: Morizon — property listings & prices
+    institution: Morizon-Gratka
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.morizon.pl/
+    endpoints:
+    - real estate — free reports/data (HTML/PDF; ToS for reuse)
+    scope: real estate — private/association data, free.
+    description: Morizon — property listings & prices — free real estate data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: morizon/
+    verification: See https://www.morizon.pl/
+    landing_folders:
+    - morizon
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.morizon.pl/
+    default_status: not_started
+  - source_key: rynekpierwotny
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: RynekPierwotny — primary housing market
+    institution: RynekPierwotny (GetHome)
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://rynekpierwotny.pl/
+    endpoints:
+    - real estate — free reports/data (HTML/PDF; ToS for reuse)
+    scope: real estate — private/association data, free.
+    description: RynekPierwotny — primary housing market — free real estate data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: rynekpierwotny/
+    verification: See https://rynekpierwotny.pl/
+    landing_folders:
+    - rynekpierwotny
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://rynekpierwotny.pl/
+    default_status: not_started
+  - source_key: commercial_re
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: Commercial RE reports (JLL/CBRE/Knight Frank/Colliers)
+    institution: JLL/CBRE/Knight Frank/Colliers
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.jll.pl/pl/trendy-i-badania
+    endpoints:
+    - real estate — free reports/data (HTML/PDF; ToS for reuse)
+    scope: real estate — private/association data, free.
+    description: Commercial RE reports (JLL/CBRE/Knight Frank/Colliers) — free real estate data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: commercial_re/
+    verification: See https://www.jll.pl/pl/trendy-i-badania
+    landing_folders:
+    - commercial_re
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.jll.pl/pl/trendy-i-badania
+    default_status: not_started
+  - source_key: reflex
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: BM Reflex — fuel market analysis
+    institution: BM Reflex
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://reflex.com.pl/
+    endpoints:
+    - energy/fuel — free reports/data (HTML/PDF; ToS for reuse)
+    scope: energy/fuel — private/association data, free.
+    description: BM Reflex — fuel market analysis — free energy/fuel data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: reflex/
+    verification: See https://reflex.com.pl/
+    landing_folders:
+    - reflex
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://reflex.com.pl/
+    default_status: not_started
+  - source_key: olx
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: OLX — classifieds (goods/jobs/property)
+    institution: OLX Group
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.olx.pl/
+    endpoints:
+    - trade — free reports/data (HTML/PDF; ToS for reuse)
+    scope: trade — private/association data, free.
+    description: OLX — classifieds (goods/jobs/property) — free trade data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: olx/
+    verification: See https://www.olx.pl/
+    landing_folders:
+    - olx
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.olx.pl/
+    default_status: not_started
+  - source_key: otomoto
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: Otomoto — used-vehicle market
+    institution: OLX Group
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.otomoto.pl/
+    endpoints:
+    - automotive — free reports/data (HTML/PDF; ToS for reuse)
+    scope: automotive — private/association data, free.
+    description: Otomoto — used-vehicle market — free automotive data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: otomoto/
+    verification: See https://www.otomoto.pl/
+    landing_folders:
+    - otomoto
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.otomoto.pl/
+    default_status: not_started
+  - source_key: pmr
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: PMR — market research (free summaries)
+    institution: PMR
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.pmrmarketexperts.com/
+    endpoints:
+    - sector analytics — free reports/data (HTML/PDF; ToS for reuse)
+    scope: sector analytics — private/association data, free.
+    description: PMR — market research (free summaries) — free sector analytics data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: pmr/
+    verification: See https://www.pmrmarketexperts.com/
+    landing_folders:
+    - pmr
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.pmrmarketexperts.com/
+    default_status: not_started
+  - source_key: sedlak
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: Sedlak & Sedlak — salary surveys
+    institution: Sedlak & Sedlak
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://wynagrodzenia.pl/
+    endpoints:
+    - labour — free reports/data (HTML/PDF; ToS for reuse)
+    scope: labour — private/association data, free.
+    description: Sedlak & Sedlak — salary surveys — free labour data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: sedlak/
+    verification: See https://wynagrodzenia.pl/
+    landing_folders:
+    - sedlak
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://wynagrodzenia.pl/
+    default_status: not_started
+  - source_key: transfermarkt
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: Transfermarkt — football transfers & values
+    institution: Transfermarkt
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.transfermarkt.pl/
+    endpoints:
+    - sports — free reports/data (HTML/PDF; ToS for reuse)
+    scope: sports — private/association data, free.
+    description: Transfermarkt — football transfers & values — free sports data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: transfermarkt/
+    verification: See https://www.transfermarkt.pl/
+    landing_folders:
+    - transfermarkt
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.transfermarkt.pl/
+    default_status: not_started
+  - source_key: betting_odds
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: Bookmaker odds (STS/Fortuna/Betclic)
+    institution: STS/Fortuna/Betclic
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.sts.pl/
+    endpoints:
+    - sports — free reports/data (HTML/PDF; ToS for reuse)
+    scope: sports — private/association data, free.
+    description: Bookmaker odds (STS/Fortuna/Betclic) — free sports data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: betting_odds/
+    verification: See https://www.sts.pl/
+    landing_folders:
+    - betting_odds
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.sts.pl/
+    default_status: not_started
+  - source_key: pzpn
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: PZPN — football federation (Łączy nas piłka)
+    institution: Polski Związek Piłki Nożnej
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.laczynaspilka.pl/
+    endpoints:
+    - sports — free reports/data (HTML/PDF; ToS for reuse)
+    scope: sports — private/association data, free.
+    description: PZPN — football federation (Łączy nas piłka) — free sports data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: pzpn/
+    verification: See https://www.laczynaspilka.pl/
+    landing_folders:
+    - pzpn
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.laczynaspilka.pl/
+    default_status: not_started
+  - source_key: press_circulation
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: Press circulation audits (PBC/ZKDP)
+    institution: PBC / ZKDP
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.pbc.pl/
+    endpoints:
+    - media — free reports/data (HTML/PDF; ToS for reuse)
+    scope: media — private/association data, free.
+    description: Press circulation audits (PBC/ZKDP) — free media data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: press_circulation/
+    verification: See https://www.pbc.pl/
+    landing_folders:
+    - press_circulation
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.pbc.pl/
+    default_status: not_started
+  - source_key: sotrender
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: Sotrender / NapoleonCat — social-media analytics
+    institution: Sotrender / NapoleonCat
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.sotrender.com/
+    endpoints:
+    - media/digital — free reports/data (HTML/PDF; ToS for reuse)
+    scope: media/digital — private/association data, free.
+    description: Sotrender / NapoleonCat — social-media analytics — free media/digital data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: sotrender/
+    verification: See https://www.sotrender.com/
+    landing_folders:
+    - sotrender
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.sotrender.com/
+    default_status: not_started
+  - source_key: perspektywy
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: Perspektywy — school & university rankings
+    institution: Fundacja Perspektywy
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.perspektywy.pl/
+    endpoints:
+    - education — free reports/data (HTML/PDF; ToS for reuse)
+    scope: education — private/association data, free.
+    description: Perspektywy — school & university rankings — free education data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: perspektywy/
+    verification: See https://www.perspektywy.pl/
+    landing_folders:
+    - perspektywy
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.perspektywy.pl/
+    default_status: not_started
+  - source_key: rynek_ksiazki
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: Rynek Książki / Biblioteka Analiz — book market
+    institution: Biblioteka Analiz
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://rynek-ksiazki.pl/
+    endpoints:
+    - culture/books — free reports/data (HTML/PDF; ToS for reuse)
+    scope: culture/books — private/association data, free.
+    description: Rynek Książki / Biblioteka Analiz — book market — free culture/books data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: rynek_ksiazki/
+    verification: See https://rynek-ksiazki.pl/
+    landing_folders:
+    - rynek_ksiazki
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://rynek-ksiazki.pl/
+    default_status: not_started
+  - source_key: game_industry
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: Polish game-industry reports (KPT/PARP/PGA)
+    institution: KPT / PARP
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://gamedev.pl/
+    endpoints:
+    - culture/gaming — free reports/data (HTML/PDF; ToS for reuse)
+    scope: culture/gaming — private/association data, free.
+    description: Polish game-industry reports (KPT/PARP/PGA) — free culture/gaming data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: game_industry/
+    verification: See https://gamedev.pl/
+    landing_folders:
+    - game_industry
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://gamedev.pl/
+    default_status: not_started
+  - source_key: startup_data
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: Startup ecosystem (Startup Poland/Dealroom/PFR)
+    institution: Startup Poland / Dealroom
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://startuppoland.org/
+    endpoints:
+    - digital/VC — free reports/data (HTML/PDF; ToS for reuse)
+    scope: digital/VC — private/association data, free.
+    description: Startup ecosystem (Startup Poland/Dealroom/PFR) — free digital/VC data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: startup_data/
+    verification: See https://startuppoland.org/
+    landing_folders:
+    - startup_data
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://startuppoland.org/
+    default_status: not_started
+  - source_key: hotel_market
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: Hotel-market reports (Brog/STR)
+    institution: Brog Marketing
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.e-hotelarz.pl/
+    endpoints:
+    - tourism — free reports/data (HTML/PDF; ToS for reuse)
+    scope: tourism — private/association data, free.
+    description: Hotel-market reports (Brog/STR) — free tourism data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: hotel_market/
+    verification: See https://www.e-hotelarz.pl/
+    landing_folders:
+    - hotel_market
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.e-hotelarz.pl/
+    default_status: not_started
+  - source_key: pzfd
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: PZFD — property developers association
+    institution: Polski Związek Firm Deweloperskich
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://pzfd.pl/
+    endpoints:
+    - real estate — free reports/data (HTML/PDF; ToS for reuse)
+    scope: real estate — private/association data, free.
+    description: PZFD — property developers association — free real estate data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: pzfd/
+    verification: See https://pzfd.pl/
+    landing_folders:
+    - pzfd
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://pzfd.pl/
+    default_status: not_started
+  - source_key: pohid
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: POHID — retail & distribution association
+    institution: Polska Organizacja Handlu i Dystrybucji
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.pohid.pl/
+    endpoints:
+    - trade — free reports/data (HTML/PDF; ToS for reuse)
+    scope: trade — private/association data, free.
+    description: POHID — retail & distribution association — free trade data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: pohid/
+    verification: See https://www.pohid.pl/
+    landing_folders:
+    - pohid
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.pohid.pl/
+    default_status: not_started
+  - source_key: lewiatan
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: Konfederacja Lewiatan — employers (free reports)
+    institution: Konfederacja Lewiatan
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://lewiatan.org/
+    endpoints:
+    - economy — free reports/data (HTML/PDF; ToS for reuse)
+    scope: economy — private/association data, free.
+    description: Konfederacja Lewiatan — employers (free reports) — free economy data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: lewiatan/
+    verification: See https://lewiatan.org/
+    landing_folders:
+    - lewiatan
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://lewiatan.org/
+    default_status: not_started
+  - source_key: kig
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: KIG — Polish Chamber of Commerce
+    institution: Krajowa Izba Gospodarcza
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://kig.pl/
+    endpoints:
+    - economy — free reports/data (HTML/PDF; ToS for reuse)
+    scope: economy — private/association data, free.
+    description: KIG — Polish Chamber of Commerce — free economy data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: kig/
+    verification: See https://kig.pl/
+    landing_folders:
+    - kig
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://kig.pl/
+    default_status: not_started
+  - source_key: paliwa_izba
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: Polska Izba Paliw Płynnych — fuel association
+    institution: PIPP
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://paliwa.pl/
+    endpoints:
+    - energy/fuel — free reports/data (HTML/PDF; ToS for reuse)
+    scope: energy/fuel — private/association data, free.
+    description: Polska Izba Paliw Płynnych — fuel association — free energy/fuel data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: paliwa_izba/
+    verification: See https://paliwa.pl/
+    landing_folders:
+    - paliwa_izba
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://paliwa.pl/
+    default_status: not_started
+  - source_key: psew
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: PSEW — wind energy association
+    institution: Polskie Stowarzyszenie Energetyki Wiatrowej
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://psew.pl/
+    endpoints:
+    - energy — free reports/data (HTML/PDF; ToS for reuse)
+    scope: energy — private/association data, free.
+    description: PSEW — wind energy association — free energy data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: psew/
+    verification: See https://psew.pl/
+    landing_folders:
+    - psew
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://psew.pl/
+    default_status: not_started
+  - source_key: ptpiree
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: PTPiREE — power distribution association
+    institution: PTPiREE
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.ptpiree.pl/
+    endpoints:
+    - energy — free reports/data (HTML/PDF; ToS for reuse)
+    scope: energy — private/association data, free.
+    description: PTPiREE — power distribution association — free energy data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: ptpiree/
+    verification: See https://www.ptpiree.pl/
+    landing_folders:
+    - ptpiree
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.ptpiree.pl/
+    default_status: not_started
+  - source_key: igg
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: IGG — gas industry chamber
+    institution: Izba Gospodarcza Gazownictwa
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.igg.pl/
+    endpoints:
+    - energy — free reports/data (HTML/PDF; ToS for reuse)
+    scope: energy — private/association data, free.
+    description: IGG — gas industry chamber — free energy data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: igg/
+    verification: See https://www.igg.pl/
+    landing_folders:
+    - igg
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.igg.pl/
+    default_status: not_started
+  - source_key: igte
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: IGTE — pension funds chamber
+    institution: Izba Gospodarcza Towarzystw Emerytalnych
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.igte.pl/
+    endpoints:
+    - finance — free reports/data (HTML/PDF; ToS for reuse)
+    scope: finance — private/association data, free.
+    description: IGTE — pension funds chamber — free finance data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: igte/
+    verification: See https://www.igte.pl/
+    landing_folders:
+    - igte
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.igte.pl/
+    default_status: not_started
+  - source_key: zpl
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: ZPL — Polish leasing association
+    institution: Związek Polskiego Leasingu
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://leasing.org.pl/
+    endpoints:
+    - finance — free reports/data (HTML/PDF; ToS for reuse)
+    scope: finance — private/association data, free.
+    description: ZPL — Polish leasing association — free finance data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: zpl/
+    verification: See https://leasing.org.pl/
+    landing_folders:
+    - zpl
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://leasing.org.pl/
+    default_status: not_started
+  - source_key: thinktanks_more
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: Think tanks (Sobieski/Klub Jagielloński/Batory/PISM/OSW/ISP)
+    institution: Sobieski/KJ/Batory/PISM/OSW/ISP
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://klubjagiellonski.pl/
+    endpoints:
+    - research — free reports/data (HTML/PDF; ToS for reuse)
+    scope: research — private/association data, free.
+    description: Think tanks (Sobieski/Klub Jagielloński/Batory/PISM/OSW/ISP) — free research data provider (category c). ToS/attribution for reuse.
+    extraction_logic: TO BUILD — scrape published data/reports.
+    landing_layout: thinktanks_more/
+    verification: See https://klubjagiellonski.pl/
+    landing_folders:
+    - thinktanks_more
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://klubjagiellonski.pl/
+    default_status: not_started
