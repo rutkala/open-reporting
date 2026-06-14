@@ -1225,3 +1225,39 @@ sources:
     manifest_kind: null
     docs_url: https://data.un.org
     default_status: not_started
+
+  # ── Meta-source: the institution registry itself ──────────────────────────
+
+  - source_key: kpp_registry
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: "Katalog Podmiotów Publicznych (master institution registry)"
+    institution: "Ministerstwo Cyfryzacji"
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://dane.gov.pl/pl/dataset/3520
+    endpoints:
+      - "GET api.dane.gov.pl/1.4/datasets/3520/resources — monthly XLSX export of all public entities"
+    scope: >-
+      The authoritative catalogue of ALL ~87,000 Polish public entities
+      (ministries, central offices, inspectorates, agencies, courts, schools,
+      hospitals, local governments) with REGON/NIP/KRS, legal form, ownership,
+      location, website. 132 are 'instytucje centralne' (national bodies).
+    description: >-
+      Master registry of who exists in Polish public administration. Not a
+      statistics source — the backbone for systematic source coverage: every
+      institution we might ingest data from is enumerated here, whether or not
+      it publishes open data (so NBP, NIK etc. are included).
+    extraction_logic: >-
+      infra/scheduler/kpp_institution_registry.py downloads the latest monthly
+      KPP XLSX, extracts central institutions + type breakdown → 
+      docs/poland-institutions-master.md + data/kpp_institutions.json.
+    landing_layout: "(not landed — parsed to docs/ + data/ artifacts)"
+    verification: "Compare counts with https://dane.gov.pl/pl/dataset/3520"
+    landing_folders: []
+    extractor_kind: script
+    extractor_path: infra/scheduler/kpp_institution_registry.py
+    manifest_kind: null
+    docs_url: https://www.gov.pl/web/cyfryzacja/katalog-podmiotow-publicznych--najwazniejsze-dane-w-jednym-miejscu
+    default_status: complete
