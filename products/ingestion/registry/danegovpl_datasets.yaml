@@ -1,0 +1,8 @@
+# Sources whose data is one or more specific dane.gov.pl datasets.
+# Consumed by danegovpl_dataset_extractor.py — pulls every resource of each
+# listed dataset into data/landing/{source_key}/.
+sources:
+  rspo:          {datasets: [839],  note: "schools & educational facilities (per voivodeship XLS)"}
+  rik_culture:   {datasets: [2143, 2587], note: "registers of cultural institutions"}
+  isws_justice:  {datasets: [625],  note: "justice-system statistics"}
+  uzp_bzp_dane:  {datasets: [916],  note: "BZP procurement announcements (dane.gov.pl mirror)"}

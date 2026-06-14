@@ -1782,8 +1782,8 @@ sources:
     landing_layout: "rspo/schools.csv"
     verification: "Compare counts with https://rspo.gov.pl/zaawansowana"
     landing_folders: [rspo]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/danegovpl_dataset_extractor.py
     manifest_kind: null
     docs_url: https://api.rspo.gov.pl/
     default_status: not_started
@@ -1831,8 +1831,8 @@ sources:
     landing_layout: "rik_culture/{organizer}.csv"
     verification: "Compare with https://dane.gov.pl/pl/dataset/2143"
     landing_folders: [rik_culture]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/danegovpl_dataset_extractor.py
     manifest_kind: null
     docs_url: https://www.gov.pl/web/kultura/rejestr-instytucji-kultury-dla-ktorych-organizatorem-jest-mkidn
     default_status: not_started
