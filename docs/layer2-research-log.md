@@ -2,27 +2,31 @@
 
 Living tracker: each KPP central institution's OWN API/bulk (beyond dane.gov.pl).
 
-- **16 researched**, **116 pending** (of 132 central institutions)
-- 🆕 = new direct source added to the registry this research pass.
+- **20 researched**, **112 pending** (of 132 central institutions)
+- 🆕 = new direct source added to the registry during research.
 
 ## Researched
 
 | Institution | Source | Finding |
 |---|---|---|
-| Agencja Restrukturyzacji I Modernizacji Rolnictwa | ARiMR | geoportal.arimr.gov.pl WFS → arimr_geo 🆕 |
-| Centrum Informacyjne Lasów Państwowych | Lasy Państwowe | BDL WFS + OGC API → lasy_bdl 🆕 |
+| Agencja Restrukturyzacji I Modernizacji Rolnictwa | ARiMR | geoportal WFS → arimr_geo 🆕 |
+| Centrum Informacyjne Lasów Państwowych | Lasy Państwowe | BDL WFS+OGC API → lasy_bdl 🆕 |
 | Departament Wojskowej Służby Zdrowia | NFZ | api.nfz.gov.pl + dane.gov.pl id=32 |
-| Dyrekcja Generalna Lasów Państwowych | Lasy Państwowe | BDL WFS + OGC API → lasy_bdl 🆕 |
+| Dyrekcja Generalna Lasów Państwowych | Lasy Państwowe | BDL WFS+OGC API → lasy_bdl 🆕 |
 | Generalna Dyrekcja Dróg Krajowych I Autostrad | GDDKiA | dane.gov.pl id=55 |
-| Główny Inspektorat Sanitarny | GIS | water-quality on dane.gov.pl id=631; sk.gis.gov.pl |
+| Generalna Dyrekcja Ochrony Środowiska | GDOŚ | Geoserwis WMS/WFS → gdos_geo 🆕 |
+| Główny Inspektorat Ochrony Środowiska | GDOŚ | Geoserwis WMS/WFS → gdos_geo 🆕 |
+| Główny Inspektorat Sanitarny | GIS | water-quality dane.gov.pl id=631; sk.gis.gov.pl |
 | Główny Inspektorat Transportu Drogowego | GITD | enforcement (CANARD); no open API; dane.gov.pl only |
 | Główny Urząd Geodezji I Kartografii | GUGiK | geoportal WMS/WFS/REST → gugik_geo 🆕 |
-| Główny Urząd Nadzoru Budowlanego | GUNB | RWDZ weekly files + e-Budownictwo API → gunb_rwdz 🆕 |
+| Główny Urząd Miar | GUM | no open data/API found |
+| Główny Urząd Nadzoru Budowlanego | GUNB | RWDZ files + e-Budownictwo API → gunb_rwdz 🆕 |
 | Główny Urząd Statystyczny | GUS | own APIs BDL/DBW (covered) |
+| Inspekcja Weterynaryjna Główny Inspektorat Weterynarii | GIW | ADIS/HPAI registers; no open API; BIP+dane.gov.pl |
 | Narodowy Bank Polski | NBP | api.nbp.pl (covered) |
 | Urząd Komisji Nadzoru Finansowego | KNF | dane_statystyczne XLSX, no API → knf_bulk |
-| Urząd Komunikacji Elektronicznej | UKE | Mapbook/SIDUSIS broadband → uke_broadband 🆕 |
-| Urząd Ochrony Konkurencji I Konsumentów | UOKiK | dane.gov.pl id=26 (to wire) |
+| Urząd Komunikacji Elektronicznej | UKE | Mapbook/SIDUSIS → uke_broadband 🆕 |
+| Urząd Ochrony Konkurencji I Konsumentów | UOKiK | dane.gov.pl id=26 |
 | Urząd Regulacji Energetyki | URE | dane.gov.pl id=107 |
 | Zakład Ubezpieczeń Społecznych | ZUS | dane.gov.pl id=20 + own portal |
 
@@ -67,14 +71,10 @@ Living tracker: each KPP central institution's OWN API/bulk (beyond dane.gov.pl)
 | Centrum Zakupów Dla Sądownictwa Instytucja Gospodarki Budżetowej | [site](http://www.czdsigb.gov.pl) |
 | Centrum Łukasiewicz | [site](http://lukasiewicz.gov.pl) |
 | Fundusz Rezerwy Demograficznej | [site](http://www.zus.pl/o-zus/o-nas/finanse/fundusz-rezerwy-demograficznej) |
-| Generalna Dyrekcja Ochrony Środowiska | [site](http://ttps://www.gov.pl/web/gdos) |
 | Główny Inspektorat Farmaceutyczny | [site](http://www.gov.pl/web/gif) |
 | Główny Inspektorat Jakości Handlowej Artykułów Rolno-Spożywczych | [site](http://www.gov.pl/web/ijhars) |
 | Główny Inspektorat Ochrony Roślin I Nasiennictwa | [site](http://piorin.gov.pl) |
-| Główny Inspektorat Ochrony Środowiska | [site](http://gios.gov.pl) |
 | Główny Inspektorat Rybołówstwa Morskiego | [site](http://www.gov.pl/web/girm) |
-| Główny Urząd Miar | [site](http://gum.gov.pl) |
-| Inspekcja Weterynaryjna Główny Inspektorat Weterynarii | [site](http://www.wetgiw.gov.pl) |
 | Instytut Pamięci Narodowej - Komisja Ścigania Zbrodni Przeciwko Narodowi Polskiemu - Centrala | [site](http://ipn.gov.pl/pl) |
 | Kancelaria Prezesa Rady Ministrów | [site](http://www.premier.gov.pl) |
 | Kancelaria Sejmu | [site](http://sejm.gov.pl/sejm9.nsf/home.xsp) |

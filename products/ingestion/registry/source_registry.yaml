@@ -1484,3 +1484,30 @@ sources:
     manifest_kind: null
     docs_url: https://www.gunb.gov.pl/strona/dla-integratorow
     default_status: not_started
+
+  - source_key: gdos_geo
+    category: b_pl_gov_institutional
+    ingestion_mode: api_full
+    name: "GDOŚ — nature protection spatial data (Geoserwis)"
+    institution: "Generalna Dyrekcja Ochrony Środowiska"
+    type: ogc_services
+    auth: none
+    rate_limit: null
+    base_url: https://geoserwis.gdos.gov.pl/
+    endpoints:
+      - "WMS: https://sdi.gdos.gov.pl/wms"
+      - "WFS: https://sdi.gdos.gov.pl/wfs"
+      - "also dane.gov.pl dataset 485 (Geoserwis)"
+    scope: "Natura 2000 areas, national/landscape parks, nature reserves, protected landscapes."
+    description: >-
+      General Directorate for Environmental Protection — the central register of
+      nature-protection forms, served via INSPIRE-compliant WMS/WFS.
+    extraction_logic: "TO BUILD — WFS pull of protected-area layers."
+    landing_layout: "gdos_geo/{layer}.{gml|shp}"
+    verification: "Compare with https://geoserwis.gdos.gov.pl/mapy/"
+    landing_folders: [gdos_geo]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.gov.pl/web/gdos/dostep-do-danych-geoprzestrzennych
+    default_status: not_started
