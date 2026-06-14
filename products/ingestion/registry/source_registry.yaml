@@ -989,7 +989,7 @@ sources:
     extractor_path: products/ingestion/extractors/intl_extractor.py
     manifest_kind: null
     docs_url: https://data-explorer.oecd.org
-    default_status: not_started
+    default_status: partial
 
   - source_key: worldbank_wdi
     category: d_international
@@ -1077,7 +1077,7 @@ sources:
     extractor_path: products/ingestion/extractors/intl_extractor.py
     manifest_kind: null
     docs_url: https://data.imf.org
-    default_status: not_started
+    default_status: blocked
 
   - source_key: ecb_sdw
     category: d_international
@@ -1129,7 +1129,7 @@ sources:
     extractor_path: products/ingestion/extractors/intl_extractor.py
     manifest_kind: null
     docs_url: https://ilostat.ilo.org/data/
-    default_status: not_started
+    default_status: partial
 
   - source_key: un_wpp
     category: d_international
@@ -1151,7 +1151,7 @@ sources:
     extractor_path: products/ingestion/extractors/intl_extractor.py
     manifest_kind: null
     docs_url: https://population.un.org/wpp/
-    default_status: not_started
+    default_status: blocked
 
   - source_key: faostat
     category: d_international
@@ -1173,7 +1173,7 @@ sources:
     extractor_path: products/ingestion/extractors/intl_extractor.py
     manifest_kind: null
     docs_url: https://www.fao.org/faostat/en/#data
-    default_status: not_started
+    default_status: blocked
 
   - source_key: wto_stats
     category: d_international
@@ -1224,7 +1224,7 @@ sources:
     extractor_path: products/ingestion/extractors/intl_extractor.py
     manifest_kind: null
     docs_url: https://data.un.org
-    default_status: not_started
+    default_status: partial
 
   # ── Meta-source: the institution registry itself ──────────────────────────
 

@@ -54,3 +54,85 @@ sources:
       ITS_MTV_AM:  "Merchandise imports by product group (annual, US$)"
       ITS_CS_AX:   "Commercial services exports by sector (annual, US$)"
       ITS_CS_AM:   "Commercial services imports by sector (annual, US$)"
+
+  # OECD Data Explorer SDMX (CSV). Generic sdmx_csv kind: each series gives the
+  # dataflow id + a dot-separated dimension key ({base}/{flow}/{key}). DF_NAAG_I
+  # dims = FREQ.REF_AREA.MEASURE.UNIT_MEASURE.CHAPTER; we filter REF_AREA to the
+  # comparator set (ISO3; EU aggregate not an OECD area) and pin MEASURE.
+  oecd_api:
+    kind: sdmx_csv
+    base: https://sdmx.oecd.org/public/rest/data
+    accept: "application/vnd.sdmx.data+csv; version=1.0.0"
+    params: {startPeriod: "2000"}
+    series:
+      - name: gdp_nominal_ppp
+        flow: "OECD.SDD.NAD,DSD_NAAG@DF_NAAG_I,"
+        key:  "A.POL+DEU+CZE+SVK+HUN+FRA+ITA+ESP.B1GQ.."
+        label: "GDP, nominal, USD PPP (National Accounts at a Glance)"
+      - name: gdp_real_ppp
+        flow: "OECD.SDD.NAD,DSD_NAAG@DF_NAAG_I,"
+        key:  "A.POL+DEU+CZE+SVK+HUN+FRA+ITA+ESP.B1GQ_R.."
+        label: "GDP, real, USD PPP"
+      - name: gdp_real_growth
+        flow: "OECD.SDD.NAD,DSD_NAAG@DF_NAAG_I,"
+        key:  "A.POL+DEU+CZE+SVK+HUN+FRA+ITA+ESP.B1GQ_R_GR.."
+        label: "GDP, real, annual growth (%)"
+      - name: gdp_per_capita_nominal
+        flow: "OECD.SDD.NAD,DSD_NAAG@DF_NAAG_I,"
+        key:  "A.POL+DEU+CZE+SVK+HUN+FRA+ITA+ESP.B1GQ_POP.."
+        label: "GDP per capita, nominal, USD PPP"
+      - name: gdp_per_capita_real
+        flow: "OECD.SDD.NAD,DSD_NAAG@DF_NAAG_I,"
+        key:  "A.POL+DEU+CZE+SVK+HUN+FRA+ITA+ESP.B1GQ_R_POP.."
+        label: "GDP per capita, real, USD PPP"
+
+  # ILOSTAT SDMX (CSV). Rate/number dataflows share dims REF_AREA.FREQ.MEASURE.SEX.AGE;
+  # key filters REF_AREA to comparators (ISO3) and wildcards the rest.
+  ilostat:
+    kind: sdmx_csv
+    base: https://sdmx.ilo.org/rest/data
+    accept: "application/vnd.sdmx.data+csv"
+    params: {startPeriod: "2000"}
+    series:
+      - name: unemployment_rate
+        flow: "ILO,DF_UNE_DEAP_SEX_AGE_RT,1.0"
+        key:  "POL+DEU+CZE+SVK+HUN+FRA+ITA+ESP.A...."
+        label: "Unemployment rate by sex and age (%)"
+      - name: employment_population_ratio
+        flow: "ILO,DF_EMP_DWAP_SEX_AGE_RT,1.0"
+        key:  "POL+DEU+CZE+SVK+HUN+FRA+ITA+ESP.A...."
+        label: "Employment-to-population ratio by sex and age (%)"
+      - name: labour_force_participation_rate
+        flow: "ILO,DF_EAP_DWAP_SEX_AGE_RT,1.0"
+        key:  "POL+DEU+CZE+SVK+HUN+FRA+ITA+ESP.A...."
+        label: "Labour force participation rate by sex and age (%)"
+      - name: employment_total
+        flow: "ILO,DF_EMP_TEMP_SEX_AGE_NB,1.0"
+        key:  "POL+DEU+CZE+SVK+HUN+FRA+ITA+ESP.A...."
+        label: "Employment by sex and age (thousands)"
+
+  # UN Statistics Division SDG indicators API (REST, public, paginated).
+  undata:
+    kind: unsd_sdg
+    base: https://unstats.un.org/sdgapi/v1/sdg
+    area: "616"            # Poland (M49)
+    series:
+      SI_POV_DAY1:  "Population below international poverty line (%)"
+      SH_DYN_MORT:  "Under-five mortality rate (per 1,000 live births)"
+      EG_FEC_RNEW:  "Renewable energy share in total final energy consumption (%)"
+      SL_TLF_UEM:   "Unemployment rate (%)"
+      SG_GEN_PARL:  "Seats held by women in national parliament (%)"
+      SE_TOT_PRFL:  "Proficiency in reading and mathematics (%)"
+
+  # --- Blocked: no free unauthenticated public access from the pipeline host. ---
+  # Engine logs a clear skip (kind=blocked) rather than failing. Revisit if a key
+  # is provisioned (PO action) or the provider exposes a public endpoint.
+  un_wpp:
+    kind: blocked
+    reason: "UN WPP data portal API requires a Bearer token (free registration at population.un.org — PO action). Metadata endpoints are public but /data returns HTTP 401."
+  imf_ifs:
+    kind: blocked
+    reason: "IMF IFS legacy SDMX host dataservices.imf.org is decommissioned (DNS gone); the new IMF Data API has no confirmed free public IFS endpoint yet. IMF macro is covered meanwhile by imf_weo (DataMapper)."
+  faostat:
+    kind: blocked
+    reason: "FAOSTAT REST (faostatservices/fenixservices) returns auth-required / HTTP 521 and the bulk facility returns HTTP 403 from this host. Revisit via bulk mirror or a key."

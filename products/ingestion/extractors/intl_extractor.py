@@ -11,9 +11,14 @@ Supported source kinds:
   worldbank      — World Bank v2 REST (JSON), one call per indicator, all comparators
   imf_datamapper — IMF DataMapper API (WEO), one call per indicator, all countries
   ecb_sdmx       — ECB Data Portal SDMX (CSV), one call per series key
+  wto            — WTO Timeseries API (JSON), needs WTO_API_KEY
+  sdmx_csv       — generic SDMX 2.1 REST→CSV ({base}/{flow}/{key}); OECD + ILOSTAT
+  unsd_sdg       — UN Statistics Division SDG API (REST, paginated)
+  blocked        — documented placeholder; logs a skip with reason, fetches nothing
 
 These are public, generous-quota APIs — one run pulls full history; re-running
-refreshes. No API key required.
+refreshes. No API key required (except wto). Sources with no free unauthenticated
+access are marked kind=blocked with a reason rather than omitted.
 
 Usage:
     python3 intl_extractor.py                  # all configured sources
@@ -175,6 +180,71 @@ def fetch_wto(session, source_key, cfg, dry_run) -> int:
     return n
 
 
+def fetch_sdmx_csv(session, source_key, cfg, dry_run) -> int:
+    """Generic SDMX 2.1 REST → CSV puller ({base}/{flow}/{key}). Used by OECD + ILOSTAT.
+
+    Each series supplies its own dataflow id and dot-separated dimension key, so one
+    kind covers any SDMX-CSV provider regardless of the dataflow's dimension layout.
+    """
+    base = cfg["base"]
+    accept = cfg.get("accept", "application/vnd.sdmx.data+csv; version=1.0.0")
+    params = cfg.get("params", {"startPeriod": "2000"})
+    n = 0
+    for s in cfg["series"]:
+        name, flow, key = s["name"], s["flow"], s.get("key", "all")
+        label = s.get("label", "")
+        dest = LANDING / source_key / f"{name}.csv"
+        if dry_run:
+            logger.info(f"[{source_key}] would fetch {name} ({label})")
+            n += 1
+            continue
+        url = f"{base}/{flow}/{key}"
+        r = session.get(url, params=params, headers={**HEADERS, "Accept": accept},
+                        timeout=TIMEOUT)
+        if r.status_code in (404, 422):
+            logger.warning(f"[{source_key}] {name}: {r.status_code} — flow/key rejected, skipping")
+            continue
+        r.raise_for_status()
+        if "\n" not in r.text.strip():
+            logger.warning(f"[{source_key}] {name}: empty response, skipping")
+            continue
+        _atomic_write(dest, r.text)
+        nrows = max(0, r.text.count("\n") - 1)
+        logger.info(f"[{source_key}] {name}: {nrows} rows ({label})")
+        n += 1
+        time.sleep(0.3)
+    return n
+
+
+def fetch_unsd_sdg(session, source_key, cfg, dry_run) -> int:
+    """UN Statistics Division SDG API (REST, paginated) — one envelope per series."""
+    base = cfg["base"]
+    area = str(cfg.get("area", "616"))
+    n = 0
+    for code, label in cfg["series"].items():
+        dest = LANDING / source_key / f"{code}.json"
+        if dry_run:
+            logger.info(f"[{source_key}] would fetch {code} ({label})")
+            n += 1
+            continue
+        rows, page, pages = [], 1, 1
+        while page <= pages:
+            r = session.get(f"{base}/Series/Data",
+                            params={"seriesCode": code, "areaCode": area,
+                                    "pageSize": 1000, "page": page},
+                            headers=HEADERS, timeout=TIMEOUT)
+            r.raise_for_status()
+            body = r.json()
+            rows.extend(body.get("data", []))
+            pages = int(body.get("totalPages", 1) or 1)
+            page += 1
+            time.sleep(0.2)
+        _atomic_write(dest, _envelope(source_key, "/Series/Data", code, label, rows))
+        logger.info(f"[{source_key}] {code}: {len(rows)} obs ({label})")
+        n += 1
+    return n
+
+
 def main(sources: list[str] | None, dry_run: bool) -> int:
     cfg_all = yaml.safe_load(CONFIG.read_text())
     comparators = cfg_all["comparators"]
@@ -198,6 +268,13 @@ def main(sources: list[str] | None, dry_run: bool) -> int:
                 cnt = fetch_ecb_sdmx(session, sk, cfg, dry_run)
             elif kind == "wto":
                 cnt = fetch_wto(session, sk, cfg, dry_run)
+            elif kind == "sdmx_csv":
+                cnt = fetch_sdmx_csv(session, sk, cfg, dry_run)
+            elif kind == "unsd_sdg":
+                cnt = fetch_unsd_sdg(session, sk, cfg, dry_run)
+            elif kind == "blocked":
+                logger.warning(f"[{sk}] BLOCKED — {cfg.get('reason', 'no public access')}; skipping")
+                continue
             else:
                 logger.error(f"[{sk}] unknown kind {kind}")
                 worst = 1
