@@ -1,0 +1,39 @@
+# Layer-2 research findings — per KPP central institution.
+# Keyed by a distinctive lowercase token in the institution name (first match wins).
+# Appended as research proceeds; consumed by infra/scheduler/layer2_log.py.
+# kind: own_api | own_bulk | own_ogc | danegovpl | reports_only | no_open_data
+findings:
+  # ── covered via own primary APIs ─────────────────────────────────────────
+  "główny urząd statystyczny": {kind: own_api, source: gus, note: "BDL + DBW APIs (covered)"}
+  "narodowy bank":             {kind: own_api, source: nbp_api, note: "api.nbp.pl (covered)"}
+  "ministerstwo finansów":     {kind: own_api, source: mf_api, note: "OpenBudget API"}
+  "narodowy fundusz zdrowia":  {kind: danegovpl, source: nfz_bulk, note: "api.nfz.gov.pl + dane.gov.pl id=32"}
+  "ubezpieczeń społ":          {kind: danegovpl, source: zus_bulk, note: "dane.gov.pl id=20 + portal"}
+  "regulacji energetyki":      {kind: danegovpl, source: ure_bulk, note: "dane.gov.pl id=107"}
+  "edukacji narodowej":        {kind: danegovpl, source: men_api, note: "dane.gov.pl id=165"}
+  "dróg krajowych":            {kind: danegovpl, source: gddkia_bulk, note: "dane.gov.pl id=55"}
+  "ochrony konkurencji":       {kind: danegovpl, source: null, note: "UOKiK dane.gov.pl id=26 (to wire)"}
+  "sprawiedliwości":           {kind: danegovpl, source: krs_api, note: "krs_api + dane.gov.pl id=24"}
+  # ── new own-channel sources found via research ───────────────────────────
+  "geodezji i kartografii":            {kind: own_ogc, source: gugik_geo, note: "geoportal WMS/WFS/WCS"}
+  "geologiczny":                       {kind: own_ogc, source: pig_cbdg, note: "CBDG WMS/WFS/REST"}
+  "restrukturyzacji i modernizacji":   {kind: own_ogc, source: arimr_geo, note: "geoportal.arimr WFS"}
+  "lasów państwowych":                 {kind: own_ogc, source: lasy_bdl, note: "BDL WFS + OGC API"}
+  "dyrekcja generalna lasów":          {kind: own_ogc, source: lasy_bdl, note: "BDL WFS + OGC API"}
+  "komunikacji elektronicznej":        {kind: own_bulk, source: uke_broadband, note: "Mapbook/SIDUSIS"}
+  "nadzoru budowlanego":               {kind: own_api, source: gunb_rwdz, note: "RWDZ files + e-Budownictwo API"}
+  "meteorologii":                      {kind: own_api, source: imgw_api, note: "danepubliczne.imgw.pl"}
+  "generalna dyrekcja ochrony środowiska": {kind: own_ogc, source: gdos_geo, note: "Geoserwis WMS/WFS"}
+  "gwarancyjny":                       {kind: own_bulk, source: bfg_data, note: "dane.bfg.pl data portal"}
+  # ── researched, no rich own channel ──────────────────────────────────────
+  "nadzoru finansowego":   {kind: reports_only, source: knf_bulk, note: "dane_statystyczne XLSX, no API"}
+  "transportu drogowego":  {kind: no_open_data, source: null, note: "CANARD enforcement; no open API"}
+  "sanitarny":             {kind: danegovpl, source: null, note: "GIS water-quality dane.gov.pl; sk.gis.gov.pl"}
+  "wsparcia rolnictwa":    {kind: reports_only, source: null, note: "KOWR Rynki Rolne reports; no API"}
+  "weterynarii":           {kind: reports_only, source: null, note: "ADIS/HPAI registers; no open API"}
+  "urząd miar":            {kind: no_open_data, source: null, note: "GUM no open data found"}
+  "gospodarstwa krajowego": {kind: reports_only, source: null, note: "BGK financial/macro reports PDF; no API"}
+  "bezpieczeństwa wewnętrznego": {kind: no_open_data, source: null, note: "ABW intelligence; BIP only"}
+  "wywiadu":               {kind: no_open_data, source: null, note: "AW intelligence; BIP only"}
+  "archiwów państwowych":  {kind: own_bulk, source: null, note: "szukajwarchiwach.gov.pl scans; no open API"}
+  "archiwum":              {kind: own_bulk, source: null, note: "archival search systems; no open API"}

@@ -1511,3 +1511,28 @@ sources:
     manifest_kind: null
     docs_url: https://www.gov.pl/web/gdos/dostep-do-danych-geoprzestrzennych
     default_status: not_started
+
+  - source_key: bfg_data
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: "BFG — deposit guarantee fund data portal"
+    institution: "Bankowy Fundusz Gwarancyjny"
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://dane.bfg.pl/
+    endpoints:
+      - "dane.bfg.pl data portal — fees, contributions, deposit-guarantee stats (BFG SFK)"
+    scope: "Bank/SKOK fees & contributions to BFG funds, deposit-guarantee figures."
+    description: >-
+      Bank Guarantee Fund — deposit guarantee + bank resolution; publishes
+      sector contribution/fee data via its own data portal.
+    extraction_logic: "TO BUILD — mirror dane.bfg.pl datasets."
+    landing_layout: "bfg_data/{dataset}.{csv|xlsx}"
+    verification: "Compare with https://dane.bfg.pl/"
+    landing_folders: [bfg_data]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://dane.bfg.pl/
+    default_status: not_started
