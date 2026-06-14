@@ -15,3 +15,19 @@ sources:
   kancelaria_prezesa_rady:        {institution_id: 39}    # KPRM
   sanitarny:                      {institution_id: 63}    # GIS
   kasa_rolniczego_ubezpieczeni:   {institution_id: 14}    # KRUS
+  # batch 2 — matched via dane.gov.pl publisher enumeration (verified)
+  isws_justice:                 {institution_id: 24}    # Min. Sprawiedliwości
+  komenda_glowna_strazy:        {institution_id: 37}    # Straż Graniczna
+  komenda_glowna_panstwowej:    {institution_id: 22}    # PSP
+  polskie_centrum_akredytacji:  {institution_id: 497}   # PCA
+  transportowy_dozor_techniczn: {institution_id: 205}   # TDT
+  panstwowy_fundusz_rehabilita: {institution_id: 263}   # PFRON
+  biuro_substancji_chemicznych: {institution_id: 169}
+  centrum_unijnych_projektow:   {institution_id: 141}   # CUPT
+  ochrony_roslin_nasiennictwa:  {institution_id: 49}    # GIORiN
+  narodowa_agencja_wymiany:     {institution_id: 317}   # NAWA
+  jakosci_handlowej_artykulow:  {institution_id: 96}    # IJHARS
+  polska_agencja_nadzoru:       {institution_id: 304}   # PANA
+  rzecznik_finansowy:           {institution_id: 113}
+  rzadowe_centrum_bezpieczenst: {institution_id: 91}    # RCB
+  kancelaria_senatu:            {institution_id: 344}

@@ -1853,8 +1853,8 @@ sources:
     landing_layout: "isws_justice/{dataset}.csv"
     verification: "Compare with https://isws.ms.gov.pl/"
     landing_folders: [isws_justice]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://dane.gov.pl/pl/dataset/625
     default_status: not_started
@@ -1991,8 +1991,8 @@ sources:
     verification: See https://www.gov.pl/web/chemikalia
     landing_folders:
     - biuro_substancji_chemicznych
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://www.gov.pl/web/chemikalia
     default_status: not_started
@@ -2175,8 +2175,8 @@ sources:
     verification: See https://www.cupt.gov.pl
     landing_folders:
     - centrum_unijnych_projektow
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://www.cupt.gov.pl
     default_status: not_started
@@ -2244,8 +2244,8 @@ sources:
     verification: See https://www.gov.pl/web/ijhars
     landing_folders:
     - jakosci_handlowej_artykulow
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://www.gov.pl/web/ijhars
     default_status: not_started
@@ -2267,8 +2267,8 @@ sources:
     verification: See http://piorin.gov.pl/
     landing_folders:
     - ochrony_roslin_nasiennictwa
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: http://piorin.gov.pl/
     default_status: not_started
@@ -2405,8 +2405,8 @@ sources:
     verification: See https://www.senat.gov.pl/kancelaria/
     landing_folders:
     - kancelaria_senatu
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://www.senat.gov.pl/kancelaria/
     default_status: not_started
@@ -2428,8 +2428,8 @@ sources:
     verification: See https://www.gov.pl/web/kgpsp
     landing_folders:
     - komenda_glowna_panstwowej
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://www.gov.pl/web/kgpsp
     default_status: not_started
@@ -2451,8 +2451,8 @@ sources:
     verification: See https://www.strazgraniczna.pl/
     landing_folders:
     - komenda_glowna_strazy
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://www.strazgraniczna.pl/
     default_status: not_started
@@ -2681,8 +2681,8 @@ sources:
     verification: See https://www.nawa.gov.pl
     landing_folders:
     - narodowa_agencja_wymiany
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://www.nawa.gov.pl
     default_status: not_started
@@ -2865,8 +2865,8 @@ sources:
     verification: See https://www.pfron.org.pl
     landing_folders:
     - panstwowy_fundusz_rehabilita
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://www.pfron.org.pl
     default_status: not_started
@@ -2934,8 +2934,8 @@ sources:
     verification: See https://pana.gov.pl/
     landing_folders:
     - polska_agencja_nadzoru
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://pana.gov.pl/
     default_status: not_started
@@ -3049,8 +3049,8 @@ sources:
     verification: See https://www.pca.gov.pl/
     landing_folders:
     - polskie_centrum_akredytacji
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://www.pca.gov.pl/
     default_status: not_started
@@ -3118,8 +3118,8 @@ sources:
     verification: See https://www.rf.gov.pl
     landing_folders:
     - rzecznik_finansowy
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://www.rf.gov.pl
     default_status: not_started
@@ -3141,8 +3141,8 @@ sources:
     verification: See https://rcb.gov.pl/
     landing_folders:
     - rzadowe_centrum_bezpieczenst
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://rcb.gov.pl/
     default_status: not_started
@@ -3233,8 +3233,8 @@ sources:
     verification: See https://www.tdt.gov.pl/
     landing_folders:
     - transportowy_dozor_techniczn
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://www.tdt.gov.pl/
     default_status: not_started
