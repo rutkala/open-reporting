@@ -1379,3 +1379,108 @@ sources:
     manifest_kind: null
     docs_url: https://baza.pgi.gov.pl/en
     default_status: not_started
+
+  - source_key: arimr_geo
+    category: b_pl_gov_institutional
+    ingestion_mode: api_full
+    name: "ARiMR — agricultural spatial data (Geoportal)"
+    institution: "ARiMR"
+    type: ogc_services
+    auth: none
+    rate_limit: null
+    base_url: https://geoportal.arimr.gov.pl/
+    endpoints:
+      - "ARiMR Geoportal — field boundaries, crop declarations, landscape elements (WMS/WFS)"
+      - "also dane.gov.pl institution id=42"
+    scope: "Agricultural parcels, crop data, landscape elements — newly opened (2024 law)."
+    description: >-
+      Agency for Restructuring and Modernisation of Agriculture — manages EU farm
+      payments; now publishes field-boundary + crop spatial data freely.
+    extraction_logic: "TO BUILD — WFS pull from geoportal.arimr.gov.pl + dane.gov.pl datasets."
+    landing_layout: "arimr_geo/{layer}.{gml|json}"
+    verification: "Compare with https://geoportal.arimr.gov.pl/"
+    landing_folders: [arimr_geo]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.gov.pl/web/arimr/arimr-otwiera-dane-przestrzenne-ze-swoich-zasobow
+    default_status: not_started
+
+  - source_key: lasy_bdl
+    category: b_pl_gov_institutional
+    ingestion_mode: api_full
+    name: "Lasy Państwowe — Bank Danych o Lasach (BDL)"
+    institution: "PGL Lasy Państwowe"
+    type: ogc_services
+    auth: none
+    rate_limit: null
+    base_url: https://www.bdl.lasy.gov.pl/portal/
+    endpoints:
+      - "WFS: https://wfs.bdl.lasy.gov.pl/geoserver/BDL/ows"
+      - "OGC API Features: https://ogcapi.bdl.lasy.gov.pl/"
+    scope: "Forest stand descriptions, National Forest Inventory, habitats, fires, hunting — all ownership."
+    description: >-
+      State Forests' Forest Data Bank — the authoritative forest dataset for
+      Poland, served via WFS + OGC API Features.
+    extraction_logic: "TO BUILD — WFS / OGC API Features pull of forest layers."
+    landing_layout: "lasy_bdl/{layer}.{gml|json}"
+    verification: "Compare with https://www.bdl.lasy.gov.pl/portal/mapy"
+    landing_folders: [lasy_bdl]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://bdl.lasy.gov.pl/portal/uslugi-mapowe-ogc
+    default_status: not_started
+
+  - source_key: uke_broadband
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: "UKE — broadband coverage & telecom data"
+    institution: "UKE"
+    type: rest_api
+    auth: none
+    rate_limit: null
+    base_url: https://mapbook.uke.gov.pl/
+    endpoints:
+      - "UKE Mapbook — broadband (NGA30) coverage per address point"
+      - "SIDUSIS — fixed-broadband availability database; hotspot lists; dane.gov.pl id=10"
+    scope: "Broadband internet coverage, telecom infrastructure, public hotspots."
+    description: >-
+      Office of Electronic Communications — telecom regulator; publishes
+      broadband-coverage atlases and infrastructure data per municipality.
+    extraction_logic: "TO BUILD — Mapbook/SIDUSIS exports + dane.gov.pl (id=10)."
+    landing_layout: "uke_broadband/{dataset}.{csv|json}"
+    verification: "Compare with https://mapbook.uke.gov.pl/areas/info"
+    landing_folders: [uke_broadband]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://dane.gov.pl/pl/institution/10
+    default_status: not_started
+
+  - source_key: gunb_rwdz
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: "GUNB — building applications register (RWDZ) + e-Budownictwo"
+    institution: "GUNB"
+    type: rest_api
+    auth: none
+    rate_limit: null
+    base_url: https://wyszukiwarka.gunb.gov.pl/
+    endpoints:
+      - "RWDZ register data files (weekly): https://wyszukiwarka.gunb.gov.pl/pobranie.html"
+      - "e-Budownictwo API: https://wnioski.gunb.gov.pl/api/v1/"
+      - "e-CRUB (construction professionals register)"
+    scope: "Building permits, applications, decisions & reports (RWDZ); construction-professionals register."
+    description: >-
+      General Office of Building Control — national register of building
+      applications/decisions; weekly bulk files + e-Budownictwo API.
+    extraction_logic: "TO BUILD — weekly RWDZ bulk file mirror + e-Budownictwo API."
+    landing_layout: "gunb_rwdz/rwdz_{date}.{csv|zip}"
+    verification: "Compare with https://wyszukiwarka.gunb.gov.pl/"
+    landing_folders: [gunb_rwdz]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.gunb.gov.pl/strona/dla-integratorow
+    default_status: not_started

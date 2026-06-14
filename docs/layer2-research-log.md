@@ -1,32 +1,36 @@
 # Layer-2 research log — per-institution own data channels
 
-Living tracker for researching each KPP central institution's OWN API/bulk
-(beyond dane.gov.pl). Goal: a defined source for every data-bearing institution.
+Living tracker: each KPP central institution's OWN API/bulk (beyond dane.gov.pl).
 
-- **10 researched**, **122 pending** (of 132 central institutions)
-- Method: visit each site, classify own-API / bulk-files / dane.gov.pl-only / no-data.
+- **16 researched**, **116 pending** (of 132 central institutions)
+- 🆕 = new direct source added to the registry this research pass.
 
 ## Researched
 
 | Institution | Source | Finding |
 |---|---|---|
+| Agencja Restrukturyzacji I Modernizacji Rolnictwa | ARiMR | geoportal.arimr.gov.pl WFS → arimr_geo 🆕 |
+| Centrum Informacyjne Lasów Państwowych | Lasy Państwowe | BDL WFS + OGC API → lasy_bdl 🆕 |
 | Departament Wojskowej Służby Zdrowia | NFZ | api.nfz.gov.pl + dane.gov.pl id=32 |
+| Dyrekcja Generalna Lasów Państwowych | Lasy Państwowe | BDL WFS + OGC API → lasy_bdl 🆕 |
 | Generalna Dyrekcja Dróg Krajowych I Autostrad | GDDKiA | dane.gov.pl id=55 |
-| Główny Urząd Geodezji I Kartografii | GUGiK | geoportal.gov.pl WMS/WFS/REST → gugik_geo |
+| Główny Inspektorat Sanitarny | GIS | water-quality on dane.gov.pl id=631; sk.gis.gov.pl |
+| Główny Inspektorat Transportu Drogowego | GITD | enforcement (CANARD); no open API; dane.gov.pl only |
+| Główny Urząd Geodezji I Kartografii | GUGiK | geoportal WMS/WFS/REST → gugik_geo 🆕 |
+| Główny Urząd Nadzoru Budowlanego | GUNB | RWDZ weekly files + e-Budownictwo API → gunb_rwdz 🆕 |
 | Główny Urząd Statystyczny | GUS | own APIs BDL/DBW (covered) |
 | Narodowy Bank Polski | NBP | api.nbp.pl (covered) |
-| Urząd Komisji Nadzoru Finansowego | KNF | dane_statystyczne XLSX (no API) → knf_bulk |
-| Urząd Komunikacji Elektronicznej | UKE | dane.gov.pl id=10 (to research own API) |
+| Urząd Komisji Nadzoru Finansowego | KNF | dane_statystyczne XLSX, no API → knf_bulk |
+| Urząd Komunikacji Elektronicznej | UKE | Mapbook/SIDUSIS broadband → uke_broadband 🆕 |
 | Urząd Ochrony Konkurencji I Konsumentów | UOKiK | dane.gov.pl id=26 (to wire) |
 | Urząd Regulacji Energetyki | URE | dane.gov.pl id=107 |
 | Zakład Ubezpieczeń Społecznych | ZUS | dane.gov.pl id=20 + own portal |
 
-## Pending (worklist — research own channel for each)
+## Pending worklist
 
 | Institution | Website |
 |---|---|
 | Agencja Bezpieczeństwa Wewnętrznego | [site](http://www.abw.gov.pl/pl) |
-| Agencja Restrukturyzacji I Modernizacji Rolnictwa | [site](http://www.arimr.gov.pl) |
 | Agencja Wywiadu | [site](http://aw.gov.pl) |
 | Archiwum Akt Nowych | [site](http://www.aan.gov.pl) |
 | Archiwum Główne Akt Dawnych | [site](http://agad.gov.pl) |
@@ -57,13 +61,11 @@ Living tracker for researching each KPP central institution's OWN API/bulk
 | Centralny Zarząd Służby Więziennej | [site](http://www.sw.gov.pl) |
 | Centrum Badań I Edukacji Statystycznej Gus W Likwidacji | [site](http://cbies.stat.gov.pl) |
 | Centrum Doradztwa Rolniczego W Brwinowie | [site](http://www.cdr.gov.pl) |
-| Centrum Informacyjne Lasów Państwowych | — |
 | Centrum Informatyki Statystycznej | [site](http://cis.stat.gov.pl) |
 | Centrum Obsługi Kancelarii Prezydenta Rzeczypospolitej Polskiej | [site](http://www.co.kprp.pl) |
 | Centrum Unijnych Projektów Transportowych | [site](http://www.cupt.gov.pl) |
 | Centrum Zakupów Dla Sądownictwa Instytucja Gospodarki Budżetowej | [site](http://www.czdsigb.gov.pl) |
 | Centrum Łukasiewicz | [site](http://lukasiewicz.gov.pl) |
-| Dyrekcja Generalna Lasów Państwowych | [site](http://www.lasy.gov.pl/pl) |
 | Fundusz Rezerwy Demograficznej | [site](http://www.zus.pl/o-zus/o-nas/finanse/fundusz-rezerwy-demograficznej) |
 | Generalna Dyrekcja Ochrony Środowiska | [site](http://ttps://www.gov.pl/web/gdos) |
 | Główny Inspektorat Farmaceutyczny | [site](http://www.gov.pl/web/gif) |
@@ -71,10 +73,7 @@ Living tracker for researching each KPP central institution's OWN API/bulk
 | Główny Inspektorat Ochrony Roślin I Nasiennictwa | [site](http://piorin.gov.pl) |
 | Główny Inspektorat Ochrony Środowiska | [site](http://gios.gov.pl) |
 | Główny Inspektorat Rybołówstwa Morskiego | [site](http://www.gov.pl/web/girm) |
-| Główny Inspektorat Sanitarny | [site](http://www.gov.pl/web/gis) |
-| Główny Inspektorat Transportu Drogowego | [site](http://www.gov.pl/web/gitd) |
 | Główny Urząd Miar | [site](http://gum.gov.pl) |
-| Główny Urząd Nadzoru Budowlanego | [site](http://www.gunb.gov.pl) |
 | Inspekcja Weterynaryjna Główny Inspektorat Weterynarii | [site](http://www.wetgiw.gov.pl) |
 | Instytut Pamięci Narodowej - Komisja Ścigania Zbrodni Przeciwko Narodowi Polskiemu - Centrala | [site](http://ipn.gov.pl/pl) |
 | Kancelaria Prezesa Rady Ministrów | [site](http://www.premier.gov.pl) |
