@@ -4000,8 +4000,8 @@ sources:
     landing_layout: "allegro/{category}/{date}.json"
     verification: "Compare with allegro.pl listings"
     landing_folders: [allegro]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/allegro_extractor.py
     manifest_kind: null
     docs_url: https://developer.allegro.pl/
     default_status: not_started
@@ -4027,8 +4027,8 @@ sources:
     landing_layout: "pap_mediaroom/{date}/{release}.html"
     verification: "https://pap-mediaroom.pl/nasze-uslugi"
     landing_folders: [pap_mediaroom]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://pap-mediaroom.pl/
     default_status: not_started
@@ -4056,8 +4056,8 @@ sources:
     landing_layout: "rcn_property/{powiat}/{period}.csv"
     verification: "Compare with a city RCN, e.g. Warsaw Biuro Geodezji"
     landing_folders: [rcn_property]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.geoportal.gov.pl/
     default_status: not_started
@@ -4079,8 +4079,8 @@ sources:
     landing_layout: "bankier/"
     verification: "https://www.bankier.pl/"
     landing_folders: [bankier]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.bankier.pl/
     default_status: not_started
@@ -4101,8 +4101,8 @@ sources:
     landing_layout: "biznesradar/{ticker}.json"
     verification: "https://www.biznesradar.pl/"
     landing_folders: [biznesradar]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.biznesradar.pl/
     default_status: not_started
@@ -4127,8 +4127,8 @@ sources:
     landing_layout: "tge/{market}/{date}.csv"
     verification: "https://www.tge.pl/dane-statystyczne"
     landing_folders: [tge]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://tge.pl/uslugi-tge
     default_status: not_started
@@ -4150,8 +4150,8 @@ sources:
     landing_layout: "sonarhome/{city}.json"
     verification: "https://sonarhome.pl/ceny-mieszkan"
     landing_folders: [sonarhome]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://sonarhome.pl/statystyki-rynkowe
     default_status: not_started
@@ -4240,8 +4240,8 @@ sources:
     landing_layout: "cenyrolnicze/{product}.json"
     verification: "https://www.cenyrolnicze.pl/"
     landing_folders: [cenyrolnicze]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.cenyrolnicze.pl/
     default_status: not_started
@@ -4262,8 +4262,8 @@ sources:
     landing_layout: "epetrol/{date}.json"
     verification: "https://www.e-petrol.pl/notowania/rynek-krajowy/hurt"
     landing_folders: [epetrol]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.e-petrol.pl/
     default_status: not_started
@@ -4284,8 +4284,8 @@ sources:
     landing_layout: "samar/{period}.json"
     verification: "https://www.samar.pl/rynek-w-liczbach"
     landing_folders: [samar]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.samar.pl/raporty
     default_status: not_started
@@ -4308,8 +4308,8 @@ sources:
     landing_layout: "pracuj_zarobki/{role}.json"
     verification: "https://zarobki.pracuj.pl/raporty-i-trendy-placowe"
     landing_folders: [pracuj_zarobki]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://zarobki.pracuj.pl/
     default_status: not_started
@@ -4331,8 +4331,8 @@ sources:
     landing_layout: "pex_pharma/"
     verification: "https://pexps.pl/"
     landing_folders: [pex_pharma]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://pexps.pl/
     default_status: not_started
@@ -4375,8 +4375,8 @@ sources:
     landing_layout: "trans_eu/"
     verification: "https://www.trans.eu/pl/gielda-transportowa/"
     landing_folders: [trans_eu]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.trans.eu/pl/gielda-transportowa/
     default_status: not_started
@@ -4397,8 +4397,8 @@ sources:
     landing_layout: "ewgt/{product}.json"
     verification: "https://www.e-wgt.pl/"
     landing_folders: [ewgt]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.e-wgt.pl/
     default_status: not_started
@@ -4420,8 +4420,8 @@ sources:
     landing_layout: "ninetyminut/{season}/"
     verification: "https://www.90minut.pl/"
     landing_folders: [ninetyminut]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.90minut.pl/
     default_status: not_started
@@ -4464,8 +4464,8 @@ sources:
     landing_layout: "olis_zpav/{week}.json"
     verification: "https://www.olis.pl/"
     landing_folders: [olis_zpav]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://olis.pl/about_olis
     default_status: not_started
@@ -4486,8 +4486,8 @@ sources:
     landing_layout: "boxoffice_pl/{week}.json"
     verification: "https://boxoffice-bozg.pl/category/box-office-polska/"
     landing_folders: [boxoffice_pl]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://boxoffice-bozg.pl/
     default_status: not_started
@@ -4552,8 +4552,8 @@ sources:
     landing_layout: "ebilet/"
     verification: "https://www.ebilet.pl/"
     landing_folders: [ebilet]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.ebilet.pl/
     default_status: not_started
@@ -4575,8 +4575,8 @@ sources:
     landing_layout: "gemius_pbi/{month}.json"
     verification: "https://media-panel.pl/pl/internet/"
     landing_folders: [gemius_pbi]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://pbi.org.pl/mediapanel/
     default_status: not_started
@@ -4597,8 +4597,8 @@ sources:
     landing_layout: "bik/{month}.json"
     verification: "https://media.bik.pl/analizy-rynkowe"
     landing_folders: [bik]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://media.bik.pl/analizy-rynkowe
     default_status: not_started
@@ -4619,8 +4619,8 @@ sources:
     landing_layout: "ad_market/{period}.json"
     verification: "Publicis Groupe PL ad-market reports"
     landing_folders: [ad_market]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.publicisgroupe.pl/
     default_status: not_started
@@ -4642,8 +4642,8 @@ sources:
     landing_layout: "pzpm/{report}.pdf"
     verification: "https://www.pzpm.org.pl/Publikacje/Raporty"
     landing_folders: [pzpm]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.pzpm.org.pl/
     default_status: not_started
@@ -4664,8 +4664,8 @@ sources:
     landing_layout: "zbp/{report}.pdf"
     verification: "https://www.zbp.pl/raporty-i-publikacje/publikacje"
     landing_folders: [zbp]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.zbp.pl/
     default_status: not_started
@@ -4686,8 +4686,8 @@ sources:
     landing_layout: "pie/{report}.pdf"
     verification: "https://pie.net.pl/"
     landing_folders: [pie]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://pie.net.pl/
     default_status: not_started
@@ -4708,8 +4708,8 @@ sources:
     landing_layout: "ieo/{report}.pdf"
     verification: "https://ieo.pl/raporty"
     landing_folders: [ieo]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://ieo.pl/
     default_status: not_started
@@ -4731,8 +4731,8 @@ sources:
     landing_layout: "thinktanks_econ/{institute}/{report}"
     verification: "wise-europa.eu / case-research.eu / for.org.pl / ibs.org.pl / cenea.org.pl"
     landing_folders: [thinktanks_econ]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://ibs.org.pl/
     default_status: not_started
@@ -4753,8 +4753,8 @@ sources:
     landing_layout: "izfia/{month}.xlsx"
     verification: "https://www.izfa.pl/"
     landing_folders: [izfia]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.izfa.pl/
     default_status: not_started
@@ -4775,8 +4775,8 @@ sources:
     landing_layout: "piu/{report}.pdf"
     verification: "https://piu.org.pl/"
     landing_folders: [piu]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://piu.org.pl/
     default_status: not_started
@@ -4797,8 +4797,8 @@ sources:
     landing_layout: "piit_telecom/{report}.pdf"
     verification: "https://piit.org.pl/"
     landing_folders: [piit_telecom]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://piit.org.pl/
     default_status: not_started
@@ -4822,8 +4822,8 @@ sources:
     verification: See https://www.money.pl/
     landing_folders:
     - money_pl
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.money.pl/
     default_status: not_started
@@ -4845,8 +4845,8 @@ sources:
     verification: See https://ir.notoria.pl/
     landing_folders:
     - notoria
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://ir.notoria.pl/
     default_status: not_started
@@ -4868,8 +4868,8 @@ sources:
     verification: See https://media.big.pl/
     landing_folders:
     - big_infomonitor
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://media.big.pl/
     default_status: not_started
@@ -4891,8 +4891,8 @@ sources:
     verification: See https://krd.pl/centrum-prasowe
     landing_folders:
     - krd
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://krd.pl/centrum-prasowe
     default_status: not_started
@@ -4914,8 +4914,8 @@ sources:
     verification: See https://www.analizy.pl/
     landing_folders:
     - analizy_pl
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.analizy.pl/
     default_status: not_started
@@ -4937,8 +4937,8 @@ sources:
     verification: See https://www.amron.pl/
     landing_folders:
     - amron
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.amron.pl/
     default_status: not_started
@@ -4960,8 +4960,8 @@ sources:
     verification: See https://analytics.otodom.pl/
     landing_folders:
     - otodom_analytics
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://analytics.otodom.pl/
     default_status: not_started
@@ -4983,8 +4983,8 @@ sources:
     verification: See https://www.morizon.pl/
     landing_folders:
     - morizon
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.morizon.pl/
     default_status: not_started
@@ -5006,8 +5006,8 @@ sources:
     verification: See https://rynekpierwotny.pl/
     landing_folders:
     - rynekpierwotny
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://rynekpierwotny.pl/
     default_status: not_started
@@ -5029,8 +5029,8 @@ sources:
     verification: See https://www.jll.pl/pl/trendy-i-badania
     landing_folders:
     - commercial_re
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.jll.pl/pl/trendy-i-badania
     default_status: not_started
@@ -5052,8 +5052,8 @@ sources:
     verification: See https://reflex.com.pl/
     landing_folders:
     - reflex
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://reflex.com.pl/
     default_status: not_started
@@ -5075,8 +5075,8 @@ sources:
     verification: See https://www.olx.pl/
     landing_folders:
     - olx
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.olx.pl/
     default_status: not_started
@@ -5098,8 +5098,8 @@ sources:
     verification: See https://www.otomoto.pl/
     landing_folders:
     - otomoto
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.otomoto.pl/
     default_status: not_started
@@ -5121,8 +5121,8 @@ sources:
     verification: See https://www.pmrmarketexperts.com/
     landing_folders:
     - pmr
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.pmrmarketexperts.com/
     default_status: not_started
@@ -5144,8 +5144,8 @@ sources:
     verification: See https://wynagrodzenia.pl/
     landing_folders:
     - sedlak
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://wynagrodzenia.pl/
     default_status: not_started
@@ -5167,8 +5167,8 @@ sources:
     verification: See https://www.transfermarkt.pl/
     landing_folders:
     - transfermarkt
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.transfermarkt.pl/
     default_status: not_started
@@ -5190,8 +5190,8 @@ sources:
     verification: See https://www.sts.pl/
     landing_folders:
     - betting_odds
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.sts.pl/
     default_status: not_started
@@ -5213,8 +5213,8 @@ sources:
     verification: See https://www.laczynaspilka.pl/
     landing_folders:
     - pzpn
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.laczynaspilka.pl/
     default_status: not_started
@@ -5236,8 +5236,8 @@ sources:
     verification: See https://www.pbc.pl/
     landing_folders:
     - press_circulation
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.pbc.pl/
     default_status: not_started
@@ -5259,8 +5259,8 @@ sources:
     verification: See https://www.sotrender.com/
     landing_folders:
     - sotrender
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.sotrender.com/
     default_status: not_started
@@ -5282,8 +5282,8 @@ sources:
     verification: See https://www.perspektywy.pl/
     landing_folders:
     - perspektywy
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.perspektywy.pl/
     default_status: not_started
@@ -5305,8 +5305,8 @@ sources:
     verification: See https://rynek-ksiazki.pl/
     landing_folders:
     - rynek_ksiazki
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://rynek-ksiazki.pl/
     default_status: not_started
@@ -5328,8 +5328,8 @@ sources:
     verification: See https://gamedev.pl/
     landing_folders:
     - game_industry
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://gamedev.pl/
     default_status: not_started
@@ -5351,8 +5351,8 @@ sources:
     verification: See https://startuppoland.org/
     landing_folders:
     - startup_data
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://startuppoland.org/
     default_status: not_started
@@ -5374,8 +5374,8 @@ sources:
     verification: See https://www.e-hotelarz.pl/
     landing_folders:
     - hotel_market
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.e-hotelarz.pl/
     default_status: not_started
@@ -5397,8 +5397,8 @@ sources:
     verification: See https://pzfd.pl/
     landing_folders:
     - pzfd
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://pzfd.pl/
     default_status: not_started
@@ -5420,8 +5420,8 @@ sources:
     verification: See https://www.pohid.pl/
     landing_folders:
     - pohid
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.pohid.pl/
     default_status: not_started
@@ -5443,8 +5443,8 @@ sources:
     verification: See https://lewiatan.org/
     landing_folders:
     - lewiatan
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://lewiatan.org/
     default_status: not_started
@@ -5466,8 +5466,8 @@ sources:
     verification: See https://kig.pl/
     landing_folders:
     - kig
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://kig.pl/
     default_status: not_started
@@ -5489,8 +5489,8 @@ sources:
     verification: See https://paliwa.pl/
     landing_folders:
     - paliwa_izba
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://paliwa.pl/
     default_status: not_started
@@ -5512,8 +5512,8 @@ sources:
     verification: See https://psew.pl/
     landing_folders:
     - psew
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://psew.pl/
     default_status: not_started
@@ -5535,8 +5535,8 @@ sources:
     verification: See https://www.ptpiree.pl/
     landing_folders:
     - ptpiree
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.ptpiree.pl/
     default_status: not_started
@@ -5558,8 +5558,8 @@ sources:
     verification: See https://www.igg.pl/
     landing_folders:
     - igg
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.igg.pl/
     default_status: not_started
@@ -5581,8 +5581,8 @@ sources:
     verification: See https://www.igte.pl/
     landing_folders:
     - igte
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.igte.pl/
     default_status: not_started
@@ -5604,8 +5604,8 @@ sources:
     verification: See https://leasing.org.pl/
     landing_folders:
     - zpl
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://leasing.org.pl/
     default_status: not_started
@@ -5627,8 +5627,8 @@ sources:
     verification: See https://klubjagiellonski.pl/
     landing_folders:
     - thinktanks_more
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://klubjagiellonski.pl/
     default_status: not_started

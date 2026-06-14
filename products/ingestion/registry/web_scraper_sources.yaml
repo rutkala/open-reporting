@@ -1,4 +1,23 @@
 sources:
+  ad_market:
+    exts: &id001
+    - xlsx
+    - xls
+    - csv
+    - zip
+    - ods
+    - json
+    - pdf
+    pages:
+    - https://www.publicisgroupe.pl/
+  amron:
+    exts: *id001
+    pages:
+    - https://www.amron.pl/
+  analizy_pl:
+    exts: *id001
+    pages:
+    - https://www.analizy.pl/
   archiwum_akt_nowych:
     pages:
     - https://www.aan.gov.pl/
@@ -15,9 +34,25 @@ sources:
   bank_gospodarstwa_krajowego:
     pages:
     - https://www.bgk.pl/
+  bankier:
+    exts: *id001
+    pages:
+    - https://www.bankier.pl/
+  betting_odds:
+    exts: *id001
+    pages:
+    - https://www.sts.pl/
   bfg_data:
     pages:
     - https://dane.bfg.pl/
+  big_infomonitor:
+    exts: *id001
+    pages:
+    - https://media.big.pl/
+  bik:
+    exts: *id001
+    pages:
+    - https://media.bik.pl/analizy-rynkowe
   biuro_komisji_akredytacyjnej:
     pages:
     - https://www.pka.edu.pl
@@ -30,9 +65,17 @@ sources:
   biuro_rzecznika_praw_2:
     pages:
     - https://www.rpo.gov.pl/
+  biznesradar:
+    exts: *id001
+    pages:
+    - https://www.biznesradar.pl/
   bn_data:
     pages:
     - https://data.bn.org.pl/databases
+  boxoffice_pl:
+    exts: *id001
+    pages:
+    - https://boxoffice-bozg.pl/
   centralna_egzaminacyjna:
     pages:
     - https://cke.gov.pl/
@@ -45,17 +88,45 @@ sources:
   centrum_lukasiewicz:
     pages:
     - https://lukasiewicz.gov.pl/
+  cenyrolnicze:
+    exts: *id001
+    pages:
+    - https://www.cenyrolnicze.pl/
+  commercial_re:
+    exts: *id001
+    pages:
+    - https://www.jll.pl/pl/trendy-i-badania
+  ebilet:
+    exts: *id001
+    pages:
+    - https://www.ebilet.pl/
   enea:
     pages:
     - https://ir.enea.pl/raporty-okresowe
     - https://ir.enea.pl/
+  epetrol:
+    exts: *id001
+    pages:
+    - https://www.e-petrol.pl/
+  ewgt:
+    exts: *id001
+    pages:
+    - https://www.e-wgt.pl/
   farmaceutyczny:
     pages:
     - https://www.gov.pl/web/gif
+  game_industry:
+    exts: *id001
+    pages:
+    - https://gamedev.pl/
   gaz_system:
     pages:
     - https://www.gaz-system.pl/pl/dla-mediow/raporty.html
     - https://www.gaz-system.pl/
+  gemius_pbi:
+    exts: *id001
+    pages:
+    - https://pbi.org.pl/mediapanel/
   gpw_sa:
     pages:
     - https://www.gpw.pl/raporty-okresowe
@@ -88,12 +159,32 @@ sources:
   gus_transtat:
     pages:
     - https://api-transtat.stat.gov.pl
+  hotel_market:
+    exts: *id001
+    pages:
+    - https://www.e-hotelarz.pl/
+  ieo:
+    exts: *id001
+    pages:
+    - https://ieo.pl/
+  igg:
+    exts: *id001
+    pages:
+    - https://www.igg.pl/
+  igte:
+    exts: *id001
+    pages:
+    - https://www.igte.pl/
   inspekcja_weterynaryjna_wete:
     pages:
     - https://www.wetgiw.gov.pl
   instytut_pamieci_narodowej:
     pages:
     - https://ipn.gov.pl/pl/
+  izfia:
+    exts: *id001
+    pages:
+    - https://www.izfa.pl/
   jsw:
     pages:
     - https://www.jsw.pl/relacje-inwestorskie/raporty-okresowe
@@ -102,6 +193,10 @@ sources:
     pages:
     - https://kghm.com/pl/inwestorzy/raporty-okresowe
     - https://kghm.com/pl/inwestorzy
+  kig:
+    exts: *id001
+    pages:
+    - https://kig.pl/
   krajowa_informacja_skarbowa:
     pages:
     - https://www.kis.gov.pl
@@ -117,6 +212,22 @@ sources:
   krajowy_zasob_nieruchomosci:
     pages:
     - https://www.gov.pl/web/kzn
+  krd:
+    exts: *id001
+    pages:
+    - https://krd.pl/centrum-prasowe
+  lewiatan:
+    exts: *id001
+    pages:
+    - https://lewiatan.org/
+  money_pl:
+    exts: *id001
+    pages:
+    - https://www.money.pl/
+  morizon:
+    exts: *id001
+    pages:
+    - https://www.morizon.pl/
   mrips_social:
     pages:
     - https://www.gov.pl/web/rodzina/statystyki-pomocy-spolecznej
@@ -138,10 +249,38 @@ sources:
   narodowy_instytut_konserwacj:
     pages:
     - https://nikz.pl/
+  ninetyminut:
+    exts: *id001
+    pages:
+    - https://www.90minut.pl/
+  notoria:
+    exts: *id001
+    pages:
+    - https://ir.notoria.pl/
+  olis_zpav:
+    exts: *id001
+    pages:
+    - https://olis.pl/about_olis
+  olx:
+    exts: *id001
+    pages:
+    - https://www.olx.pl/
   orlen:
     pages:
     - https://www.orlen.pl/pl/relacje-inwestorskie/raporty-i-publikacje
     - https://www.orlen.pl/pl/relacje-inwestorskie
+  otodom_analytics:
+    exts: *id001
+    pages:
+    - https://analytics.otodom.pl/
+  otomoto:
+    exts: *id001
+    pages:
+    - https://www.otomoto.pl/
+  paliwa_izba:
+    exts: *id001
+    pages:
+    - https://paliwa.pl/
   panstwowa_agencja_atomistyki:
     pages:
     - https://www.gov.pl/web/paa/panstwowa-agencja-atomistyki
@@ -154,6 +293,10 @@ sources:
   panstwowa_inspekcja_pracy:
     pages:
     - https://www.pip.gov.pl/sprawozdania-z-dzialalnosci-pip
+  pap_mediaroom:
+    exts: *id001
+    pages:
+    - https://pap-mediaroom.pl/
   pej:
     pages:
     - https://www.ppej.pl/
@@ -162,6 +305,14 @@ sources:
     pages:
     - https://www.pern.pl/
     - https://www.pern.pl/
+  perspektywy:
+    exts: *id001
+    pages:
+    - https://www.perspektywy.pl/
+  pex_pharma:
+    exts: *id001
+    pages:
+    - https://pexps.pl/
   pfr:
     pages:
     - https://pfrsa.pl/relacje-inwestorskie/raporty-gieldowe/raporty-biezace.html
@@ -174,6 +325,18 @@ sources:
     pages:
     - https://pgzsa.pl/
     - https://pgzsa.pl/
+  pie:
+    exts: *id001
+    pages:
+    - https://pie.net.pl/
+  piit_telecom:
+    exts: *id001
+    pages:
+    - https://piit.org.pl/
+  piu:
+    exts: *id001
+    pages:
+    - https://piu.org.pl/
   pko_bp:
     pages:
     - https://www.pkobp.pl/relacje-inwestorskie/raporty-finansowe/
@@ -185,10 +348,18 @@ sources:
   pkw_elections:
     pages:
     - https://wybory.gov.pl/
+  pmr:
+    exts: *id001
+    pages:
+    - https://www.pmrmarketexperts.com/
   poczta_polska:
     pages:
     - https://www.poczta-polska.pl/o-firmie/
     - https://www.poczta-polska.pl/
+  pohid:
+    exts: *id001
+    pages:
+    - https://www.pohid.pl/
   police_stats:
     pages:
     - https://statystyka.policja.pl/
@@ -207,6 +378,14 @@ sources:
   polska_organizacja_turystycz:
     pages:
     - https://www.pot.gov.pl
+  pracuj_zarobki:
+    exts: *id001
+    pages:
+    - https://zarobki.pracuj.pl/
+  press_circulation:
+    exts: *id001
+    pages:
+    - https://www.pbc.pl/
   prokuratura_krajowa:
     pages:
     - https://www.gov.pl/web/prokuratura-krajowa
@@ -214,9 +393,29 @@ sources:
     pages:
     - https://www.pse.pl/dane-systemowe
     - https://www.pse.pl/dane-systemowe
+  psew:
+    exts: *id001
+    pages:
+    - https://psew.pl/
   psz_labour:
     pages:
     - https://psz.praca.gov.pl/rynek-pracy/statystyki-i-analizy/bezrobocie-rejestrowane
+  ptpiree:
+    exts: *id001
+    pages:
+    - https://www.ptpiree.pl/
+  pzfd:
+    exts: *id001
+    pages:
+    - https://pzfd.pl/
+  pzpm:
+    exts: *id001
+    pages:
+    - https://www.pzpm.org.pl/
+  pzpn:
+    exts: *id001
+    pages:
+    - https://www.laczynaspilka.pl/
   pzu:
     pages:
     - https://www.pzu.pl/relacje-inwestorskie/raporty-i-publikacje
@@ -224,15 +423,51 @@ sources:
   rada_doskonalosci_naukowej:
     pages:
     - https://www.rdn.gov.pl
+  rcn_property:
+    exts: *id001
+    pages:
+    - https://www.geoportal.gov.pl/
+  reflex:
+    exts: *id001
+    pages:
+    - https://reflex.com.pl/
   rybolowstwa_morskiego:
     pages:
     - https://www.gov.pl/web/girm
+  rynek_ksiazki:
+    exts: *id001
+    pages:
+    - https://rynek-ksiazki.pl/
+  rynekpierwotny:
+    exts: *id001
+    pages:
+    - https://rynekpierwotny.pl/
   sad_najwyzszy:
     pages:
     - https://www.sn.pl
+  samar:
+    exts: *id001
+    pages:
+    - https://www.samar.pl/raporty
+  sedlak:
+    exts: *id001
+    pages:
+    - https://wynagrodzenia.pl/
+  sonarhome:
+    exts: *id001
+    pages:
+    - https://sonarhome.pl/statystyki-rynkowe
+  sotrender:
+    exts: *id001
+    pages:
+    - https://www.sotrender.com/
   specjalistyczny_urzad_gornic:
     pages:
     - https://www.wug.gov.pl/
+  startup_data:
+    exts: *id001
+    pages:
+    - https://startuppoland.org/
   szef_sluzby_cywilnej:
     pages:
     - https://www.gov.pl/web/sluzbacywilna/szef-sluzby-cywilnej
@@ -240,6 +475,26 @@ sources:
     pages:
     - https://raport.tauron.pl/
     - https://www.tauron.pl/tauron/relacje-inwestorskie
+  tge:
+    exts: *id001
+    pages:
+    - https://tge.pl/uslugi-tge
+  thinktanks_econ:
+    exts: *id001
+    pages:
+    - https://ibs.org.pl/
+  thinktanks_more:
+    exts: *id001
+    pages:
+    - https://klubjagiellonski.pl/
+  trans_eu:
+    exts: *id001
+    pages:
+    - https://www.trans.eu/pl/gielda-transportowa/
+  transfermarkt:
+    exts: *id001
+    pages:
+    - https://www.transfermarkt.pl/
   trybunal_konstytucyjny:
     pages:
     - https://trybunal.gov.pl/
@@ -271,3 +526,11 @@ sources:
     pages:
     - https://www.weglokoks.com.pl/
     - https://www.weglokoks.com.pl/
+  zbp:
+    exts: *id001
+    pages:
+    - https://www.zbp.pl/
+  zpl:
+    exts: *id001
+    pages:
+    - https://leasing.org.pl/
