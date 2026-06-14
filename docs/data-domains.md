@@ -1,42 +1,85 @@
-# Data domain taxonomy — what topics we collect data about
+# Data domain taxonomy — grounded in statistical classifications
 
-The **subject** framework for source discovery: the topics/domains we want data for,
-independent of *who* publishes (that's the source category a–f). Aligned to the
-**EU DCAT-AP themes** used by dane.gov.pl and the EU data portal — so it's standard,
-internationally comparable, and future-proof for European-scope expansion.
+The **topic framework** for source discovery, built on the authoritative statistical
+standards (ESA 2010 National Accounts + the EU/UN classification family) rather than
+ad-hoc portal categories. Start from **GDP structure**, then branch by standard
+classification. This is how GUS/Eurostat actually organise economic and social data,
+so our domains map 1:1 to the series we'll ingest and stay EU-comparable.
 
-A source can serve several domains; a domain is served by many sources. The goal:
-for **every** domain/subdomain below, have at least one source feeding it.
+---
 
-| # | Domain (DCAT) | Subdomains / topics | Lead sources |
-|---|---|---|---|
-| **1** | **Government & public sector** (GOVE) | public administration · state budget execution · public procurement · elections · legislation · public registers (REGON/KRS/TERYT) · public-entity catalogue | MF OpenBudget, UZP, PKW, Sejm, KRS, GUS BDL/DBW, dane.gov.pl |
-| **2** | **Economy & finance** (ECON) | GDP & national accounts · prices/inflation (HICP) · public finance & debt · taxes · business & companies · **financial markets** (GPW, Stooq) · banking · money & rates (NBP, ECB) · foreign trade (WTO) · **labour market** (employment, unemployment, wages) | GUS BDL/DBW, MF, NBP, GPW, KNF, Eurostat, IMF, WB, UZP, KRS RDF, PSZ |
-| **3** | **Population & society** (SOCI) | demographics (births/deaths/migration) · households · social welfare & benefits · pensions (ZUS/KRUS) · NGOs / civil society (OPP) · equality | GUS, ZUS, KRUS, MRiPS/CAS, UN WPP, OPP/NIW, Eurostat |
-| **4** | **Health** (HEAL) | healthcare providers (RPWDL) · services & contracts (NFZ) · drugs (URPL) · sanitary/epidemiology (GIS) · mortality/morbidity · pharma | NFZ, RPWDL, URPL, GIS, GUS, Eurostat |
-| **5** | **Education, culture & sport** (EDUC) | schools & pupils (RSPO) · higher education & science (OPI RAD-on, NCN) · exams (CKE) · libraries (BN) · cultural institutions (RIK) · heritage · sport · media | RSPO, MEN, OPI RAD-on, BN, RIK, GUS, CKE |
-| **6** | **Environment** (ENVI) | air quality (GIOŚ) · water (Wody Polskie) · nature protection (GDOŚ) · climate · waste · geology (PIG) · meteorology (IMGW) · radiation (PAA) | GIOŚ, IMGW, GDOŚ, Wody Polskie, PIG, GUS, Eurostat |
-| **7** | **Agriculture, fisheries, forestry, food** (AGRI) | farms & crops (ARiMR) · livestock · forests (Lasy/BDL) · fisheries · food quality (IJHARS) · plant/animal health (GIORiN/GIW) · agri markets (KOWR) | ARiMR, Lasy Państwowe, GUS, FAOSTAT, inspectorates |
-| **8** | **Energy** (ENER) | electricity production & grid (PSE) · fuel & gas (Orlen, Gaz-System, PERN) · renewables · nuclear (PEJ) · tariffs & market (URE) · mining/coal (JSW, Węglokoks) | URE, PSE, ORLEN, Gaz-System, state companies, Eurostat |
-| **9** | **Transport** (TRAN) | roads (GDDKiA) · rail (UTK, PKP PLK) · air (ULC) · maritime · traffic (GITD) · infrastructure · vehicles | GDDKiA, UTK, ULC, PKP PLK, GUS, Eurostat |
-| **10** | **Justice & public security** (JUST) | courts & caseloads (ISWS) · prosecution · crime (Police) · prisons · fire/rescue (PSP) · border (SG) · audit (NIK) | ISWS, Police, NIK, SAOS, GUS |
-| **11** | **Science & technology** (TECH) | R&D · patents (UPRP) · innovation · telecom & broadband (UKE) · digital economy · geodesy/spatial (GUGiK) | OPI RAD-on, UPRP, UKE, GUGiK, NCN, Eurostat |
-| **12** | **Regions & cities** (REGI) | local government finance · spatial/geography (GUGiK/TERYT) · **real-estate prices** (RCN) · urban statistics · regional development | GUS BDL, GUGiK, TERYT, dane.gov.pl (local), RCN, Eurostat |
-| **13** | **International affairs** (INTR) | cross-country comparisons · foreign affairs · development aid · EU funds | Eurostat, OECD, IMF, WB, ECB, ILOSTAT, WTO, UN |
+## Apex: National Accounts (ESA 2010) — the GDP frame
 
-## How this reframes source discovery
+GDP is measured three ways; each gives a branch of topics:
 
-- The **6 source categories (a–f)** answer *who holds the data*.
-- The **13 domains** answer *what topic it's about*.
-- Coverage target: every domain × subdomain has ≥1 feeding source. Gaps in the
-  matrix = where to look for new sources (and what new products are possible).
+| Approach | Decomposition | Classification |
+|---|---|---|
+| **Production** | Gross value added **by economic activity** + taxes − subsidies | **NACE / PKD** (sections A–U) |
+| **Expenditure** | household consumption · government consumption · gross capital formation (investment) · exports − imports | COICOP (consumption), trade nomenclatures |
+| **Income** | compensation of employees · gross operating surplus · taxes − subsidies on production | — |
+| **Sector accounts** | households · non-financial corporations · financial corporations · government · rest-of-world | ESA institutional sectors |
 
-## Subdomain depth (for the richest domains)
+GDP is the root; everything below is a structured breakdown of it or a satellite.
 
-GUS BDL exposes ~33 K-subject categories and DBW ~14 thematic domains that map under
-the above (e.g. BDL K27 Public finance → ECON; K3 Population → SOCI). These are the
-**subdomain** granularity — the level at which we actually pull and model data.
+---
+
+## Backbone: economic activity — NACE Rev.2 / PKD 2025 (sections A–U)
+
+The production structure of the economy. For each section we want: GVA, employment,
+wages, enterprise demography, production/PRODCOM, prices (PPI).
+
+| Sec | Activity | Sec | Activity |
+|--|--|--|--|
+| **A** | Agriculture, forestry & fishing | **L** | Real estate |
+| **B** | Mining & quarrying | **M** | Professional, scientific & technical |
+| **C** | Manufacturing | **N** | Administrative & support services |
+| **D** | Energy supply | **O** | Public administration, defence, social security |
+| **E** | Water, sewage, waste | **P** | Education |
+| **F** | Construction | **Q** | Health & social work |
+| **G** | Trade, vehicle repair | **R** | Arts, entertainment, recreation |
+| **H** | Transport & storage | **S** | Other services |
+| **I** | Accommodation & food service | **T** | Households as employers / own-use production |
+| **J** | Information & communication | **U** | Extraterritorial organisations |
+| **K** | Finance & insurance | | |
+
+---
+
+## Thematic statistical domains (each with its standard classification)
+
+GDP/NACE covers economic *activity*; these are the cross-cutting statistical domains,
+each anchored to an official classification so the data is structured, not ad-hoc:
+
+| Domain | Standard classification | Key topics |
+|---|---|---|
+| **National accounts & GDP** | ESA 2010 | GDP, GVA, GNI, investment, savings, sector accounts |
+| **Prices** | COICOP (consumer), PPI/CPA (producer) | CPI/HICP, inflation, PPI, construction prices |
+| **Public finance** | **COFOG** | budget execution, expenditure by function, debt, deficit, taxes |
+| **Labour market** | NACE × ISCO (occupations) × status | employment, unemployment, wages, hours, vacancies |
+| **Foreign trade** | CN / HS / BEC | exports, imports, balance, by product & partner |
+| **Business demography** | NACE | enterprises by size/activity, births/deaths, REGON |
+| **Population & demography** | — (vital events) | population, births, deaths, migration, age structure |
+| **Households** | COICOP | income, consumption, poverty, living conditions |
+| **Health** | ICD-10/11, ICHA (health accounts) | morbidity, mortality, providers, spending, drugs |
+| **Education** | **ISCED** | enrolment, levels, outcomes, R&D (Frascati) |
+| **Environment & energy** | SEEA, energy balances, CRF (emissions) | air/water, waste, energy balance, emissions, climate |
+| **Money & finance** | ESA financial accounts, MFI stats | money supply, rates, FX, credit, financial markets |
+| **Government & justice** | COFOG + administrative | elections, legislation, courts, crime, public registers |
+| **Regions** | NUTS / TERYT | all the above at regional/local level |
+
+---
+
+## How this drives source discovery
+
+1. **Start from GDP** → its production breakdown is NACE A–U → for each section, which
+   sources give GVA/employment/prices? (GUS BDL/DBW, Eurostat national accounts.)
+2. **Each thematic domain** is anchored to a classification we already model or will
+   (we use COFOG for public finance today; COICOP, ISCED, ICD, NACE next).
+3. **Coverage = every (domain × classification breakdown) has a feeding source.**
+   Gaps in that matrix are the source-hunting and product backlog.
+
+This replaces the dane.gov.pl-category framing: classifications are authoritative,
+stable, EU-comparable, and map directly onto the actual data series.
 
 ## Status
-Taxonomy defined. Next: tag every registry source with the domain(s) it serves, then
-generate a **domain × source coverage matrix** to expose topic gaps.
+Taxonomy defined (classification-grounded). Next: tag sources with the domains they
+serve and build a domain × source coverage matrix.
