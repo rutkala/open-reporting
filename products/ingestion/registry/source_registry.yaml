@@ -4061,3 +4061,119 @@ sources:
     manifest_kind: null
     docs_url: https://www.geoportal.gov.pl/
     default_status: not_started
+
+  # ── Category c, by domain: FINANCE & MARKETS (K) ──────────────────────────
+  - source_key: bankier
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "Bankier.pl — financial portal"
+    institution: "Bonnier Business Polska"
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.bankier.pl/
+    endpoints: ["quotes, FX, rates, banking-product rankings, market news (HTML)"]
+    scope: "Markets quotes, FX, rates, banking product data, financial news."
+    description: "Major PL financial portal (private). Commercial content — ToS/copyright apply; context use."
+    extraction_logic: "TO BUILD — scrape specific data tables; respect ToS."
+    landing_layout: "bankier/"
+    verification: "https://www.bankier.pl/"
+    landing_folders: [bankier]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.bankier.pl/
+    default_status: not_started
+
+  - source_key: biznesradar
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "Biznesradar.pl — listed-company financials"
+    institution: "Biznesradar"
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.biznesradar.pl/
+    endpoints: ["multi-year financial statements & ratios for all GPW-listed companies (HTML)"]
+    scope: "Full financial history + ratios per GPW-listed company."
+    description: "Private aggregator of listed-company financials/ratios. ToS/copyright apply."
+    extraction_logic: "TO BUILD — scrape per-company financial tables; respect ToS."
+    landing_layout: "biznesradar/{ticker}.json"
+    verification: "https://www.biznesradar.pl/"
+    landing_folders: [biznesradar]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.biznesradar.pl/
+    default_status: not_started
+
+  - source_key: tge
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "TGE — Polish Power Exchange (energy/gas/agri market data)"
+    institution: "Towarowa Giełda Energii S.A."
+    type: bulk_download
+    auth: key_optional
+    rate_limit: null
+    base_url: https://www.tge.pl/dane-statystyczne
+    endpoints:
+      - "tge.pl/dane-statystyczne — electricity (RDN/RDB), gas, property rights, agri, coal index"
+      - "AIR platform — daily CSV reports (account; often paid)"
+    scope: "Wholesale electricity/gas/commodity market prices & volumes (the energy-market reference)."
+    description: >-
+      Polish Power Exchange — the reference for wholesale energy/gas/commodity
+      prices. Public statistics page + AIR data service (account, often paid).
+    extraction_logic: "TO BUILD — scrape dane-statystyczne; AIR CSV needs account."
+    landing_layout: "tge/{market}/{date}.csv"
+    verification: "https://www.tge.pl/dane-statystyczne"
+    landing_folders: [tge]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://tge.pl/uslugi-tge
+    default_status: not_started
+
+  # ── Category c, by domain: REAL ESTATE (L) ────────────────────────────────
+  - source_key: sonarhome
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "SonarHome — apartment prices & valuations"
+    institution: "SonarHome"
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://sonarhome.pl/statystyki-rynkowe
+    endpoints: ["apartment prices per m² across 50+ cities; market trends (HTML)"]
+    scope: "Residential offer prices & trends, 50+ cities (algorithmic, from portal listings)."
+    description: "Free PL property-price stats portal (private). Offer-based; ToS apply."
+    extraction_logic: "TO BUILD — scrape market-stats pages."
+    landing_layout: "sonarhome/{city}.json"
+    verification: "https://sonarhome.pl/ceny-mieszkan"
+    landing_folders: [sonarhome]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://sonarhome.pl/statystyki-rynkowe
+    default_status: not_started
+
+  - source_key: cenatorium
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "Cenatorium — property transaction database"
+    institution: "Cenatorium Sp. z o.o."
+    type: rest_api
+    auth: key_required
+    rate_limit: null
+    base_url: https://cenatorium.pl/
+    endpoints: ["largest PL transaction-price DB (7.5M+ records) — commercial/paid access"]
+    scope: "7.5M+ real-estate transaction records (banks/developers data vendor)."
+    description: "Private RES data vendor — PAID/commercial. Listed for completeness; needs a commercial agreement (PO decision)."
+    extraction_logic: "BLOCKED — commercial/paid; would need a licence (PO action)."
+    landing_layout: "cenatorium/"
+    verification: "https://cenatorium.pl/"
+    landing_folders: [cenatorium]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://cenatorium.pl/
+    default_status: blocked
