@@ -4,8 +4,8 @@ Exhaustive per-institution research (no category skipped). Each gets a
 documented own-data-channel result; dane.gov.pl status auto-cross-checked.
 Findings curated in `products/ingestion/registry/layer2_findings.yaml`.
 
-- **27 / 132 researched** to a definite own-channel result
-- ⬜ to research 63 · 🟡 dane.gov.pl 47 · 🟢 own bulk 6 · ⚫ no open data 5 · 🟢 own WMS/WFS 5 · 🟠 reports only 3 · 🟢 own API 3
+- **52 / 132 researched** to a definite own-channel result
+- ⬜ to research 43 · 🟡 dane.gov.pl 42 · ⚫ no open data 19 · 🟠 reports only 11 · 🟢 own WMS/WFS 6 · 🟢 own bulk 6 · 🟢 own API 5
 
 | Result | Institution | Source key | dane.gov.pl | Note | Site |
 |---|---|---|--:|---|---|
@@ -16,6 +16,30 @@ Findings curated in `products/ingestion/registry/layer2_findings.yaml`.
 | 🟢 own bulk | Archiwum Główne Akt Dawnych |  |  | archival search systems; no open API | [↗](http://agad.gov.pl) |
 | 🟠 reports only | Bank Gospodarstwa Krajowego |  |  | BGK financial/macro reports PDF; no API | [↗](http://www.bgk.pl) |
 | 🟢 own bulk | Bankowy Fundusz Gwarancyjny | bfg_data |  | dane.bfg.pl data portal | [↗](http://www.bfg.pl) |
+| ⚫ no open data | Bałtycka Instytucja Gospodarki Budżetowej Baltica |  |  | prison-sector budget enterprise |  |
+| 🟢 own API | Biblioteka Narodowa | bn_data | 3 | data.bn.org.pl REST + OAI-PMH, 4.6M records | [↗](http://www.bn.org.pl) |
+| ⚫ no open data | Biuro "Niepodległa" |  |  | commemoration office | [↗](http://www.niepodlegla.gov.pl) |
+| ⚫ no open data | Biuro Do Spraw Programu "Zostań Żołnierzem Rzeczypospolitej" |  |  | military recruitment promotion | [↗](http://www.wojsko-polskie.pl/biuro-zostan-zolnierzem) |
+| 🟠 reports only | Biuro Do Spraw Substancji Chemicznych |  | 7 | chemicals (REACH/CLP) registry; no open API | [↗](http://www.gov.pl/web/chemikalia) |
+| ⚫ no open data | Biuro Emerytalne Służby Więziennej |  |  | prison-service pensions | [↗](http://sw.gov.pl/jednostka/biuro-emerytalne) |
+| ⚫ no open data | Biuro Koordynacji Projektu Ochrony Przeciwpowodziowej Dorzecza Odry I Wisły |  |  | flood-project office | [↗](http://odrapcu2019.odrapcu.pl) |
+| 🟠 reports only | Biuro Polskiej Komisji Akredytacyjnej |  |  | higher-ed accreditation reports | [↗](http://www.pka.edu.pl) |
+| 🟠 reports only | Biuro Rady Fiskalnej |  |  | fiscal council; reports only |  |
+| ⚫ no open data | Biuro Rzecznika Małych I Średnich Przedsiębiorców |  |  | SME ombudsman | [↗](http://www.rzecznikmsp.gov.pl) |
+| 🟠 reports only | Biuro Rzecznika Praw Dziecka |  | 4 | children's ombudsman; reports | [↗](http://www.brpd.gov.pl) |
+| 🟠 reports only | Biuro Rzecznika Praw Obywatelskich |  | 4 | RPO ombudsman; reports | [↗](http://www.rpo.gov.pl) |
+| ⚫ no open data | Biuro Spraw Wewnętrznych Straży Granicznej |  |  | internal affairs | [↗](http://bsw.starzgraniczna.pl) |
+| 🟢 own WMS/WFS | Biuro Urządzania Lasu I Geodezji Leśnej | lasy_bdl |  | BULiGL operates Bank Danych o Lasach (lasy_bdl) | [↗](http://buligl.pl) |
+| ⚫ no open data | Biuro Łączności I Informatyki Komendy Głównej Policji |  |  | police IT support |  |
+| 🟠 reports only | Centralna Komisja Egzaminacyjna |  |  | CKE exam results map/ZIU; no open API | [↗](http://cke.gov.pl) |
+| ⚫ no open data | Centralna Wojskowa Komisja Lekarska W Warszawie |  |  | military medical board | [↗](http://www.cwkl.wp.mil.pl) |
+| ⚫ no open data | Centralne Biuro Antykorupcyjne |  |  | CBA; no open data | [↗](http://www.cba.gov.pl) |
+| ⚫ no open data | Centralne Biuro Śledcze Policji |  |  | CBŚP; no open data | [↗](http://cbsp.policja.pl) |
+| ⚫ no open data | Centralne Wojskowe Centrum Rekrutacji W Warszawie |  |  | military recruitment | [↗](http://www.wojsko-polskie.pl/zostanzolnierzem/kontakt1) |
+| ⚫ no open data | Centralny Azyl Dla Zwierząt |  |  | animal shelter | [↗](http://cadz.gov.pl) |
+| ⚫ no open data | Centralny Ośrodek Badań Jakości W Diagnostyce Mikrobiologicznej |  | 19 | microbiology QC lab | [↗](http://polmicro.edu.pl) |
+| 🟠 reports only | Centralny Zarząd Służby Więziennej |  |  | prison-service stats; dane.gov.pl | [↗](http://www.sw.gov.pl) |
+| 🟢 own API | Centrum Badań I Edukacji Statystycznej Gus W Likwidacji | gus |  | GUS satellite (in liquidation) — covered by GUS | [↗](http://cbies.stat.gov.pl) |
 | 🟢 own WMS/WFS | Centrum Informacyjne Lasów Państwowych | lasy_bdl |  | BDL WFS + OGC API |  |
 | 🟢 own WMS/WFS | Dyrekcja Generalna Lasów Państwowych | lasy_bdl | 3 | BDL WFS + OGC API | [↗](http://www.lasy.gov.pl/pl) |
 | 🟡 dane.gov.pl | Generalna Dyrekcja Dróg Krajowych I Autostrad | gddkia_bulk | 6 | dane.gov.pl id=55 | [↗](http://www.gov.pl/web/gddkia/generalna-dyrekcja-drog-krajowych-i-autostrad) |
@@ -30,36 +54,13 @@ Findings curated in `products/ingestion/registry/layer2_findings.yaml`.
 | 🟢 own bulk | Naczelna Dyrekcja Archiwów Państwowych |  |  | szukajwarchiwach.gov.pl scans; no open API | [↗](http://www.archiwa.gov.pl/pl) |
 | 🟢 own bulk | Narodowe Archiwum Cyfrowe |  |  | archival search systems; no open API | [↗](http://www.nac.gov.pl) |
 | 🟢 own API | Narodowy Bank Polski | nbp_api |  | api.nbp.pl (covered) | [↗](http://www.nbp.pl) |
+| 🟠 reports only | Państwowa Komisja Egzaminacyjna Do Spraw Doradztwa Podatkowego |  |  | CKE exam results map/ZIU; no open API | [↗](http://www.gov.pl/web/finanse/komisja-egzaminacyjna-doradca-podatkowy) |
 | ⚫ no open data | Służba Kontrwywiadu Wojskowego |  |  | AW intelligence; BIP only | [↗](http://www.skw.gov.pl/index.html) |
 | 🟠 reports only | Urząd Komisji Nadzoru Finansowego | knf_bulk |  | dane_statystyczne XLSX, no API | [↗](http://www.knfgov.pl) |
 | 🟢 own bulk | Urząd Komunikacji Elektronicznej | uke_broadband | 30 | Mapbook/SIDUSIS | [↗](http://www.uke.gov.pl) |
 | 🟡 dane.gov.pl | Urząd Ochrony Konkurencji I Konsumentów |  | 129 | UOKiK dane.gov.pl id=26 (to wire) | [↗](http://www.uokik.gov.pl) |
 | 🟡 dane.gov.pl | Urząd Regulacji Energetyki | ure_bulk | 76 | dane.gov.pl id=107 | [↗](http://www.ure.gov.pl) |
 | 🟡 dane.gov.pl | Zakład Ubezpieczeń Społecznych | zus_bulk | 94 | dane.gov.pl id=20 + portal | [↗](http://www.zus.pl) |
-| ⬜ to research | Bałtycka Instytucja Gospodarki Budżetowej Baltica |  |  | not on dane.gov.pl; unchecked |  |
-| 🟡 dane.gov.pl | Biblioteka Narodowa |  | 3 | on dane.gov.pl (3 datasets); own channel unchecked | [↗](http://www.bn.org.pl) |
-| ⬜ to research | Biuro "Niepodległa" |  |  | not on dane.gov.pl; unchecked | [↗](http://www.niepodlegla.gov.pl) |
-| ⬜ to research | Biuro Do Spraw Programu "Zostań Żołnierzem Rzeczypospolitej" |  |  | not on dane.gov.pl; unchecked | [↗](http://www.wojsko-polskie.pl/biuro-zostan-zolnierzem) |
-| 🟡 dane.gov.pl | Biuro Do Spraw Substancji Chemicznych |  | 7 | on dane.gov.pl (7 datasets); own channel unchecked | [↗](http://www.gov.pl/web/chemikalia) |
-| ⬜ to research | Biuro Emerytalne Służby Więziennej |  |  | not on dane.gov.pl; unchecked | [↗](http://sw.gov.pl/jednostka/biuro-emerytalne) |
-| ⬜ to research | Biuro Koordynacji Projektu Ochrony Przeciwpowodziowej Dorzecza Odry I Wisły |  |  | not on dane.gov.pl; unchecked | [↗](http://odrapcu2019.odrapcu.pl) |
-| ⬜ to research | Biuro Polskiej Komisji Akredytacyjnej |  |  | not on dane.gov.pl; unchecked | [↗](http://www.pka.edu.pl) |
-| ⬜ to research | Biuro Rady Fiskalnej |  |  | not on dane.gov.pl; unchecked |  |
-| ⬜ to research | Biuro Rzecznika Małych I Średnich Przedsiębiorców |  |  | not on dane.gov.pl; unchecked | [↗](http://www.rzecznikmsp.gov.pl) |
-| 🟡 dane.gov.pl | Biuro Rzecznika Praw Dziecka |  | 4 | on dane.gov.pl (4 datasets); own channel unchecked | [↗](http://www.brpd.gov.pl) |
-| 🟡 dane.gov.pl | Biuro Rzecznika Praw Obywatelskich |  | 4 | on dane.gov.pl (4 datasets); own channel unchecked | [↗](http://www.rpo.gov.pl) |
-| ⬜ to research | Biuro Spraw Wewnętrznych Straży Granicznej |  |  | not on dane.gov.pl; unchecked | [↗](http://bsw.starzgraniczna.pl) |
-| ⬜ to research | Biuro Urządzania Lasu I Geodezji Leśnej |  |  | not on dane.gov.pl; unchecked | [↗](http://buligl.pl) |
-| ⬜ to research | Biuro Łączności I Informatyki Komendy Głównej Policji |  |  | not on dane.gov.pl; unchecked |  |
-| ⬜ to research | Centralna Komisja Egzaminacyjna |  |  | not on dane.gov.pl; unchecked | [↗](http://cke.gov.pl) |
-| ⬜ to research | Centralna Wojskowa Komisja Lekarska W Warszawie |  |  | not on dane.gov.pl; unchecked | [↗](http://www.cwkl.wp.mil.pl) |
-| ⬜ to research | Centralne Biuro Antykorupcyjne |  |  | not on dane.gov.pl; unchecked | [↗](http://www.cba.gov.pl) |
-| ⬜ to research | Centralne Biuro Śledcze Policji |  |  | not on dane.gov.pl; unchecked | [↗](http://cbsp.policja.pl) |
-| ⬜ to research | Centralne Wojskowe Centrum Rekrutacji W Warszawie |  |  | not on dane.gov.pl; unchecked | [↗](http://www.wojsko-polskie.pl/zostanzolnierzem/kontakt1) |
-| ⬜ to research | Centralny Azyl Dla Zwierząt |  |  | not on dane.gov.pl; unchecked | [↗](http://cadz.gov.pl) |
-| 🟡 dane.gov.pl | Centralny Ośrodek Badań Jakości W Diagnostyce Mikrobiologicznej |  | 19 | on dane.gov.pl (19 datasets); own channel unchecked | [↗](http://polmicro.edu.pl) |
-| ⬜ to research | Centralny Zarząd Służby Więziennej |  |  | not on dane.gov.pl; unchecked | [↗](http://www.sw.gov.pl) |
-| ⬜ to research | Centrum Badań I Edukacji Statystycznej Gus W Likwidacji |  |  | not on dane.gov.pl; unchecked | [↗](http://cbies.stat.gov.pl) |
 | ⬜ to research | Centrum Doradztwa Rolniczego W Brwinowie |  |  | not on dane.gov.pl; unchecked | [↗](http://www.cdr.gov.pl) |
 | ⬜ to research | Centrum Informatyki Statystycznej |  |  | not on dane.gov.pl; unchecked | [↗](http://cis.stat.gov.pl) |
 | ⬜ to research | Centrum Obsługi Kancelarii Prezydenta Rzeczypospolitej Polskiej |  |  | not on dane.gov.pl; unchecked | [↗](http://www.co.kprp.pl) |
@@ -103,7 +104,6 @@ Findings curated in `products/ingestion/registry/layer2_findings.yaml`.
 | 🟡 dane.gov.pl | Państwowa Agencja Atomistyki |  | 7 | on dane.gov.pl (7 datasets); own channel unchecked | [↗](http://www.gov.pl/web/paa/panstwowa-agencja-atomistyki) |
 | 🟡 dane.gov.pl | Państwowa Agencja Rozwiązywania Problemów Alkoholowych |  | 7 | on dane.gov.pl (7 datasets); own channel unchecked | [↗](http://www.parpa.pl) |
 | 🟡 dane.gov.pl | Państwowa Inspekcja Pracy Główny Inspektorat Pracy |  | 12 | on dane.gov.pl (12 datasets); own channel unchecked | [↗](http://www.pip.gov.pl) |
-| ⬜ to research | Państwowa Komisja Egzaminacyjna Do Spraw Doradztwa Podatkowego |  |  | not on dane.gov.pl; unchecked | [↗](http://www.gov.pl/web/finanse/komisja-egzaminacyjna-doradca-podatkowy) |
 | ⬜ to research | Państwowe Gospodarstwo Leśne Lasy Państwowe |  |  | not on dane.gov.pl; unchecked | [↗](http://WWW.LASY.GOV.PL) |
 | 🟡 dane.gov.pl | Państwowe Gospodarstwo Wodne Wody Polskie |  | 10 | on dane.gov.pl (10 datasets); own channel unchecked | [↗](http://www.wody.gov.pl) |
 | 🟡 dane.gov.pl | Państwowy Fundusz Rehabilitacji Osób Niepełnosprawnych |  | 8 | on dane.gov.pl (8 datasets); own channel unchecked | [↗](http://www.pfron.org.pl) |

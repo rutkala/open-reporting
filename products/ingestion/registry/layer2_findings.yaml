@@ -37,3 +37,28 @@ findings:
   "wywiadu":               {kind: no_open_data, source: null, note: "AW intelligence; BIP only"}
   "archiwów państwowych":  {kind: own_bulk, source: null, note: "szukajwarchiwach.gov.pl scans; no open API"}
   "archiwum":              {kind: own_bulk, source: null, note: "archival search systems; no open API"}
+  # ── batch 6 ──────────────────────────────────────────────────────────────
+  "biblioteka narodowa":     {kind: own_api, source: bn_data, note: "data.bn.org.pl REST + OAI-PMH, 4.6M records"}
+  "urządzania lasu":         {kind: own_ogc, source: lasy_bdl, note: "BULiGL operates Bank Danych o Lasach (lasy_bdl)"}
+  "komisja egzaminacyjna":   {kind: reports_only, source: null, note: "CKE exam results map/ZIU; no open API"}
+  "bałtycka instytucja":     {kind: no_open_data, source: null, note: "prison-sector budget enterprise"}
+  "niepodległa":             {kind: no_open_data, source: null, note: "commemoration office"}
+  "zostań żołnierzem":       {kind: no_open_data, source: null, note: "military recruitment promotion"}
+  "substancji chemicznych":  {kind: reports_only, source: null, note: "chemicals (REACH/CLP) registry; no open API"}
+  "emerytalne służby więziennej": {kind: no_open_data, source: null, note: "prison-service pensions"}
+  "koordynacji projektu ochrony przeciwpowodziowej": {kind: no_open_data, source: null, note: "flood-project office"}
+  "komisji akredytacyjnej":  {kind: reports_only, source: null, note: "higher-ed accreditation reports"}
+  "rady fiskalnej":          {kind: reports_only, source: null, note: "fiscal council; reports only"}
+  "małych i średnich przedsiębiorców": {kind: no_open_data, source: null, note: "SME ombudsman"}
+  "praw dziecka":            {kind: reports_only, source: null, note: "children's ombudsman; reports"}
+  "praw obywatelskich":      {kind: reports_only, source: null, note: "RPO ombudsman; reports"}
+  "spraw wewnętrznych straży granicznej": {kind: no_open_data, source: null, note: "internal affairs"}
+  "łączności i informatyki komendy": {kind: no_open_data, source: null, note: "police IT support"}
+  "wojskowa komisja lekarska": {kind: no_open_data, source: null, note: "military medical board"}
+  "antykorupcyjne":          {kind: no_open_data, source: null, note: "CBA; no open data"}
+  "śledcze policji":         {kind: no_open_data, source: null, note: "CBŚP; no open data"}
+  "wojskowe centrum rekrutacji": {kind: no_open_data, source: null, note: "military recruitment"}
+  "azyl dla zwierząt":       {kind: no_open_data, source: null, note: "animal shelter"}
+  "diagnostyce mikrobiologicznej": {kind: no_open_data, source: null, note: "microbiology QC lab"}
+  "zarząd służby więziennej": {kind: reports_only, source: null, note: "prison-service stats; dane.gov.pl"}
+  "edukacji statystycznej":  {kind: own_api, source: gus, note: "GUS satellite (in liquidation) — covered by GUS"}

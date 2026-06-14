@@ -1536,3 +1536,29 @@ sources:
     manifest_kind: null
     docs_url: https://dane.bfg.pl/
     default_status: not_started
+
+  - source_key: bn_data
+    category: b_pl_gov_institutional
+    ingestion_mode: api_full
+    name: "Biblioteka Narodowa — bibliographic data (BN Data)"
+    institution: "Biblioteka Narodowa"
+    type: rest_api
+    auth: none
+    rate_limit: null
+    base_url: https://data.bn.org.pl/
+    endpoints:
+      - "REST API + OAI-PMH — bibliographic & authority records (json/xml/marcxml/marc)"
+      - "bulk full-copy database files; e-ISBN data"
+    scope: "Poland's national bibliography — 4.6M bibliographic + 2.2M authority records."
+    description: >-
+      National Library open bibliographic data — the largest, most complete
+      Polish bibliographic database, free via REST API / OAI-PMH / bulk files.
+    extraction_logic: "TO BUILD — bulk database files (full copy) or REST API."
+    landing_layout: "bn_data/{database}.{marcxml|json}"
+    verification: "Compare record counts with https://data.bn.org.pl/databases"
+    landing_folders: [bn_data]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://data.bn.org.pl/docs/bibs
+    default_status: not_started
