@@ -3450,3 +3450,442 @@ sources:
     manifest_kind: null
     docs_url: https://pfrsa.pl/relacje-inwestorskie/podstawowe-dane-finansowe.html
     default_status: not_started
+
+  # ── State-owned companies (spółki Skarbu Państwa) — 4th discovery pass ──
+  - source_key: kghm
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: KGHM Polska Miedź S.A.
+    institution: KGHM Polska Miedź S.A.
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://kghm.com/pl/inwestorzy
+    endpoints:
+    - https://kghm.com/pl/inwestorzy/raporty-okresowe — financial/periodic reports
+    scope: mining/copper — financial & periodic reports
+    description: KGHM Polska Miedź S.A. — state-owned company (Skarb Państwa, wykaz spółek SP). mining/copper. Publishes investor-relations / operational data.
+    extraction_logic: TO BUILD — scrape reports/data files from the IR/data page.
+    landing_layout: kghm/
+    verification: Compare with https://kghm.com/pl/inwestorzy/raporty-okresowe
+    landing_folders:
+    - kghm
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
+    manifest_kind: null
+    docs_url: https://kghm.com/pl/inwestorzy/raporty-okresowe
+    default_status: not_started
+  - source_key: pge
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: PGE Polska Grupa Energetyczna S.A.
+    institution: PGE Polska Grupa Energetyczna S.A.
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.gkpge.pl/relacje-inwestorskie
+    endpoints:
+    - https://www.gkpge.pl/relacje-inwestorskie/raporty/raporty-okresowe — financial/periodic reports
+    scope: energy — financial & periodic reports
+    description: PGE Polska Grupa Energetyczna S.A. — state-owned company (Skarb Państwa, wykaz spółek SP). energy. Publishes investor-relations / operational data.
+    extraction_logic: TO BUILD — scrape reports/data files from the IR/data page.
+    landing_layout: pge/
+    verification: Compare with https://www.gkpge.pl/relacje-inwestorskie/raporty/raporty-okresowe
+    landing_folders:
+    - pge
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
+    manifest_kind: null
+    docs_url: https://www.gkpge.pl/relacje-inwestorskie/raporty/raporty-okresowe
+    default_status: not_started
+  - source_key: enea
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: ENEA S.A.
+    institution: ENEA S.A.
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://ir.enea.pl/
+    endpoints:
+    - https://ir.enea.pl/raporty-okresowe — financial/periodic reports
+    scope: energy — financial & periodic reports
+    description: ENEA S.A. — state-owned company (Skarb Państwa, wykaz spółek SP). energy. Publishes investor-relations / operational data.
+    extraction_logic: TO BUILD — scrape reports/data files from the IR/data page.
+    landing_layout: enea/
+    verification: Compare with https://ir.enea.pl/raporty-okresowe
+    landing_folders:
+    - enea
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
+    manifest_kind: null
+    docs_url: https://ir.enea.pl/raporty-okresowe
+    default_status: not_started
+  - source_key: tauron
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: TAURON Polska Energia S.A.
+    institution: TAURON Polska Energia S.A.
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.tauron.pl/tauron/relacje-inwestorskie
+    endpoints:
+    - https://raport.tauron.pl/ — financial/periodic reports
+    scope: energy — financial & periodic reports
+    description: TAURON Polska Energia S.A. — state-owned company (Skarb Państwa, wykaz spółek SP). energy. Publishes investor-relations / operational data.
+    extraction_logic: TO BUILD — scrape reports/data files from the IR/data page.
+    landing_layout: tauron/
+    verification: Compare with https://raport.tauron.pl/
+    landing_folders:
+    - tauron
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
+    manifest_kind: null
+    docs_url: https://raport.tauron.pl/
+    default_status: not_started
+  - source_key: orlen
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: ORLEN S.A.
+    institution: ORLEN S.A.
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.orlen.pl/pl/relacje-inwestorskie
+    endpoints:
+    - https://www.orlen.pl/pl/relacje-inwestorskie/raporty-i-publikacje — financial/periodic reports
+    scope: fuel/gas — financial & periodic reports
+    description: ORLEN S.A. — state-owned company (Skarb Państwa, wykaz spółek SP). fuel/gas. Publishes investor-relations / operational data.
+    extraction_logic: TO BUILD — scrape reports/data files from the IR/data page.
+    landing_layout: orlen/
+    verification: Compare with https://www.orlen.pl/pl/relacje-inwestorskie/raporty-i-publikacje
+    landing_folders:
+    - orlen
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
+    manifest_kind: null
+    docs_url: https://www.orlen.pl/pl/relacje-inwestorskie/raporty-i-publikacje
+    default_status: not_started
+  - source_key: grupa_azoty
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: Grupa Azoty S.A.
+    institution: Grupa Azoty S.A.
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://grupaazoty.com/relacje-inwestorskie
+    endpoints:
+    - https://grupaazoty.com/relacje-inwestorskie/raporty-okresowe — financial/periodic reports
+    scope: chemicals — financial & periodic reports
+    description: Grupa Azoty S.A. — state-owned company (Skarb Państwa, wykaz spółek SP). chemicals. Publishes investor-relations / operational data.
+    extraction_logic: TO BUILD — scrape reports/data files from the IR/data page.
+    landing_layout: grupa_azoty/
+    verification: Compare with https://grupaazoty.com/relacje-inwestorskie/raporty-okresowe
+    landing_folders:
+    - grupa_azoty
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
+    manifest_kind: null
+    docs_url: https://grupaazoty.com/relacje-inwestorskie/raporty-okresowe
+    default_status: not_started
+  - source_key: jsw
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: Jastrzębska Spółka Węglowa S.A.
+    institution: Jastrzębska Spółka Węglowa S.A.
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.jsw.pl/relacje-inwestorskie
+    endpoints:
+    - https://www.jsw.pl/relacje-inwestorskie/raporty-okresowe — financial/periodic reports
+    scope: mining/coal — financial & periodic reports
+    description: Jastrzębska Spółka Węglowa S.A. — state-owned company (Skarb Państwa, wykaz spółek SP). mining/coal. Publishes investor-relations / operational data.
+    extraction_logic: TO BUILD — scrape reports/data files from the IR/data page.
+    landing_layout: jsw/
+    verification: Compare with https://www.jsw.pl/relacje-inwestorskie/raporty-okresowe
+    landing_folders:
+    - jsw
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
+    manifest_kind: null
+    docs_url: https://www.jsw.pl/relacje-inwestorskie/raporty-okresowe
+    default_status: not_started
+  - source_key: weglokoks
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: Węglokoks S.A.
+    institution: Węglokoks S.A.
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.weglokoks.com.pl/
+    endpoints:
+    - https://www.weglokoks.com.pl/ — financial/periodic reports
+    scope: mining/coal — financial & periodic reports
+    description: Węglokoks S.A. — state-owned company (Skarb Państwa, wykaz spółek SP). mining/coal. Publishes investor-relations / operational data.
+    extraction_logic: TO BUILD — scrape reports/data files from the IR/data page.
+    landing_layout: weglokoks/
+    verification: Compare with https://www.weglokoks.com.pl/
+    landing_folders:
+    - weglokoks
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
+    manifest_kind: null
+    docs_url: https://www.weglokoks.com.pl/
+    default_status: not_started
+  - source_key: pzu
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: Powszechny Zakład Ubezpieczeń S.A. (PZU)
+    institution: Powszechny Zakład Ubezpieczeń S.A. (PZU)
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.pzu.pl/relacje-inwestorskie
+    endpoints:
+    - https://www.pzu.pl/relacje-inwestorskie/raporty-i-publikacje — financial/periodic reports
+    scope: finance/insurance — financial & periodic reports
+    description: Powszechny Zakład Ubezpieczeń S.A. (PZU) — state-owned company (Skarb Państwa, wykaz spółek SP). finance/insurance. Publishes investor-relations / operational data.
+    extraction_logic: TO BUILD — scrape reports/data files from the IR/data page.
+    landing_layout: pzu/
+    verification: Compare with https://www.pzu.pl/relacje-inwestorskie/raporty-i-publikacje
+    landing_folders:
+    - pzu
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
+    manifest_kind: null
+    docs_url: https://www.pzu.pl/relacje-inwestorskie/raporty-i-publikacje
+    default_status: not_started
+  - source_key: pko_bp
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: PKO Bank Polski S.A.
+    institution: PKO Bank Polski S.A.
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.pkobp.pl/relacje-inwestorskie/
+    endpoints:
+    - https://www.pkobp.pl/relacje-inwestorskie/raporty-finansowe/ — financial/periodic reports
+    scope: finance/banking — financial & periodic reports
+    description: PKO Bank Polski S.A. — state-owned company (Skarb Państwa, wykaz spółek SP). finance/banking. Publishes investor-relations / operational data.
+    extraction_logic: TO BUILD — scrape reports/data files from the IR/data page.
+    landing_layout: pko_bp/
+    verification: Compare with https://www.pkobp.pl/relacje-inwestorskie/raporty-finansowe/
+    landing_folders:
+    - pko_bp
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
+    manifest_kind: null
+    docs_url: https://www.pkobp.pl/relacje-inwestorskie/raporty-finansowe/
+    default_status: not_started
+  - source_key: gpw_sa
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: Giełda Papierów Wartościowych w Warszawie S.A.
+    institution: Giełda Papierów Wartościowych w Warszawie S.A.
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.gpw.pl/relacje-inwestorskie
+    endpoints:
+    - https://www.gpw.pl/raporty-okresowe — financial/periodic reports
+    scope: finance/exchange — financial & periodic reports
+    description: Giełda Papierów Wartościowych w Warszawie S.A. — state-owned company (Skarb Państwa, wykaz spółek SP). finance/exchange. Publishes investor-relations / operational data.
+    extraction_logic: TO BUILD — scrape reports/data files from the IR/data page.
+    landing_layout: gpw_sa/
+    verification: Compare with https://www.gpw.pl/raporty-okresowe
+    landing_folders:
+    - gpw_sa
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
+    manifest_kind: null
+    docs_url: https://www.gpw.pl/raporty-okresowe
+    default_status: not_started
+  - source_key: pse
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: Polskie Sieci Elektroenergetyczne S.A.
+    institution: Polskie Sieci Elektroenergetyczne S.A.
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.pse.pl/dane-systemowe
+    endpoints:
+    - https://www.pse.pl/dane-systemowe — financial/periodic reports + operational data
+    scope: energy/grid — financial & periodic reports; operational/system data
+    description: Polskie Sieci Elektroenergetyczne S.A. — state-owned company (Skarb Państwa, wykaz spółek SP). energy/grid. Publishes investor-relations / operational data.
+    extraction_logic: TO BUILD — scrape reports/data files from the IR/data page.
+    landing_layout: pse/
+    verification: Compare with https://www.pse.pl/dane-systemowe
+    landing_folders:
+    - pse
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
+    manifest_kind: null
+    docs_url: https://www.pse.pl/dane-systemowe
+    default_status: not_started
+  - source_key: gaz_system
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: Operator Gazociągów Przesyłowych Gaz-System S.A.
+    institution: Operator Gazociągów Przesyłowych Gaz-System S.A.
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.gaz-system.pl/
+    endpoints:
+    - https://www.gaz-system.pl/pl/dla-mediow/raporty.html — financial/periodic reports
+    scope: fuel/gas — financial & periodic reports
+    description: Operator Gazociągów Przesyłowych Gaz-System S.A. — state-owned company (Skarb Państwa, wykaz spółek SP). fuel/gas. Publishes investor-relations / operational data.
+    extraction_logic: TO BUILD — scrape reports/data files from the IR/data page.
+    landing_layout: gaz_system/
+    verification: Compare with https://www.gaz-system.pl/pl/dla-mediow/raporty.html
+    landing_folders:
+    - gaz_system
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
+    manifest_kind: null
+    docs_url: https://www.gaz-system.pl/pl/dla-mediow/raporty.html
+    default_status: not_started
+  - source_key: pern
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: PERN S.A.
+    institution: PERN S.A.
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.pern.pl/
+    endpoints:
+    - https://www.pern.pl/ — financial/periodic reports
+    scope: fuel/gas — financial & periodic reports
+    description: PERN S.A. — state-owned company (Skarb Państwa, wykaz spółek SP). fuel/gas. Publishes investor-relations / operational data.
+    extraction_logic: TO BUILD — scrape reports/data files from the IR/data page.
+    landing_layout: pern/
+    verification: Compare with https://www.pern.pl/
+    landing_folders:
+    - pern
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
+    manifest_kind: null
+    docs_url: https://www.pern.pl/
+    default_status: not_started
+  - source_key: arp
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: Agencja Rozwoju Przemysłu S.A.
+    institution: Agencja Rozwoju Przemysłu S.A.
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.arp.pl/
+    endpoints:
+    - https://www.arp.pl/ — financial/periodic reports
+    scope: finance/development — financial & periodic reports
+    description: Agencja Rozwoju Przemysłu S.A. — state-owned company (Skarb Państwa, wykaz spółek SP). finance/development. Publishes investor-relations / operational data.
+    extraction_logic: TO BUILD — scrape reports/data files from the IR/data page.
+    landing_layout: arp/
+    verification: Compare with https://www.arp.pl/
+    landing_folders:
+    - arp
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
+    manifest_kind: null
+    docs_url: https://www.arp.pl/
+    default_status: not_started
+  - source_key: pgz
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: Polska Grupa Zbrojeniowa S.A.
+    institution: Polska Grupa Zbrojeniowa S.A.
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://pgzsa.pl/
+    endpoints:
+    - https://pgzsa.pl/ — financial/periodic reports
+    scope: defense — financial & periodic reports
+    description: Polska Grupa Zbrojeniowa S.A. — state-owned company (Skarb Państwa, wykaz spółek SP). defense. Publishes investor-relations / operational data.
+    extraction_logic: TO BUILD — scrape reports/data files from the IR/data page.
+    landing_layout: pgz/
+    verification: Compare with https://pgzsa.pl/
+    landing_folders:
+    - pgz
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
+    manifest_kind: null
+    docs_url: https://pgzsa.pl/
+    default_status: not_started
+  - source_key: pkp_plk
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: PKP Polskie Linie Kolejowe S.A.
+    institution: PKP Polskie Linie Kolejowe S.A.
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.plk-sa.pl/
+    endpoints:
+    - https://www.plk-sa.pl/dla-klientow-i-kontrahentow — financial/periodic reports + operational data
+    scope: transport/rail — financial & periodic reports
+    description: PKP Polskie Linie Kolejowe S.A. — state-owned company (Skarb Państwa, wykaz spółek SP). transport/rail. Publishes investor-relations / operational data.
+    extraction_logic: TO BUILD — scrape reports/data files from the IR/data page.
+    landing_layout: pkp_plk/
+    verification: Compare with https://www.plk-sa.pl/dla-klientow-i-kontrahentow
+    landing_folders:
+    - pkp_plk
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
+    manifest_kind: null
+    docs_url: https://www.plk-sa.pl/dla-klientow-i-kontrahentow
+    default_status: not_started
+  - source_key: poczta_polska
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: Poczta Polska S.A.
+    institution: Poczta Polska S.A.
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.poczta-polska.pl/
+    endpoints:
+    - https://www.poczta-polska.pl/o-firmie/ — financial/periodic reports
+    scope: post — financial & periodic reports
+    description: Poczta Polska S.A. — state-owned company (Skarb Państwa, wykaz spółek SP). post. Publishes investor-relations / operational data.
+    extraction_logic: TO BUILD — scrape reports/data files from the IR/data page.
+    landing_layout: poczta_polska/
+    verification: Compare with https://www.poczta-polska.pl/o-firmie/
+    landing_folders:
+    - poczta_polska
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
+    manifest_kind: null
+    docs_url: https://www.poczta-polska.pl/o-firmie/
+    default_status: not_started
+  - source_key: pej
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: Polskie Elektrownie Jądrowe Sp. z o.o.
+    institution: Polskie Elektrownie Jądrowe Sp. z o.o.
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.ppej.pl/
+    endpoints:
+    - https://www.ppej.pl/ — financial/periodic reports
+    scope: energy/nuclear — financial & periodic reports
+    description: Polskie Elektrownie Jądrowe Sp. z o.o. — state-owned company (Skarb Państwa, wykaz spółek SP). energy/nuclear. Publishes investor-relations / operational data.
+    extraction_logic: TO BUILD — scrape reports/data files from the IR/data page.
+    landing_layout: pej/
+    verification: Compare with https://www.ppej.pl/
+    landing_folders:
+    - pej
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
+    manifest_kind: null
+    docs_url: https://www.ppej.pl/
+    default_status: not_started

@@ -8,6 +8,10 @@ sources:
   arimr_geo:
     pages:
     - https://www.gov.pl/web/arimr/arimr-otwiera-dane-przestrzenne-ze-swoich-zasobow
+  arp:
+    pages:
+    - https://www.arp.pl/
+    - https://www.arp.pl/
   bank_gospodarstwa_krajowego:
     pages:
     - https://www.bgk.pl/
@@ -41,9 +45,25 @@ sources:
   centrum_lukasiewicz:
     pages:
     - https://lukasiewicz.gov.pl/
+  enea:
+    pages:
+    - https://ir.enea.pl/raporty-okresowe
+    - https://ir.enea.pl/
   farmaceutyczny:
     pages:
     - https://www.gov.pl/web/gif
+  gaz_system:
+    pages:
+    - https://www.gaz-system.pl/pl/dla-mediow/raporty.html
+    - https://www.gaz-system.pl/
+  gpw_sa:
+    pages:
+    - https://www.gpw.pl/raporty-okresowe
+    - https://www.gpw.pl/relacje-inwestorskie
+  grupa_azoty:
+    pages:
+    - https://grupaazoty.com/relacje-inwestorskie/raporty-okresowe
+    - https://grupaazoty.com/relacje-inwestorskie
   gunb_rwdz:
     pages:
     - https://wyszukiwarka.gunb.gov.pl/pobranie.html
@@ -74,6 +94,14 @@ sources:
   instytut_pamieci_narodowej:
     pages:
     - https://ipn.gov.pl/pl/
+  jsw:
+    pages:
+    - https://www.jsw.pl/relacje-inwestorskie/raporty-okresowe
+    - https://www.jsw.pl/relacje-inwestorskie
+  kghm:
+    pages:
+    - https://kghm.com/pl/inwestorzy/raporty-okresowe
+    - https://kghm.com/pl/inwestorzy
   krajowa_informacja_skarbowa:
     pages:
     - https://www.kis.gov.pl
@@ -110,6 +138,10 @@ sources:
   narodowy_instytut_konserwacj:
     pages:
     - https://nikz.pl/
+  orlen:
+    pages:
+    - https://www.orlen.pl/pl/relacje-inwestorskie/raporty-i-publikacje
+    - https://www.orlen.pl/pl/relacje-inwestorskie
   panstwowa_agencja_atomistyki:
     pages:
     - https://www.gov.pl/web/paa/panstwowa-agencja-atomistyki
@@ -122,13 +154,41 @@ sources:
   panstwowa_inspekcja_pracy:
     pages:
     - https://www.pip.gov.pl/sprawozdania-z-dzialalnosci-pip
+  pej:
+    pages:
+    - https://www.ppej.pl/
+    - https://www.ppej.pl/
+  pern:
+    pages:
+    - https://www.pern.pl/
+    - https://www.pern.pl/
   pfr:
     pages:
     - https://pfrsa.pl/relacje-inwestorskie/raporty-gieldowe/raporty-biezace.html
     - https://pfr.pl/ppk
+  pge:
+    pages:
+    - https://www.gkpge.pl/relacje-inwestorskie/raporty/raporty-okresowe
+    - https://www.gkpge.pl/relacje-inwestorskie
+  pgz:
+    pages:
+    - https://pgzsa.pl/
+    - https://pgzsa.pl/
+  pko_bp:
+    pages:
+    - https://www.pkobp.pl/relacje-inwestorskie/raporty-finansowe/
+    - https://www.pkobp.pl/relacje-inwestorskie/
+  pkp_plk:
+    pages:
+    - https://www.plk-sa.pl/dla-klientow-i-kontrahentow
+    - https://www.plk-sa.pl/
   pkw_elections:
     pages:
     - https://wybory.gov.pl/
+  poczta_polska:
+    pages:
+    - https://www.poczta-polska.pl/o-firmie/
+    - https://www.poczta-polska.pl/
   police_stats:
     pages:
     - https://statystyka.policja.pl/
@@ -150,9 +210,17 @@ sources:
   prokuratura_krajowa:
     pages:
     - https://www.gov.pl/web/prokuratura-krajowa
+  pse:
+    pages:
+    - https://www.pse.pl/dane-systemowe
+    - https://www.pse.pl/dane-systemowe
   psz_labour:
     pages:
     - https://psz.praca.gov.pl/rynek-pracy/statystyki-i-analizy/bezrobocie-rejestrowane
+  pzu:
+    pages:
+    - https://www.pzu.pl/relacje-inwestorskie/raporty-i-publikacje
+    - https://www.pzu.pl/relacje-inwestorskie
   rada_doskonalosci_naukowej:
     pages:
     - https://www.rdn.gov.pl
@@ -168,6 +236,10 @@ sources:
   szef_sluzby_cywilnej:
     pages:
     - https://www.gov.pl/web/sluzbacywilna/szef-sluzby-cywilnej
+  tauron:
+    pages:
+    - https://raport.tauron.pl/
+    - https://www.tauron.pl/tauron/relacje-inwestorskie
   trybunal_konstytucyjny:
     pages:
     - https://trybunal.gov.pl/
@@ -195,3 +267,7 @@ sources:
   utk_stats:
     pages:
     - https://dane.utk.gov.pl/sts/analizy-i-opracowania
+  weglokoks:
+    pages:
+    - https://www.weglokoks.com.pl/
+    - https://www.weglokoks.com.pl/
