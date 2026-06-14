@@ -4177,3 +4177,48 @@ sources:
     manifest_kind: null
     docs_url: https://cenatorium.pl/
     default_status: blocked
+
+  # ── Category c, by domain: TRADE / E-COMMERCE (G) & MEDIA (J/R) ───────────
+  - source_key: ceneo
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "Ceneo — price-comparison marketplace"
+    institution: "Ceneo.pl sp. z o.o."
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.ceneo.pl/
+    endpoints: ["26M+ product offers & prices across merchants (HTML; partner API for sellers)"]
+    scope: "Consumer product prices across merchants — retail price-level signal."
+    description: "Major PL price-comparison platform (private). Commercial ToS; scraping restricted — context/price-index use, needs review."
+    extraction_logic: "BLOCKED pending ToS review — scraping restricted; partner API is seller-side."
+    landing_layout: "ceneo/"
+    verification: "https://www.ceneo.pl/"
+    landing_folders: [ceneo]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.ceneo.pl/
+    default_status: blocked
+
+  - source_key: nielsen_audience
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "Nielsen — TV/video audience measurement (PL)"
+    institution: "Nielsen (AGB)"
+    type: reports
+    auth: key_required
+    rate_limit: null
+    base_url: https://www.nielsen.com/pl/data-center/
+    endpoints: ["TV + multi-screen audience measurement — commercial/paid subscription"]
+    scope: "Audience/viewership data — the PL media-market currency. PAID."
+    description: "Sole PL telemetry provider — PAID commercial data. Listed for completeness; needs a subscription (PO decision)."
+    extraction_logic: "BLOCKED — paid commercial subscription required."
+    landing_layout: "nielsen_audience/"
+    verification: "https://www.nielsen.com/pl/data-center/"
+    landing_folders: [nielsen_audience]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.nielsen.com/pl/data-center/
+    default_status: blocked
