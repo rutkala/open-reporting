@@ -736,8 +736,8 @@ sources:
       investing in browser automation.
     verification: "Browse https://bdm.stat.gov.pl manually; check if needed series already exist in BDL/DBW."
     landing_folders: []
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://bdm.stat.gov.pl
     default_status: blocked
@@ -757,8 +757,8 @@ sources:
     extraction_logic: "BLOCKED: JS SPA, content not accessible without browser rendering."
     verification: "Browse https://bdp.stat.gov.pl manually."
     landing_folders: []
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://bdp.stat.gov.pl
     default_status: blocked
@@ -785,8 +785,8 @@ sources:
       (same pattern that unblocked DBW).
     verification: "Open https://strateg.stat.gov.pl/apidocs/ in a browser and capture the spec URL."
     landing_folders: []
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://strateg.stat.gov.pl/apidocs/
     default_status: blocked
@@ -813,8 +813,8 @@ sources:
       Swagger UI JS-only. Same unblock path as STRATEG.
     verification: "Open https://api.smup.gov.pl/apidocs/index.html in a browser and capture the spec URL."
     landing_folders: []
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://api.smup.gov.pl/apidocs/index.html
     default_status: blocked
@@ -834,8 +834,8 @@ sources:
     extraction_logic: "BLOCKED: portal returns HTTP 500; API paths unknown; GUS marks the series experimental."
     verification: "Check if https://transtat.stat.gov.pl is back up."
     landing_folders: []
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://api-transtat.stat.gov.pl/apidocs/index.html
     default_status: blocked
@@ -858,8 +858,8 @@ sources:
     extraction_logic: "NOT STARTED: key requires email to regon_bir@stat.gov.pl (PO action). Enrichment use case only."
     verification: "n/a until ingested"
     landing_folders: []
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://api.stat.gov.pl/Home/RegonApi
     default_status: not_started
@@ -879,8 +879,8 @@ sources:
     extraction_logic: "NOT STARTED: low priority — publication metadata, no statistical observations."
     verification: "n/a until ingested"
     landing_folders: []
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://api.stat.gov.pl/Home/SDPApi
     default_status: not_started
@@ -985,8 +985,8 @@ sources:
     extraction_logic: "NOT STARTED."
     verification: "n/a until ingested"
     landing_folders: []
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/intl_extractor.py
     manifest_kind: null
     docs_url: https://data-explorer.oecd.org
     default_status: not_started
@@ -1073,8 +1073,8 @@ sources:
     extraction_logic: "NOT STARTED."
     verification: "n/a until ingested"
     landing_folders: []
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/intl_extractor.py
     manifest_kind: null
     docs_url: https://data.imf.org
     default_status: not_started
@@ -1125,8 +1125,8 @@ sources:
     extraction_logic: "NOT STARTED."
     verification: "n/a until ingested"
     landing_folders: []
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/intl_extractor.py
     manifest_kind: null
     docs_url: https://ilostat.ilo.org/data/
     default_status: not_started
@@ -1147,8 +1147,8 @@ sources:
     extraction_logic: "NOT STARTED — biennial static download."
     verification: "n/a until ingested"
     landing_folders: []
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/intl_extractor.py
     manifest_kind: null
     docs_url: https://population.un.org/wpp/
     default_status: not_started
@@ -1169,8 +1169,8 @@ sources:
     extraction_logic: "NOT STARTED — lower priority."
     verification: "n/a until ingested"
     landing_folders: []
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/intl_extractor.py
     manifest_kind: null
     docs_url: https://www.fao.org/faostat/en/#data
     default_status: not_started
@@ -1220,8 +1220,8 @@ sources:
       are better documented; use UNdata only for gaps.
     verification: "n/a until ingested"
     landing_folders: []
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/intl_extractor.py
     manifest_kind: null
     docs_url: https://data.un.org
     default_status: not_started
@@ -1400,8 +1400,8 @@ sources:
     landing_layout: "arimr_geo/{layer}.{gml|json}"
     verification: "Compare with https://geoportal.arimr.gov.pl/"
     landing_folders: [arimr_geo]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.gov.pl/web/arimr/arimr-otwiera-dane-przestrzenne-ze-swoich-zasobow
     default_status: not_started
@@ -1452,8 +1452,8 @@ sources:
     landing_layout: "uke_broadband/{dataset}.{csv|json}"
     verification: "Compare with https://mapbook.uke.gov.pl/areas/info"
     landing_folders: [uke_broadband]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://dane.gov.pl/pl/institution/10
     default_status: not_started
@@ -1479,8 +1479,8 @@ sources:
     landing_layout: "gunb_rwdz/rwdz_{date}.{csv|zip}"
     verification: "Compare with https://wyszukiwarka.gunb.gov.pl/"
     landing_folders: [gunb_rwdz]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.gunb.gov.pl/strona/dla-integratorow
     default_status: not_started
@@ -1531,8 +1531,8 @@ sources:
     landing_layout: "bfg_data/{dataset}.{csv|xlsx}"
     verification: "Compare with https://dane.bfg.pl/"
     landing_folders: [bfg_data]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://dane.bfg.pl/
     default_status: not_started
@@ -1557,8 +1557,8 @@ sources:
     landing_layout: "bn_data/{database}.{marcxml|json}"
     verification: "Compare record counts with https://data.bn.org.pl/databases"
     landing_folders: [bn_data]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://data.bn.org.pl/docs/bibs
     default_status: not_started
@@ -1608,8 +1608,8 @@ sources:
     landing_layout: "police_stats/{category}.csv"
     verification: "Compare with https://statystyka.policja.pl/st/wybrane-statystyki"
     landing_folders: [police_stats]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://statystyka.policja.pl/
     default_status: not_started
@@ -1633,8 +1633,8 @@ sources:
     landing_layout: "pkw_elections/{election}/{file}.csv"
     verification: "Compare with https://wybory.gov.pl/ per-election results."
     landing_folders: [pkw_elections]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://pkw.gov.pl/
     default_status: not_started
@@ -1708,8 +1708,8 @@ sources:
     landing_layout: "utk_stats/{dataset}.csv"
     verification: "Compare with https://dane.utk.gov.pl/"
     landing_folders: [utk_stats]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://dane.gov.pl/pl/institution/21
     default_status: not_started
@@ -1731,8 +1731,8 @@ sources:
     landing_layout: "udsc_migration/{year}.{csv|xlsx}"
     verification: "Compare with https://udsc.gov.pl/statystyki/"
     landing_folders: [udsc_migration]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://migracje.gov.pl/
     default_status: not_started
@@ -1754,8 +1754,8 @@ sources:
     landing_layout: "urpl_rpl/rpl_{date}.csv"
     verification: "Compare with https://rejestrymedyczne.ezdrowie.gov.pl/rpl/search"
     landing_folders: [urpl_rpl]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://rejestrymedyczne.ezdrowie.gov.pl/
     default_status: not_started
@@ -1809,8 +1809,8 @@ sources:
     landing_layout: "rpwdl/{register}.{csv|xml}"
     verification: "Compare with https://rpwdl.ezdrowie.gov.pl/"
     landing_folders: [rpwdl]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://cez.gov.pl/pl/page/rejestr-podmiotow-wykonujacych-dzialalnosc-leczniczа-20
     default_status: not_started
@@ -1875,8 +1875,8 @@ sources:
     landing_layout: "psz_labour/{period}.csv"
     verification: "Compare with https://psz.praca.gov.pl/rynek-pracy/statystyki-i-analizy"
     landing_folders: [psz_labour]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://psz.praca.gov.pl/rynek-pracy/bazy-danych
     default_status: not_started
@@ -1897,8 +1897,8 @@ sources:
     landing_layout: "mrips_social/{report}.csv"
     verification: "Compare with https://empatia.mpips.gov.pl/-/statystyki-pomocy-spolecznej"
     landing_folders: [mrips_social]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.gov.pl/web/rodzina/statystyki-pomocy-spolecznej
     default_status: not_started
@@ -1922,8 +1922,8 @@ sources:
     verification: See https://www.aan.gov.pl/
     landing_folders:
     - archiwum_akt_nowych
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.aan.gov.pl/
     default_status: not_started
@@ -1945,8 +1945,8 @@ sources:
     verification: See https://agad.gov.pl/
     landing_folders:
     - archiwum_glowne_akt
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://agad.gov.pl/
     default_status: not_started
@@ -1968,8 +1968,8 @@ sources:
     verification: See https://www.bgk.pl/
     landing_folders:
     - bank_gospodarstwa_krajowego
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.bgk.pl/
     default_status: not_started
@@ -2014,8 +2014,8 @@ sources:
     verification: See https://www.pka.edu.pl
     landing_folders:
     - biuro_komisji_akredytacyjnej
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.pka.edu.pl
     default_status: not_started
@@ -2037,8 +2037,8 @@ sources:
     verification: n/a
     landing_folders:
     - biuro_rady_fiskalnej
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: null
     default_status: not_started
@@ -2060,8 +2060,8 @@ sources:
     verification: See https://www.brpd.gov.pl
     landing_folders:
     - biuro_rzecznika_praw
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.brpd.gov.pl
     default_status: not_started
@@ -2083,8 +2083,8 @@ sources:
     verification: See https://www.rpo.gov.pl/
     landing_folders:
     - biuro_rzecznika_praw_2
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.rpo.gov.pl/
     default_status: not_started
@@ -2106,8 +2106,8 @@ sources:
     verification: See https://cke.gov.pl/
     landing_folders:
     - centralna_egzaminacyjna
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://cke.gov.pl/
     default_status: not_started
@@ -2129,8 +2129,8 @@ sources:
     verification: See https://www.sw.gov.pl
     landing_folders:
     - centralny_zarzad_sluzby
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.sw.gov.pl
     default_status: not_started
@@ -2152,8 +2152,8 @@ sources:
     verification: See https://www.cdr.gov.pl
     landing_folders:
     - centrum_doradztwa_rolniczego
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.cdr.gov.pl
     default_status: not_started
@@ -2198,8 +2198,8 @@ sources:
     verification: See https://lukasiewicz.gov.pl/
     landing_folders:
     - centrum_lukasiewicz
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://lukasiewicz.gov.pl/
     default_status: not_started
@@ -2221,8 +2221,8 @@ sources:
     verification: See https://www.gov.pl/web/gif
     landing_folders:
     - farmaceutyczny
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.gov.pl/web/gif
     default_status: not_started
@@ -2290,8 +2290,8 @@ sources:
     verification: See https://www.gov.pl/web/girm
     landing_folders:
     - rybolowstwa_morskiego
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.gov.pl/web/girm
     default_status: not_started
@@ -2336,8 +2336,8 @@ sources:
     verification: See https://www.wetgiw.gov.pl
     landing_folders:
     - inspekcja_weterynaryjna_wete
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.wetgiw.gov.pl
     default_status: not_started
@@ -2359,8 +2359,8 @@ sources:
     verification: See https://ipn.gov.pl/pl/
     landing_folders:
     - instytut_pamieci_narodowej
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://ipn.gov.pl/pl/
     default_status: not_started
@@ -2474,8 +2474,8 @@ sources:
     verification: See https://www.kis.gov.pl
     landing_folders:
     - krajowa_informacja_skarbowa
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.kis.gov.pl
     default_status: not_started
@@ -2497,8 +2497,8 @@ sources:
     verification: See https://www.gov.pl/web/krrit
     landing_folders:
     - krajowa_rada_radiofonii
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.gov.pl/web/krrit
     default_status: not_started
@@ -2520,8 +2520,8 @@ sources:
     verification: See https://krs.pl/pl/
     landing_folders:
     - krajowa_rada_sadownictwa
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://krs.pl/pl/
     default_status: not_started
@@ -2543,8 +2543,8 @@ sources:
     verification: See https://schr.gov.pl/index.php
     landing_folders:
     - krajowa_stacja_chemiczno
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://schr.gov.pl/index.php
     default_status: not_started
@@ -2566,8 +2566,8 @@ sources:
     verification: See https://www.gov.pl/web/kzn
     landing_folders:
     - krajowy_zasob_nieruchomosci
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.gov.pl/web/kzn
     default_status: not_started
@@ -2612,8 +2612,8 @@ sources:
     verification: See https://www.archiwa.gov.pl/pl/
     landing_folders:
     - naczelna_dyrekcja_archiwow
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.archiwa.gov.pl/pl/
     default_status: not_started
@@ -2635,8 +2635,8 @@ sources:
     verification: See https://www.nsa.gov.pl
     landing_folders:
     - naczelny_sad_administracyjny
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.nsa.gov.pl
     default_status: not_started
@@ -2658,8 +2658,8 @@ sources:
     verification: See https://www.nik.gov.pl
     landing_folders:
     - najwyzsza_izba_kontroli
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.nik.gov.pl
     default_status: not_started
@@ -2704,8 +2704,8 @@ sources:
     verification: See https://www.nac.gov.pl/
     landing_folders:
     - narodowe_archiwum_cyfrowe
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.nac.gov.pl/
     default_status: not_started
@@ -2727,8 +2727,8 @@ sources:
     verification: See https://www.ncn.gov.pl
     landing_folders:
     - narodowe_centrum_nauki
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.ncn.gov.pl
     default_status: not_started
@@ -2750,8 +2750,8 @@ sources:
     verification: n/a
     landing_folders:
     - narodowy_instytut_konserwacj
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: null
     default_status: not_started
@@ -2773,8 +2773,8 @@ sources:
     verification: See https://www.gov.pl/web/paa/panstwowa-agencja-atomistyki
     landing_folders:
     - panstwowa_agencja_atomistyki
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.gov.pl/web/paa/panstwowa-agencja-atomistyki
     default_status: not_started
@@ -2796,8 +2796,8 @@ sources:
     verification: See https://www.parpa.pl
     landing_folders:
     - panstwowa_agencja_rozwiazywa
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.parpa.pl
     default_status: not_started
@@ -2819,8 +2819,8 @@ sources:
     verification: See https://www.pip.gov.pl
     landing_folders:
     - panstwowa_inspekcja_pracy
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.pip.gov.pl
     default_status: not_started
@@ -2842,8 +2842,8 @@ sources:
     verification: See https://www.gov.pl/web/finanse/komisja-egzaminacyjna-doradca-podatkowy
     landing_folders:
     - panstwowa_egzaminacyjna_dora
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.gov.pl/web/finanse/komisja-egzaminacyjna-doradca-podatkowy
     default_status: not_started
@@ -2888,8 +2888,8 @@ sources:
     verification: See https://www.antydoping.pl
     landing_folders:
     - polska_agencja_antydopingowa
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.antydoping.pl
     default_status: not_started
@@ -2911,8 +2911,8 @@ sources:
     verification: See https://www.paih.gov.pl/
     landing_folders:
     - polska_agencja_inwestycji
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.paih.gov.pl/
     default_status: not_started
@@ -2980,8 +2980,8 @@ sources:
     verification: See https://www.pan.pl
     landing_folders:
     - polska_akademia_nauk
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.pan.pl
     default_status: not_started
@@ -3003,8 +3003,8 @@ sources:
     verification: See https://www.piib.org.pl
     landing_folders:
     - polska_izba_inzynierow
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.piib.org.pl
     default_status: not_started
@@ -3026,8 +3026,8 @@ sources:
     verification: See https://www.pot.gov.pl
     landing_folders:
     - polska_organizacja_turystycz
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.pot.gov.pl
     default_status: not_started
@@ -3072,8 +3072,8 @@ sources:
     verification: See https://www.gov.pl/web/prokuratura-krajowa
     landing_folders:
     - prokuratura_krajowa
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.gov.pl/web/prokuratura-krajowa
     default_status: not_started
@@ -3095,8 +3095,8 @@ sources:
     verification: See https://www.rdn.gov.pl
     landing_folders:
     - rada_doskonalosci_naukowej
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.rdn.gov.pl
     default_status: not_started
@@ -3164,8 +3164,8 @@ sources:
     verification: n/a
     landing_folders:
     - specjalistyczny_urzad_gornic
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: null
     default_status: not_started
@@ -3187,8 +3187,8 @@ sources:
     verification: See https://www.gov.pl/web/sluzbacywilna/szef-sluzby-cywilnej
     landing_folders:
     - szef_sluzby_cywilnej
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.gov.pl/web/sluzbacywilna/szef-sluzby-cywilnej
     default_status: not_started
@@ -3210,8 +3210,8 @@ sources:
     verification: See https://www.sn.pl
     landing_folders:
     - sad_najwyzszy
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.sn.pl
     default_status: not_started
@@ -3256,8 +3256,8 @@ sources:
     verification: See https://trybunal.gov.pl/
     landing_folders:
     - trybunal_konstytucyjny
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://trybunal.gov.pl/
     default_status: not_started
@@ -3279,8 +3279,8 @@ sources:
     verification: See https://www.udt.gov.pl
     landing_folders:
     - urzad_dozoru_technicznego
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.udt.gov.pl
     default_status: not_started
@@ -3325,8 +3325,8 @@ sources:
     verification: See https://uodo.gov.pl/pl
     landing_folders:
     - urzad_ochrony_danych
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://uodo.gov.pl/pl
     default_status: not_started
@@ -3371,8 +3371,8 @@ sources:
     verification: See https://uprp.gov.pl/pl
     landing_folders:
     - urzad_patentowy
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://uprp.gov.pl/pl
     default_status: not_started
@@ -3394,8 +3394,8 @@ sources:
     verification: n/a
     landing_folders:
     - urzad_panstwowej_komisji
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: null
     default_status: not_started

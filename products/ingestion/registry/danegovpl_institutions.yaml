@@ -31,3 +31,4 @@ sources:
   rzecznik_finansowy:           {institution_id: 113}
   rzadowe_centrum_bezpieczenst: {institution_id: 91}    # RCB
   kancelaria_senatu:            {institution_id: 344}
+  rpwdl: {institution_id: 51}    # Centrum e-Zdrowia (RPWDL)

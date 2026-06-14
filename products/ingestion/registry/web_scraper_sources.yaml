@@ -1,0 +1,193 @@
+sources:
+  archiwum_akt_nowych:
+    pages:
+    - https://www.aan.gov.pl/
+  archiwum_glowne_akt:
+    pages:
+    - https://agad.gov.pl/
+  arimr_geo:
+    pages:
+    - https://www.gov.pl/web/arimr/arimr-otwiera-dane-przestrzenne-ze-swoich-zasobow
+  bank_gospodarstwa_krajowego:
+    pages:
+    - https://www.bgk.pl/
+  bfg_data:
+    pages:
+    - https://dane.bfg.pl/
+  biuro_komisji_akredytacyjnej:
+    pages:
+    - https://www.pka.edu.pl
+  biuro_rady_fiskalnej:
+    pages:
+    - https://www.gov.pl/web/finanse
+  biuro_rzecznika_praw:
+    pages:
+    - https://www.brpd.gov.pl
+  biuro_rzecznika_praw_2:
+    pages:
+    - https://www.rpo.gov.pl/
+  bn_data:
+    pages:
+    - https://data.bn.org.pl/databases
+  centralna_egzaminacyjna:
+    pages:
+    - https://cke.gov.pl/
+  centralny_zarzad_sluzby:
+    pages:
+    - https://www.sw.gov.pl
+  centrum_doradztwa_rolniczego:
+    pages:
+    - https://www.cdr.gov.pl
+  centrum_lukasiewicz:
+    pages:
+    - https://lukasiewicz.gov.pl/
+  farmaceutyczny:
+    pages:
+    - https://www.gov.pl/web/gif
+  gunb_rwdz:
+    pages:
+    - https://wyszukiwarka.gunb.gov.pl/pobranie.html
+  gus_bdm:
+    pages:
+    - https://bdm.stat.gov.pl
+  gus_bdp:
+    pages:
+    - https://bdp.stat.gov.pl
+  gus_regon:
+    pages:
+    - https://api.stat.gov.pl/Home/RegonApi
+  gus_sdp:
+    pages:
+    - https://api.stat.gov.pl/Home/SDPApi
+  gus_smup:
+    pages:
+    - https://api.smup.gov.pl
+  gus_strateg:
+    pages:
+    - https://strateg.stat.gov.pl
+  gus_transtat:
+    pages:
+    - https://api-transtat.stat.gov.pl
+  inspekcja_weterynaryjna_wete:
+    pages:
+    - https://www.wetgiw.gov.pl
+  instytut_pamieci_narodowej:
+    pages:
+    - https://ipn.gov.pl/pl/
+  krajowa_informacja_skarbowa:
+    pages:
+    - https://www.kis.gov.pl
+  krajowa_rada_radiofonii:
+    pages:
+    - https://www.gov.pl/web/krrit
+  krajowa_rada_sadownictwa:
+    pages:
+    - https://krs.pl/pl/
+  krajowa_stacja_chemiczno:
+    pages:
+    - https://schr.gov.pl/index.php
+  krajowy_zasob_nieruchomosci:
+    pages:
+    - https://www.gov.pl/web/kzn
+  mrips_social:
+    pages:
+    - https://www.gov.pl/web/rodzina/statystyki-pomocy-spolecznej
+  naczelna_dyrekcja_archiwow:
+    pages:
+    - https://www.archiwa.gov.pl/pl/
+  naczelny_sad_administracyjny:
+    pages:
+    - https://www.nsa.gov.pl
+  najwyzsza_izba_kontroli:
+    pages:
+    - https://www.nik.gov.pl/kontrole/wyniki-kontroli-nik/
+  narodowe_archiwum_cyfrowe:
+    pages:
+    - https://www.nac.gov.pl/
+  narodowe_centrum_nauki:
+    pages:
+    - https://www.ncn.gov.pl
+  narodowy_instytut_konserwacj:
+    pages:
+    - https://nikz.pl/
+  panstwowa_agencja_atomistyki:
+    pages:
+    - https://www.gov.pl/web/paa/panstwowa-agencja-atomistyki
+  panstwowa_agencja_rozwiazywa:
+    pages:
+    - https://www.parpa.pl
+  panstwowa_egzaminacyjna_dora:
+    pages:
+    - https://www.gov.pl/web/finanse/komisja-egzaminacyjna-doradca-podatkowy
+  panstwowa_inspekcja_pracy:
+    pages:
+    - https://www.pip.gov.pl/sprawozdania-z-dzialalnosci-pip
+  pkw_elections:
+    pages:
+    - https://wybory.gov.pl/
+  police_stats:
+    pages:
+    - https://statystyka.policja.pl/
+  polska_agencja_antydopingowa:
+    pages:
+    - https://www.antydoping.pl
+  polska_agencja_inwestycji:
+    pages:
+    - https://www.paih.gov.pl/
+  polska_akademia_nauk:
+    pages:
+    - https://www.pan.pl
+  polska_izba_inzynierow:
+    pages:
+    - https://www.piib.org.pl
+  polska_organizacja_turystycz:
+    pages:
+    - https://www.pot.gov.pl
+  prokuratura_krajowa:
+    pages:
+    - https://www.gov.pl/web/prokuratura-krajowa
+  psz_labour:
+    pages:
+    - https://psz.praca.gov.pl/rynek-pracy/statystyki-i-analizy/bezrobocie-rejestrowane
+  rada_doskonalosci_naukowej:
+    pages:
+    - https://www.rdn.gov.pl
+  rybolowstwa_morskiego:
+    pages:
+    - https://www.gov.pl/web/girm
+  sad_najwyzszy:
+    pages:
+    - https://www.sn.pl
+  specjalistyczny_urzad_gornic:
+    pages:
+    - https://www.wug.gov.pl/
+  szef_sluzby_cywilnej:
+    pages:
+    - https://www.gov.pl/web/sluzbacywilna/szef-sluzby-cywilnej
+  trybunal_konstytucyjny:
+    pages:
+    - https://trybunal.gov.pl/
+  udsc_migration:
+    pages:
+    - https://migracje.gov.pl/
+  uke_broadband:
+    pages:
+    - https://dane.gov.pl/pl/institution/10
+  urpl_rpl:
+    pages:
+    - https://rejestrymedyczne.ezdrowie.gov.pl/rpl/search
+  urzad_dozoru_technicznego:
+    pages:
+    - https://www.udt.gov.pl
+  urzad_ochrony_danych:
+    pages:
+    - https://uodo.gov.pl/pl
+  urzad_panstwowej_komisji:
+    pages:
+    - https://pkdp.gov.pl/
+  urzad_patentowy:
+    pages:
+    - https://uprp.gov.pl/pl
+  utk_stats:
+    pages:
+    - https://dane.utk.gov.pl/sts/analizy-i-opracowania
