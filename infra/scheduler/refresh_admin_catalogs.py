@@ -33,6 +33,7 @@ STEPS = [
     ("landing",   SCHED_DIR / "generate_landing_status.py", 3300),
     ("duckdb",    SCHED_DIR / "generate_duckdb_catalog.py", 600),
     ("registry",  SCHED_DIR / "generate_source_registry.py", 600),
+    ("schedule",  SCHED_DIR / "generate_schedule.py", 120),
     ("plan",      SCHED_DIR / "generate_ingestion_plan.py", 600),
 ]
 

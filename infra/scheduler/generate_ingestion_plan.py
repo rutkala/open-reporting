@@ -91,6 +91,10 @@ def _load_json_safe(path: Path) -> "dict | None":
     except json.JSONDecodeError as exc:
         log.warning("JSON decode error in %s: %s", path, exc)
         return None
+    except OSError as exc:
+        # landing mount unavailable (Drive token expired) — degrade gracefully
+        log.warning("OSError reading %s: %s", path, exc)
+        return None
 
 
 def _scan_last_refresh(folder: Path) -> "str | None":
