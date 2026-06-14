@@ -1814,3 +1814,91 @@ sources:
     manifest_kind: null
     docs_url: https://cez.gov.pl/pl/page/rejestr-podmiotow-wykonujacych-dzialalnosc-leczniczа-20
     default_status: not_started
+
+  - source_key: rik_culture
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: "RIK — register of cultural institutions"
+    institution: "MKiDN"
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://dane.gov.pl/pl/dataset/2143
+    endpoints: ["Rejestr Instytucji Kultury — XLSX/CSV per organizer; dane.gov.pl 2143/2587"]
+    scope: "All cultural institutions (theatres, museums, cultural centres) per their organizer (~3,200 entities)."
+    description: "Registers of cultural institutions, aggregated on dane.gov.pl (MKiDN + each organizer's BIP)."
+    extraction_logic: "TO BUILD — mirror RIK XLSX/CSV from dane.gov.pl."
+    landing_layout: "rik_culture/{organizer}.csv"
+    verification: "Compare with https://dane.gov.pl/pl/dataset/2143"
+    landing_folders: [rik_culture]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.gov.pl/web/kultura/rejestr-instytucji-kultury-dla-ktorych-organizatorem-jest-mkidn
+    default_status: not_started
+
+  - source_key: isws_justice
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: "ISWS — justice-system statistics"
+    institution: "Ministerstwo Sprawiedliwości"
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://isws.ms.gov.pl/
+    endpoints: ["isws.ms.gov.pl statistical portal; dane.gov.pl dataset 625"]
+    scope: "Court caseloads, sentencing, justice-system indicators (all common courts + MS units)."
+    description: "Justice Statistics Information System — the aggregate stats for all courts/prosecutors."
+    extraction_logic: "TO BUILD — portal/dane.gov.pl exports."
+    landing_layout: "isws_justice/{dataset}.csv"
+    verification: "Compare with https://isws.ms.gov.pl/"
+    landing_folders: [isws_justice]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://dane.gov.pl/pl/dataset/625
+    default_status: not_started
+
+  - source_key: psz_labour
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: "PSZ — public employment services statistics"
+    institution: "MRiPS"
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://psz.praca.gov.pl/
+    endpoints: ["registered-unemployment stats (2001+, ZIP/PDF); registers of employment agencies & training institutions"]
+    scope: "Registered unemployment by region/month, all powiat labour offices; foreigner employment."
+    description: "Public Employment Services portal — the aggregate labour-market statistics for all urzędy pracy."
+    extraction_logic: "TO BUILD — mirror bezrobocie-rejestrowane ZIP/tabular exports."
+    landing_layout: "psz_labour/{period}.csv"
+    verification: "Compare with https://psz.praca.gov.pl/rynek-pracy/statystyki-i-analizy"
+    landing_folders: [psz_labour]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://psz.praca.gov.pl/rynek-pracy/bazy-danych
+    default_status: not_started
+
+  - source_key: mrips_social
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: "MRiPS / Empatia (CAS) — social-welfare statistics"
+    institution: "MRiPS"
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://empatia.mpips.gov.pl/
+    endpoints: ["Centralna Aplikacja Statystyczna (CAS) social-aid stats; gov.pl/web/rodzina/statystyki-pomocy-spolecznej"]
+    scope: "Social assistance, family benefits, foster care, maintenance fund — aggregated from all OPS/PCPR."
+    description: "Ministry of Family — CAS aggregates social-welfare reporting from all local welfare units."
+    extraction_logic: "TO BUILD — CAS/statistics exports."
+    landing_layout: "mrips_social/{report}.csv"
+    verification: "Compare with https://empatia.mpips.gov.pl/-/statystyki-pomocy-spolecznej"
+    landing_folders: [mrips_social]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.gov.pl/web/rodzina/statystyki-pomocy-spolecznej
+    default_status: not_started

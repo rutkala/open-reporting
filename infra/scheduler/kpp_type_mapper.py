@@ -33,7 +33,7 @@ RULES = [
      ("opi_radon_api", "OPI RAD-on science register")),
     (r"biblioteki", ("bn_data", "BN library reports + GUS stats")),
     (r"instytucje kultury|archiwa państwowe|zabytków|ogrody zoolog|park(?!i naukow)",
-     ("danegovpl", "culture/heritage registries; GUS; dane.gov.pl")),
+     ("rik_culture", "RIK culture register + GUS")),
     (r"samorząd|urzędy miast|starostwa|marszałkow|wojewódzk|dzielnic|metropolital|"
      r"związki gmin|związki powiat|jednostki wspólnej|usług komunaln|gospodarki mieszkan|"
      r"wodociąg|komunikacyjne|dróg(?! krajow)|energi|samorządowe jednost",
@@ -41,11 +41,11 @@ RULES = [
     (r"pomocy społ|opieki|wsparcia|pomocy rodzinie|przedsiębiorczości(?! parki)|"
      r"integracji społ|polityki społ|aktywności zawod|adopcyjn|pieczy zastęp|"
      r"niepełnospraw|domy pomocy|warsztaty terapii|preadopcyj|rodzinne|opiekuńczo",
-     ("danegovpl", "social-welfare — MRiPS / dane.gov.pl")),
-    (r"urzędy pracy|hufców pracy|ochotnicz", ("danegovpl", "labour offices — MRiPS / dane.gov.pl")),
+     ("mrips_social", "MRiPS CAS/Empatia social-welfare stats")),
+    (r"urzędy pracy|hufców pracy|ochotnicz", ("psz_labour", "PSZ public-employment-services stats")),
     (r"sąd|prokuratur|kuratorsk|sądowych specjal|komornicz|notarial|adwokack|radców|"
      r"biegłych rewident|arbitraż|morskie(?! ośrodki)|eppo|europejskie",
-     ("saos_api", "courts/prosecutors — SAOS + Min. Sprawiedliwości")),
+     ("isws_justice", "ISWS justice stats + SAOS judgments")),
     (r"polic|śledcze", ("police_stats", "Police — KGP statystyka.policja.pl")),
     (r"straży pożarn|straż.*ochrony przeciwpoż|straże miejsk|straży ryback",
      ("reports_only", "fire/municipal-guard statistics; central body")),
