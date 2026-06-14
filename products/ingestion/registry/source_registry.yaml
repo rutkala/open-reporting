@@ -1759,3 +1759,58 @@ sources:
     manifest_kind: null
     docs_url: https://rejestrymedyczne.ezdrowie.gov.pl/
     default_status: not_started
+
+  - source_key: rspo
+    category: a_pl_gov_central
+    ingestion_mode: api_full
+    name: "RSPO — register of schools & educational facilities"
+    institution: "Centrum Informatyki Edukacji (MEN)"
+    type: rest_api
+    auth: none
+    rate_limit: null
+    base_url: https://api.rspo.gov.pl/
+    endpoints:
+      - "REST API api.rspo.gov.pl; CSV download; dane.gov.pl dataset 839"
+    scope: >-
+      ALL ~40,000 Polish schools & educational facilities (public + private):
+      primary, kindergartens, secondary, art, vocational, etc. Daily-updated.
+      One register covering ~40k KPP entities (all education types).
+    description: >-
+      Register of Schools and Educational Facilities (SIO module) — the single
+      authoritative source for every school/placówka in Poland.
+    extraction_logic: "TO BUILD — REST API / CSV mirror (read access open; bulk API needs email request)."
+    landing_layout: "rspo/schools.csv"
+    verification: "Compare counts with https://rspo.gov.pl/zaawansowana"
+    landing_folders: [rspo]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://api.rspo.gov.pl/
+    default_status: not_started
+
+  - source_key: rpwdl
+    category: b_pl_gov_institutional
+    ingestion_mode: api_full
+    name: "RPWDL — register of healthcare providers"
+    institution: "Centrum e-Zdrowia"
+    type: rest_api
+    auth: none
+    rate_limit: null
+    base_url: https://rpwdl.ezdrowie.gov.pl/
+    endpoints:
+      - "public API + downloadable files — healthcare entities & professional practices"
+    scope: >-
+      ALL healthcare providers in Poland (~4,600 entities) + doctor/dentist/
+      nurse/midwife practices. One register covering all 'podmioty lecznicze'.
+    description: >-
+      Register of Entities Performing Medical Activity — run by Centrum
+      e-Zdrowia; public API + bulk downloads.
+    extraction_logic: "TO BUILD — public API / bulk file mirror."
+    landing_layout: "rpwdl/{register}.{csv|xml}"
+    verification: "Compare with https://rpwdl.ezdrowie.gov.pl/"
+    landing_folders: [rpwdl]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://cez.gov.pl/pl/page/rejestr-podmiotow-wykonujacych-dzialalnosc-leczniczа-20
+    default_status: not_started
