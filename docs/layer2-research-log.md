@@ -4,8 +4,8 @@ Exhaustive per-institution research (no category skipped). Each gets a
 documented own-data-channel result; dane.gov.pl status auto-cross-checked.
 Findings curated in `products/ingestion/registry/layer2_findings.yaml`.
 
-- **74 / 132 researched** to a definite own-channel result
-- ⬜ to research 34 · 🟡 dane.gov.pl 31 · ⚫ no open data 23 · 🟠 reports only 20 · 🟢 own bulk 9 · 🟢 own API 9 · 🟢 own WMS/WFS 6
+- **98 / 132 researched** to a definite own-channel result
+- 🟠 reports only 31 · ⚫ no open data 30 · 🟡 dane.gov.pl 22 · ⬜ to research 21 · 🟢 own bulk 11 · 🟢 own API 9 · 🟢 own WMS/WFS 8
 
 | Result | Institution | Source key | dane.gov.pl | Note | Site |
 |---|---|---|--:|---|---|
@@ -68,45 +68,45 @@ Findings curated in `products/ingestion/registry/layer2_findings.yaml`.
 | 🟡 dane.gov.pl | Kancelaria Prezesa Rady Ministrów |  | 21 | KPRM dane.gov.pl + RCL legislation | [↗](http://www.premier.gov.pl) |
 | 🟢 own API | Kancelaria Sejmu | sejm_api |  | api.sejm.gov.pl REST — MPs, votings, ELI legislation | [↗](http://sejm.gov.pl/sejm9.nsf/home.xsp) |
 | 🟢 own API | Kancelaria Senatu |  | 1 | senat.gov.pl data; modest — to assess | [↗](http://www.senat.gov.pl/kancelaria) |
+| 🟡 dane.gov.pl | Kasa Rolniczego Ubezpieczenia Społecznego |  | 3 | KRUS farmer-insurance stats; dane.gov.pl | [↗](http://www.gov.pl/web/krus) |
 | ⚫ no open data | Komenda Główna Ochotniczych Hufców Pracy |  | 4 | youth labour corps (OHP) | [↗](http://www.ohp.pl) |
 | 🟠 reports only | Komenda Główna Państwowej Straży Pożarnej |  | 20 | KG PSP fire/rescue statistics | [↗](http://www.gov.pl/web/kgpsp) |
 | 🟢 own bulk | Komenda Główna Policji | police_stats | 20 | statystyka.policja.pl crime stats | [↗](http://www.policja.pl) |
 | 🟠 reports only | Komenda Główna Straży Granicznej |  | 20 | border-guard statistics; dane.gov.pl | [↗](http://www.strazgraniczna.pl) |
 | 🟠 reports only | Krajowa Informacja Skarbowa |  |  | KIS EUREKA tax interpretations; no API | [↗](http://www.kis.gov.pl) |
+| ⚫ no open data | Krajowa Komisja Etyczna Do Spraw Doświadczeń Na Zwierzętach |  |  | animal-experiments ethics committee | [↗](http://www.gov.pl/web/nauka/krajowa-komisja-etyczna-do-spraw-doswiadczen-na-zwierzetach) |
+| 🟠 reports only | Krajowa Rada Radiofonii I Telewizji |  |  | KRRiT media-market reports | [↗](http://www.gov.pl/web/krrit) |
+| 🟠 reports only | Krajowa Rada Sądownictwa |  |  | judiciary council; reports | [↗](http://krs.pl/pl) |
+| 🟠 reports only | Krajowa Stacja Chemiczno-Rolnicza W Warszawie |  |  | soil/agri-chemistry reports | [↗](http://schr.gov.pl/index.php) |
+| ⚫ no open data | Krajowa Szkoła Sądownictwa I Prokuratury |  |  | judicial training school | [↗](http://www.kssip.gov.pl) |
+| 🟢 own bulk | Krajowe Biuro Wyborcze | pkw_elections | 1 | wybory.gov.pl DANE WYBORCZE — results 1990+ CSV/XLSX | [↗](http://kbw.gov.pl) |
+| ⚫ no open data | Krajowe Centrum Bankowania Tkanek I Komórek |  | 5 | tissue/cell banking centre | [↗](http://www.kcbtik.pl) |
+| ⚫ no open data | Krajowy Instytut Mediów W Likwidacji |  |  | media institute (in liquidation) | [↗](http://kim.gov.pl) |
+| 🟠 reports only | Krajowy Zasób Nieruchomości W Warszawie |  |  | KZN state real-estate registry | [↗](http://www.gov.pl/web/kzn) |
 | 🟢 own bulk | Naczelna Dyrekcja Archiwów Państwowych |  |  | szukajwarchiwach.gov.pl scans; no open API | [↗](http://www.archiwa.gov.pl/pl) |
+| ⚫ no open data | Naczelna Prokuratura Wojskowa |  |  | military prosecutor | [↗](http://niezniknelo.pl/NPW/www.npw.gov.pl/index.html) |
+| 🟢 own bulk | Naczelny Sąd Administracyjny |  |  | orzeczenia.nsa.gov.pl rulings DB (cf. saos_api) | [↗](http://www.nsa.gov.pl) |
+| 🟠 reports only | Najwyższa Izba Kontroli |  |  | NIK ~180 audit reports/yr via BIP; no API | [↗](http://www.nik.gov.pl) |
+| 🟠 reports only | Narodowa Agencja Wymiany Akademickiej |  | 4 | NAWA academic-exchange reports | [↗](http://www.nawa.gov.pl) |
 | 🟢 own bulk | Narodowe Archiwum Cyfrowe |  |  | archival search systems; no open API | [↗](http://www.nac.gov.pl) |
+| 🟠 reports only | Narodowe Centrum Nauki |  | 1 | NCN projekty.ncn.gov.pl searchable DB; no API | [↗](http://www.ncn.gov.pl) |
 | 🟢 own API | Narodowy Bank Polski | nbp_api |  | api.nbp.pl (covered) | [↗](http://www.nbp.pl) |
+| 🟠 reports only | Narodowy Instytut Konserwacji Zabytków |  | 11 | heritage registry/reports |  |
+| ⚫ no open data | Ośrodek Diagnostyczno-Badawczy Chorób Przenoszonych Drogą Płciową W Białymstoku |  |  | STD diagnostic lab | [↗](http://www.std.bialystok.pl) |
+| ⚫ no open data | Ośrodek Połączonych Jednostek Budżetowych Resortu Oświaty Nr 2 |  |  | education-sector admin unit |  |
+| 🟠 reports only | Państwowa Agencja Atomistyki |  | 7 | PAA radiation monitoring (PMŚ) reports | [↗](http://www.gov.pl/web/paa/panstwowa-agencja-atomistyki) |
+| 🟠 reports only | Państwowa Agencja Rozwiązywania Problemów Alkoholowych |  | 7 | PARPA/KCPU alcohol-problem reports | [↗](http://www.parpa.pl) |
+| 🟠 reports only | Państwowa Inspekcja Pracy Główny Inspektorat Pracy |  | 12 | PIP labour-inspection annual reports | [↗](http://www.pip.gov.pl) |
 | 🟠 reports only | Państwowa Komisja Egzaminacyjna Do Spraw Doradztwa Podatkowego |  |  | CKE exam results map/ZIU; no open API | [↗](http://www.gov.pl/web/finanse/komisja-egzaminacyjna-doradca-podatkowy) |
+| 🟢 own WMS/WFS | Państwowe Gospodarstwo Leśne Lasy Państwowe | lasy_bdl |  | Lasy Państwowe — BDL (lasy_bdl) | [↗](http://WWW.LASY.GOV.PL) |
+| 🟢 own WMS/WFS | Państwowe Gospodarstwo Wodne Wody Polskie | wody_polskie | 10 | ISOK Hydroportal + WFS/WMS | [↗](http://www.wody.gov.pl) |
+| 🟡 dane.gov.pl | Państwowy Fundusz Rehabilitacji Osób Niepełnosprawnych |  | 8 | PFRON disability data; dane.gov.pl | [↗](http://www.pfron.org.pl) |
 | ⚫ no open data | Służba Kontrwywiadu Wojskowego |  |  | AW intelligence; BIP only | [↗](http://www.skw.gov.pl/index.html) |
 | 🟠 reports only | Urząd Komisji Nadzoru Finansowego | knf_bulk |  | dane_statystyczne XLSX, no API | [↗](http://www.knfgov.pl) |
 | 🟢 own bulk | Urząd Komunikacji Elektronicznej | uke_broadband | 30 | Mapbook/SIDUSIS | [↗](http://www.uke.gov.pl) |
 | 🟡 dane.gov.pl | Urząd Ochrony Konkurencji I Konsumentów |  | 129 | UOKiK dane.gov.pl id=26 (to wire) | [↗](http://www.uokik.gov.pl) |
 | 🟡 dane.gov.pl | Urząd Regulacji Energetyki | ure_bulk | 76 | dane.gov.pl id=107 | [↗](http://www.ure.gov.pl) |
 | 🟡 dane.gov.pl | Zakład Ubezpieczeń Społecznych | zus_bulk | 94 | dane.gov.pl id=20 + portal | [↗](http://www.zus.pl) |
-| 🟡 dane.gov.pl | Kasa Rolniczego Ubezpieczenia Społecznego |  | 3 | on dane.gov.pl (3 datasets); own channel unchecked | [↗](http://www.gov.pl/web/krus) |
-| ⬜ to research | Krajowa Komisja Etyczna Do Spraw Doświadczeń Na Zwierzętach |  |  | not on dane.gov.pl; unchecked | [↗](http://www.gov.pl/web/nauka/krajowa-komisja-etyczna-do-spraw-doswiadczen-na-zwierzetach) |
-| ⬜ to research | Krajowa Rada Radiofonii I Telewizji |  |  | not on dane.gov.pl; unchecked | [↗](http://www.gov.pl/web/krrit) |
-| ⬜ to research | Krajowa Rada Sądownictwa |  |  | not on dane.gov.pl; unchecked | [↗](http://krs.pl/pl) |
-| ⬜ to research | Krajowa Stacja Chemiczno-Rolnicza W Warszawie |  |  | not on dane.gov.pl; unchecked | [↗](http://schr.gov.pl/index.php) |
-| ⬜ to research | Krajowa Szkoła Sądownictwa I Prokuratury |  |  | not on dane.gov.pl; unchecked | [↗](http://www.kssip.gov.pl) |
-| 🟡 dane.gov.pl | Krajowe Biuro Wyborcze |  | 1 | on dane.gov.pl (1 datasets); own channel unchecked | [↗](http://kbw.gov.pl) |
-| 🟡 dane.gov.pl | Krajowe Centrum Bankowania Tkanek I Komórek |  | 5 | on dane.gov.pl (5 datasets); own channel unchecked | [↗](http://www.kcbtik.pl) |
-| ⬜ to research | Krajowy Instytut Mediów W Likwidacji |  |  | not on dane.gov.pl; unchecked | [↗](http://kim.gov.pl) |
-| ⬜ to research | Krajowy Zasób Nieruchomości W Warszawie |  |  | not on dane.gov.pl; unchecked | [↗](http://www.gov.pl/web/kzn) |
-| ⬜ to research | Naczelna Prokuratura Wojskowa |  |  | not on dane.gov.pl; unchecked | [↗](http://niezniknelo.pl/NPW/www.npw.gov.pl/index.html) |
-| ⬜ to research | Naczelny Sąd Administracyjny |  |  | not on dane.gov.pl; unchecked | [↗](http://www.nsa.gov.pl) |
-| ⬜ to research | Najwyższa Izba Kontroli |  |  | not on dane.gov.pl; unchecked | [↗](http://www.nik.gov.pl) |
-| 🟡 dane.gov.pl | Narodowa Agencja Wymiany Akademickiej |  | 4 | on dane.gov.pl (4 datasets); own channel unchecked | [↗](http://www.nawa.gov.pl) |
-| 🟡 dane.gov.pl | Narodowe Centrum Nauki |  | 1 | on dane.gov.pl (1 datasets); own channel unchecked | [↗](http://www.ncn.gov.pl) |
-| 🟡 dane.gov.pl | Narodowy Instytut Konserwacji Zabytków |  | 11 | on dane.gov.pl (11 datasets); own channel unchecked |  |
-| ⬜ to research | Ośrodek Diagnostyczno-Badawczy Chorób Przenoszonych Drogą Płciową W Białymstoku |  |  | not on dane.gov.pl; unchecked | [↗](http://www.std.bialystok.pl) |
-| ⬜ to research | Ośrodek Połączonych Jednostek Budżetowych Resortu Oświaty Nr 2 |  |  | not on dane.gov.pl; unchecked |  |
-| 🟡 dane.gov.pl | Państwowa Agencja Atomistyki |  | 7 | on dane.gov.pl (7 datasets); own channel unchecked | [↗](http://www.gov.pl/web/paa/panstwowa-agencja-atomistyki) |
-| 🟡 dane.gov.pl | Państwowa Agencja Rozwiązywania Problemów Alkoholowych |  | 7 | on dane.gov.pl (7 datasets); own channel unchecked | [↗](http://www.parpa.pl) |
-| 🟡 dane.gov.pl | Państwowa Inspekcja Pracy Główny Inspektorat Pracy |  | 12 | on dane.gov.pl (12 datasets); own channel unchecked | [↗](http://www.pip.gov.pl) |
-| ⬜ to research | Państwowe Gospodarstwo Leśne Lasy Państwowe |  |  | not on dane.gov.pl; unchecked | [↗](http://WWW.LASY.GOV.PL) |
-| 🟡 dane.gov.pl | Państwowe Gospodarstwo Wodne Wody Polskie |  | 10 | on dane.gov.pl (10 datasets); own channel unchecked | [↗](http://www.wody.gov.pl) |
-| 🟡 dane.gov.pl | Państwowy Fundusz Rehabilitacji Osób Niepełnosprawnych |  | 8 | on dane.gov.pl (8 datasets); own channel unchecked | [↗](http://www.pfron.org.pl) |
 | 🟡 dane.gov.pl | Polska Agencja Antydopingowa |  | 2 | on dane.gov.pl (2 datasets); own channel unchecked | [↗](http://www.antydoping.pl) |
 | 🟡 dane.gov.pl | Polska Agencja Inwestycji I Handlu Spółka Akcyjna |  | 33 | on dane.gov.pl (33 datasets); own channel unchecked | [↗](http://www.paih.gov.pl) |
 | 🟡 dane.gov.pl | Polska Agencja Nadzoru Audytowego |  | 2 | on dane.gov.pl (2 datasets); own channel unchecked | [↗](http://pana.gov.pl) |

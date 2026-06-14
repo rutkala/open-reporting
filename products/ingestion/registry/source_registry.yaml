@@ -1613,3 +1613,54 @@ sources:
     manifest_kind: null
     docs_url: https://statystyka.policja.pl/
     default_status: not_started
+
+  - source_key: pkw_elections
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: "PKW/KBW — election results (DANE WYBORCZE)"
+    institution: "Krajowe Biuro Wyborcze / PKW"
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://wybory.gov.pl/
+    endpoints:
+      - "wybory.gov.pl 'DANE WYBORCZE' — results & turnout per election, CSV/XLSX (zip)"
+    scope: "All national elections + referendums 1990–present: results, turnout, by constituency/commune."
+    description: >-
+      National Electoral Office data repository — the authoritative source for
+      Polish election and referendum results, downloadable as spreadsheets.
+    extraction_logic: "TO BUILD — mirror the per-election CSV/XLSX bundles."
+    landing_layout: "pkw_elections/{election}/{file}.csv"
+    verification: "Compare with https://wybory.gov.pl/ per-election results."
+    landing_folders: [pkw_elections]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://pkw.gov.pl/
+    default_status: not_started
+
+  - source_key: wody_polskie
+    category: b_pl_gov_institutional
+    ingestion_mode: own_ogc
+    name: "Wody Polskie — water management & flood-risk spatial (ISOK)"
+    institution: "PGW Wody Polskie"
+    type: ogc_services
+    auth: none
+    rate_limit: null
+    base_url: https://isok.gov.pl/
+    endpoints:
+      - "ISOK Hydroportal — flood-risk/hazard maps; WFS 2.0 + WMS via wody.isok.gov.pl"
+      - "also dane.gov.pl dataset 2170 / WMS showcase"
+    scope: "Flood-risk & hazard maps, river-basin management boundaries, water-management spatial data."
+    description: >-
+      State Water Holding — flood-risk modelling (ISOK) and river-basin spatial
+      data via INSPIRE WFS/WMS.
+    extraction_logic: "TO BUILD — WFS pull of flood-risk + basin layers."
+    landing_layout: "wody_polskie/{layer}.{gml|shp}"
+    verification: "Compare with https://isok.gov.pl/hydroportal.html"
+    landing_folders: [wody_polskie]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.gov.pl/web/wody-polskie
+    default_status: not_started

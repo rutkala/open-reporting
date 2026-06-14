@@ -85,3 +85,28 @@ findings:
   "ochotniczych hufców":     {kind: no_open_data, source: null, note: "youth labour corps (OHP)"}
   "straży pożarnej":         {kind: reports_only, source: null, note: "KG PSP fire/rescue statistics"}
   "straży granicznej":       {kind: reports_only, source: null, note: "border-guard statistics; dane.gov.pl"}
+  # ── batch 8 ──────────────────────────────────────────────────────────────
+  "biuro wyborcze":          {kind: own_bulk, source: pkw_elections, note: "wybory.gov.pl DANE WYBORCZE — results 1990+ CSV/XLSX"}
+  "gospodarstwo wodne":      {kind: own_ogc, source: wody_polskie, note: "ISOK Hydroportal + WFS/WMS"}
+  "izba kontroli":           {kind: reports_only, source: null, note: "NIK ~180 audit reports/yr via BIP; no API"}
+  "naczelny sąd administracyjny": {kind: own_bulk, source: null, note: "orzeczenia.nsa.gov.pl rulings DB (cf. saos_api)"}
+  "centrum nauki":           {kind: reports_only, source: null, note: "NCN projekty.ncn.gov.pl searchable DB; no API"}
+  "komisja etyczna":         {kind: no_open_data, source: null, note: "animal-experiments ethics committee"}
+  "radiofonii":              {kind: reports_only, source: null, note: "KRRiT media-market reports"}
+  "rada sądownictwa":        {kind: reports_only, source: null, note: "judiciary council; reports"}
+  "stacja chemiczno-rolnicza": {kind: reports_only, source: null, note: "soil/agri-chemistry reports"}
+  "szkoła sądownictwa":      {kind: no_open_data, source: null, note: "judicial training school"}
+  "bankowania tkanek":       {kind: no_open_data, source: null, note: "tissue/cell banking centre"}
+  "instytut mediów":         {kind: no_open_data, source: null, note: "media institute (in liquidation)"}
+  "zasób nieruchomości":     {kind: reports_only, source: null, note: "KZN state real-estate registry"}
+  "rolniczego ubezpieczenia": {kind: danegovpl, source: null, note: "KRUS farmer-insurance stats; dane.gov.pl"}
+  "prokuratura wojskowa":    {kind: no_open_data, source: null, note: "military prosecutor"}
+  "wymiany akademickiej":    {kind: reports_only, source: null, note: "NAWA academic-exchange reports"}
+  "konserwacji zabytków":    {kind: reports_only, source: null, note: "heritage registry/reports"}
+  "chorób przenoszonych":    {kind: no_open_data, source: null, note: "STD diagnostic lab"}
+  "połączonych jednostek budżetowych": {kind: no_open_data, source: null, note: "education-sector admin unit"}
+  "agencja atomistyki":      {kind: reports_only, source: null, note: "PAA radiation monitoring (PMŚ) reports"}
+  "problemów alkoholowych":  {kind: reports_only, source: null, note: "PARPA/KCPU alcohol-problem reports"}
+  "inspekcja pracy":         {kind: reports_only, source: null, note: "PIP labour-inspection annual reports"}
+  "gospodarstwo leśne":      {kind: own_ogc, source: lasy_bdl, note: "Lasy Państwowe — BDL (lasy_bdl)"}
+  "rehabilitacji osób niepełnosprawnych": {kind: danegovpl, source: null, note: "PFRON disability data; dane.gov.pl"}
