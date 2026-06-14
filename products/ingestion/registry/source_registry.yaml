@@ -1322,8 +1322,8 @@ sources:
     landing_layout: "imgw_api/{endpoint}_{date}.json"
     verification: "Compare current readings with https://danepubliczne.imgw.pl/"
     landing_folders: [imgw_api]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/pl_api_extractor.py
     manifest_kind: null
     docs_url: https://danepubliczne.imgw.pl/apiinfo
     default_status: not_started
@@ -1583,8 +1583,8 @@ sources:
     landing_layout: "sejm_api/term{N}/{endpoint}.json"
     verification: "Compare with https://api.sejm.gov.pl/ docs / sejm.gov.pl."
     landing_folders: [sejm_api]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/pl_api_extractor.py
     manifest_kind: null
     docs_url: https://api.sejm.gov.pl/
     default_status: not_started

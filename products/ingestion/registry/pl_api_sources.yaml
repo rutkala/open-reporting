@@ -1,0 +1,17 @@
+# Config for pl_api_extractor.py — simple/hierarchical Polish JSON-REST sources.
+# mode: flat (fetch each endpoint, save JSON) | sejm (parliamentary hierarchy)
+sources:
+  imgw_api:
+    mode: flat
+    base: https://danepubliczne.imgw.pl/api/data
+    endpoints:
+      - {path: synop, name: synop}     # synoptic stations (current)
+      - {path: hydro, name: hydro}     # hydrological stations
+      - {path: meteo, name: meteo}     # meteo stations
+
+  sejm_api:
+    mode: sejm
+    base: https://api.sejm.gov.pl/sejm
+    terms: [10]                        # current term; add past terms for backfill
+    collections: [MP, clubs, committees, proceedings]
+    votings: true                      # pull votings per proceeding sitting
