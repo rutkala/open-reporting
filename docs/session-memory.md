@@ -1,29 +1,22 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-14 (run #85 — P0: expired TLS cert fixed, HTTPS restored, renewal wired) -->
+<!-- last-updated: 2026-06-14 (run #86 — watchdog, prod healthy, no PO direction) -->
 
-## Run #85 — 2026-06-14 02:00 UTC. [P0 FIXED] Expired TLS cert → HTTPS restored.
+## Run #86 — 2026-06-14 07:00 UTC. WATCHDOG. Prod healthy, no PO direction.
 
-Smoke check returned 000 on all 6 hosts. Root cause: LE cert (`live/open-reporting.dev`,
-SANs apex+www+portal) **expired Jun 13 19:27 UTC**. Fixed end-to-end:
-- Reissued via webroot → new lineage `open-reporting.dev-0003`, valid through **2026-09-12**.
-- Repointed 3 nginx confs (portal/apex/www) to `live/open-reporting.dev-0003/` (stable across renewals).
-- Removed broken renewal configs (empty 0-byte + -0001/-0002 with no live dir); only `-0003.conf` left.
-- **Wired renewal:** host cron `20 3,15 * * *` `certbot -q renew --config-dir infra/nginx/certs`
-  with `--deploy-hook` nginx reload. `renew --dry-run` exit 0. Protected crons preserved (append-only).
-- Verified: apex+www+portal + 5 dashboards 200 over HTTPS (full chain validation); public_finance
-  renders real content, stamp `7e9e0496` (Antigravity in-flight, untouched). Commit `7605a4bc`, pushed.
+All 5 dashboards + www return 200. TLS cert (lineage `open-reporting.dev-0003`, fixed in #85)
+valid through **Sep 12 2026**. All protected crons intact. Telegram bot inactive (expected),
+no inbox items. Linear: 0 Strategic, 0 issues touched in last 3 days. Took no build/deploy/
+publish action — Antigravity's plane. Committed only my files.
 
-### Why renewal had silently failed (so it doesn't recur surprise)
-Host `certbot.timer` renews from default `/etc/letsencrypt` (empty); real certs live in
-`infra/nginx/certs/`. That lineage's renewal conf was a 0-byte empty file. The compose `certbot`
-service points at non-existent `./nginx/certs` paths and never ran. My new host cron is the live
-renewal path now. **Certs are gitignored** — only the 3 nginx confs were committed.
-
-### Followups flagged to PO (outbox + decisions #85)
-1. compose `certbot` service has wrong volume paths (`./nginx/certs` vs `./infra/nginx/certs`) — dead, superseded by host cron; remove or fix to avoid confusion.
-2. Renewal now depends on the host cron I added; reconcile if compose-certbot is meant to be canonical.
-3. Add cert-expiry monitoring/alert so a future lapse pages BEFORE the cert dies.
+### Run #85 carryover — TLS cert P0 fix (still the live setup)
+Expired LE cert (Jun 13 19:27 UTC) reissued → lineage `open-reporting.dev-0003`, valid through
+**2026-09-12**. 3 nginx confs (portal/apex/www) point at `live/open-reporting.dev-0003/`.
+Renewal wired as host cron `20 3,15 * * *` `certbot -q renew --config-dir infra/nginx/certs`
++ nginx-reload deploy-hook (`renew --dry-run` exit 0). Certs gitignored; only nginx confs committed.
+Open followups to PO (still standing): (1) compose `certbot` service has wrong volume paths
+(`./nginx/certs` vs `./infra/nginx/certs`), dead/superseded — remove or fix; (2) renewal depends
+on my host cron — reconcile if compose-certbot is meant canonical; (3) add cert-expiry alert.
 
 ## THE STANDING REALITY — Antigravity (Gemini swarm) is the active Project Lead
 Project reorganised around an Antigravity Discord swarm as Project Lead (OR-191 Done). Data plane
