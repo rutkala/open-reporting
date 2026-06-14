@@ -4624,3 +4624,115 @@ sources:
     manifest_kind: null
     docs_url: https://www.publicisgroupe.pl/
     default_status: not_started
+
+  # ── Category c, FREE providers: industry associations & think tanks ───────
+  - source_key: pzpm
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "PZPM — automotive industry association (free reports)"
+    institution: "Polski Związek Przemysłu Motoryzacyjnego"
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.pzpm.org.pl/pl/Rynek-motoryzacyjny
+    endpoints: ["free quarterly/annual automotive sector reports, registrations, yearbooks (PDF/XLSX)"]
+    scope: "Automotive sector: production, registrations, market structure — free industry reports."
+    description: "Auto-industry employers' association. Publishes sector statistics/reports FREE."
+    extraction_logic: "TO BUILD — download report files from publikacje/raporty."
+    landing_layout: "pzpm/{report}.pdf"
+    verification: "https://www.pzpm.org.pl/Publikacje/Raporty"
+    landing_folders: [pzpm]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.pzpm.org.pl/
+    default_status: not_started
+
+  - source_key: zbp
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "ZBP — banks association (free sector reports)"
+    institution: "Związek Banków Polskich"
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.zbp.pl/raporty-i-publikacje/publikacje
+    endpoints: ["free banking-sector reports (NetB@nk, AMRON-SARFiN mortgages, Kredyt Trendy)"]
+    scope: "Banking sector: e-banking, mortgages (AMRON-SARFiN), credit trends — free reports."
+    description: "Polish Bank Association. Publishes banking-sector reports FREE (incl. AMRON-SARFiN mortgage data)."
+    extraction_logic: "TO BUILD — download report files."
+    landing_layout: "zbp/{report}.pdf"
+    verification: "https://www.zbp.pl/raporty-i-publikacje/publikacje"
+    landing_folders: [zbp]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.zbp.pl/
+    default_status: not_started
+
+  - source_key: pie
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "PIE — Polish Economic Institute (free data & reports)"
+    institution: "Polski Instytut Ekonomiczny"
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://pie.net.pl/
+    endpoints: ["free economic reports, datasets, weekly indicators, tygodnik gospodarczy"]
+    scope: "Economic research & indicators — macro, trade, energy, social — free, regularly published."
+    description: "Public economic think tank. Publishes data/reports FREE; strong macro & sectoral analyses."
+    extraction_logic: "TO BUILD — download publications/datasets."
+    landing_layout: "pie/{report}.pdf"
+    verification: "https://pie.net.pl/"
+    landing_folders: [pie]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://pie.net.pl/
+    default_status: not_started
+
+  - source_key: ieo
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "IEO — Institute for Renewable Energy (free RES market data)"
+    institution: "EC BREC Instytut Energetyki Odnawialnej"
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://ieo.pl/raporty
+    endpoints: ["free PV/wind market reports; RES installation databases; energy-price forecasts"]
+    scope: "Renewable energy market: PV/wind installations, investors, prices — free reports + databases."
+    description: "Private RES research institute. Publishes market reports FREE (headline data; full DB partly paid)."
+    extraction_logic: "TO BUILD — download report files."
+    landing_layout: "ieo/{report}.pdf"
+    verification: "https://ieo.pl/raporty"
+    landing_folders: [ieo]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://ieo.pl/
+    default_status: not_started
+
+  - source_key: thinktanks_econ
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "Economic think tanks (WiseEuropa, CASE, FOR, IBS, CenEA)"
+    institution: "WiseEuropa / CASE / FOR / IBS / CenEA"
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://wise-europa.eu/
+    endpoints:
+      - "free analyses & datasets: WiseEuropa, CASE, FOR (Balcerowicz), IBS (labour), CenEA (tax/benefits microsim)"
+    scope: "Independent economic/social research & data — labour, tax-benefit, energy, public finance. Free."
+    description: "Leading PL economic think tanks — publish reports & some datasets FREE. IBS (labour) & CenEA (tax-benefit microsimulation) are especially data-rich."
+    extraction_logic: "TO BUILD — per-institute publication/dataset download."
+    landing_layout: "thinktanks_econ/{institute}/{report}"
+    verification: "wise-europa.eu / case-research.eu / for.org.pl / ibs.org.pl / cenea.org.pl"
+    landing_folders: [thinktanks_econ]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://ibs.org.pl/
+    default_status: not_started
