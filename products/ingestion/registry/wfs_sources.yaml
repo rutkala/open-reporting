@@ -1,0 +1,18 @@
+# Config for wfs_extractor.py — OGC WFS spatial sources.
+# layers: [] = discover all from GetCapabilities; or list specific typeNames.
+sources:
+  lasy_bdl:
+    wfs: https://wfs.bdl.lasy.gov.pl/geoserver/BDL/ows
+    layers: ["BDL:Nadleśnictwa", "BDL:RDLP", "BDL:Leśnictwa"]
+  gdos_geo:
+    wfs: https://sdi.gdos.gov.pl/wfs
+    layers: []        # discover all (Natura 2000, parks, reserves)
+  wody_polskie:
+    wfs: https://wody.isok.gov.pl/geoserver/ows
+    layers: []
+  gugik_geo:
+    wfs: https://mapy.geoportal.gov.pl/wss/service/PZGIK/PRG/WFS/AdministrativeBoundaries
+    layers: []        # administrative boundaries (PRG)
+  pig_cbdg:
+    wfs: https://cbdgmapa.pgi.gov.pl/arcgis/services/cbdg_otwory/MapServer/WFSServer
+    layers: []        # boreholes

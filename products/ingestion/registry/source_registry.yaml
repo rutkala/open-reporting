@@ -1348,8 +1348,8 @@ sources:
     landing_layout: "gugik_geo/{layer}.{gml|shp}"
     verification: "Compare layers in QGIS against geoportal.gov.pl."
     landing_folders: [gugik_geo]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/wfs_extractor.py
     manifest_kind: null
     docs_url: https://www.geoportal.gov.pl/en/applications/
     default_status: not_started
@@ -1374,8 +1374,8 @@ sources:
     landing_layout: "pig_cbdg/{layer}.{json|gml}"
     verification: "Compare with https://baza.pgi.gov.pl/"
     landing_folders: [pig_cbdg]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/wfs_extractor.py
     manifest_kind: null
     docs_url: https://baza.pgi.gov.pl/en
     default_status: not_started
@@ -1426,8 +1426,8 @@ sources:
     landing_layout: "lasy_bdl/{layer}.{gml|json}"
     verification: "Compare with https://www.bdl.lasy.gov.pl/portal/mapy"
     landing_folders: [lasy_bdl]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/wfs_extractor.py
     manifest_kind: null
     docs_url: https://bdl.lasy.gov.pl/portal/uslugi-mapowe-ogc
     default_status: not_started
@@ -1506,8 +1506,8 @@ sources:
     landing_layout: "gdos_geo/{layer}.{gml|shp}"
     verification: "Compare with https://geoserwis.gdos.gov.pl/mapy/"
     landing_folders: [gdos_geo]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/wfs_extractor.py
     manifest_kind: null
     docs_url: https://www.gov.pl/web/gdos/dostep-do-danych-geoprzestrzennych
     default_status: not_started
@@ -1659,8 +1659,8 @@ sources:
     landing_layout: "wody_polskie/{layer}.{gml|shp}"
     verification: "Compare with https://isok.gov.pl/hydroportal.html"
     landing_folders: [wody_polskie]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/wfs_extractor.py
     manifest_kind: null
     docs_url: https://www.gov.pl/web/wody-polskie
     default_status: not_started
