@@ -1902,3 +1902,1523 @@ sources:
     manifest_kind: null
     docs_url: https://www.gov.pl/web/rodzina/statystyki-pomocy-spolecznej
     default_status: not_started
+
+  # ── Promoted from KPP central-institution research (all data-bearing) ──
+  - source_key: archiwum_akt_nowych
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Archiwum Akt Nowych
+    institution: Archiwum Akt Nowych
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://www.aan.gov.pl/
+    endpoints:
+    - archival search systems; no open API
+    scope: archival search systems; no open API
+    description: Archiwum Akt Nowych — archival search systems; no open API.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: archiwum_akt_nowych/
+    verification: See https://www.aan.gov.pl/
+    landing_folders:
+    - archiwum_akt_nowych
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.aan.gov.pl/
+    default_status: not_started
+  - source_key: archiwum_glowne_akt
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Archiwum Główne Akt Dawnych
+    institution: Archiwum Główne Akt Dawnych
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://agad.gov.pl/
+    endpoints:
+    - archival search systems; no open API
+    scope: archival search systems; no open API
+    description: Archiwum Główne Akt Dawnych — archival search systems; no open API.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: archiwum_glowne_akt/
+    verification: See https://agad.gov.pl/
+    landing_folders:
+    - archiwum_glowne_akt
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://agad.gov.pl/
+    default_status: not_started
+  - source_key: bank_gospodarstwa_krajowego
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Bank Gospodarstwa Krajowego
+    institution: Bank Gospodarstwa Krajowego
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.bgk.pl/
+    endpoints:
+    - BGK financial/macro reports PDF; no API
+    scope: BGK financial/macro reports PDF; no API
+    description: Bank Gospodarstwa Krajowego — BGK financial/macro reports PDF; no API.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: bank_gospodarstwa_krajowego/
+    verification: See https://www.bgk.pl/
+    landing_folders:
+    - bank_gospodarstwa_krajowego
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.bgk.pl/
+    default_status: not_started
+  - source_key: biuro_substancji_chemicznych
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Biuro Do Spraw Substancji Chemicznych
+    institution: Biuro Do Spraw Substancji Chemicznych
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.gov.pl/web/chemikalia
+    endpoints:
+    - chemicals (REACH/CLP) registry; no open API
+    scope: chemicals (REACH/CLP) registry; no open API
+    description: Biuro Do Spraw Substancji Chemicznych — chemicals (REACH/CLP) registry; no open API.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: biuro_substancji_chemicznych/
+    verification: See https://www.gov.pl/web/chemikalia
+    landing_folders:
+    - biuro_substancji_chemicznych
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.gov.pl/web/chemikalia
+    default_status: not_started
+  - source_key: biuro_komisji_akredytacyjnej
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Biuro Polskiej Komisji Akredytacyjnej
+    institution: Biuro Polskiej Komisji Akredytacyjnej
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.pka.edu.pl
+    endpoints:
+    - higher-ed accreditation reports
+    scope: higher-ed accreditation reports
+    description: Biuro Polskiej Komisji Akredytacyjnej — higher-ed accreditation reports.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: biuro_komisji_akredytacyjnej/
+    verification: See https://www.pka.edu.pl
+    landing_folders:
+    - biuro_komisji_akredytacyjnej
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.pka.edu.pl
+    default_status: not_started
+  - source_key: biuro_rady_fiskalnej
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Biuro Rady Fiskalnej
+    institution: Biuro Rady Fiskalnej
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: null
+    endpoints:
+    - fiscal council; reports only
+    scope: fiscal council; reports only
+    description: Biuro Rady Fiskalnej — fiscal council; reports only.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: biuro_rady_fiskalnej/
+    verification: n/a
+    landing_folders:
+    - biuro_rady_fiskalnej
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: null
+    default_status: not_started
+  - source_key: biuro_rzecznika_praw
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Biuro Rzecznika Praw Dziecka
+    institution: Biuro Rzecznika Praw Dziecka
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.brpd.gov.pl
+    endpoints:
+    - children's ombudsman; reports
+    scope: children's ombudsman; reports
+    description: Biuro Rzecznika Praw Dziecka — children's ombudsman; reports.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: biuro_rzecznika_praw/
+    verification: See https://www.brpd.gov.pl
+    landing_folders:
+    - biuro_rzecznika_praw
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.brpd.gov.pl
+    default_status: not_started
+  - source_key: biuro_rzecznika_praw_2
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Biuro Rzecznika Praw Obywatelskich
+    institution: Biuro Rzecznika Praw Obywatelskich
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.rpo.gov.pl/
+    endpoints:
+    - RPO ombudsman; reports
+    scope: RPO ombudsman; reports
+    description: Biuro Rzecznika Praw Obywatelskich — RPO ombudsman; reports.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: biuro_rzecznika_praw_2/
+    verification: See https://www.rpo.gov.pl/
+    landing_folders:
+    - biuro_rzecznika_praw_2
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.rpo.gov.pl/
+    default_status: not_started
+  - source_key: centralna_egzaminacyjna
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Centralna Komisja Egzaminacyjna
+    institution: Centralna Komisja Egzaminacyjna
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://cke.gov.pl/
+    endpoints:
+    - CKE exam results map/ZIU; no open API
+    scope: CKE exam results map/ZIU; no open API
+    description: Centralna Komisja Egzaminacyjna — CKE exam results map/ZIU; no open API.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: centralna_egzaminacyjna/
+    verification: See https://cke.gov.pl/
+    landing_folders:
+    - centralna_egzaminacyjna
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://cke.gov.pl/
+    default_status: not_started
+  - source_key: centralny_zarzad_sluzby
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Centralny Zarząd Służby Więziennej
+    institution: Centralny Zarząd Służby Więziennej
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.sw.gov.pl
+    endpoints:
+    - prison-service stats; dane.gov.pl
+    scope: prison-service stats; dane.gov.pl
+    description: Centralny Zarząd Służby Więziennej — prison-service stats; dane.gov.pl.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: centralny_zarzad_sluzby/
+    verification: See https://www.sw.gov.pl
+    landing_folders:
+    - centralny_zarzad_sluzby
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.sw.gov.pl
+    default_status: not_started
+  - source_key: centrum_doradztwa_rolniczego
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Centrum Doradztwa Rolniczego W Brwinowie
+    institution: Centrum Doradztwa Rolniczego W Brwinowie
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.cdr.gov.pl
+    endpoints:
+    - agri advisory; reports
+    scope: agri advisory; reports
+    description: Centrum Doradztwa Rolniczego W Brwinowie — agri advisory; reports.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: centrum_doradztwa_rolniczego/
+    verification: See https://www.cdr.gov.pl
+    landing_folders:
+    - centrum_doradztwa_rolniczego
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.cdr.gov.pl
+    default_status: not_started
+  - source_key: centrum_unijnych_projektow
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Centrum Unijnych Projektów Transportowych
+    institution: Centrum Unijnych Projektów Transportowych
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.cupt.gov.pl
+    endpoints:
+    - CUPT EU-project reports; dane.gov.pl
+    scope: CUPT EU-project reports; dane.gov.pl
+    description: Centrum Unijnych Projektów Transportowych — CUPT EU-project reports; dane.gov.pl.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: centrum_unijnych_projektow/
+    verification: See https://www.cupt.gov.pl
+    landing_folders:
+    - centrum_unijnych_projektow
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.cupt.gov.pl
+    default_status: not_started
+  - source_key: centrum_lukasiewicz
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Centrum Łukasiewicz
+    institution: Centrum Łukasiewicz
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://lukasiewicz.gov.pl/
+    endpoints:
+    - research network; reports
+    scope: research network; reports
+    description: Centrum Łukasiewicz — research network; reports.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: centrum_lukasiewicz/
+    verification: See https://lukasiewicz.gov.pl/
+    landing_folders:
+    - centrum_lukasiewicz
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://lukasiewicz.gov.pl/
+    default_status: not_started
+  - source_key: farmaceutyczny
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Główny Inspektorat Farmaceutyczny
+    institution: Główny Inspektorat Farmaceutyczny
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://www.gov.pl/web/gif
+    endpoints:
+    - GIF — drug register (RPL); rejestrymedyczne
+    scope: GIF — drug register (RPL); rejestrymedyczne
+    description: Główny Inspektorat Farmaceutyczny — GIF — drug register (RPL); rejestrymedyczne.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: farmaceutyczny/
+    verification: See https://www.gov.pl/web/gif
+    landing_folders:
+    - farmaceutyczny
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.gov.pl/web/gif
+    default_status: not_started
+  - source_key: jakosci_handlowej_artykulow
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Główny Inspektorat Jakości Handlowej Artykułów Rolno-Spożywczych
+    institution: Główny Inspektorat Jakości Handlowej Artykułów Rolno-Spożywczych
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.gov.pl/web/ijhars
+    endpoints:
+    - IJHARS food-quality controls; dane.gov.pl
+    scope: IJHARS food-quality controls; dane.gov.pl
+    description: Główny Inspektorat Jakości Handlowej Artykułów Rolno-Spożywczych — IJHARS food-quality controls; dane.gov.pl.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: jakosci_handlowej_artykulow/
+    verification: See https://www.gov.pl/web/ijhars
+    landing_folders:
+    - jakosci_handlowej_artykulow
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.gov.pl/web/ijhars
+    default_status: not_started
+  - source_key: ochrony_roslin_nasiennictwa
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Główny Inspektorat Ochrony Roślin I Nasiennictwa
+    institution: Główny Inspektorat Ochrony Roślin I Nasiennictwa
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: http://piorin.gov.pl/
+    endpoints:
+    - GIORiN plant-protection registers
+    scope: GIORiN plant-protection registers
+    description: Główny Inspektorat Ochrony Roślin I Nasiennictwa — GIORiN plant-protection registers.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: ochrony_roslin_nasiennictwa/
+    verification: See http://piorin.gov.pl/
+    landing_folders:
+    - ochrony_roslin_nasiennictwa
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: http://piorin.gov.pl/
+    default_status: not_started
+  - source_key: rybolowstwa_morskiego
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Główny Inspektorat Rybołówstwa Morskiego
+    institution: Główny Inspektorat Rybołówstwa Morskiego
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.gov.pl/web/girm
+    endpoints:
+    - marine fisheries; reports
+    scope: marine fisheries; reports
+    description: Główny Inspektorat Rybołówstwa Morskiego — marine fisheries; reports.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: rybolowstwa_morskiego/
+    verification: See https://www.gov.pl/web/girm
+    landing_folders:
+    - rybolowstwa_morskiego
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.gov.pl/web/girm
+    default_status: not_started
+  - source_key: sanitarny
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Główny Inspektorat Sanitarny
+    institution: Główny Inspektorat Sanitarny
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://www.gov.pl/web/gis
+    endpoints:
+    - GIS water-quality dane.gov.pl; sk.gis.gov.pl
+    scope: GIS water-quality dane.gov.pl; sk.gis.gov.pl
+    description: Główny Inspektorat Sanitarny — GIS water-quality dane.gov.pl; sk.gis.gov.pl.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: sanitarny/
+    verification: See https://www.gov.pl/web/gis
+    landing_folders:
+    - sanitarny
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.gov.pl/web/gis
+    default_status: not_started
+  - source_key: inspekcja_weterynaryjna_wete
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Inspekcja Weterynaryjna Główny Inspektorat Weterynarii
+    institution: Inspekcja Weterynaryjna Główny Inspektorat Weterynarii
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.wetgiw.gov.pl
+    endpoints:
+    - ADIS/HPAI registers; no open API
+    scope: ADIS/HPAI registers; no open API
+    description: Inspekcja Weterynaryjna Główny Inspektorat Weterynarii — ADIS/HPAI registers; no open API.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: inspekcja_weterynaryjna_wete/
+    verification: See https://www.wetgiw.gov.pl
+    landing_folders:
+    - inspekcja_weterynaryjna_wete
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.wetgiw.gov.pl
+    default_status: not_started
+  - source_key: instytut_pamieci_narodowej
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Instytut Pamięci Narodowej - Komisja Ścigania Zbrodni Przeciwko Narodowi Polskiemu - Centrala
+    institution: Instytut Pamięci Narodowej - Komisja Ścigania Zbrodni Przeciwko Narodowi Polskiemu - Centrala
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://ipn.gov.pl/pl/
+    endpoints:
+    - IPN inwentarz.ipn.gov.pl 1.9M records; no open API
+    scope: IPN inwentarz.ipn.gov.pl 1.9M records; no open API
+    description: Instytut Pamięci Narodowej - Komisja Ścigania Zbrodni Przeciwko Narodowi Polskiemu - Centrala — IPN inwentarz.ipn.gov.pl 1.9M records; no open API.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: instytut_pamieci_narodowej/
+    verification: See https://ipn.gov.pl/pl/
+    landing_folders:
+    - instytut_pamieci_narodowej
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://ipn.gov.pl/pl/
+    default_status: not_started
+  - source_key: kancelaria_prezesa_rady
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Kancelaria Prezesa Rady Ministrów
+    institution: Kancelaria Prezesa Rady Ministrów
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://www.premier.gov.pl
+    endpoints:
+    - KPRM dane.gov.pl + RCL legislation
+    scope: KPRM dane.gov.pl + RCL legislation
+    description: Kancelaria Prezesa Rady Ministrów — KPRM dane.gov.pl + RCL legislation.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: kancelaria_prezesa_rady/
+    verification: See https://www.premier.gov.pl
+    landing_folders:
+    - kancelaria_prezesa_rady
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.premier.gov.pl
+    default_status: not_started
+  - source_key: kancelaria_senatu
+    category: b_pl_gov_institutional
+    ingestion_mode: api_full
+    name: Kancelaria Senatu
+    institution: Kancelaria Senatu
+    type: rest_api
+    auth: none
+    rate_limit: null
+    base_url: https://www.senat.gov.pl/kancelaria/
+    endpoints:
+    - senat.gov.pl data; modest — to assess
+    scope: senat.gov.pl data; modest — to assess
+    description: Kancelaria Senatu — senat.gov.pl data; modest — to assess.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: kancelaria_senatu/
+    verification: See https://www.senat.gov.pl/kancelaria/
+    landing_folders:
+    - kancelaria_senatu
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.senat.gov.pl/kancelaria/
+    default_status: not_started
+  - source_key: komenda_glowna_panstwowej
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Komenda Główna Państwowej Straży Pożarnej
+    institution: Komenda Główna Państwowej Straży Pożarnej
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.gov.pl/web/kgpsp
+    endpoints:
+    - KG PSP fire/rescue statistics
+    scope: KG PSP fire/rescue statistics
+    description: Komenda Główna Państwowej Straży Pożarnej — KG PSP fire/rescue statistics.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: komenda_glowna_panstwowej/
+    verification: See https://www.gov.pl/web/kgpsp
+    landing_folders:
+    - komenda_glowna_panstwowej
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.gov.pl/web/kgpsp
+    default_status: not_started
+  - source_key: komenda_glowna_strazy
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Komenda Główna Straży Granicznej
+    institution: Komenda Główna Straży Granicznej
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.strazgraniczna.pl/
+    endpoints:
+    - border-guard statistics; dane.gov.pl
+    scope: border-guard statistics; dane.gov.pl
+    description: Komenda Główna Straży Granicznej — border-guard statistics; dane.gov.pl.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: komenda_glowna_strazy/
+    verification: See https://www.strazgraniczna.pl/
+    landing_folders:
+    - komenda_glowna_strazy
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.strazgraniczna.pl/
+    default_status: not_started
+  - source_key: krajowa_informacja_skarbowa
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Krajowa Informacja Skarbowa
+    institution: Krajowa Informacja Skarbowa
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.kis.gov.pl
+    endpoints:
+    - KIS EUREKA tax interpretations; no API
+    scope: KIS EUREKA tax interpretations; no API
+    description: Krajowa Informacja Skarbowa — KIS EUREKA tax interpretations; no API.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: krajowa_informacja_skarbowa/
+    verification: See https://www.kis.gov.pl
+    landing_folders:
+    - krajowa_informacja_skarbowa
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.kis.gov.pl
+    default_status: not_started
+  - source_key: krajowa_rada_radiofonii
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Krajowa Rada Radiofonii I Telewizji
+    institution: Krajowa Rada Radiofonii I Telewizji
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.gov.pl/web/krrit
+    endpoints:
+    - KRRiT media-market reports
+    scope: KRRiT media-market reports
+    description: Krajowa Rada Radiofonii I Telewizji — KRRiT media-market reports.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: krajowa_rada_radiofonii/
+    verification: See https://www.gov.pl/web/krrit
+    landing_folders:
+    - krajowa_rada_radiofonii
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.gov.pl/web/krrit
+    default_status: not_started
+  - source_key: krajowa_rada_sadownictwa
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Krajowa Rada Sądownictwa
+    institution: Krajowa Rada Sądownictwa
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://krs.pl/pl/
+    endpoints:
+    - judiciary council; reports
+    scope: judiciary council; reports
+    description: Krajowa Rada Sądownictwa — judiciary council; reports.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: krajowa_rada_sadownictwa/
+    verification: See https://krs.pl/pl/
+    landing_folders:
+    - krajowa_rada_sadownictwa
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://krs.pl/pl/
+    default_status: not_started
+  - source_key: krajowa_stacja_chemiczno
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Krajowa Stacja Chemiczno-Rolnicza W Warszawie
+    institution: Krajowa Stacja Chemiczno-Rolnicza W Warszawie
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://schr.gov.pl/index.php
+    endpoints:
+    - soil/agri-chemistry reports
+    scope: soil/agri-chemistry reports
+    description: Krajowa Stacja Chemiczno-Rolnicza W Warszawie — soil/agri-chemistry reports.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: krajowa_stacja_chemiczno/
+    verification: See https://schr.gov.pl/index.php
+    landing_folders:
+    - krajowa_stacja_chemiczno
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://schr.gov.pl/index.php
+    default_status: not_started
+  - source_key: krajowy_zasob_nieruchomosci
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Krajowy Zasób Nieruchomości W Warszawie
+    institution: Krajowy Zasób Nieruchomości W Warszawie
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.gov.pl/web/kzn
+    endpoints:
+    - KZN state real-estate registry
+    scope: KZN state real-estate registry
+    description: Krajowy Zasób Nieruchomości W Warszawie — KZN state real-estate registry.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: krajowy_zasob_nieruchomosci/
+    verification: See https://www.gov.pl/web/kzn
+    landing_folders:
+    - krajowy_zasob_nieruchomosci
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.gov.pl/web/kzn
+    default_status: not_started
+  - source_key: kasa_rolniczego_ubezpieczeni
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Kasa Rolniczego Ubezpieczenia Społecznego
+    institution: Kasa Rolniczego Ubezpieczenia Społecznego
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://www.gov.pl/web/krus
+    endpoints:
+    - KRUS farmer-insurance stats; dane.gov.pl
+    scope: KRUS farmer-insurance stats; dane.gov.pl
+    description: Kasa Rolniczego Ubezpieczenia Społecznego — KRUS farmer-insurance stats; dane.gov.pl.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: kasa_rolniczego_ubezpieczeni/
+    verification: See https://www.gov.pl/web/krus
+    landing_folders:
+    - kasa_rolniczego_ubezpieczeni
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.gov.pl/web/krus
+    default_status: not_started
+  - source_key: naczelna_dyrekcja_archiwow
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Naczelna Dyrekcja Archiwów Państwowych
+    institution: Naczelna Dyrekcja Archiwów Państwowych
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://www.archiwa.gov.pl/pl/
+    endpoints:
+    - szukajwarchiwach.gov.pl scans; no open API
+    scope: szukajwarchiwach.gov.pl scans; no open API
+    description: Naczelna Dyrekcja Archiwów Państwowych — szukajwarchiwach.gov.pl scans; no open API.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: naczelna_dyrekcja_archiwow/
+    verification: See https://www.archiwa.gov.pl/pl/
+    landing_folders:
+    - naczelna_dyrekcja_archiwow
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.archiwa.gov.pl/pl/
+    default_status: not_started
+  - source_key: naczelny_sad_administracyjny
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Naczelny Sąd Administracyjny
+    institution: Naczelny Sąd Administracyjny
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://www.nsa.gov.pl
+    endpoints:
+    - orzeczenia.nsa.gov.pl rulings DB (cf. saos_api)
+    scope: orzeczenia.nsa.gov.pl rulings DB (cf. saos_api)
+    description: Naczelny Sąd Administracyjny — orzeczenia.nsa.gov.pl rulings DB (cf. saos_api).
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: naczelny_sad_administracyjny/
+    verification: See https://www.nsa.gov.pl
+    landing_folders:
+    - naczelny_sad_administracyjny
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.nsa.gov.pl
+    default_status: not_started
+  - source_key: najwyzsza_izba_kontroli
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Najwyższa Izba Kontroli
+    institution: Najwyższa Izba Kontroli
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.nik.gov.pl
+    endpoints:
+    - NIK ~180 audit reports/yr via BIP; no API
+    scope: NIK ~180 audit reports/yr via BIP; no API
+    description: Najwyższa Izba Kontroli — NIK ~180 audit reports/yr via BIP; no API.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: najwyzsza_izba_kontroli/
+    verification: See https://www.nik.gov.pl
+    landing_folders:
+    - najwyzsza_izba_kontroli
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.nik.gov.pl
+    default_status: not_started
+  - source_key: narodowa_agencja_wymiany
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Narodowa Agencja Wymiany Akademickiej
+    institution: Narodowa Agencja Wymiany Akademickiej
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.nawa.gov.pl
+    endpoints:
+    - NAWA academic-exchange reports
+    scope: NAWA academic-exchange reports
+    description: Narodowa Agencja Wymiany Akademickiej — NAWA academic-exchange reports.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: narodowa_agencja_wymiany/
+    verification: See https://www.nawa.gov.pl
+    landing_folders:
+    - narodowa_agencja_wymiany
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.nawa.gov.pl
+    default_status: not_started
+  - source_key: narodowe_archiwum_cyfrowe
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Narodowe Archiwum Cyfrowe
+    institution: Narodowe Archiwum Cyfrowe
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://www.nac.gov.pl/
+    endpoints:
+    - archival search systems; no open API
+    scope: archival search systems; no open API
+    description: Narodowe Archiwum Cyfrowe — archival search systems; no open API.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: narodowe_archiwum_cyfrowe/
+    verification: See https://www.nac.gov.pl/
+    landing_folders:
+    - narodowe_archiwum_cyfrowe
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.nac.gov.pl/
+    default_status: not_started
+  - source_key: narodowe_centrum_nauki
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Narodowe Centrum Nauki
+    institution: Narodowe Centrum Nauki
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.ncn.gov.pl
+    endpoints:
+    - NCN projekty.ncn.gov.pl searchable DB; no API
+    scope: NCN projekty.ncn.gov.pl searchable DB; no API
+    description: Narodowe Centrum Nauki — NCN projekty.ncn.gov.pl searchable DB; no API.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: narodowe_centrum_nauki/
+    verification: See https://www.ncn.gov.pl
+    landing_folders:
+    - narodowe_centrum_nauki
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.ncn.gov.pl
+    default_status: not_started
+  - source_key: narodowy_instytut_konserwacj
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Narodowy Instytut Konserwacji Zabytków
+    institution: Narodowy Instytut Konserwacji Zabytków
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: null
+    endpoints:
+    - heritage registry/reports
+    scope: heritage registry/reports
+    description: Narodowy Instytut Konserwacji Zabytków — heritage registry/reports.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: narodowy_instytut_konserwacj/
+    verification: n/a
+    landing_folders:
+    - narodowy_instytut_konserwacj
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: null
+    default_status: not_started
+  - source_key: panstwowa_agencja_atomistyki
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Państwowa Agencja Atomistyki
+    institution: Państwowa Agencja Atomistyki
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.gov.pl/web/paa/panstwowa-agencja-atomistyki
+    endpoints:
+    - PAA radiation monitoring (PMŚ) reports
+    scope: PAA radiation monitoring (PMŚ) reports
+    description: Państwowa Agencja Atomistyki — PAA radiation monitoring (PMŚ) reports.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: panstwowa_agencja_atomistyki/
+    verification: See https://www.gov.pl/web/paa/panstwowa-agencja-atomistyki
+    landing_folders:
+    - panstwowa_agencja_atomistyki
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.gov.pl/web/paa/panstwowa-agencja-atomistyki
+    default_status: not_started
+  - source_key: panstwowa_agencja_rozwiazywa
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Państwowa Agencja Rozwiązywania Problemów Alkoholowych
+    institution: Państwowa Agencja Rozwiązywania Problemów Alkoholowych
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.parpa.pl
+    endpoints:
+    - PARPA/KCPU alcohol-problem reports
+    scope: PARPA/KCPU alcohol-problem reports
+    description: Państwowa Agencja Rozwiązywania Problemów Alkoholowych — PARPA/KCPU alcohol-problem reports.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: panstwowa_agencja_rozwiazywa/
+    verification: See https://www.parpa.pl
+    landing_folders:
+    - panstwowa_agencja_rozwiazywa
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.parpa.pl
+    default_status: not_started
+  - source_key: panstwowa_inspekcja_pracy
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Państwowa Inspekcja Pracy Główny Inspektorat Pracy
+    institution: Państwowa Inspekcja Pracy Główny Inspektorat Pracy
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.pip.gov.pl
+    endpoints:
+    - PIP labour-inspection annual reports
+    scope: PIP labour-inspection annual reports
+    description: Państwowa Inspekcja Pracy Główny Inspektorat Pracy — PIP labour-inspection annual reports.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: panstwowa_inspekcja_pracy/
+    verification: See https://www.pip.gov.pl
+    landing_folders:
+    - panstwowa_inspekcja_pracy
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.pip.gov.pl
+    default_status: not_started
+  - source_key: panstwowa_egzaminacyjna_dora
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Państwowa Komisja Egzaminacyjna Do Spraw Doradztwa Podatkowego
+    institution: Państwowa Komisja Egzaminacyjna Do Spraw Doradztwa Podatkowego
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.gov.pl/web/finanse/komisja-egzaminacyjna-doradca-podatkowy
+    endpoints:
+    - CKE exam results map/ZIU; no open API
+    scope: CKE exam results map/ZIU; no open API
+    description: Państwowa Komisja Egzaminacyjna Do Spraw Doradztwa Podatkowego — CKE exam results map/ZIU; no open API.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: panstwowa_egzaminacyjna_dora/
+    verification: See https://www.gov.pl/web/finanse/komisja-egzaminacyjna-doradca-podatkowy
+    landing_folders:
+    - panstwowa_egzaminacyjna_dora
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.gov.pl/web/finanse/komisja-egzaminacyjna-doradca-podatkowy
+    default_status: not_started
+  - source_key: panstwowy_fundusz_rehabilita
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Państwowy Fundusz Rehabilitacji Osób Niepełnosprawnych
+    institution: Państwowy Fundusz Rehabilitacji Osób Niepełnosprawnych
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://www.pfron.org.pl
+    endpoints:
+    - PFRON disability data; dane.gov.pl
+    scope: PFRON disability data; dane.gov.pl
+    description: Państwowy Fundusz Rehabilitacji Osób Niepełnosprawnych — PFRON disability data; dane.gov.pl.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: panstwowy_fundusz_rehabilita/
+    verification: See https://www.pfron.org.pl
+    landing_folders:
+    - panstwowy_fundusz_rehabilita
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.pfron.org.pl
+    default_status: not_started
+  - source_key: polska_agencja_antydopingowa
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Polska Agencja Antydopingowa
+    institution: Polska Agencja Antydopingowa
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.antydoping.pl
+    endpoints:
+    - POLADA anti-doping reports
+    scope: POLADA anti-doping reports
+    description: Polska Agencja Antydopingowa — POLADA anti-doping reports.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: polska_agencja_antydopingowa/
+    verification: See https://www.antydoping.pl
+    landing_folders:
+    - polska_agencja_antydopingowa
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.antydoping.pl
+    default_status: not_started
+  - source_key: polska_agencja_inwestycji
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Polska Agencja Inwestycji I Handlu Spółka Akcyjna
+    institution: Polska Agencja Inwestycji I Handlu Spółka Akcyjna
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.paih.gov.pl/
+    endpoints:
+    - PAIH investment/trade reports
+    scope: PAIH investment/trade reports
+    description: Polska Agencja Inwestycji I Handlu Spółka Akcyjna — PAIH investment/trade reports.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: polska_agencja_inwestycji/
+    verification: See https://www.paih.gov.pl/
+    landing_folders:
+    - polska_agencja_inwestycji
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.paih.gov.pl/
+    default_status: not_started
+  - source_key: polska_agencja_nadzoru
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Polska Agencja Nadzoru Audytowego
+    institution: Polska Agencja Nadzoru Audytowego
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://pana.gov.pl/
+    endpoints:
+    - PANA audit-oversight registry
+    scope: PANA audit-oversight registry
+    description: Polska Agencja Nadzoru Audytowego — PANA audit-oversight registry.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: polska_agencja_nadzoru/
+    verification: See https://pana.gov.pl/
+    landing_folders:
+    - polska_agencja_nadzoru
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://pana.gov.pl/
+    default_status: not_started
+  - source_key: polska_agencja_rozwoju
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Polska Agencja Rozwoju Przedsiębiorczości
+    institution: Polska Agencja Rozwoju Przedsiębiorczości
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://WWW.PARP.GOV.PL
+    endpoints:
+    - PARP business-support data; dane.gov.pl
+    scope: PARP business-support data; dane.gov.pl
+    description: Polska Agencja Rozwoju Przedsiębiorczości — PARP business-support data; dane.gov.pl.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: polska_agencja_rozwoju/
+    verification: See https://WWW.PARP.GOV.PL
+    landing_folders:
+    - polska_agencja_rozwoju
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://WWW.PARP.GOV.PL
+    default_status: not_started
+  - source_key: polska_akademia_nauk
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Polska Akademia Nauk
+    institution: Polska Akademia Nauk
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.pan.pl
+    endpoints:
+    - PAN; reports/publications
+    scope: PAN; reports/publications
+    description: Polska Akademia Nauk — PAN; reports/publications.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: polska_akademia_nauk/
+    verification: See https://www.pan.pl
+    landing_folders:
+    - polska_akademia_nauk
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.pan.pl
+    default_status: not_started
+  - source_key: polska_izba_inzynierow
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Polska Izba Inżynierów Budownictwa
+    institution: Polska Izba Inżynierów Budownictwa
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.piib.org.pl
+    endpoints:
+    - construction-engineers chamber registry
+    scope: construction-engineers chamber registry
+    description: Polska Izba Inżynierów Budownictwa — construction-engineers chamber registry.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: polska_izba_inzynierow/
+    verification: See https://www.piib.org.pl
+    landing_folders:
+    - polska_izba_inzynierow
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.piib.org.pl
+    default_status: not_started
+  - source_key: polska_organizacja_turystycz
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Polska Organizacja Turystyczna
+    institution: Polska Organizacja Turystyczna
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.pot.gov.pl
+    endpoints:
+    - POT tourism reports; dane.gov.pl
+    scope: POT tourism reports; dane.gov.pl
+    description: Polska Organizacja Turystyczna — POT tourism reports; dane.gov.pl.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: polska_organizacja_turystycz/
+    verification: See https://www.pot.gov.pl
+    landing_folders:
+    - polska_organizacja_turystycz
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.pot.gov.pl
+    default_status: not_started
+  - source_key: polskie_centrum_akredytacji
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Polskie Centrum Akredytacji
+    institution: Polskie Centrum Akredytacji
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.pca.gov.pl/
+    endpoints:
+    - PCA accreditation registry
+    scope: PCA accreditation registry
+    description: Polskie Centrum Akredytacji — PCA accreditation registry.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: polskie_centrum_akredytacji/
+    verification: See https://www.pca.gov.pl/
+    landing_folders:
+    - polskie_centrum_akredytacji
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.pca.gov.pl/
+    default_status: not_started
+  - source_key: prokuratura_krajowa
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Prokuratura Krajowa
+    institution: Prokuratura Krajowa
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.gov.pl/web/prokuratura-krajowa
+    endpoints:
+    - prosecution statistics/reports
+    scope: prosecution statistics/reports
+    description: Prokuratura Krajowa — prosecution statistics/reports.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: prokuratura_krajowa/
+    verification: See https://www.gov.pl/web/prokuratura-krajowa
+    landing_folders:
+    - prokuratura_krajowa
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.gov.pl/web/prokuratura-krajowa
+    default_status: not_started
+  - source_key: rada_doskonalosci_naukowej
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Rada Doskonałości Naukowej
+    institution: Rada Doskonałości Naukowej
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.rdn.gov.pl
+    endpoints:
+    - RDN academic-degrees registry
+    scope: RDN academic-degrees registry
+    description: Rada Doskonałości Naukowej — RDN academic-degrees registry.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: rada_doskonalosci_naukowej/
+    verification: See https://www.rdn.gov.pl
+    landing_folders:
+    - rada_doskonalosci_naukowej
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.rdn.gov.pl
+    default_status: not_started
+  - source_key: rzecznik_finansowy
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Rzecznik Finansowy
+    institution: Rzecznik Finansowy
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.rf.gov.pl
+    endpoints:
+    - financial ombudsman reports
+    scope: financial ombudsman reports
+    description: Rzecznik Finansowy — financial ombudsman reports.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: rzecznik_finansowy/
+    verification: See https://www.rf.gov.pl
+    landing_folders:
+    - rzecznik_finansowy
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.rf.gov.pl
+    default_status: not_started
+  - source_key: rzadowe_centrum_bezpieczenst
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Rządowe Centrum Bezpieczeństwa
+    institution: Rządowe Centrum Bezpieczeństwa
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://rcb.gov.pl/
+    endpoints:
+    - RCB crisis alerts/reports
+    scope: RCB crisis alerts/reports
+    description: Rządowe Centrum Bezpieczeństwa — RCB crisis alerts/reports.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: rzadowe_centrum_bezpieczenst/
+    verification: See https://rcb.gov.pl/
+    landing_folders:
+    - rzadowe_centrum_bezpieczenst
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://rcb.gov.pl/
+    default_status: not_started
+  - source_key: specjalistyczny_urzad_gornic
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Specjalistyczny Urząd Górniczy
+    institution: Specjalistyczny Urząd Górniczy
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: null
+    endpoints:
+    - mining supervision → WUG
+    scope: mining supervision → WUG
+    description: Specjalistyczny Urząd Górniczy — mining supervision → WUG.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: specjalistyczny_urzad_gornic/
+    verification: n/a
+    landing_folders:
+    - specjalistyczny_urzad_gornic
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: null
+    default_status: not_started
+  - source_key: szef_sluzby_cywilnej
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Szef Służby Cywilnej
+    institution: Szef Służby Cywilnej
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.gov.pl/web/sluzbacywilna/szef-sluzby-cywilnej
+    endpoints:
+    - civil-service reports
+    scope: civil-service reports
+    description: Szef Służby Cywilnej — civil-service reports.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: szef_sluzby_cywilnej/
+    verification: See https://www.gov.pl/web/sluzbacywilna/szef-sluzby-cywilnej
+    landing_folders:
+    - szef_sluzby_cywilnej
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.gov.pl/web/sluzbacywilna/szef-sluzby-cywilnej
+    default_status: not_started
+  - source_key: sad_najwyzszy
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Sąd Najwyższy
+    institution: Sąd Najwyższy
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://www.sn.pl
+    endpoints:
+    - SN rulings sn.pl (cf. saos_api)
+    scope: SN rulings sn.pl (cf. saos_api)
+    description: Sąd Najwyższy — SN rulings sn.pl (cf. saos_api).
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: sad_najwyzszy/
+    verification: See https://www.sn.pl
+    landing_folders:
+    - sad_najwyzszy
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.sn.pl
+    default_status: not_started
+  - source_key: transportowy_dozor_techniczn
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Transportowy Dozór Techniczny
+    institution: Transportowy Dozór Techniczny
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://www.tdt.gov.pl/
+    endpoints:
+    - TDT transport technical inspection registry
+    scope: TDT transport technical inspection registry
+    description: Transportowy Dozór Techniczny — TDT transport technical inspection registry.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: transportowy_dozor_techniczn/
+    verification: See https://www.tdt.gov.pl/
+    landing_folders:
+    - transportowy_dozor_techniczn
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.tdt.gov.pl/
+    default_status: not_started
+  - source_key: trybunal_konstytucyjny
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Trybunał Konstytucyjny
+    institution: Trybunał Konstytucyjny
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://trybunal.gov.pl/
+    endpoints:
+    - TK rulings DB (otk); ipo.trybunal.gov.pl
+    scope: TK rulings DB (otk); ipo.trybunal.gov.pl
+    description: Trybunał Konstytucyjny — TK rulings DB (otk); ipo.trybunal.gov.pl.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: trybunal_konstytucyjny/
+    verification: See https://trybunal.gov.pl/
+    landing_folders:
+    - trybunal_konstytucyjny
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://trybunal.gov.pl/
+    default_status: not_started
+  - source_key: urzad_dozoru_technicznego
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Urząd Dozoru Technicznego
+    institution: Urząd Dozoru Technicznego
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://www.udt.gov.pl
+    endpoints:
+    - UDT technical-inspection; dane.gov.pl
+    scope: UDT technical-inspection; dane.gov.pl
+    description: Urząd Dozoru Technicznego — UDT technical-inspection; dane.gov.pl.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: urzad_dozoru_technicznego/
+    verification: See https://www.udt.gov.pl
+    landing_folders:
+    - urzad_dozoru_technicznego
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.udt.gov.pl
+    default_status: not_started
+  - source_key: urzad_lotnictwa_cywilnego
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Urząd Lotnictwa Cywilnego
+    institution: Urząd Lotnictwa Cywilnego
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://www.ulc.gov.pl
+    endpoints:
+    - ULC aviation stats; dane.gov.pl
+    scope: ULC aviation stats; dane.gov.pl
+    description: Urząd Lotnictwa Cywilnego — ULC aviation stats; dane.gov.pl.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: urzad_lotnictwa_cywilnego/
+    verification: See https://www.ulc.gov.pl
+    landing_folders:
+    - urzad_lotnictwa_cywilnego
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.ulc.gov.pl
+    default_status: not_started
+  - source_key: urzad_ochrony_danych
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Urząd Ochrony Danych Osobowych
+    institution: Urząd Ochrony Danych Osobowych
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://uodo.gov.pl/pl
+    endpoints:
+    - UODO GDPR decisions/reports
+    scope: UODO GDPR decisions/reports
+    description: Urząd Ochrony Danych Osobowych — UODO GDPR decisions/reports.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: urzad_ochrony_danych/
+    verification: See https://uodo.gov.pl/pl
+    landing_folders:
+    - urzad_ochrony_danych
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://uodo.gov.pl/pl
+    default_status: not_started
+  - source_key: urzad_ochrony_konkurencji
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Urząd Ochrony Konkurencji I Konsumentów
+    institution: Urząd Ochrony Konkurencji I Konsumentów
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://www.uokik.gov.pl/
+    endpoints:
+    - UOKiK dane.gov.pl id=26 (to wire)
+    scope: UOKiK dane.gov.pl id=26 (to wire)
+    description: Urząd Ochrony Konkurencji I Konsumentów — UOKiK dane.gov.pl id=26 (to wire).
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: urzad_ochrony_konkurencji/
+    verification: See https://www.uokik.gov.pl/
+    landing_folders:
+    - urzad_ochrony_konkurencji
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.uokik.gov.pl/
+    default_status: not_started
+  - source_key: urzad_patentowy
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Urząd Patentowy Rzeczypospolitej Polskiej
+    institution: Urząd Patentowy Rzeczypospolitej Polskiej
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://uprp.gov.pl/pl
+    endpoints:
+    - UPRP e-Wyszukiwarka registers (patents/TM/designs); search UI
+    scope: UPRP e-Wyszukiwarka registers (patents/TM/designs); search UI
+    description: Urząd Patentowy Rzeczypospolitej Polskiej — UPRP e-Wyszukiwarka registers (patents/TM/designs); search UI.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: urzad_patentowy/
+    verification: See https://uprp.gov.pl/pl
+    landing_folders:
+    - urzad_patentowy
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://uprp.gov.pl/pl
+    default_status: not_started
+  - source_key: urzad_panstwowej_komisji
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Urząd Państwowej Komisji Do Spraw Przeciwdziałania Wykorzystaniu Seksualnemu Małoletnich Poniżej Lat 15
+    institution: Urząd Państwowej Komisji Do Spraw Przeciwdziałania Wykorzystaniu Seksualnemu Małoletnich Poniżej Lat 15
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: null
+    endpoints:
+    - child-protection commission reports
+    scope: child-protection commission reports
+    description: Urząd Państwowej Komisji Do Spraw Przeciwdziałania Wykorzystaniu Seksualnemu Małoletnich Poniżej Lat 15 — child-protection commission reports.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: urzad_panstwowej_komisji/
+    verification: n/a
+    landing_folders:
+    - urzad_panstwowej_komisji
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: null
+    default_status: not_started
+  - source_key: wyzszy_urzad_gorniczy
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: Wyższy Urząd Górniczy
+    institution: Wyższy Urząd Górniczy
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://www.wug.gov.pl
+    endpoints:
+    - WUG mining stats; dane.gov.pl
+    scope: WUG mining stats; dane.gov.pl
+    description: Wyższy Urząd Górniczy — WUG mining stats; dane.gov.pl.
+    extraction_logic: TO RESEARCH/BUILD — promoted from KPP central-institution research.
+    landing_layout: wyzszy_urzad_gorniczy/
+    verification: See https://www.wug.gov.pl
+    landing_folders:
+    - wyzszy_urzad_gorniczy
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.wug.gov.pl
+    default_status: not_started
