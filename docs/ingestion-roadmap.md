@@ -4,6 +4,27 @@
 across all categories. Every source should be ingested, tracked, and either running
 concurrently or on a visible limit-aware schedule, with live status (files, categories, quotas).
 
+## Coverage strategy — two layers (PO, 2026-06-14)
+
+Achieving "all Polish public data sources" runs in two layers:
+
+- **Layer 1 — dane.gov.pl harvester.** One generic extractor pulling everything from
+  Poland's national open-data portal (7,083 institutions, 24,550 datasets via
+  `api.dane.gov.pl`). Broad but incomplete: covers only the ~623 institutions that
+  publish there (~51 of the 132 central bodies), and is shallower than the big
+  institutions' own APIs.
+- **Layer 2 — per-institution deep sources.** Walk the **132 central institutions**
+  from the KPP master registry, visit each site, wire its own API/bulk. Catches what
+  Layer 1 misses (NBP, NIK, …) and gets richer/current data.
+
+**Planning tools (all auto-refreshing monthly):**
+- `docs/poland-institutions-master.md` — KPP: every public institution (who exists).
+- `docs/danegovpl-institutions.md` — dane.gov.pl publishers ranked (who has data).
+- `docs/institution-coverage-matrix.md` — per central institution: DIRECT / dane.gov.pl / GAP.
+  Current: 9 DIRECT, 51 dane.gov.pl, 72 GAP.
+
+Next builds: (1) the Layer-1 dane.gov.pl harvester; (2) work the GAP worklist for Layer 2.
+
 ## The four milestones
 
 ### 1. Research the source universe — **DONE**
