@@ -1562,3 +1562,54 @@ sources:
     manifest_kind: null
     docs_url: https://data.bn.org.pl/docs/bibs
     default_status: not_started
+
+  - source_key: sejm_api
+    category: b_pl_gov_institutional
+    ingestion_mode: api_full
+    name: "Sejm RP — parliamentary API (MPs, votings, legislation)"
+    institution: "Kancelaria Sejmu"
+    type: rest_api
+    auth: none
+    rate_limit: null
+    base_url: https://api.sejm.gov.pl/
+    endpoints:
+      - "GET /sejm/term{N}/MP — MPs; /votings — voting records; /interpellations; /committees"
+      - "ELI API — Journal of Laws & Monitor Polski legislation"
+    scope: "MPs, votings, interpellations, committees, full legislation (ELI) — current + historic terms."
+    description: >-
+      Official Sejm API — the authoritative open source for Polish parliamentary
+      activity and legislation (Dziennik Ustaw / Monitor Polski via ELI).
+    extraction_logic: "TO BUILD — REST pull per term: MPs, votings, proceedings, ELI acts."
+    landing_layout: "sejm_api/term{N}/{endpoint}.json"
+    verification: "Compare with https://api.sejm.gov.pl/ docs / sejm.gov.pl."
+    landing_folders: [sejm_api]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://api.sejm.gov.pl/
+    default_status: not_started
+
+  - source_key: police_stats
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: "Policja — crime statistics portal"
+    institution: "Komenda Główna Policji"
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://statystyka.policja.pl/
+    endpoints:
+      - "statystyka.policja.pl — crime categories, safety, weapons, road incidents (web tables)"
+    scope: "National crime & safety statistics by category and year."
+    description: >-
+      Polish Police statistics portal — crime counts, categories, road safety,
+      weapons permits. Structured web tables (no formal API).
+    extraction_logic: "TO BUILD — scrape/parse statystyka.policja.pl tables."
+    landing_layout: "police_stats/{category}.csv"
+    verification: "Compare with https://statystyka.policja.pl/st/wybrane-statystyki"
+    landing_folders: [police_stats]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://statystyka.policja.pl/
+    default_status: not_started

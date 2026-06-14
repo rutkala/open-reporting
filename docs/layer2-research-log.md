@@ -4,8 +4,8 @@ Exhaustive per-institution research (no category skipped). Each gets a
 documented own-data-channel result; dane.gov.pl status auto-cross-checked.
 Findings curated in `products/ingestion/registry/layer2_findings.yaml`.
 
-- **52 / 132 researched** to a definite own-channel result
-- ⬜ to research 43 · 🟡 dane.gov.pl 42 · ⚫ no open data 19 · 🟠 reports only 11 · 🟢 own WMS/WFS 6 · 🟢 own bulk 6 · 🟢 own API 5
+- **74 / 132 researched** to a definite own-channel result
+- ⬜ to research 34 · 🟡 dane.gov.pl 31 · ⚫ no open data 23 · 🟠 reports only 20 · 🟢 own bulk 9 · 🟢 own API 9 · 🟢 own WMS/WFS 6
 
 | Result | Institution | Source key | dane.gov.pl | Note | Site |
 |---|---|---|--:|---|---|
@@ -40,10 +40,23 @@ Findings curated in `products/ingestion/registry/layer2_findings.yaml`.
 | ⚫ no open data | Centralny Ośrodek Badań Jakości W Diagnostyce Mikrobiologicznej |  | 19 | microbiology QC lab | [↗](http://polmicro.edu.pl) |
 | 🟠 reports only | Centralny Zarząd Służby Więziennej |  |  | prison-service stats; dane.gov.pl | [↗](http://www.sw.gov.pl) |
 | 🟢 own API | Centrum Badań I Edukacji Statystycznej Gus W Likwidacji | gus |  | GUS satellite (in liquidation) — covered by GUS | [↗](http://cbies.stat.gov.pl) |
+| 🟠 reports only | Centrum Doradztwa Rolniczego W Brwinowie |  |  | agri advisory; reports | [↗](http://www.cdr.gov.pl) |
 | 🟢 own WMS/WFS | Centrum Informacyjne Lasów Państwowych | lasy_bdl |  | BDL WFS + OGC API |  |
+| 🟢 own API | Centrum Informatyki Statystycznej | gus |  | GUS IT satellite — covered by GUS | [↗](http://cis.stat.gov.pl) |
+| ⚫ no open data | Centrum Obsługi Kancelarii Prezydenta Rzeczypospolitej Polskiej |  |  | presidential admin support | [↗](http://www.co.kprp.pl) |
+| 🟠 reports only | Centrum Unijnych Projektów Transportowych |  | 6 | CUPT EU-project reports; dane.gov.pl | [↗](http://www.cupt.gov.pl) |
+| ⚫ no open data | Centrum Zakupów Dla Sądownictwa Instytucja Gospodarki Budżetowej |  |  | judiciary procurement | [↗](http://www.czdsigb.gov.pl) |
+| 🟠 reports only | Centrum Łukasiewicz |  | 7 | research network; reports | [↗](http://lukasiewicz.gov.pl) |
+| ⚫ no open data | Departament Wojskowej Służby Zdrowia |  |  | military health dept | [↗](http://www.gov.pl/web/obrona-narodowa/departament-wojskowej-sluzby-zdrowia) |
 | 🟢 own WMS/WFS | Dyrekcja Generalna Lasów Państwowych | lasy_bdl | 3 | BDL WFS + OGC API | [↗](http://www.lasy.gov.pl/pl) |
+| 🟡 dane.gov.pl | Fundusz Rezerwy Demograficznej | zus_bulk |  | ZUS demographic reserve fund — via ZUS | [↗](http://www.zus.pl/o-zus/o-nas/finanse/fundusz-rezerwy-demograficznej) |
 | 🟡 dane.gov.pl | Generalna Dyrekcja Dróg Krajowych I Autostrad | gddkia_bulk | 6 | dane.gov.pl id=55 | [↗](http://www.gov.pl/web/gddkia/generalna-dyrekcja-drog-krajowych-i-autostrad) |
 | 🟢 own WMS/WFS | Generalna Dyrekcja Ochrony Środowiska | gdos_geo | 12 | Geoserwis WMS/WFS | [↗](http://ttps://www.gov.pl/web/gdos) |
+| 🟢 own bulk | Główny Inspektorat Farmaceutyczny |  | 30 | GIF — drug register (RPL); rejestrymedyczne | [↗](http://www.gov.pl/web/gif) |
+| 🟠 reports only | Główny Inspektorat Jakości Handlowej Artykułów Rolno-Spożywczych |  | 12 | IJHARS food-quality controls; dane.gov.pl | [↗](http://www.gov.pl/web/ijhars) |
+| 🟠 reports only | Główny Inspektorat Ochrony Roślin I Nasiennictwa |  | 30 | GIORiN plant-protection registers | [↗](http://piorin.gov.pl) |
+| 🟢 own API | Główny Inspektorat Ochrony Środowiska | gios_bulk | 30 | GIOŚ air-quality API (gios_bulk) | [↗](http://gios.gov.pl) |
+| 🟠 reports only | Główny Inspektorat Rybołówstwa Morskiego |  | 12 | marine fisheries; reports | [↗](http://www.gov.pl/web/girm) |
 | 🟡 dane.gov.pl | Główny Inspektorat Sanitarny |  | 30 | GIS water-quality dane.gov.pl; sk.gis.gov.pl | [↗](http://www.gov.pl/web/gis) |
 | ⚫ no open data | Główny Inspektorat Transportu Drogowego |  | 15 | CANARD enforcement; no open API | [↗](http://www.gov.pl/web/gitd) |
 | 🟢 own WMS/WFS | Główny Urząd Geodezji I Kartografii | gugik_geo | 109 | geoportal WMS/WFS/WCS | [↗](http://WWW.GUGIK.GOV.PL) |
@@ -51,6 +64,15 @@ Findings curated in `products/ingestion/registry/layer2_findings.yaml`.
 | 🟢 own API | Główny Urząd Nadzoru Budowlanego | gunb_rwdz | 109 | RWDZ files + e-Budownictwo API | [↗](http://www.gunb.gov.pl) |
 | 🟢 own API | Główny Urząd Statystyczny | gus | 109 | BDL + DBW APIs (covered) | [↗](http://www.stat.gov.pl) |
 | 🟠 reports only | Inspekcja Weterynaryjna Główny Inspektorat Weterynarii |  | 12 | ADIS/HPAI registers; no open API | [↗](http://www.wetgiw.gov.pl) |
+| 🟢 own bulk | Instytut Pamięci Narodowej - Komisja Ścigania Zbrodni Przeciwko Narodowi Polskiemu - Centrala |  |  | IPN inwentarz.ipn.gov.pl 1.9M records; no open API | [↗](http://ipn.gov.pl/pl) |
+| 🟡 dane.gov.pl | Kancelaria Prezesa Rady Ministrów |  | 21 | KPRM dane.gov.pl + RCL legislation | [↗](http://www.premier.gov.pl) |
+| 🟢 own API | Kancelaria Sejmu | sejm_api |  | api.sejm.gov.pl REST — MPs, votings, ELI legislation | [↗](http://sejm.gov.pl/sejm9.nsf/home.xsp) |
+| 🟢 own API | Kancelaria Senatu |  | 1 | senat.gov.pl data; modest — to assess | [↗](http://www.senat.gov.pl/kancelaria) |
+| ⚫ no open data | Komenda Główna Ochotniczych Hufców Pracy |  | 4 | youth labour corps (OHP) | [↗](http://www.ohp.pl) |
+| 🟠 reports only | Komenda Główna Państwowej Straży Pożarnej |  | 20 | KG PSP fire/rescue statistics | [↗](http://www.gov.pl/web/kgpsp) |
+| 🟢 own bulk | Komenda Główna Policji | police_stats | 20 | statystyka.policja.pl crime stats | [↗](http://www.policja.pl) |
+| 🟠 reports only | Komenda Główna Straży Granicznej |  | 20 | border-guard statistics; dane.gov.pl | [↗](http://www.strazgraniczna.pl) |
+| 🟠 reports only | Krajowa Informacja Skarbowa |  |  | KIS EUREKA tax interpretations; no API | [↗](http://www.kis.gov.pl) |
 | 🟢 own bulk | Naczelna Dyrekcja Archiwów Państwowych |  |  | szukajwarchiwach.gov.pl scans; no open API | [↗](http://www.archiwa.gov.pl/pl) |
 | 🟢 own bulk | Narodowe Archiwum Cyfrowe |  |  | archival search systems; no open API | [↗](http://www.nac.gov.pl) |
 | 🟢 own API | Narodowy Bank Polski | nbp_api |  | api.nbp.pl (covered) | [↗](http://www.nbp.pl) |
@@ -61,29 +83,7 @@ Findings curated in `products/ingestion/registry/layer2_findings.yaml`.
 | 🟡 dane.gov.pl | Urząd Ochrony Konkurencji I Konsumentów |  | 129 | UOKiK dane.gov.pl id=26 (to wire) | [↗](http://www.uokik.gov.pl) |
 | 🟡 dane.gov.pl | Urząd Regulacji Energetyki | ure_bulk | 76 | dane.gov.pl id=107 | [↗](http://www.ure.gov.pl) |
 | 🟡 dane.gov.pl | Zakład Ubezpieczeń Społecznych | zus_bulk | 94 | dane.gov.pl id=20 + portal | [↗](http://www.zus.pl) |
-| ⬜ to research | Centrum Doradztwa Rolniczego W Brwinowie |  |  | not on dane.gov.pl; unchecked | [↗](http://www.cdr.gov.pl) |
-| ⬜ to research | Centrum Informatyki Statystycznej |  |  | not on dane.gov.pl; unchecked | [↗](http://cis.stat.gov.pl) |
-| ⬜ to research | Centrum Obsługi Kancelarii Prezydenta Rzeczypospolitej Polskiej |  |  | not on dane.gov.pl; unchecked | [↗](http://www.co.kprp.pl) |
-| 🟡 dane.gov.pl | Centrum Unijnych Projektów Transportowych |  | 6 | on dane.gov.pl (6 datasets); own channel unchecked | [↗](http://www.cupt.gov.pl) |
-| ⬜ to research | Centrum Zakupów Dla Sądownictwa Instytucja Gospodarki Budżetowej |  |  | not on dane.gov.pl; unchecked | [↗](http://www.czdsigb.gov.pl) |
-| 🟡 dane.gov.pl | Centrum Łukasiewicz |  | 7 | on dane.gov.pl (7 datasets); own channel unchecked | [↗](http://lukasiewicz.gov.pl) |
-| ⬜ to research | Departament Wojskowej Służby Zdrowia |  |  | not on dane.gov.pl; unchecked | [↗](http://www.gov.pl/web/obrona-narodowa/departament-wojskowej-sluzby-zdrowia) |
-| ⬜ to research | Fundusz Rezerwy Demograficznej |  |  | not on dane.gov.pl; unchecked | [↗](http://www.zus.pl/o-zus/o-nas/finanse/fundusz-rezerwy-demograficznej) |
-| 🟡 dane.gov.pl | Główny Inspektorat Farmaceutyczny |  | 30 | on dane.gov.pl (30 datasets); own channel unchecked | [↗](http://www.gov.pl/web/gif) |
-| 🟡 dane.gov.pl | Główny Inspektorat Jakości Handlowej Artykułów Rolno-Spożywczych |  | 12 | on dane.gov.pl (12 datasets); own channel unchecked | [↗](http://www.gov.pl/web/ijhars) |
-| 🟡 dane.gov.pl | Główny Inspektorat Ochrony Roślin I Nasiennictwa |  | 30 | on dane.gov.pl (30 datasets); own channel unchecked | [↗](http://piorin.gov.pl) |
-| 🟡 dane.gov.pl | Główny Inspektorat Ochrony Środowiska |  | 30 | on dane.gov.pl (30 datasets); own channel unchecked | [↗](http://gios.gov.pl) |
-| 🟡 dane.gov.pl | Główny Inspektorat Rybołówstwa Morskiego |  | 12 | on dane.gov.pl (12 datasets); own channel unchecked | [↗](http://www.gov.pl/web/girm) |
-| ⬜ to research | Instytut Pamięci Narodowej - Komisja Ścigania Zbrodni Przeciwko Narodowi Polskiemu - Centrala |  |  | not on dane.gov.pl; unchecked | [↗](http://ipn.gov.pl/pl) |
-| 🟡 dane.gov.pl | Kancelaria Prezesa Rady Ministrów |  | 21 | on dane.gov.pl (21 datasets); own channel unchecked | [↗](http://www.premier.gov.pl) |
-| ⬜ to research | Kancelaria Sejmu |  |  | not on dane.gov.pl; unchecked | [↗](http://sejm.gov.pl/sejm9.nsf/home.xsp) |
-| 🟡 dane.gov.pl | Kancelaria Senatu |  | 1 | on dane.gov.pl (1 datasets); own channel unchecked | [↗](http://www.senat.gov.pl/kancelaria) |
 | 🟡 dane.gov.pl | Kasa Rolniczego Ubezpieczenia Społecznego |  | 3 | on dane.gov.pl (3 datasets); own channel unchecked | [↗](http://www.gov.pl/web/krus) |
-| 🟡 dane.gov.pl | Komenda Główna Ochotniczych Hufców Pracy |  | 4 | on dane.gov.pl (4 datasets); own channel unchecked | [↗](http://www.ohp.pl) |
-| 🟡 dane.gov.pl | Komenda Główna Państwowej Straży Pożarnej |  | 20 | on dane.gov.pl (20 datasets); own channel unchecked | [↗](http://www.gov.pl/web/kgpsp) |
-| 🟡 dane.gov.pl | Komenda Główna Policji |  | 20 | on dane.gov.pl (20 datasets); own channel unchecked | [↗](http://www.policja.pl) |
-| 🟡 dane.gov.pl | Komenda Główna Straży Granicznej |  | 20 | on dane.gov.pl (20 datasets); own channel unchecked | [↗](http://www.strazgraniczna.pl) |
-| ⬜ to research | Krajowa Informacja Skarbowa |  |  | not on dane.gov.pl; unchecked | [↗](http://www.kis.gov.pl) |
 | ⬜ to research | Krajowa Komisja Etyczna Do Spraw Doświadczeń Na Zwierzętach |  |  | not on dane.gov.pl; unchecked | [↗](http://www.gov.pl/web/nauka/krajowa-komisja-etyczna-do-spraw-doswiadczen-na-zwierzetach) |
 | ⬜ to research | Krajowa Rada Radiofonii I Telewizji |  |  | not on dane.gov.pl; unchecked | [↗](http://www.gov.pl/web/krrit) |
 | ⬜ to research | Krajowa Rada Sądownictwa |  |  | not on dane.gov.pl; unchecked | [↗](http://krs.pl/pl) |

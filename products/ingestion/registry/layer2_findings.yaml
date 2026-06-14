@@ -62,3 +62,26 @@ findings:
   "diagnostyce mikrobiologicznej": {kind: no_open_data, source: null, note: "microbiology QC lab"}
   "zarząd służby więziennej": {kind: reports_only, source: null, note: "prison-service stats; dane.gov.pl"}
   "edukacji statystycznej":  {kind: own_api, source: gus, note: "GUS satellite (in liquidation) — covered by GUS"}
+  # ── batch 7 ──────────────────────────────────────────────────────────────
+  "kancelaria sejmu":        {kind: own_api, source: sejm_api, note: "api.sejm.gov.pl REST — MPs, votings, ELI legislation"}
+  "komenda główna policji":  {kind: own_bulk, source: police_stats, note: "statystyka.policja.pl crime stats"}
+  "pamięci narodowej":       {kind: own_bulk, source: null, note: "IPN inwentarz.ipn.gov.pl 1.9M records; no open API"}
+  "informacja skarbowa":     {kind: reports_only, source: null, note: "KIS EUREKA tax interpretations; no API"}
+  "doradztwa rolniczego":    {kind: reports_only, source: null, note: "agri advisory; reports"}
+  "informatyki statystycznej": {kind: own_api, source: gus, note: "GUS IT satellite — covered by GUS"}
+  "obsługi kancelarii prezydenta": {kind: no_open_data, source: null, note: "presidential admin support"}
+  "unijnych projektów transportowych": {kind: reports_only, source: null, note: "CUPT EU-project reports; dane.gov.pl"}
+  "zakupów dla sądownictwa": {kind: no_open_data, source: null, note: "judiciary procurement"}
+  "łukasiewicz":             {kind: reports_only, source: null, note: "research network; reports"}
+  "wojskowej służby zdrowia": {kind: no_open_data, source: null, note: "military health dept"}
+  "rezerwy demograficznej":  {kind: danegovpl, source: zus_bulk, note: "ZUS demographic reserve fund — via ZUS"}
+  "inspektorat farmaceutyczny": {kind: own_bulk, source: null, note: "GIF — drug register (RPL); rejestrymedyczne"}
+  "jakości handlowej":       {kind: reports_only, source: null, note: "IJHARS food-quality controls; dane.gov.pl"}
+  "ochrony roślin":          {kind: reports_only, source: null, note: "GIORiN plant-protection registers"}
+  "inspektorat ochrony środowiska": {kind: own_api, source: gios_bulk, note: "GIOŚ air-quality API (gios_bulk)"}
+  "rybołówstwa morskiego":   {kind: reports_only, source: null, note: "marine fisheries; reports"}
+  "prezesa rady ministrów":  {kind: danegovpl, source: null, note: "KPRM dane.gov.pl + RCL legislation"}
+  "kancelaria senatu":       {kind: own_api, source: null, note: "senat.gov.pl data; modest — to assess"}
+  "ochotniczych hufców":     {kind: no_open_data, source: null, note: "youth labour corps (OHP)"}
+  "straży pożarnej":         {kind: reports_only, source: null, note: "KG PSP fire/rescue statistics"}
+  "straży granicznej":       {kind: reports_only, source: null, note: "border-guard statistics; dane.gov.pl"}
