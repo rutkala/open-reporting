@@ -1143,19 +1143,19 @@ sources:
     type: bulk_download
     auth: none
     rate_limit: null
-    base_url: https://population.un.org/wpp/
+    base_url: https://population.un.org/dataportalapi/api/v1
     endpoints:
-      - "Static Excel/CSV per indicator group; new edition every 2 years (latest WPP 2024)"
-    scope: "Nothing ingested yet. Target: Poland population projections to 2100, age structure, fertility."
+      - "GET /data/indicators/{id}/locations/{m49}/start/{y}/end/{y} — Bearer token, paginated"
+    scope: "7 demographic indicators (population, life expectancy, fertility, birth/death/migration rates, median age) for Poland + EU/CEE comparators, 1990–2050. Expandable."
     description: "The canonical demographic projection dataset, 1950–2100, all countries."
-    extraction_logic: "NOT STARTED — biennial static download."
-    verification: "n/a until ingested"
-    landing_folders: []
+    extraction_logic: "intl_extractor.py kind=un_wpp; Bearer token in .env UN_WPP_TOKEN; config in intl_indicators.yaml."
+    verification: "data/landing/un_wpp/*.json contain Poland (locationId 616) observations"
+    landing_folders: [un_wpp]
     extractor_kind: script
     extractor_path: products/ingestion/extractors/intl_extractor.py
     manifest_kind: null
-    docs_url: https://population.un.org/wpp/
-    default_status: blocked
+    docs_url: https://population.un.org/dataportal/
+    default_status: partial
 
   - source_key: faostat
     category: d_international

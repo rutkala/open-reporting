@@ -14,6 +14,7 @@ Supported source kinds:
   wto            — WTO Timeseries API (JSON), needs WTO_API_KEY
   sdmx_csv       — generic SDMX 2.1 REST→CSV ({base}/{flow}/{key}); OECD + ILOSTAT
   unsd_sdg       — UN Statistics Division SDG API (REST, paginated)
+  un_wpp         — UN World Population Prospects data portal (REST, Bearer token)
   blocked        — documented placeholder; logs a skip with reason, fetches nothing
 
 These are public, generous-quota APIs — one run pulls full history; re-running
@@ -245,6 +246,51 @@ def fetch_unsd_sdg(session, source_key, cfg, dry_run) -> int:
     return n
 
 
+def fetch_un_wpp(session, source_key, cfg, dry_run) -> int:
+    """UN World Population Prospects data portal API (REST, paginated, Bearer token).
+
+    One envelope per indicator (all configured locations). Token from env (cfg
+    token_env). Pagination follows the `nextPage` URL the API returns.
+    """
+    token = os.environ.get(cfg.get("token_env", "UN_WPP_TOKEN"))
+    if not token:
+        raise RuntimeError(f"{cfg.get('token_env', 'UN_WPP_TOKEN')} not set in .env "
+                           "(free registration at population.un.org — PO action)")
+    base = cfg["base"]
+    locations = ",".join(str(x) for x in cfg["locations"])
+    start, end = cfg.get("start", 1990), cfg.get("end", 2050)
+    hdr = {**HEADERS, "Authorization": f"Bearer {token}"}
+    n = 0
+    for ind, label in cfg["indicators"].items():
+        dest = LANDING / source_key / f"{ind}.json"
+        if dry_run:
+            logger.info(f"[{source_key}] would fetch {ind} ({label})")
+            n += 1
+            continue
+        url = (f"{base}/data/indicators/{ind}/locations/{locations}"
+               f"/start/{start}/end/{end}?pageSize=1000")
+        rows = []
+        while url:
+            body = None
+            for attempt in range(4):            # retry transient 5xx
+                r = session.get(url, headers=hdr, timeout=TIMEOUT)
+                if r.status_code in (502, 503, 504):
+                    time.sleep(2 * (attempt + 1))
+                    continue
+                r.raise_for_status()
+                body = r.json()
+                break
+            if body is None:
+                raise RuntimeError(f"persistent 5xx paginating {ind}")
+            rows.extend(body.get("data", []))
+            url = body.get("nextPage")          # full URL or null
+            time.sleep(0.2)
+        _atomic_write(dest, _envelope(source_key, f"/data/indicators/{ind}", str(ind), label, rows))
+        logger.info(f"[{source_key}] {ind}: {len(rows)} obs ({label})")
+        n += 1
+    return n
+
+
 def main(sources: list[str] | None, dry_run: bool) -> int:
     cfg_all = yaml.safe_load(CONFIG.read_text())
     comparators = cfg_all["comparators"]
@@ -272,6 +318,8 @@ def main(sources: list[str] | None, dry_run: bool) -> int:
                 cnt = fetch_sdmx_csv(session, sk, cfg, dry_run)
             elif kind == "unsd_sdg":
                 cnt = fetch_unsd_sdg(session, sk, cfg, dry_run)
+            elif kind == "un_wpp":
+                cnt = fetch_un_wpp(session, sk, cfg, dry_run)
             elif kind == "blocked":
                 logger.warning(f"[{sk}] BLOCKED — {cfg.get('reason', 'no public access')}; skipping")
                 continue

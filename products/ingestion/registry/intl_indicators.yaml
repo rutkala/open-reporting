@@ -127,9 +127,23 @@ sources:
   # --- Blocked: no free unauthenticated public access from the pipeline host. ---
   # Engine logs a clear skip (kind=blocked) rather than failing. Revisit if a key
   # is provisioned (PO action) or the provider exposes a public endpoint.
+  # UN World Population Prospects data portal API (REST, paginated, Bearer token
+  # in .env UN_WPP_TOKEN). Locations are M49 codes (Poland 616 + EU/CEE peers).
   un_wpp:
-    kind: blocked
-    reason: "UN WPP data portal API requires a Bearer token (free registration at population.un.org — PO action). Metadata endpoints are public but /data returns HTTP 401."
+    kind: un_wpp
+    base: https://population.un.org/dataportalapi/api/v1
+    token_env: UN_WPP_TOKEN
+    start: 1990
+    end: 2050
+    locations: [616, 276, 203, 703, 348, 250, 380, 724]   # PL DE CZ SK HU FR IT ES
+    indicators:
+      49: "Total population by sex"
+      61: "Life expectancy at birth"
+      19: "Total fertility rate"
+      55: "Crude birth rate"
+      59: "Crude death rate"
+      66: "Crude rate of net migration"
+      67: "Median age of population"
   imf_ifs:
     kind: blocked
     reason: "IMF IFS legacy SDMX host dataservices.imf.org is decommissioned (DNS gone); the new IMF Data API has no confirmed free public IFS endpoint yet. IMF macro is covered meanwhile by imf_weo (DataMapper)."
