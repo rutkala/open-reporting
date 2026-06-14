@@ -330,8 +330,10 @@
       <option value="">All categories</option>
       <option value="a_pl_gov_central">a — PL gov, combined (GUS)</option>
       <option value="b_pl_gov_institutional">b — PL gov, institutional</option>
-      <option value="c_pl_private">c — PL private</option>
+      <option value="c_pl_private">c — Commercial & market platforms</option>
       <option value="d_international">d — International</option>
+      <option value="e_state_companies">e — State-owned companies</option>
+      <option value="f_financial_statements">f — Financial statements</option>
     </select>
     <select id="filter-mode">
       <option value="">All modes</option>
@@ -381,8 +383,10 @@
   const CATEGORY_LABELS = {
     'a_pl_gov_central':       { title: 'a — Polish government, combined', hint: 'GUS — the central statistical aggregator (BDL, DBW, …)' },
     'b_pl_gov_institutional': { title: 'b — Polish government, institutional', hint: 'NBP, ministries, registers, regulators — one institution each' },
-    'c_pl_private':           { title: 'c — Polish market & commercial', hint: 'Commercial organisations — private (Stooq) + state-owned (PGE, KGHM, ORLEN…)' },
+    'c_pl_private':           { title: 'c — Commercial & market-data platforms', hint: 'Public-utility data platforms (private or public): financial markets (GPW, Stooq), news (PAP), property, trade, media' },
     'd_international':         { title: 'd — International, combined', hint: 'Multinational aggregators (Eurostat, OECD, IMF, …)' },
+    'e_state_companies':      { title: 'e — State-owned companies', hint: 'Spółki Skarbu Państwa (KGHM, PGE, ORLEN, PKP, Poczta…) — own corporate/operational data' },
+    'f_financial_statements': { title: 'f — Financial-statement filings', hint: 'Mandatory financial reporting: KRS RDF (~600k entities), OPP, listed-issuer ESPI' },
   };
 
   const MODE_LABELS = {

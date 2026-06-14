@@ -128,8 +128,10 @@
       <option value="">All categories</option>
       <option value="a_pl_gov_central">a — PL gov, combined (GUS)</option>
       <option value="b_pl_gov_institutional">b — PL gov, institutional</option>
-      <option value="c_pl_private">c — PL private</option>
+      <option value="c_pl_private">c — Commercial & market platforms</option>
       <option value="d_international">d — International</option>
+      <option value="e_state_companies">e — State-owned companies</option>
+      <option value="f_financial_statements">f — Financial statements</option>
     </select>
     <select id="mode-filter">
       <option value="">All modes</option>
@@ -173,8 +175,10 @@ const REG_URL  = '/data/source_registry.json';
 const CATS = {
   'a_pl_gov_central':       'a — Polish government, combined (GUS)',
   'b_pl_gov_institutional': 'b — Polish government, institutional',
-  'c_pl_private':           'c — Polish market & commercial (private + state-owned)',
+  'c_pl_private':           'c — Commercial & market-data platforms',
   'd_international':         'd — International, combined',
+  'e_state_companies':      'e — State-owned companies (spółki Skarbu Państwa)',
+  'f_financial_statements': 'f — Financial-statement filings',
 };
 const MODES = {
   'bulk': ['bulk','mode-bulk'], 'incremental': ['incremental','mode-incr'],

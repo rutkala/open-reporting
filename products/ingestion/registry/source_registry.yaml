@@ -3424,7 +3424,7 @@ sources:
     default_status: not_started
 
   - source_key: pfr
-    category: b_pl_gov_institutional
+    category: e_state_companies
     ingestion_mode: bulk
     name: "Polski Fundusz Rozwoju (PFR)"
     institution: "Polski Fundusz Rozwoju S.A."
@@ -3453,7 +3453,7 @@ sources:
 
   # ── State-owned companies (spółki Skarbu Państwa) — 4th discovery pass ──
   - source_key: kghm
-    category: c_pl_private
+    category: e_state_companies
     ingestion_mode: bulk
     name: KGHM Polska Miedź S.A.
     institution: KGHM Polska Miedź S.A.
@@ -3476,7 +3476,7 @@ sources:
     docs_url: https://kghm.com/pl/inwestorzy/raporty-okresowe
     default_status: not_started
   - source_key: pge
-    category: c_pl_private
+    category: e_state_companies
     ingestion_mode: bulk
     name: PGE Polska Grupa Energetyczna S.A.
     institution: PGE Polska Grupa Energetyczna S.A.
@@ -3499,7 +3499,7 @@ sources:
     docs_url: https://www.gkpge.pl/relacje-inwestorskie/raporty/raporty-okresowe
     default_status: not_started
   - source_key: enea
-    category: c_pl_private
+    category: e_state_companies
     ingestion_mode: bulk
     name: ENEA S.A.
     institution: ENEA S.A.
@@ -3522,7 +3522,7 @@ sources:
     docs_url: https://ir.enea.pl/raporty-okresowe
     default_status: not_started
   - source_key: tauron
-    category: c_pl_private
+    category: e_state_companies
     ingestion_mode: bulk
     name: TAURON Polska Energia S.A.
     institution: TAURON Polska Energia S.A.
@@ -3545,7 +3545,7 @@ sources:
     docs_url: https://raport.tauron.pl/
     default_status: not_started
   - source_key: orlen
-    category: c_pl_private
+    category: e_state_companies
     ingestion_mode: bulk
     name: ORLEN S.A.
     institution: ORLEN S.A.
@@ -3568,7 +3568,7 @@ sources:
     docs_url: https://www.orlen.pl/pl/relacje-inwestorskie/raporty-i-publikacje
     default_status: not_started
   - source_key: grupa_azoty
-    category: c_pl_private
+    category: e_state_companies
     ingestion_mode: bulk
     name: Grupa Azoty S.A.
     institution: Grupa Azoty S.A.
@@ -3591,7 +3591,7 @@ sources:
     docs_url: https://grupaazoty.com/relacje-inwestorskie/raporty-okresowe
     default_status: not_started
   - source_key: jsw
-    category: c_pl_private
+    category: e_state_companies
     ingestion_mode: bulk
     name: Jastrzębska Spółka Węglowa S.A.
     institution: Jastrzębska Spółka Węglowa S.A.
@@ -3614,7 +3614,7 @@ sources:
     docs_url: https://www.jsw.pl/relacje-inwestorskie/raporty-okresowe
     default_status: not_started
   - source_key: weglokoks
-    category: c_pl_private
+    category: e_state_companies
     ingestion_mode: bulk
     name: Węglokoks S.A.
     institution: Węglokoks S.A.
@@ -3637,7 +3637,7 @@ sources:
     docs_url: https://www.weglokoks.com.pl/
     default_status: not_started
   - source_key: pzu
-    category: c_pl_private
+    category: e_state_companies
     ingestion_mode: bulk
     name: Powszechny Zakład Ubezpieczeń S.A. (PZU)
     institution: Powszechny Zakład Ubezpieczeń S.A. (PZU)
@@ -3660,7 +3660,7 @@ sources:
     docs_url: https://www.pzu.pl/relacje-inwestorskie/raporty-i-publikacje
     default_status: not_started
   - source_key: pko_bp
-    category: c_pl_private
+    category: e_state_companies
     ingestion_mode: bulk
     name: PKO Bank Polski S.A.
     institution: PKO Bank Polski S.A.
@@ -3706,7 +3706,7 @@ sources:
     docs_url: https://www.gpw.pl/raporty-okresowe
     default_status: not_started
   - source_key: pse
-    category: c_pl_private
+    category: e_state_companies
     ingestion_mode: bulk
     name: Polskie Sieci Elektroenergetyczne S.A.
     institution: Polskie Sieci Elektroenergetyczne S.A.
@@ -3729,7 +3729,7 @@ sources:
     docs_url: https://www.pse.pl/dane-systemowe
     default_status: not_started
   - source_key: gaz_system
-    category: c_pl_private
+    category: e_state_companies
     ingestion_mode: bulk
     name: Operator Gazociągów Przesyłowych Gaz-System S.A.
     institution: Operator Gazociągów Przesyłowych Gaz-System S.A.
@@ -3752,7 +3752,7 @@ sources:
     docs_url: https://www.gaz-system.pl/pl/dla-mediow/raporty.html
     default_status: not_started
   - source_key: pern
-    category: c_pl_private
+    category: e_state_companies
     ingestion_mode: bulk
     name: PERN S.A.
     institution: PERN S.A.
@@ -3775,7 +3775,7 @@ sources:
     docs_url: https://www.pern.pl/
     default_status: not_started
   - source_key: arp
-    category: c_pl_private
+    category: e_state_companies
     ingestion_mode: bulk
     name: Agencja Rozwoju Przemysłu S.A.
     institution: Agencja Rozwoju Przemysłu S.A.
@@ -3798,7 +3798,7 @@ sources:
     docs_url: https://www.arp.pl/
     default_status: not_started
   - source_key: pgz
-    category: c_pl_private
+    category: e_state_companies
     ingestion_mode: bulk
     name: Polska Grupa Zbrojeniowa S.A.
     institution: Polska Grupa Zbrojeniowa S.A.
@@ -3821,7 +3821,7 @@ sources:
     docs_url: https://pgzsa.pl/
     default_status: not_started
   - source_key: pkp_plk
-    category: c_pl_private
+    category: e_state_companies
     ingestion_mode: bulk
     name: PKP Polskie Linie Kolejowe S.A.
     institution: PKP Polskie Linie Kolejowe S.A.
@@ -3844,7 +3844,7 @@ sources:
     docs_url: https://www.plk-sa.pl/dla-klientow-i-kontrahentow
     default_status: not_started
   - source_key: poczta_polska
-    category: c_pl_private
+    category: e_state_companies
     ingestion_mode: bulk
     name: Poczta Polska S.A.
     institution: Poczta Polska S.A.
@@ -3867,7 +3867,7 @@ sources:
     docs_url: https://www.poczta-polska.pl/o-firmie/
     default_status: not_started
   - source_key: pej
-    category: c_pl_private
+    category: e_state_companies
     ingestion_mode: bulk
     name: Polskie Elektrownie Jądrowe Sp. z o.o.
     institution: Polskie Elektrownie Jądrowe Sp. z o.o.
@@ -3893,7 +3893,7 @@ sources:
   # ── Financial-statement filing obligations (5th pass) ─────────────────────
 
   - source_key: krs_rdf
-    category: c_pl_private
+    category: f_financial_statements
     ingestion_mode: bulk
     name: "KRS — Repozytorium Dokumentów Finansowych (financial statements)"
     institution: "Ministerstwo Sprawiedliwości"
@@ -3927,7 +3927,7 @@ sources:
     default_status: not_started
 
   - source_key: opp_niw
-    category: b_pl_gov_institutional
+    category: f_financial_statements
     ingestion_mode: bulk
     name: "OPP financial & activity reports (NIW database)"
     institution: "Narodowy Instytut Wolności (NIW-CRSO)"
@@ -3952,7 +3952,7 @@ sources:
     default_status: not_started
 
   - source_key: gpw_espi
-    category: c_pl_private
+    category: f_financial_statements
     ingestion_mode: bulk
     name: "GPW — listed-company disclosures (ESPI/EBI)"
     institution: "Giełda Papierów Wartościowych"
