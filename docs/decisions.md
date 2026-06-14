@@ -1258,3 +1258,25 @@ Correction to the entry above: the tool I/O channel was NOT fully dead — it fl
 **Status:** WATCHDOG RUN. 0 spawns, 0 product code changes, 0 redeploys, 0 publishes, 0 Linear writes, 1 post-mortem commit. Committed only my 3 files with explicit paths (never `git add -A`).
 
 **Revisit:** Next run. Leave watchdog mode only on an explicit PO instruction to the Claude cron.
+
+## Run #85 — 2026-06-14 02:00 UTC — [P0 PRODUCTION BROKEN → FIXED] Expired TLS cert, HTTPS restored
+
+**Decision:** Reissued the expired Let's Encrypt certificate and repointed nginx — production HTTPS was fully down. This is squarely within the self-imposed watchdog/production-health boundary (TLS is mine, not Antigravity's in-flight feature work).
+
+**Diagnosis:** Smoke check returned 000 on all 6 hosts. Root cause: the LE cert (`live/open-reporting.dev`, SANs apex+www+portal) **expired Jun 13 19:27 UTC** (yesterday). TLS handshake failed with `certificate expired`. Local stack otherwise healthy (nginx/postgres/ghost up, port 443 listening, DNS for all 3 names → this host `91.98.118.153`). Auto-renewal had silently never fired because: (a) the host `certbot.timer` runs `certbot renew` against the default `/etc/letsencrypt` (empty) while the real certs live in `infra/nginx/certs/`; (b) that lineage's renewal config (`renewal/open-reporting.dev.conf`) was a 0-byte empty file; (c) the compose `certbot` service points at non-existent `./nginx/certs` paths and isn't running.
+
+**Action:**
+- Backed up `infra/nginx/certs/` to `/tmp/certs-backup-*`.
+- `certbot certonly --webroot -w infra/nginx/www --config-dir infra/nginx/certs` for the 3 SANs → new lineage `open-reporting.dev-0003`, valid through **2026-09-12**. (Staging dry-run first to avoid burning LE prod rate limits.)
+- Repointed the 3 nginx server blocks (`portal/apex/www.conf`) to `live/open-reporting.dev-0003/` — stable across renewals (certbot regenerates that symlink dir).
+- Removed broken renewal configs (empty unsuffixed + -0001/-0002 whose live dirs are gone), leaving only the valid `-0003.conf`.
+- `nginx -t` + reload.
+- **Wired real renewal:** host cron `20 3,15 * * *` running `certbot -q renew --config-dir infra/nginx/certs` with `--deploy-hook "docker exec open-reporting-nginx-1 nginx -s reload"`. `renew --dry-run` passes (exit 0). Existing protected crons (22 UTC ingestion, 2/7/12/17 lead) preserved — append-only.
+
+**Verified:** apex + www + portal + all 5 dashboards return **200 over HTTPS** with full cert-chain validation (curl --resolve, no -k); public_finance renders real content (`<title>Finanse publiczne Polski</title>`, stamp `7e9e0496` — Antigravity's in-flight work untouched). Commit `7605a4bc`, pushed to main. (Note: the 000 from the public-IP path is hairpin NAT — the VPS reaching its own public IP — not a visitor-facing issue.)
+
+**Status:** Shipped (P0 hotfix). 0 subagent spawns, 1 commit (3 nginx confs; certs are gitignored), 0 Linear writes, 0 publishes.
+
+**Followup for PO / Antigravity:** (1) The compose `certbot` service has wrong volume paths (`./nginx/certs` vs `./infra/nginx/certs`) and never ran — it's now superseded by the host cron, but worth removing/fixing to avoid confusion. (2) Renewal now depends on the host cron I added; if the canonical setup should be the compose certbot container, reconcile. (3) Consider an expiry-monitoring alert so a future lapse pages before the cert dies, not after.
+
+**Revisit:** Next run — back to watchdog unless PO directs otherwise.
