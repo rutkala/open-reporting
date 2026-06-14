@@ -1298,3 +1298,84 @@ sources:
     manifest_kind: null
     docs_url: https://dane.gov.pl/pl
     default_status: not_started
+
+  # ── Layer 2: per-institution direct sources (KPP research, 2026-06-14) ─────
+
+  - source_key: imgw_api
+    category: b_pl_gov_institutional
+    ingestion_mode: api_full
+    name: "IMGW — meteorology & hydrology public data"
+    institution: "IMGW-PIB"
+    type: rest_api
+    auth: none
+    rate_limit: null
+    base_url: https://danepubliczne.imgw.pl/
+    endpoints:
+      - "GET /api/data/synop — current synoptic station data (JSON; /format/csv|xml|html)"
+      - "GET /api/data/hydro, /api/data/meteo — hydro & meteo measurements"
+      - "GET /data/dane_pomiarowo_obserwacyjne/ — measurement archives (bulk zip)"
+    scope: "Current + archival meteorological and hydrological measurements, all stations."
+    description: >-
+      Institute of Meteorology and Water Management public-data platform — the
+      authoritative weather/water data for Poland. Clean JSON API + bulk archives.
+    extraction_logic: "TO BUILD — API pull (current) + bulk archive mirror (history)."
+    landing_layout: "imgw_api/{endpoint}_{date}.json"
+    verification: "Compare current readings with https://danepubliczne.imgw.pl/"
+    landing_folders: [imgw_api]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://danepubliczne.imgw.pl/apiinfo
+    default_status: not_started
+
+  - source_key: gugik_geo
+    category: b_pl_gov_institutional
+    ingestion_mode: api_full
+    name: "GUGiK — geospatial data services (Geoportal)"
+    institution: "GUGiK"
+    type: ogc_services
+    auth: none
+    rate_limit: null
+    base_url: https://www.geoportal.gov.pl/
+    endpoints:
+      - "WMS / WMTS / WFS / WCS / ATOM / CSW — INSPIRE-compliant spatial services"
+      - "EGiB (land & building register), topographic data, addresses"
+    scope: "National spatial reference data — admin boundaries, addresses, topography, cadastre."
+    description: >-
+      Head Office of Geodesy and Cartography — Poland's spatial-data backbone via
+      geoportal.gov.pl (free WMS/WFS/etc., GML/SHP/XLSX downloads).
+    extraction_logic: "TO BUILD — WFS/ATOM downloads for the layers we need (boundaries, addresses)."
+    landing_layout: "gugik_geo/{layer}.{gml|shp}"
+    verification: "Compare layers in QGIS against geoportal.gov.pl."
+    landing_folders: [gugik_geo]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.geoportal.gov.pl/en/applications/
+    default_status: not_started
+
+  - source_key: pig_cbdg
+    category: b_pl_gov_institutional
+    ingestion_mode: api_full
+    name: "PIG — Centralna Baza Danych Geologicznych (CBDG)"
+    institution: "Państwowy Instytut Geologiczny (PIG-PIB)"
+    type: ogc_services
+    auth: none
+    rate_limit: null
+    base_url: https://baza.pgi.gov.pl/
+    endpoints:
+      - "WMS / WFS / REST — boreholes, geological maps, documents"
+      - "also on dane.gov.pl (institution id=88, 49 datasets)"
+    scope: "Poland's central geological database — boreholes (870k+ docs), maps, raw geology."
+    description: >-
+      Polish Geological Institute — largest digital geological data collection
+      (CBDG), free via WMS/WFS/REST + GeoLOG/borehole apps.
+    extraction_logic: "TO BUILD — REST/WFS pull of borehole + map layers."
+    landing_layout: "pig_cbdg/{layer}.{json|gml}"
+    verification: "Compare with https://baza.pgi.gov.pl/"
+    landing_folders: [pig_cbdg]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://baza.pgi.gov.pl/en
+    default_status: not_started
