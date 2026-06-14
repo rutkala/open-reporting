@@ -4402,3 +4402,158 @@ sources:
     manifest_kind: null
     docs_url: https://www.e-wgt.pl/
     default_status: not_started
+
+  # ── Category c, by domain: SPORTS, FILM, MUSIC, BOOKS, EVENTS/GAMING ───────
+  - source_key: ninetyminut
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "90minut.pl — Polish football database"
+    institution: "90minut.pl"
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.90minut.pl/
+    endpoints: ["historical results, line-ups, squads, attendance for Polish football (all levels)"]
+    scope: "Comprehensive historical Polish football data — matches, clubs, players, attendance."
+    description: "The reference Polish football database (private, community). Scrape; ToS/attribution."
+    extraction_logic: "TO BUILD — scrape season/match pages."
+    landing_layout: "ninetyminut/{season}/"
+    verification: "https://www.90minut.pl/"
+    landing_folders: [ninetyminut]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.90minut.pl/
+    default_status: not_started
+
+  - source_key: flashscore
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "Flashscore.pl — multi-sport results & stats"
+    institution: "Livesport (Flashscore)"
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.flashscore.pl/
+    endpoints: ["live + historical results, tables, stats across football, basketball, volleyball, etc."]
+    scope: "Results/standings/stats across all major sports & leagues (incl. Polish)."
+    description: "Major sports-results platform. Commercial ToS — scraping restricted; context use only."
+    extraction_logic: "BLOCKED pending ToS review — scraping restricted."
+    landing_layout: "flashscore/"
+    verification: "https://www.flashscore.pl/"
+    landing_folders: [flashscore]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.flashscore.pl/
+    default_status: blocked
+
+  - source_key: olis_zpav
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "OLiS (ZPAV) — official music sales/streaming charts"
+    institution: "ZPAV"
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.olis.pl/
+    endpoints: ["weekly official charts: albums (physical/streaming), singles, vinyl (since 2000)"]
+    scope: "Official Polish music charts — sales + streaming, weekly since 2000 (the PL music-market reference)."
+    description: "ZPAV Official Sales List — the authoritative PL music chart. Public; attribution."
+    extraction_logic: "TO BUILD — scrape weekly chart pages."
+    landing_layout: "olis_zpav/{week}.json"
+    verification: "https://www.olis.pl/"
+    landing_folders: [olis_zpav]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://olis.pl/about_olis
+    default_status: not_started
+
+  - source_key: boxoffice_pl
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "Box Office Polska — cinema admissions & revenue"
+    institution: "boxoffice.pl / BOZG"
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://boxoffice-bozg.pl/
+    endpoints: ["weekly cinema box-office: admissions & gross per film (PL market)"]
+    scope: "Cinema box office — admissions & revenue per film/week (complements GUS cinema stats)."
+    description: "PL box-office tracking portal (private). Scrape; attribution/ToS."
+    extraction_logic: "TO BUILD — scrape weekly box-office tables."
+    landing_layout: "boxoffice_pl/{week}.json"
+    verification: "https://boxoffice-bozg.pl/category/box-office-polska/"
+    landing_folders: [boxoffice_pl]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://boxoffice-bozg.pl/
+    default_status: not_started
+
+  - source_key: filmweb
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "Filmweb — film/series database & ratings"
+    institution: "Filmweb sp. z o.o."
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.filmweb.pl/
+    endpoints: ["film/series database, user ratings, popularity (largest PL film service)"]
+    scope: "Film/series metadata + ratings + popularity — PL film-culture signal."
+    description: "Largest PL film database/community (private). Commercial ToS — scraping restricted."
+    extraction_logic: "BLOCKED pending ToS review — scraping restricted."
+    landing_layout: "filmweb/"
+    verification: "https://www.filmweb.pl/"
+    landing_folders: [filmweb]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.filmweb.pl/
+    default_status: blocked
+
+  - source_key: lubimyczytac
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "Lubimyczytać.pl — book database & ratings"
+    institution: "Lubimyczytać (Sieć Empik)"
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://lubimyczytac.pl/
+    endpoints: ["book database, ratings, bestseller/popularity lists (largest PL book community)"]
+    scope: "Book metadata + ratings + bestseller lists — PL reading-culture signal."
+    description: "Largest PL book community (private, Empik). Commercial ToS — scraping restricted."
+    extraction_logic: "BLOCKED pending ToS review — scraping restricted."
+    landing_layout: "lubimyczytac/"
+    verification: "https://lubimyczytac.pl/"
+    landing_folders: [lubimyczytac]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://lubimyczytac.pl/
+    default_status: blocked
+
+  - source_key: ebilet
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "eBilet / Going — events & ticketing"
+    institution: "eBilet / Going"
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.ebilet.pl/
+    endpoints: ["event listings & ticketing (concerts, sport, theatre, fairs) — cultural-activity signal"]
+    scope: "Cultural & entertainment events calendar + ticketing (concerts, theatre, sport, fairs)."
+    description: "Major PL ticketing platforms (private). Listings; commercial ToS."
+    extraction_logic: "TO BUILD — scrape event listings; respect ToS."
+    landing_layout: "ebilet/"
+    verification: "https://www.ebilet.pl/"
+    landing_folders: [ebilet]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.ebilet.pl/
+    default_status: not_started
