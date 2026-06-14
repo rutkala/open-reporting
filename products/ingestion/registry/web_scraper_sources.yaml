@@ -122,6 +122,10 @@ sources:
   panstwowa_inspekcja_pracy:
     pages:
     - https://www.pip.gov.pl/sprawozdania-z-dzialalnosci-pip
+  pfr:
+    pages:
+    - https://pfrsa.pl/relacje-inwestorskie/raporty-gieldowe/raporty-biezace.html
+    - https://pfr.pl/ppk
   pkw_elections:
     pages:
     - https://wybory.gov.pl/

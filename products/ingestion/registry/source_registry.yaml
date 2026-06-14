@@ -3422,3 +3422,31 @@ sources:
     manifest_kind: null
     docs_url: https://www.wug.gov.pl
     default_status: not_started
+
+  - source_key: pfr
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: "Polski Fundusz Rozwoju (PFR)"
+    institution: "Polski Fundusz Rozwoju S.A."
+    type: reports
+    auth: none
+    rate_limit: null
+    base_url: https://pfr.pl/
+    endpoints:
+      - "pfrsa.pl/relacje-inwestorskie — financial & periodic reports"
+      - "pfr.pl/ppk — PPK (employee capital plans) statistics; mojeppk.pl"
+    scope: "PFR Group financials + PPK programme statistics (assets, participation)."
+    description: >-
+      Polish Development Fund — state-owned company (Skarb Państwa); strategic
+      investment/financing vehicle and the PPK system operator. Holds
+      public-interest data not on dane.gov.pl or the KPP (it's a spółka, not an
+      urząd). Added 2026-06-14 after coverage check.
+    extraction_logic: "TO BUILD — scrape reports + PPK stats from pfrsa.pl / pfr.pl."
+    landing_layout: "pfr/"
+    verification: "Compare with https://pfrsa.pl/relacje-inwestorskie/"
+    landing_folders: [pfr]
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/web_scraper_extractor.py
+    manifest_kind: null
+    docs_url: https://pfrsa.pl/relacje-inwestorskie/podstawowe-dane-finansowe.html
+    default_status: not_started
