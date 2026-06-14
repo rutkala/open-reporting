@@ -1261,3 +1261,40 @@ sources:
     manifest_kind: null
     docs_url: https://www.gov.pl/web/cyfryzacja/katalog-podmiotow-publicznych--najwazniejsze-dane-w-jednym-miejscu
     default_status: complete
+
+  # ── Layer 1: the whole national open-data portal, extract-all ─────────────
+
+  - source_key: dane_gov_pl
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: "dane.gov.pl — national open-data portal (extract-all)"
+    institution: "Ministerstwo Cyfryzacji"
+    type: bulk_api
+    auth: none
+    rate_limit: null
+    base_url: https://api.dane.gov.pl/1.4/
+    endpoints:
+      - "GET /datasets — full catalogue (24,550 datasets, paged)"
+      - "GET /datasets/{id}/resources — resources per dataset"
+      - "GET /resources/{id}/file — download every resource file"
+    scope: >-
+      EVERYTHING on the portal — all 24,550 datasets / all downloadable resources
+      across all ~7,000 institutions. No institution filter (Layer 1 broad sweep).
+      Supersedes the old per-institution dane.gov.pl bulk pulls (mf_bulk, nfz_bulk,
+      zus_bulk, men_api, ure_bulk, gddkia_bulk, mrirw_api), which used wrong IDs.
+    description: >-
+      Poland's national open-data portal — the single aggregator harvesting
+      datasets from every public institution that publishes openly. Broad but
+      shallower than the big institutions' own APIs; pair with Layer-2 per-
+      institution sources for depth and for institutions absent here (NBP, NIK).
+    extraction_logic: >-
+      products/ingestion/extractors/danegovpl_harvester.py pages the full dataset
+      catalogue, then downloads every resource per dataset. Resumable manifest.
+    landing_layout: "dane_gov_pl/{dataset_id}/{resource_id}.{ext} + _catalogue.json"
+    verification: "Catalogue count vs https://dane.gov.pl/pl/dataset (portal dataset total)."
+    landing_folders: [dane_gov_pl]
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/danegovpl_harvester.py
+    manifest_kind: null
+    docs_url: https://dane.gov.pl/pl
+    default_status: not_started
