@@ -72,6 +72,29 @@ public a/b/d/e/f sources with timelier, finer market signals.
 
 ---
 
+
+## FREE providers — the priority vein (industry associations + think tanks)
+
+Per PO: prioritise FREE sources. The two richest free veins:
+
+### Industry/trade associations (one per sector — free reports & statistics)
+✓ PZPM (auto) · ✓ ZBP (banks, incl. AMRON-SARFiN mortgages) · ✓ IZFiA (funds) ·
+✓ PIU (insurance) · ✓ PIIT (IT/telecom) — plus candidates:
+○ PZFD (developers) · ○ POHID (retail) · ○ KIG / Lewiatan / Pracodawcy RP / BCC (umbrella employers) ·
+○ Polska Izba Paliw Płynnych (fuel) · ○ PSEW (wind) · ○ PTPiREE (power distribution) ·
+○ IGG (gas) · ○ Izba Przemysłu Chemicznego · ○ Hutnicza Izba (steel) · ○ Polska Izba Handlu ·
+○ ZPL (leasing) · ○ Polski Związek Faktorów · ○ SPL (logistics) · ○ Polska Organizacja Handlu i Dystrybucji ·
+○ IGTE (pension funds) · ○ Polska Izba Mleka / branżowe rolne · ○ Krajowa Izba Gospodarcza Elektroniki.
+
+### Think tanks & research institutes (free analyses + datasets)
+✓ PIE · ✓ WiseEuropa · ✓ CASE · ✓ FOR · ✓ IBS (labour) · ✓ CenEA (tax-benefit microsim) · ✓ IEO (RES) —
+plus: ○ Instytut Sobieskiego · ○ Klub Jagielloński · ○ Fundacja Batorego · ○ PISM · ○ OSW ·
+○ Instytut Spraw Publicznych · ○ Centrum Adama Smitha · ○ Polski Instytut Spraw Międzynarodowych.
+
+**Why these matter:** they're FREE, regularly published, and give sector-level analysis
+the public statistics don't — and many (IBS, CenEA, IEO, IZFiA, AMRON-SARFiN) publish
+actual datasets, not just commentary. This is the priority build queue for category c.
+
 ## The honest constraint
 Unlike public data (a/b/d/e/f), category-c is governed by **commercial terms**: most
 require ToS review, API keys, or paid subscriptions, and the project policy

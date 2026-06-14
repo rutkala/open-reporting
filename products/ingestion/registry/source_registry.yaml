@@ -4736,3 +4736,69 @@ sources:
     manifest_kind: null
     docs_url: https://ibs.org.pl/
     default_status: not_started
+
+  - source_key: izfia
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "IZFiA — investment funds association (free fund data)"
+    institution: "Izba Zarządzających Funduszami i Aktywami"
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.izfa.pl/
+    endpoints: ["free monthly: fund AUM, net sales, asset structure across all TFI"]
+    scope: "Investment-fund market — assets under management, flows, structure (monthly). Free."
+    description: "Investment-fund chamber. Publishes market AUM/flows data FREE monthly."
+    extraction_logic: "TO BUILD — download monthly fund-market data."
+    landing_layout: "izfia/{month}.xlsx"
+    verification: "https://www.izfa.pl/"
+    landing_folders: [izfia]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.izfa.pl/
+    default_status: not_started
+
+  - source_key: piu
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "PIU — insurance chamber (free market data)"
+    institution: "Polska Izba Ubezpieczeń"
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://piu.org.pl/
+    endpoints: ["free insurance-market reports, sector statistics, analyses"]
+    scope: "Insurance market — premiums, claims, by line — free reports (complements KNF)."
+    description: "Insurance chamber. Publishes market reports/statistics FREE."
+    extraction_logic: "TO BUILD — download reports."
+    landing_layout: "piu/{report}.pdf"
+    verification: "https://piu.org.pl/"
+    landing_folders: [piu]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://piu.org.pl/
+    default_status: not_started
+
+  - source_key: piit_telecom
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "PIIT — IT & telecom chamber (free reports)"
+    institution: "Polska Izba Informatyki i Telekomunikacji"
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://piit.org.pl/
+    endpoints: ["free ICT/telecom sector reports & analyses"]
+    scope: "IT & telecom sector reports — free (private complement to UKE)."
+    description: "IT/telecom chamber. Publishes sector reports FREE."
+    extraction_logic: "TO BUILD — download reports."
+    landing_layout: "piit_telecom/{report}.pdf"
+    verification: "https://piit.org.pl/"
+    landing_folders: [piit_telecom]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://piit.org.pl/
+    default_status: not_started
