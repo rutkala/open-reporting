@@ -23,6 +23,7 @@ Usage:
 import argparse
 import json
 import logging
+import os
 import sys
 import time
 from datetime import datetime, timezone
@@ -34,7 +35,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(me
 logger = logging.getLogger(__name__)
 
 BASE = "https://api.dane.gov.pl/1.4"
-LANDING = Path("/opt/open-reporting/data/landing/dane_gov_pl")
+LANDING = Path(os.environ.get("OR_LANDING_DIR", "/opt/open-reporting/data/landing")) / "dane_gov_pl"
 CATALOGUE = LANDING / "_catalogue.json"
 MANIFEST = LANDING / "_manifest.json"
 HEADERS = {"Accept": "application/json", "User-Agent": "OpenReporting-DataPipeline/1.0"}
