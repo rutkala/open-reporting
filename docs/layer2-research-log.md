@@ -4,8 +4,8 @@ Exhaustive per-institution research (no category skipped). Each gets a
 documented own-data-channel result; dane.gov.pl status auto-cross-checked.
 Findings curated in `products/ingestion/registry/layer2_findings.yaml`.
 
-- **98 / 132 researched** to a definite own-channel result
-- 🟠 reports only 31 · ⚫ no open data 30 · 🟡 dane.gov.pl 22 · ⬜ to research 21 · 🟢 own bulk 11 · 🟢 own API 9 · 🟢 own WMS/WFS 8
+- **132 / 132 researched** to a definite own-channel result
+- 🟠 reports only 47 · ⚫ no open data 37 · 🟢 own bulk 17 · 🟡 dane.gov.pl 13 · 🟢 own API 10 · 🟢 own WMS/WFS 8
 
 | Result | Institution | Source key | dane.gov.pl | Note | Site |
 |---|---|---|--:|---|---|
@@ -101,43 +101,43 @@ Findings curated in `products/ingestion/registry/layer2_findings.yaml`.
 | 🟢 own WMS/WFS | Państwowe Gospodarstwo Leśne Lasy Państwowe | lasy_bdl |  | Lasy Państwowe — BDL (lasy_bdl) | [↗](http://WWW.LASY.GOV.PL) |
 | 🟢 own WMS/WFS | Państwowe Gospodarstwo Wodne Wody Polskie | wody_polskie | 10 | ISOK Hydroportal + WFS/WMS | [↗](http://www.wody.gov.pl) |
 | 🟡 dane.gov.pl | Państwowy Fundusz Rehabilitacji Osób Niepełnosprawnych |  | 8 | PFRON disability data; dane.gov.pl | [↗](http://www.pfron.org.pl) |
+| 🟠 reports only | Polska Agencja Antydopingowa |  | 2 | POLADA anti-doping reports | [↗](http://www.antydoping.pl) |
+| 🟠 reports only | Polska Agencja Inwestycji I Handlu Spółka Akcyjna |  | 33 | PAIH investment/trade reports | [↗](http://www.paih.gov.pl) |
+| 🟠 reports only | Polska Agencja Nadzoru Audytowego |  | 2 | PANA audit-oversight registry | [↗](http://pana.gov.pl) |
+| 🟡 dane.gov.pl | Polska Agencja Rozwoju Przedsiębiorczości |  | 2 | PARP business-support data; dane.gov.pl | [↗](http://WWW.PARP.GOV.PL) |
+| 🟠 reports only | Polska Akademia Nauk |  |  | PAN; reports/publications | [↗](http://www.pan.pl) |
+| 🟠 reports only | Polska Izba Inżynierów Budownictwa |  |  | construction-engineers chamber registry | [↗](http://www.piib.org.pl) |
+| 🟠 reports only | Polska Organizacja Turystyczna |  |  | POT tourism reports; dane.gov.pl | [↗](http://www.pot.gov.pl) |
+| ⚫ no open data | Polski Komitet Normalizacyjny |  | 8 | PKN standards (paywalled) | [↗](http://www.pkn.pl) |
+| 🟠 reports only | Polskie Centrum Akredytacji |  | 12 | PCA accreditation registry | [↗](http://www.pca.gov.pl) |
+| 🟠 reports only | Prokuratura Krajowa |  |  | prosecution statistics/reports | [↗](http://www.gov.pl/web/prokuratura-krajowa) |
+| ⚫ no open data | Rada Do Spraw Polaków Poza Granicami Kraju |  |  | diaspora advisory council | [↗](http://www.gov.pl/web/dyplomacja/rada-do-spraw-polakow-poza-granicami-kraju) |
+| ⚫ no open data | Rada Do Spraw Uchodźców |  |  | refugee appeals council | [↗](http://www.gov.pl/web/rada-ds-uchodzcow/dane-kontaktowe) |
+| 🟠 reports only | Rada Doskonałości Naukowej |  |  | RDN academic-degrees registry | [↗](http://www.rdn.gov.pl) |
+| 🟠 reports only | Rzecznik Finansowy |  | 2 | financial ombudsman reports | [↗](http://www.rf.gov.pl) |
+| 🟠 reports only | Rządowe Centrum Bezpieczeństwa |  | 2 | RCB crisis alerts/reports | [↗](http://rcb.gov.pl) |
+| 🟠 reports only | Specjalistyczny Urząd Górniczy |  | 1 | mining supervision → WUG |  |
+| 🟠 reports only | Szef Służby Cywilnej |  |  | civil-service reports | [↗](http://www.gov.pl/web/sluzbacywilna/szef-sluzby-cywilnej) |
+| ⚫ no open data | Sztab Generalny Wojska Polskiego |  |  | armed forces general staff | [↗](http://www.wojsko-polskie.pl/sgwp/kontakt) |
+| 🟢 own bulk | Sąd Najwyższy |  |  | SN rulings sn.pl (cf. saos_api) | [↗](http://www.sn.pl) |
 | ⚫ no open data | Służba Kontrwywiadu Wojskowego |  |  | AW intelligence; BIP only | [↗](http://www.skw.gov.pl/index.html) |
+| ⚫ no open data | Służba Ochrony Państwa |  |  | SOP state protection service | [↗](http://www.sop.gov.pl/pl) |
+| 🟠 reports only | Transportowy Dozór Techniczny |  | 11 | TDT transport technical inspection registry | [↗](http://www.tdt.gov.pl) |
+| 🟢 own bulk | Trybunał Konstytucyjny |  |  | TK rulings DB (otk); ipo.trybunal.gov.pl | [↗](http://trybunal.gov.pl) |
+| 🟢 own bulk | Urząd Do Spraw Cudzoziemców | udsc_migration |  | migracje.gov.pl + annual stats | [↗](http://www.gov.pl/web/udsc/urzad-do-spraw-cudzoziemcow) |
+| ⚫ no open data | Urząd Do Spraw Kombatantów I Osób Represjonowanych |  |  | veterans affairs office | [↗](http://www.kombatanci.gov.pl/pl) |
+| 🟡 dane.gov.pl | Urząd Dozoru Technicznego |  |  | UDT technical-inspection; dane.gov.pl | [↗](http://www.udt.gov.pl) |
 | 🟠 reports only | Urząd Komisji Nadzoru Finansowego | knf_bulk |  | dane_statystyczne XLSX, no API | [↗](http://www.knfgov.pl) |
 | 🟢 own bulk | Urząd Komunikacji Elektronicznej | uke_broadband | 30 | Mapbook/SIDUSIS | [↗](http://www.uke.gov.pl) |
+| 🟡 dane.gov.pl | Urząd Lotnictwa Cywilnego |  | 5 | ULC aviation stats; dane.gov.pl | [↗](http://www.ulc.gov.pl) |
+| 🟠 reports only | Urząd Ochrony Danych Osobowych |  |  | UODO GDPR decisions/reports | [↗](http://uodo.gov.pl/pl) |
 | 🟡 dane.gov.pl | Urząd Ochrony Konkurencji I Konsumentów |  | 129 | UOKiK dane.gov.pl id=26 (to wire) | [↗](http://www.uokik.gov.pl) |
+| 🟢 own bulk | Urząd Patentowy Rzeczypospolitej Polskiej |  |  | UPRP e-Wyszukiwarka registers (patents/TM/designs); search UI | [↗](http://uprp.gov.pl/pl) |
+| 🟠 reports only | Urząd Państwowej Komisji Do Spraw Przeciwdziałania Wykorzystaniu Seksualnemu Małoletnich Poniżej Lat 15 |  |  | child-protection commission reports |  |
+| ⚫ no open data | Urząd Prokuratorii Generalnej Rzeczypospolitej Polskiej |  |  | state legal representation | [↗](http://www.gov.pl/web/prokuratoria) |
 | 🟡 dane.gov.pl | Urząd Regulacji Energetyki | ure_bulk | 76 | dane.gov.pl id=107 | [↗](http://www.ure.gov.pl) |
+| 🟢 own bulk | Urząd Rejestracji Produktów Leczniczych, Wyrobów Medycznych I Produktów Biobójczych | urpl_rpl |  | drug register RPL (rejestrymedyczne) | [↗](http://www.gov.pl/web/urpl) |
+| 🟢 own bulk | Urząd Transportu Kolejowego | utk_stats |  | dane.utk.gov.pl + dane.gov.pl id=21 | [↗](http://www.utk.gov.pl) |
+| 🟢 own API | Urząd Zamówień Publicznych | uzp_bzp | 15 | BZP API ezamowienia.gov.pl/mo-board/api/v1; dane.gov.pl 916 | [↗](http://www.gov.pl/web/uzp) |
+| 🟡 dane.gov.pl | Wyższy Urząd Górniczy |  | 1 | WUG mining stats; dane.gov.pl | [↗](http://www.wug.gov.pl) |
 | 🟡 dane.gov.pl | Zakład Ubezpieczeń Społecznych | zus_bulk | 94 | dane.gov.pl id=20 + portal | [↗](http://www.zus.pl) |
-| 🟡 dane.gov.pl | Polska Agencja Antydopingowa |  | 2 | on dane.gov.pl (2 datasets); own channel unchecked | [↗](http://www.antydoping.pl) |
-| 🟡 dane.gov.pl | Polska Agencja Inwestycji I Handlu Spółka Akcyjna |  | 33 | on dane.gov.pl (33 datasets); own channel unchecked | [↗](http://www.paih.gov.pl) |
-| 🟡 dane.gov.pl | Polska Agencja Nadzoru Audytowego |  | 2 | on dane.gov.pl (2 datasets); own channel unchecked | [↗](http://pana.gov.pl) |
-| 🟡 dane.gov.pl | Polska Agencja Rozwoju Przedsiębiorczości |  | 2 | on dane.gov.pl (2 datasets); own channel unchecked | [↗](http://WWW.PARP.GOV.PL) |
-| ⬜ to research | Polska Akademia Nauk |  |  | not on dane.gov.pl; unchecked | [↗](http://www.pan.pl) |
-| ⬜ to research | Polska Izba Inżynierów Budownictwa |  |  | not on dane.gov.pl; unchecked | [↗](http://www.piib.org.pl) |
-| ⬜ to research | Polska Organizacja Turystyczna |  |  | not on dane.gov.pl; unchecked | [↗](http://www.pot.gov.pl) |
-| 🟡 dane.gov.pl | Polski Komitet Normalizacyjny |  | 8 | on dane.gov.pl (8 datasets); own channel unchecked | [↗](http://www.pkn.pl) |
-| 🟡 dane.gov.pl | Polskie Centrum Akredytacji |  | 12 | on dane.gov.pl (12 datasets); own channel unchecked | [↗](http://www.pca.gov.pl) |
-| ⬜ to research | Prokuratura Krajowa |  |  | not on dane.gov.pl; unchecked | [↗](http://www.gov.pl/web/prokuratura-krajowa) |
-| ⬜ to research | Rada Do Spraw Polaków Poza Granicami Kraju |  |  | not on dane.gov.pl; unchecked | [↗](http://www.gov.pl/web/dyplomacja/rada-do-spraw-polakow-poza-granicami-kraju) |
-| ⬜ to research | Rada Do Spraw Uchodźców |  |  | not on dane.gov.pl; unchecked | [↗](http://www.gov.pl/web/rada-ds-uchodzcow/dane-kontaktowe) |
-| ⬜ to research | Rada Doskonałości Naukowej |  |  | not on dane.gov.pl; unchecked | [↗](http://www.rdn.gov.pl) |
-| 🟡 dane.gov.pl | Rzecznik Finansowy |  | 2 | on dane.gov.pl (2 datasets); own channel unchecked | [↗](http://www.rf.gov.pl) |
-| 🟡 dane.gov.pl | Rządowe Centrum Bezpieczeństwa |  | 2 | on dane.gov.pl (2 datasets); own channel unchecked | [↗](http://rcb.gov.pl) |
-| 🟡 dane.gov.pl | Specjalistyczny Urząd Górniczy |  | 1 | on dane.gov.pl (1 datasets); own channel unchecked |  |
-| ⬜ to research | Szef Służby Cywilnej |  |  | not on dane.gov.pl; unchecked | [↗](http://www.gov.pl/web/sluzbacywilna/szef-sluzby-cywilnej) |
-| ⬜ to research | Sztab Generalny Wojska Polskiego |  |  | not on dane.gov.pl; unchecked | [↗](http://www.wojsko-polskie.pl/sgwp/kontakt) |
-| ⬜ to research | Sąd Najwyższy |  |  | not on dane.gov.pl; unchecked | [↗](http://www.sn.pl) |
-| ⬜ to research | Służba Ochrony Państwa |  |  | not on dane.gov.pl; unchecked | [↗](http://www.sop.gov.pl/pl) |
-| 🟡 dane.gov.pl | Transportowy Dozór Techniczny |  | 11 | on dane.gov.pl (11 datasets); own channel unchecked | [↗](http://www.tdt.gov.pl) |
-| ⬜ to research | Trybunał Konstytucyjny |  |  | not on dane.gov.pl; unchecked | [↗](http://trybunal.gov.pl) |
-| ⬜ to research | Urząd Do Spraw Cudzoziemców |  |  | not on dane.gov.pl; unchecked | [↗](http://www.gov.pl/web/udsc/urzad-do-spraw-cudzoziemcow) |
-| ⬜ to research | Urząd Do Spraw Kombatantów I Osób Represjonowanych |  |  | not on dane.gov.pl; unchecked | [↗](http://www.kombatanci.gov.pl/pl) |
-| ⬜ to research | Urząd Dozoru Technicznego |  |  | not on dane.gov.pl; unchecked | [↗](http://www.udt.gov.pl) |
-| 🟡 dane.gov.pl | Urząd Lotnictwa Cywilnego |  | 5 | on dane.gov.pl (5 datasets); own channel unchecked | [↗](http://www.ulc.gov.pl) |
-| ⬜ to research | Urząd Ochrony Danych Osobowych |  |  | not on dane.gov.pl; unchecked | [↗](http://uodo.gov.pl/pl) |
-| ⬜ to research | Urząd Patentowy Rzeczypospolitej Polskiej |  |  | not on dane.gov.pl; unchecked | [↗](http://uprp.gov.pl/pl) |
-| ⬜ to research | Urząd Państwowej Komisji Do Spraw Przeciwdziałania Wykorzystaniu Seksualnemu Małoletnich Poniżej Lat 15 |  |  | not on dane.gov.pl; unchecked |  |
-| ⬜ to research | Urząd Prokuratorii Generalnej Rzeczypospolitej Polskiej |  |  | not on dane.gov.pl; unchecked | [↗](http://www.gov.pl/web/prokuratoria) |
-| ⬜ to research | Urząd Rejestracji Produktów Leczniczych, Wyrobów Medycznych I Produktów Biobójczych |  |  | not on dane.gov.pl; unchecked | [↗](http://www.gov.pl/web/urpl) |
-| ⬜ to research | Urząd Transportu Kolejowego |  |  | not on dane.gov.pl; unchecked | [↗](http://www.utk.gov.pl) |
-| 🟡 dane.gov.pl | Urząd Zamówień Publicznych |  | 15 | on dane.gov.pl (15 datasets); own channel unchecked | [↗](http://www.gov.pl/web/uzp) |
-| 🟡 dane.gov.pl | Wyższy Urząd Górniczy |  | 1 | on dane.gov.pl (1 datasets); own channel unchecked | [↗](http://www.wug.gov.pl) |

@@ -110,3 +110,38 @@ findings:
   "inspekcja pracy":         {kind: reports_only, source: null, note: "PIP labour-inspection annual reports"}
   "gospodarstwo leśne":      {kind: own_ogc, source: lasy_bdl, note: "Lasy Państwowe — BDL (lasy_bdl)"}
   "rehabilitacji osób niepełnosprawnych": {kind: danegovpl, source: null, note: "PFRON disability data; dane.gov.pl"}
+  # ── batch 9 (final central) ──────────────────────────────────────────────
+  "zamówień publicznych":    {kind: own_api, source: uzp_bzp, note: "BZP API ezamowienia.gov.pl/mo-board/api/v1; dane.gov.pl 916"}
+  "transportu kolejowego":   {kind: own_bulk, source: utk_stats, note: "dane.utk.gov.pl + dane.gov.pl id=21"}
+  "do spraw cudzoziemców":   {kind: own_bulk, source: udsc_migration, note: "migracje.gov.pl + annual stats"}
+  "rejestracji produktów leczniczych": {kind: own_bulk, source: urpl_rpl, note: "drug register RPL (rejestrymedyczne)"}
+  "patentowy":               {kind: own_bulk, source: null, note: "UPRP e-Wyszukiwarka registers (patents/TM/designs); search UI"}
+  "antydopingowa":           {kind: reports_only, source: null, note: "POLADA anti-doping reports"}
+  "inwestycji i handlu":     {kind: reports_only, source: null, note: "PAIH investment/trade reports"}
+  "nadzoru audytowego":      {kind: reports_only, source: null, note: "PANA audit-oversight registry"}
+  "rozwoju przedsiębiorczości": {kind: danegovpl, source: null, note: "PARP business-support data; dane.gov.pl"}
+  "akademia nauk":           {kind: reports_only, source: null, note: "PAN; reports/publications"}
+  "izba inżynierów":         {kind: reports_only, source: null, note: "construction-engineers chamber registry"}
+  "organizacja turystyczna": {kind: reports_only, source: null, note: "POT tourism reports; dane.gov.pl"}
+  "komitet normalizacyjny":  {kind: no_open_data, source: null, note: "PKN standards (paywalled)"}
+  "centrum akredytacji":     {kind: reports_only, source: null, note: "PCA accreditation registry"}
+  "prokuratura krajowa":     {kind: reports_only, source: null, note: "prosecution statistics/reports"}
+  "polaków poza granicami":  {kind: no_open_data, source: null, note: "diaspora advisory council"}
+  "do spraw uchodźców":      {kind: no_open_data, source: null, note: "refugee appeals council"}
+  "doskonałości naukowej":   {kind: reports_only, source: null, note: "RDN academic-degrees registry"}
+  "rzecznik finansowy":      {kind: reports_only, source: null, note: "financial ombudsman reports"}
+  "centrum bezpieczeństwa":  {kind: reports_only, source: null, note: "RCB crisis alerts/reports"}
+  "specjalistyczny urząd górniczy": {kind: reports_only, source: null, note: "mining supervision → WUG"}
+  "służby cywilnej":         {kind: reports_only, source: null, note: "civil-service reports"}
+  "sztab generalny":         {kind: no_open_data, source: null, note: "armed forces general staff"}
+  "sąd najwyższy":           {kind: own_bulk, source: null, note: "SN rulings sn.pl (cf. saos_api)"}
+  "ochrony państwa":         {kind: no_open_data, source: null, note: "SOP state protection service"}
+  "transportowy dozór":      {kind: reports_only, source: null, note: "TDT transport technical inspection registry"}
+  "trybunał konstytucyjny":  {kind: own_bulk, source: null, note: "TK rulings DB (otk); ipo.trybunal.gov.pl"}
+  "kombatantów":             {kind: no_open_data, source: null, note: "veterans affairs office"}
+  "dozoru technicznego":     {kind: danegovpl, source: null, note: "UDT technical-inspection; dane.gov.pl"}
+  "lotnictwa cywilnego":     {kind: danegovpl, source: null, note: "ULC aviation stats; dane.gov.pl"}
+  "ochrony danych osobowych": {kind: reports_only, source: null, note: "UODO GDPR decisions/reports"}
+  "wykorzystaniu seksualnemu": {kind: reports_only, source: null, note: "child-protection commission reports"}
+  "prokuratorii generalnej": {kind: no_open_data, source: null, note: "state legal representation"}
+  "wyższy urząd górniczy":   {kind: danegovpl, source: null, note: "WUG mining stats; dane.gov.pl"}

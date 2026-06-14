@@ -1664,3 +1664,98 @@ sources:
     manifest_kind: null
     docs_url: https://www.gov.pl/web/wody-polskie
     default_status: not_started
+
+  - source_key: uzp_bzp
+    category: b_pl_gov_institutional
+    ingestion_mode: api_full
+    name: "UZP — public procurement bulletin (BZP API)"
+    institution: "Urząd Zamówień Publicznych"
+    type: rest_api
+    auth: none
+    rate_limit: null
+    base_url: https://ezamowienia.gov.pl/
+    endpoints:
+      - "GET /mo-board/api/v1/notice — published procurement notices (read, no integration needed)"
+      - "also dane.gov.pl dataset 916 (BZP announcements)"
+    scope: "All public-procurement notices in the Biuletyn Zamówień Publicznych (2022+)."
+    description: >-
+      Public Procurement Office — the BZP API exposes all domestic procurement
+      announcements; core dataset for public-spending transparency.
+    extraction_logic: "TO BUILD — page the BZP notice API."
+    landing_layout: "uzp_bzp/notices_{date}.json"
+    verification: "Compare with https://bzp.uzp.gov.pl/"
+    landing_folders: [uzp_bzp]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://ezamowienia.gov.pl/pl/integracja/
+    default_status: not_started
+
+  - source_key: utk_stats
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: "UTK — railway statistics portal"
+    institution: "Urząd Transportu Kolejowego"
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://dane.utk.gov.pl/
+    endpoints:
+      - "dane.utk.gov.pl statistical portal; carrier-licence + safety-cert registers; dane.gov.pl id=21"
+    scope: "Rail passenger/freight statistics, carrier licences, safety certificates."
+    description: "Rail Transport Office — central rail statistics & operator registers."
+    extraction_logic: "TO BUILD — portal exports + dane.gov.pl (id=21)."
+    landing_layout: "utk_stats/{dataset}.csv"
+    verification: "Compare with https://dane.utk.gov.pl/"
+    landing_folders: [utk_stats]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://dane.gov.pl/pl/institution/21
+    default_status: not_started
+
+  - source_key: udsc_migration
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: "UDSC — migration & asylum statistics"
+    institution: "Urząd do Spraw Cudzoziemców"
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://migracje.gov.pl/
+    endpoints:
+      - "migracje.gov.pl maps/data + udsc.gov.pl annual statistics (1992+)"
+    scope: "Residence permits, asylum applications, foreigner proceedings — annual + maps."
+    description: "Office for Foreigners — authoritative migration/asylum statistics for Poland."
+    extraction_logic: "TO BUILD — migracje.gov.pl exports + annual compilations."
+    landing_layout: "udsc_migration/{year}.{csv|xlsx}"
+    verification: "Compare with https://udsc.gov.pl/statystyki/"
+    landing_folders: [udsc_migration]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://migracje.gov.pl/
+    default_status: not_started
+
+  - source_key: urpl_rpl
+    category: b_pl_gov_institutional
+    ingestion_mode: bulk
+    name: "URPL — register of medicinal products (RPL)"
+    institution: "Urząd Rejestracji Produktów Leczniczych"
+    type: bulk_download
+    auth: none
+    rate_limit: null
+    base_url: https://rejestrymedyczne.ezdrowie.gov.pl/
+    endpoints:
+      - "Rejestr Produktów Leczniczych (RPL) — open data export of authorised medicines"
+    scope: "All medicinal products authorised in Poland — active substances, forms, marketing authorisations."
+    description: "Office for Registration of Medicinal Products — the national drug register."
+    extraction_logic: "TO BUILD — RPL open-data export mirror."
+    landing_layout: "urpl_rpl/rpl_{date}.csv"
+    verification: "Compare with https://rejestrymedyczne.ezdrowie.gov.pl/rpl/search"
+    landing_folders: [urpl_rpl]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://rejestrymedyczne.ezdrowie.gov.pl/
+    default_status: not_started
