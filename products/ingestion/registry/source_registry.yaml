@@ -1685,8 +1685,8 @@ sources:
     landing_layout: "uzp_bzp/notices_{date}.json"
     verification: "Compare with https://bzp.uzp.gov.pl/"
     landing_folders: [uzp_bzp]
-    extractor_kind: none
-    extractor_path: null
+    extractor_kind: script
+    extractor_path: products/ingestion/extractors/uzp_extractor.py
     manifest_kind: null
     docs_url: https://ezamowienia.gov.pl/pl/integracja/
     default_status: not_started
