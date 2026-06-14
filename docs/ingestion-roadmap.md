@@ -25,6 +25,17 @@ Achieving "all Polish public data sources" runs in two layers:
 
 Next builds: (1) the Layer-1 dane.gov.pl harvester; (2) work the GAP worklist for Layer 2.
 
+
+## Layer-2 research — COMPLETE for central institutions (2026-06-14)
+
+All **132 KPP central institutions** researched for their own data channel (no
+category skipped). Outcome: 36 have a real own channel (12 REST API, 9 WMS/WFS,
+15 bulk/registers), 16 dane.gov.pl-only, 47 reports-only, 36 no open data.
+**18 new direct sources** discovered → registry now **64 sources**. Tracked in
+`docs/layer2-research-log.md`; findings in `registry/layer2_findings.yaml`.
+Remaining: the KPP long tail (~87k local/sectoral entities) is covered by the
+Layer-1 dane.gov.pl harvester; build the extractors next.
+
 ## The four milestones
 
 ### 1. Research the source universe — **DONE**
