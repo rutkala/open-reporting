@@ -383,9 +383,12 @@ def generate() -> Path:
                     _compute_file_status(landing_folders, default_status)
                 )
         except OSError as exc:
-            log.warning("OSError processing source %s: %s", source_key, exc)
-            extraction_status = "blocked"
-            status_detail = "landing folder unreadable (mount error)"
+            # Landing mount unavailable (e.g. rclone token expired) — fall back to
+            # the source's defined status rather than masking it as "blocked".
+            # We're in the source-definition phase; landing scan is best-effort.
+            log.warning("OSError processing source %s: %s — using default_status", source_key, exc)
+            extraction_status = default_status
+            status_detail = "landing unavailable — status from registry definition"
             last_ingested = None
             file_count = 0
         except Exception as exc:
