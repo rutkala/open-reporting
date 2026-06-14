@@ -4222,3 +4222,183 @@ sources:
     manifest_kind: null
     docs_url: https://www.nielsen.com/pl/data-center/
     default_status: blocked
+
+  # ── Category c, by domain: AGRICULTURE (A), FUEL, AUTOMOTIVE, LABOUR ───────
+  - source_key: cenyrolnicze
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "CenyRolnicze.pl — agricultural market prices"
+    institution: "CenyRolnicze.pl"
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.cenyrolnicze.pl/
+    endpoints: ["purchase prices: grains, rapeseed, livestock (pigs/cattle/poultry), dairy (HTML)"]
+    scope: "Daily agricultural purchase prices — grains, oilseeds, livestock, poultry, dairy."
+    description: "PL agricultural price portal (private). Free quotes; ToS for reuse."
+    extraction_logic: "TO BUILD — scrape price tables."
+    landing_layout: "cenyrolnicze/{product}.json"
+    verification: "https://www.cenyrolnicze.pl/"
+    landing_folders: [cenyrolnicze]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.cenyrolnicze.pl/
+    default_status: not_started
+
+  - source_key: epetrol
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "e-petrol.pl — fuel market prices"
+    institution: "Information Market S.A."
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.e-petrol.pl/notowania
+    endpoints: ["wholesale (Orlen/BP/Shell/…) + retail fuel prices by region/city (weekly)"]
+    scope: "Wholesale & retail fuel prices (Pb95/98/diesel/LPG) — the PL fuel-market reference."
+    description: "PL fuel-price portal (private). Free public quotes; premium reports paid."
+    extraction_logic: "TO BUILD — scrape notowania tables."
+    landing_layout: "epetrol/{date}.json"
+    verification: "https://www.e-petrol.pl/notowania/rynek-krajowy/hurt"
+    landing_folders: [epetrol]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.e-petrol.pl/
+    default_status: not_started
+
+  - source_key: samar
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "IBRM SAMAR — automotive market data"
+    institution: "IBRM SAMAR"
+    type: reports
+    auth: key_optional
+    rate_limit: null
+    base_url: https://www.samar.pl/rynek-w-liczbach
+    endpoints: ["vehicle registrations (new/used), market structure, forecasts (some free, detailed paid)"]
+    scope: "Car/LCV/motorcycle registrations & market structure (from CEPiK + MF)."
+    description: "Leading PL automotive-market data vendor. Headline figures free; detailed reports paid."
+    extraction_logic: "TO BUILD — scrape rynek-w-liczbach; detailed reports paid."
+    landing_layout: "samar/{period}.json"
+    verification: "https://www.samar.pl/rynek-w-liczbach"
+    landing_folders: [samar]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.samar.pl/raporty
+    default_status: not_started
+
+  - source_key: pracuj_zarobki
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "Pracuj.pl / No Fluff Jobs — salaries & job market"
+    institution: "Pracuj.pl / No Fluff Jobs"
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://zarobki.pracuj.pl/
+    endpoints:
+      - "zarobki.pracuj.pl — salary benchmarks per role; wage trend reports"
+      - "No Fluff Jobs — IT salary transparency + labour-market reports"
+    scope: "Salary benchmarks by role/region + job-offer volume — private labour-market signal (complements PSZ/GUS)."
+    description: "Leading PL job portals' salary & vacancy data (private). Reports free; ToS for bulk reuse."
+    extraction_logic: "TO BUILD — scrape salary/report pages."
+    landing_layout: "pracuj_zarobki/{role}.json"
+    verification: "https://zarobki.pracuj.pl/raporty-i-trendy-placowe"
+    landing_folders: [pracuj_zarobki]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://zarobki.pracuj.pl/
+    default_status: not_started
+
+  # ── Category c, by domain: PHARMA(Q), CONSTRUCTION(F), LOGISTICS(H), TOURISM(I), AGRI exchange ──
+  - source_key: pex_pharma
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "PEX PharmaSequence — pharmacy market data"
+    institution: "PEX PharmaSequence"
+    type: reports
+    auth: key_optional
+    rate_limit: null
+    base_url: https://pexps.pl/
+    endpoints: ["pharmacy-market value/volume (monthly); detailed data commercial"]
+    scope: "Pharmacy/drug retail market — value, dynamics, statistical-pharmacy turnover."
+    description: "Leading PL pharma-market research firm. Headline figures via press; detailed data PAID."
+    extraction_logic: "TO BUILD — headline figures from releases; full data is commercial."
+    landing_layout: "pex_pharma/"
+    verification: "https://pexps.pl/"
+    landing_folders: [pex_pharma]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://pexps.pl/
+    default_status: not_started
+
+  - source_key: spectis
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "Spectis — construction market data"
+    institution: "Spectis"
+    type: reports
+    auth: key_required
+    rate_limit: null
+    base_url: https://raporty.spectis.pl/
+    endpoints: ["construction-market value/structure/forecasts; investment pipeline (commercial reports)"]
+    scope: "Construction market (~400bn zł): value, segments, forecasts, project pipeline. PAID reports."
+    description: "PL construction-market research vendor. Reports are PAID; headlines via blog."
+    extraction_logic: "BLOCKED — paid reports; only headline figures public."
+    landing_layout: "spectis/"
+    verification: "https://raporty.spectis.pl/"
+    landing_folders: [spectis]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://spectis.pl/
+    default_status: blocked
+
+  - source_key: trans_eu
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "Trans.eu — freight exchange (TSL market)"
+    institution: "Trans.eu Group S.A."
+    type: reports
+    auth: key_optional
+    rate_limit: null
+    base_url: https://www.trans.eu/pl/gielda-transportowa/
+    endpoints: ["freight-exchange volumes & rate trends (TSL); market reports (some free)"]
+    scope: "Road-freight load-board volumes & rates — transport-market activity signal (24 EU countries)."
+    description: "Leading PL/EU freight exchange. Market reports partly free; live exchange needs account."
+    extraction_logic: "TO BUILD — published TSL reports; live data needs account."
+    landing_layout: "trans_eu/"
+    verification: "https://www.trans.eu/pl/gielda-transportowa/"
+    landing_folders: [trans_eu]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.trans.eu/pl/gielda-transportowa/
+    default_status: not_started
+
+  - source_key: ewgt
+    category: c_pl_private
+    ingestion_mode: bulk
+    name: "e-WGT — internet agricultural commodity exchange"
+    institution: "WGT / e-WGT"
+    type: scrape
+    auth: none
+    rate_limit: null
+    base_url: https://www.e-wgt.pl/
+    endpoints: ["agri commodity transaction prices (grains, oilseeds) — exchange notowania"]
+    scope: "Agricultural commodity exchange transaction prices."
+    description: "PL internet agri commodity exchange (private). Quotes public; ToS for reuse."
+    extraction_logic: "TO BUILD — scrape exchange notowania."
+    landing_layout: "ewgt/{product}.json"
+    verification: "https://www.e-wgt.pl/"
+    landing_folders: [ewgt]
+    extractor_kind: none
+    extractor_path: null
+    manifest_kind: null
+    docs_url: https://www.e-wgt.pl/
+    default_status: not_started
