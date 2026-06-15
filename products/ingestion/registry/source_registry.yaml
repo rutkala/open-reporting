@@ -1082,6 +1082,7 @@ sources:
     manifest_kind: null
     docs_url: https://data.imf.org
     default_status: blocked
+    reason: IMF Data API (data.imf.org/api/) is a Next.js web portal, not a REST API. Old SDMX host (dataservices.imf.org) decommissioned. Poland macro coverage via imf_weo is sufficient. (Blocked 2026-06-15)
 
   - source_key: ecb_sdw
     category: d_international
@@ -1178,6 +1179,7 @@ sources:
     manifest_kind: null
     docs_url: https://www.fao.org/faostat/en/#data
     default_status: blocked
+    reason: REST API (fenixservices.fao.org) returns 521 (Cloudflare origin unreachable). Bulk static files (faostat.fao.org/static/) return 404. IP appears geo-blocked. (Blocked 2026-06-15)
 
   - source_key: wto_stats
     category: d_international
