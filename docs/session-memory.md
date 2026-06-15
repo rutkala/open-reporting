@@ -1,15 +1,19 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-15 12:00 UTC (run #91 watchdog — prod healthy) -->
+<!-- last-updated: 2026-06-15 17:00 UTC (run #92 watchdog — prod healthy, uzp OOM root-caused) -->
 
-## Runs #86–#91 (06-14 07:00 → 06-15 12:00 UTC) — WATCHDOG. Prod healthy, no PO direction.
+## Runs #86–#92 (06-14 07:00 → 06-15 17:00 UTC) — WATCHDOG. Prod healthy, no PO direction.
 All 5 dashboards + www 200; rendered content verified real (Dash apps, not portal index). TLS valid
 → Sep 12 2026. All protected crons intact. No Telegram inbox items; Linear 0 Strategic, 0 issues
 updated in last 3 days. No build/deploy/publish — Antigravity's plane (tree holds their uncommitted
 work; never `git add -A`). Commit only my files, explicit paths.
-NOTE (#90+#91): nightly orchestrator (01:00) uzp_extractor.py → SIGKILL exit=-9 at 488s, now TWO
-consecutive nights. Antigravity's latest data-plane commit 4df27eab (per-engine timeouts) did NOT
-fix the uzp kill. Not my P0 (warehouse still written by 22 UTC cron; dashboards render). Surfaced in
+NOTE (#92 ROOT CAUSE): uzp_extractor.py SIGKILL (3rd consecutive night) is the kernel OOM-killer,
+NOT a timeout. dmesg 06-15 01:07:30: `Out of memory: Killed process ... (python3) anon-rss:2467720kB`.
+Box = 3.7GiB RAM, ZERO swap; uzp buffers full UZP response set → ~2.5GiB resident → reaped at ~488s.
+Antigravity's per-engine TIMEOUT fix (4df27eab) can't help — OOM kills before any wall-clock timeout.
+Real fix is in uzp_extractor.py: stream/paginate to disk or cap fetch window (memory, not time).
+Their data plane, not mine. Not my P0 (warehouse still written by 22 UTC cron; dashboards render).
+Surfaced in
 outbox flagged as recurring — uzp needs its own timeout/mem cap.
 
 ## 2026-06-14 ~15:30 UTC — INTERACTIVE w/ PO. Google Drive mount RESTORED + ingestion proven.

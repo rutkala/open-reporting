@@ -1369,3 +1369,28 @@ Took no build/deploy/publish/release action — Antigravity's tree holds uncommi
 Committed only my own files (decisions.md, session-memory.md, outbox) with explicit paths.
 
 Status: Watchdog — no action required.
+
+## Run #92 — 2026-06-15 17:00 UTC — WATCHDOG. Prod healthy. uzp SIGKILL root-caused = OOM.
+
+Smoke: all 5 dashboards (public_finance, labour_market, national_accounts, demographics,
+environment) + www return 200. Rendered content verified real (public_finance "Finanse publiczne
+Polski", environment "Środowisko: emisje i energia" — Dash apps, not portal index). TLS valid
+through Sep 12 2026 (lineage open-reporting.dev-0003). All protected crons intact. No Telegram
+inbox items. Linear: 0 Strategic, 0 issues updated in last 3 days — no PO instruction to the
+Claude cron.
+
+ROOT-CAUSED the recurring uzp_extractor.py SIGKILL (third consecutive night: #90/#91/#92). It is
+NOT a timeout — it is the kernel OOM-killer. `dmesg` at 2026-06-15 01:07:30 shows
+`Out of memory: Killed process 2740966 (python3) ... anon-rss:2467720kB` (UID 1001 = radek, under
+cron.service). The box has 3.7 GiB total RAM and ZERO swap; uzp grows to ~2.5 GiB resident (it
+buffers the full UZP response set in memory) and gets reaped at ~488s. Antigravity's per-engine
+*timeout* fix (4df27eab) cannot help — a wall-clock timeout never fires before the OOM kill does.
+The real fix is in uzp_extractor.py: stream/paginate to disk instead of accumulating, or cap the
+fetch window. Their data plane, not mine to edit — surfaced in outbox with the precise diagnosis so
+the fix targets memory, not time. Warehouse still written by the 22 UTC cron; dashboards render; not
+a production-down P0.
+
+Took no build/deploy/publish/release action — Antigravity's tree holds uncommitted in-flight work.
+Committed only my own files (decisions.md, session-memory.md, outbox) with explicit paths.
+
+Status: Watchdog — no action required.
