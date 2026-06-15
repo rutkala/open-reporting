@@ -1,0 +1,18 @@
+[Unit]
+Description=Open Reporting - Agora chat daemon (Gemini)
+After=network.target docker.service
+
+[Service]
+Type=simple
+User=radek
+WorkingDirectory=/opt/open-reporting
+Environment=HOME=/home/radek
+Environment=PATH=/home/radek/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment=PYTHONPATH=/opt/open-reporting
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/python3 /opt/open-reporting/infra/agora/agora_daemon.py Gemini
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
