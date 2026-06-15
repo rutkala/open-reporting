@@ -12,6 +12,7 @@ sources:
   sejm_api:
     mode: sejm
     base: https://api.sejm.gov.pl/sejm
-    terms: [10]                        # current term; add past terms for backfill
-    collections: [MP, clubs, committees, proceedings]
-    votings: true                      # pull votings per proceeding sitting
+    # Full scope: extractor auto-discovers ALL terms and pulls every collection
+    # (MP/clubs/committees/proceedings + paginated interpellations/writtenQuestions/
+    # prints/processes) + votings per sitting. No terms/collections limit by design.
+    votings: true

@@ -69,11 +69,36 @@ def fetch_flat(session, key, cfg) -> int:
     return total
 
 
+# Full Sejm scope: small single-GET collections + large paginated collections.
+SEJM_SIMPLE = ["MP", "clubs", "committees", "proceedings"]
+SEJM_PAGED = ["interpellations", "writtenQuestions", "prints", "processes"]
+
+
+def _fetch_paged(session, url) -> list:
+    """Page a Sejm collection via limit/offset until exhausted (default page caps at 50)."""
+    out, off, PAGE = [], 0, 500
+    for _ in range(10000):                       # safety cap
+        batch = _get(session, url, params={"limit": PAGE, "offset": off})
+        if not isinstance(batch, list) or not batch:
+            break
+        out.extend(batch)
+        off += len(batch)
+        time.sleep(0.15)
+    return out
+
+
 def fetch_sejm(session, key, cfg) -> int:
     base, land = cfg["base"], LANDING_BASE / key
+    # Full scope: all terms (auto-discovered) unless the config explicitly overrides.
+    terms = cfg.get("terms")
+    if not terms:
+        try:
+            terms = sorted(t["num"] for t in _get(session, f"{base}/term"))
+        except Exception:
+            terms = [10]
     total = 0
-    for term in cfg.get("terms", [10]):
-        for coll in cfg.get("collections", []):
+    for term in terms:
+        for coll in SEJM_SIMPLE:
             try:
                 data = _get(session, f"{base}/term{term}/{coll}")
             except requests.HTTPError as e:
@@ -82,7 +107,17 @@ def fetch_sejm(session, key, cfg) -> int:
             n = _write(land / f"term{term}" / f"{coll}.json", data)
             logger.info(f"[{key}] term{term}/{coll}: {n} records")
             total += n
-            time.sleep(0.3)
+            time.sleep(0.2)
+        for coll in SEJM_PAGED:
+            try:
+                data = _fetch_paged(session, f"{base}/term{term}/{coll}")
+            except requests.HTTPError as e:
+                logger.warning(f"[{key}] term{term}/{coll}: {e}")
+                continue
+            if data:
+                _write(land / f"term{term}" / f"{coll}.json", data)
+                logger.info(f"[{key}] term{term}/{coll}: {len(data)} records (paged)")
+                total += len(data)
         if cfg.get("votings"):
             # proceedings → sittings → votings per sitting day
             try:
