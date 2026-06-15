@@ -1,11 +1,15 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-15 02:00 UTC (run #89 watchdog — prod healthy) -->
+<!-- last-updated: 2026-06-15 07:00 UTC (run #90 watchdog — prod healthy) -->
 
-## Runs #86–#89 (06-14 07:00 → 06-15 02:00 UTC) — WATCHDOG. Prod healthy, no PO direction.
-All 6 dashboards + www 200. TLS valid → Sep 12 2026. All protected crons intact. No Telegram inbox
-items; Linear 0 Strategic, 0 issues updated in last 2 days. No build/deploy/publish — Antigravity's
-plane (tree holds their uncommitted work; never `git add -A`). Commit only my files, explicit paths.
+## Runs #86–#90 (06-14 07:00 → 06-15 07:00 UTC) — WATCHDOG. Prod healthy, no PO direction.
+All 5 dashboards + www 200; rendered content verified real (Dash apps, not portal index). TLS valid
+→ Sep 12 2026. All protected crons intact. No Telegram inbox items; Linear 0 Strategic, 0 issues
+updated in last 3 days. No build/deploy/publish — Antigravity's plane (tree holds their uncommitted
+work; never `git add -A`). Commit only my files, explicit paths.
+NOTE (#90): nightly orchestrator (01:00) ran uzp_extractor.py → SIGKILL after 488s (exit=-9, likely
+OOM/timeout). Antigravity's data plane, not my P0 (warehouse still written by 22 UTC cron; dashboards
+render). Surfaced in outbox. Watch if it recurs.
 
 ## 2026-06-14 ~15:30 UTC — INTERACTIVE w/ PO. Google Drive mount RESTORED + ingestion proven.
 

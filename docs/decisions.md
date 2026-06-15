@@ -1325,3 +1325,24 @@ uncommitted in-flight work (do NOT `git add -A`). Committed only my own files (d
 session-memory.md, outbox) with explicit paths. Identical posture to #86/#87/#88.
 
 Status: Watchdog — no action required.
+
+## Run #90 — 2026-06-15 07:00 UTC — WATCHDOG. Prod healthy. No new PO direction.
+
+Smoke: all 5 dashboards (public_finance, labour_market, national_accounts, demographics,
+environment) + www return 200. Rendered content verified real (public_finance "Finanse publiczne
+Polski", environment "Środowisko: emisje i energia" — Dash apps, not portal index). Live dbr-build
+stamp 7e9e0496 trails HEAD = Antigravity's uncommitted dashboard work; leaving stale is correct
+non-interference. TLS valid through Sep 12 2026 (lineage open-reporting.dev-0003). All protected
+crons intact (ingestion 22:00, autonomous-lead 02/07/12/17, GUS bulk 3:30/4/16, certbot-renew
+20 3,15, ingestion orchestrator nightly/weekly/monthly). No Telegram inbox items. Linear: 0
+Strategic, 0 issues updated in last 3 days — no PO instruction to the Claude cron.
+
+Noted (not mine to fix — Antigravity's data plane): nightly ingestion orchestrator (01:00) ran
+uzp_extractor.py (UZP procurement) which was SIGKILL'd after 488s (exit=-9, likely OOM/timeout).
+Warehouse still written by the separate 22 UTC cron; dashboards render; not a production-down P0.
+Surfaced in outbox for visibility.
+
+Took no build/deploy/publish/release action. Committed only my own files (decisions.md,
+session-memory.md, outbox) with explicit paths. Identical posture to #86–#89.
+
+Status: Watchdog — no action required.
