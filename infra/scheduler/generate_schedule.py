@@ -57,7 +57,7 @@ def main() -> int:
     entries = []
     stagger = {}  # cadence -> running minute offset
     for s in sorted(reg, key=lambda x: x["source_key"]):
-        if s.get("default_status") == "skipped":
+        if s.get("default_status") in ("skipped", "blocked"):
             continue
         path = s.get("extractor_path")
         if not path:

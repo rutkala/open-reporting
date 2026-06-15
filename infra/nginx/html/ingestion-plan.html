@@ -121,7 +121,8 @@
   <div class="api-grid" id="api-capacity"></div>
 
   <h2>Master Ingestion Tracker — all sources</h2>
-  <p style="color:#7f849c;font-size:13px;margin:-8px 0 16px">Every source across the four categories: ingestion mode, when it runs, current status and volume. Grouped by category.</p>
+  <p style="color:#7f849c;font-size:13px;margin:-8px 0 4px">Every source across the four categories: ingestion mode, when it runs, current status and volume. Grouped by category.</p>
+  <p id="reconcile" style="color:#9399b2;font-size:13px;margin:0 0 16px"></p>
   <div class="filters">
     <input type="text" id="search" placeholder="Filter by source key…">
     <select id="cat-filter">
@@ -232,6 +233,16 @@ async function load() {
   const sources = reg.sources || [];
   const sc = reg.status_counts || {};
   const apiSrc = cap.api_sources || [];
+
+  // Reconciliation: scheduled subset vs full registry catalogue
+  const regTotal = reg.source_count || sources.length;
+  const scheduled = entries.length;
+  const blocked = sc.blocked || 0, skipped = sc.skipped || 0;
+  const notWired = Math.max(0, regTotal - scheduled - blocked - skipped);
+  document.getElementById('reconcile').innerHTML =
+    `<strong>${scheduled}</strong> of <strong>${regTotal}</strong> registry sources are scheduled to run. ` +
+    `Excluded: ${blocked} blocked · ${skipped} skipped · ${notWired} not yet wired to an extractor. ` +
+    `See the <a href="/source-registry.html" style="color:#89b4fa">Sources</a> page for the full catalogue.`;
   const statsEl = document.getElementById('stats');
   statsEl.innerHTML = `
     <div class="stat-card"><div class="val">${reg.source_count||sources.length}</div><div class="lbl">Total sources</div></div>
