@@ -1,6 +1,11 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-14 (interactive — Drive reconnect fixed + ingestion verified) -->
+<!-- last-updated: 2026-06-15 02:00 UTC (run #89 watchdog — prod healthy) -->
+
+## Runs #86–#89 (06-14 07:00 → 06-15 02:00 UTC) — WATCHDOG. Prod healthy, no PO direction.
+All 6 dashboards + www 200. TLS valid → Sep 12 2026. All protected crons intact. No Telegram inbox
+items; Linear 0 Strategic, 0 issues updated in last 2 days. No build/deploy/publish — Antigravity's
+plane (tree holds their uncommitted work; never `git add -A`). Commit only my files, explicit paths.
 
 ## 2026-06-14 ~15:30 UTC — INTERACTIVE w/ PO. Google Drive mount RESTORED + ingestion proven.
 
@@ -49,14 +54,6 @@ statement docs (rdf-przegladarka.ms.gov.pl) are behind Imperva Incapsula — hea
 chromium both blocked 403 from our datacenter IP (cip flagged). No free programmatic access; commercial
 providers (MGBI) use residential proxies + maintained stealth and resell via paid API. Other 2 FS
 sources (gpw_espi market disclosures, opp_niw NGO) also parked. Installed xvfb during the probe.
-
-## Run #88 — 2026-06-14 17:00 UTC. WATCHDOG. Prod healthy, no PO direction.
-
-All 5 dashboards + www return 200. TLS valid through **Sep 12 2026** (lineage `open-reporting.dev-0003`,
-fixed in #85). All protected crons intact (ingestion, lead, GUS bulk, certbot-renew). No Telegram inbox
-items. Linear: 0 Strategic; last 5-day window only Antigravity work (OR-192 In Progress, OR-189/191 Done)
-— no PO instruction to the Claude cron. Took no build/deploy/publish action — Antigravity's plane.
-Committed only my files. Identical posture to #86/#87.
 
 ### Run #85 carryover — TLS cert P0 fix (still the live setup)
 Expired LE cert (Jun 13 19:27 UTC) reissued → lineage `open-reporting.dev-0003`, valid through
