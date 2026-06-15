@@ -24,3 +24,7 @@ products/dashboards/finance_test/Test/
 .agents/
 .qwen/
 infra/telegram-bot/venv/
+
+# Agora chat
+infra/nginx/conf.d/.htpasswd-agora
+data/agora/

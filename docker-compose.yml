@@ -41,6 +41,17 @@ services:
     volumes:
       - ghost_data:/var/lib/ghost/content
 
+  agora:
+    image: python:3.12-alpine
+    restart: unless-stopped
+    working_dir: /app
+    command: python /app/server.py
+    expose:
+      - "8800"
+    volumes:
+      - ./infra/agora:/app:ro
+      - ./data/agora:/data
+
   certbot:
     image: certbot/certbot:latest
     volumes:
