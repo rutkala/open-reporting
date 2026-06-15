@@ -42,7 +42,7 @@ ENGINE_MODE = {
     "wfs_extractor.py": "sources",
     "uzp_extractor.py": "single",
     "krs_extractor.py": "single",
-    "danegovpl_harvester.py": "single",
+    "danegovpl_harvester.py": "skip",  # whole-portal sweep — dedicated cron (run_danegovpl_harvest.sh)
     "run_incremental.py": "skip",   # owned by run_daily.sh (22:00 nightly + dbt)
     "run_bulk.py": "single",
     "universal_bulk_downloader.py": "single",
@@ -58,18 +58,35 @@ ENGINE_PATH = {
 }
 
 
+# Per-engine wall-clock budget (seconds). Bounded so one slow/hung engine cannot
+# stall the whole cadence (a single source must never block the other ~200).
+DEFAULT_ENGINE_TIMEOUT = 2700          # 45 min
+ENGINE_TIMEOUT = {
+    "web_scraper_extractor.py": 5400,            # ~148 sources in one batch
+    "danegovpl_institution_extractor.py": 3600,  # ~29 institutions
+    "universal_bulk_downloader.py": 3600,
+}
+
+
 def engine_path(eng: str) -> Path:
     return ENGINE_PATH.get(eng, EXTRACTORS / eng)
 
 
-def run(cmd, dry) -> int:
+def run(cmd, dry, timeout=DEFAULT_ENGINE_TIMEOUT) -> int:
     log.info(("DRY " if dry else "RUN ") + " ".join(str(c) for c in cmd))
     if dry:
         return 0
     env = dict(os.environ, PYTHONPATH=str(REPO))
     t0 = time.monotonic()
-    proc = subprocess.run([sys.executable, *map(str, cmd)], env=env,
-                          capture_output=True, text=True, timeout=21600)
+    try:
+        proc = subprocess.run([sys.executable, *map(str, cmd)], env=env,
+                              capture_output=True, text=True, timeout=timeout)
+    except subprocess.TimeoutExpired:
+        log.warning(f"    TIMEOUT after {timeout}s — killed, continuing to next engine")
+        return 124
+    except Exception as e:                         # never let one engine crash the cadence
+        log.error(f"    ERROR launching engine: {e}")
+        return 1
     for line in (proc.stdout + proc.stderr).strip().splitlines()[-3:]:
         log.info(f"    {line}")
     log.info(f"    exit={proc.returncode} ({time.monotonic()-t0:.0f}s)")
@@ -97,12 +114,13 @@ def main(cadence, dry, only) -> int:
         if not path.exists():
             log.warning(f"[{eng}] not found at {path}, skipping")
             continue
+        timeout = ENGINE_TIMEOUT.get(eng, DEFAULT_ENGINE_TIMEOUT)
         if mode == "single":
             log.info(f"[{eng}] single-run ({len(keys)} sources in scope)")
-            rc = run([path], dry)
+            rc = run([path], dry, timeout)
         else:  # sources
             log.info(f"[{eng}] {len(keys)} sources: {','.join(keys)}")
-            rc = run([path, "--sources", *keys], dry)
+            rc = run([path, "--sources", *keys], dry, timeout)
         worst = worst or rc
     log.info(f"=== done (cadence={cadence}, worst exit={worst}) ===")
     return worst
