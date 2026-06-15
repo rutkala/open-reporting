@@ -19,6 +19,7 @@ import json
 import logging
 import os
 import sys
+import tempfile
 import time
 from datetime import date, datetime, timezone
 from pathlib import Path
@@ -45,15 +46,43 @@ def _months(frm: str, to: str):
         y, m = (y + 1, 1) if m == 12 else (y, m + 1)
 
 
-def _write(path: Path, data) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_suffix(".tmp")
-    tmp.write_text(json.dumps(data, ensure_ascii=False, indent=2))
-    tmp.replace(path)
+def _finalize_output(output_path: Path, tmp_notices_path: Path, ntype: str, ym: str, total_count: int) -> None:
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    tmp_final_path = output_path.with_suffix(".tmp")
+
+    with open(tmp_final_path, "w", encoding="utf-8") as outfile:
+        # Write the initial part of the JSON with metadata
+        meta = {
+            "source": "uzp_bzp",
+            "notice_type": ntype,
+            "month": ym,
+            "fetched_at": datetime.now(timezone.utc).isoformat(),
+            "count": total_count
+        }
+        # Write up to "notices": [
+        outfile.write(json.dumps({"_meta": meta, "notices": []}, ensure_ascii=False, indent=2)[:-3])
+
+        # Stream notices from the temporary file
+        first_notice = True
+        if tmp_notices_path.exists():
+            with open(tmp_notices_path, "r", encoding="utf-8") as infile:
+                for line in infile:
+                    if not first_notice:
+                        outfile.write(",\n")
+                    outfile.write("  " + line.strip()) # Add indentation and write notice
+                    first_notice = False
+        
+        # Close the "notices" array and the main object
+        outfile.write("\n  ]\n}")
+    
+    tmp_final_path.replace(output_path)
+    if tmp_notices_path.exists():
+        os.remove(tmp_notices_path) # Clean up the temporary notices file
 
 
-def fetch_window(session, ntype, d_from, d_to) -> list:
-    rows, page = [], 0
+def fetch_window(session, ntype, d_from, d_to, tmp_notices_file) -> int:
+    total_rows = 0
+    page = 0
     while True:
         params = {"PageSize": PAGE_SIZE, "Page": page, "NoticeType": ntype,
                   "PublicationDateFrom": d_from, "PublicationDateTo": d_to}
@@ -65,12 +94,14 @@ def fetch_window(session, ntype, d_from, d_to) -> list:
         batch = r.json()
         if not isinstance(batch, list) or not batch:
             break
-        rows.extend(batch)
+        for notice in batch:
+            tmp_notices_file.write(json.dumps(notice, ensure_ascii=False) + "\n")
+        total_rows += len(batch)
         if len(batch) < PAGE_SIZE:
             break
         page += 1
         time.sleep(0.2)
-    return rows
+    return total_rows
 
 
 def main(frm, to, types, dry_run) -> int:
@@ -79,17 +110,25 @@ def main(frm, to, types, dry_run) -> int:
     for ntype in types:
         for d_from, d_to in _months(frm, to):
             ym = d_from[:7]
+            output_path = LANDING / ntype / f"{ym}.json"
+
             if dry_run:
                 logger.info(f"[uzp] would fetch {ntype} {ym}")
                 continue
-            rows = fetch_window(session, ntype, d_from, d_to)
-            if rows:
-                _write(LANDING / ntype / f"{ym}.json",
-                       {"_meta": {"source": "uzp_bzp", "notice_type": ntype, "month": ym,
-                                  "fetched_at": datetime.now(timezone.utc).isoformat(),
-                                  "count": len(rows)}, "notices": rows})
-                logger.info(f"[uzp] {ntype} {ym}: {len(rows)} notices")
-                total += len(rows)
+
+            # Create a temporary file for streaming notices
+            with tempfile.TemporaryDirectory() as tmpdir:
+                tmp_notices_path = Path(tmpdir) / f"{ntype}_{ym}.notices.tmp"
+                with open(tmp_notices_path, "w", encoding="utf-8") as tmp_notices_file:
+                    total_rows = fetch_window(session, ntype, d_from, d_to, tmp_notices_file)
+
+                if total_rows > 0:
+                    _finalize_output(output_path, tmp_notices_path, ntype, ym, total_rows)
+                    logger.info(f"[uzp] {ntype} {ym}: {total_rows} notices → {output_path}")
+                    total += total_rows
+                else:
+                    logger.info(f"[uzp] {ntype} {ym}: no notices found.")
+
     logger.info(f"[uzp] done — {total} notices → {LANDING}")
     return 0
 
