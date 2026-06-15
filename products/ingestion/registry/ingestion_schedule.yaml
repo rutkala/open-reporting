@@ -254,13 +254,6 @@ entries:
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: Agricultural commodity exchange transaction prices.
-- source_key: faostat
-  cadence: weekly
-  window: 05:12 UTC Mon
-  engine: intl_extractor.py
-  mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
-  priority: 2
-  notes: Nothing ingested yet — agriculture is not a primary domain.
 - source_key: farmaceutyczny
   cadence: monthly
   window: 09:36 UTC 1st
@@ -470,14 +463,7 @@ entries:
   engine: intl_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
-  notes: 'Nothing ingested yet. Target: employment by sector, wages, working hours for Pol'
-- source_key: imf_ifs
-  cadence: weekly
-  window: 05:21 UTC Mon
-  engine: intl_extractor.py
-  mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
-  priority: 2
-  notes: Nothing ingested yet.
+  notes: 4 labour dataflows (unemployment, employment ratio, participation, employment) f
 - source_key: imf_weo
   cadence: weekly
   window: 05:24 UTC Mon
@@ -641,11 +627,11 @@ entries:
   notes: finance/credit — private/association data, free.
 - source_key: krs_api
   cadence: monthly
-  window: 03:36 UTC 1st
+  window: 12:36 UTC 1st
   engine: krs_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
-  notes: Register extracts (OdpisAktualny) for a curated entity set in krs_targets.yaml
+  notes: Register extracts (company name, address, share capital, board, PKD codes, statu
 - source_key: lasy_bdl
   cadence: monthly
   window: 10:39 UTC 1st
@@ -792,7 +778,7 @@ entries:
   engine: intl_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
-  notes: 'Nothing ingested yet. Target: National Accounts, Labour Force, Government Financ'
+  notes: National Accounts at a Glance (DF_NAAG_I) — 5 GDP measures for Poland + EU/CEE c
 - source_key: olis_zpav
   cadence: monthly
   window: 12:21 UTC 1st
@@ -1380,14 +1366,14 @@ entries:
   engine: intl_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
-  notes: 'Nothing ingested yet. Target: Poland population projections to 2100, age structu'
+  notes: 7 demographic indicators (population, life expectancy, fertility, birth/death/mi
 - source_key: undata
   cadence: weekly
   window: 06:48 UTC Mon
   engine: intl_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
-  notes: Nothing ingested — deliberately deprioritised.
+  notes: 6 UN SDG series for Poland (poverty, mortality, renewables, unemployment, women-
 - source_key: ure_bulk
   cadence: weekly
   window: 04:51 UTC Mon
