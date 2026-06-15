@@ -1301,7 +1301,7 @@ sources:
     extractor_path: products/ingestion/extractors/danegovpl_harvester.py
     manifest_kind: null
     docs_url: https://dane.gov.pl/pl
-    default_status: not_started
+    default_status: complete
 
   # ── Layer 2: per-institution direct sources (KPP research, 2026-06-14) ─────
 
