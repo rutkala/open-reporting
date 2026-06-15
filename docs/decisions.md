@@ -1346,3 +1346,26 @@ Took no build/deploy/publish/release action. Committed only my own files (decisi
 session-memory.md, outbox) with explicit paths. Identical posture to #86–#89.
 
 Status: Watchdog — no action required.
+
+## Run #91 — 2026-06-15 12:00 UTC — WATCHDOG. Prod healthy. No new PO direction.
+
+Smoke: all 5 dashboards (public_finance, labour_market, national_accounts, demographics,
+environment) + www return 200. Rendered content verified real (public_finance "Finanse publiczne
+Polski", environment "Środowisko: emisje i energia" — Dash apps, not portal index). TLS valid
+through Sep 12 2026 (lineage open-reporting.dev-0003). All protected crons intact (ingestion 22:00,
+autonomous-lead 02/07/12/17, GUS bulk 3:30/4/16, certbot-renew 20 3,15, ingestion orchestrator
+nightly/weekly/monthly, danegovpl harvest 23:30). No Telegram inbox items. Linear: 0 Strategic,
+0 issues updated in last 3 days — no PO instruction to the Claude cron.
+
+Noted (not mine to fix — Antigravity's data plane): uzp_extractor.py SIGKILL RECURRED in the
+01:00 nightly run (exit=-9 after 488s) — second consecutive night (also #90). The latest data-plane
+commit 4df27eab ("harvester off critical path + per-engine timeouts + crash-resilience") did not
+resolve the uzp kill. Warehouse still written by the separate 22 UTC cron; dashboards render; not a
+production-down P0. Surfaced in outbox; flagged as now-recurring so Antigravity can add a per-engine
+timeout/memory cap to uzp specifically.
+
+Took no build/deploy/publish/release action — Antigravity's tree holds uncommitted in-flight work
+(untracked dashboard YAML + modified visuals); redeploying would push half-finished work live.
+Committed only my own files (decisions.md, session-memory.md, outbox) with explicit paths.
+
+Status: Watchdog — no action required.
