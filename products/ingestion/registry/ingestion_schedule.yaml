@@ -277,7 +277,7 @@ entries:
   notes: fuel/gas — financial & periodic reports
 - source_key: gddkia_bulk
   cadence: weekly
-  window: 03:15 UTC Mon
+  window: 03:12 UTC Mon
   engine: danegovpl_institution_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
@@ -345,23 +345,9 @@ entries:
   mechanism: 'orchestrator: run_ingestion.py --cadence continuous'
   priority: 1
   notes: All 33 root subject categories (K1…K54), every variable under them, unit-level 2
-- source_key: gus_bdm
-  cadence: monthly
-  window: 10:09 UTC 1st
-  engine: web_scraper_extractor.py
-  mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
-  priority: 3
-  notes: Nothing ingested — no API or file export found.
-- source_key: gus_bdp
-  cadence: monthly
-  window: 10:12 UTC 1st
-  engine: web_scraper_extractor.py
-  mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
-  priority: 3
-  notes: Nothing ingested.
 - source_key: gus_biuletyn_bulk
   cadence: monthly
-  window: 02:15 UTC 1st
+  window: 02:09 UTC 1st
   engine: run_bulk.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
@@ -375,364 +361,343 @@ entries:
   notes: All 1,518 variables in the DBW catalog, every przekrój (cross-section) and okres
 - source_key: gus_dbw_hvd_bulk
   cadence: monthly
-  window: 02:18 UTC 1st
+  window: 02:12 UTC 1st
   engine: run_bulk.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: 'The full HVD bulk catalogue (~213 datasets × 2 formats = 426 zips): GDP, macro a'
 - source_key: gus_regon
   cadence: monthly
-  window: 10:21 UTC 1st
+  window: 10:15 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: Nothing ingested — entity-level lookups only (by REGON/NIP/KRS), no bulk export.
 - source_key: gus_sdg_bulk
   cadence: monthly
-  window: 02:24 UTC 1st
+  window: 02:18 UTC 1st
   engine: run_bulk.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: Both complete indicator files (national + global) — UN Sustainable Development G
 - source_key: gus_sdp
   cadence: monthly
-  window: 10:27 UTC 1st
+  window: 10:21 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: Nothing ingested.
-- source_key: gus_smup
-  cadence: monthly
-  window: 10:30 UTC 1st
-  engine: web_scraper_extractor.py
-  mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
-  priority: 3
-  notes: Nothing ingested — endpoint paths unknown.
-- source_key: gus_strateg
-  cadence: monthly
-  window: 10:33 UTC 1st
-  engine: web_scraper_extractor.py
-  mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
-  priority: 3
-  notes: Nothing ingested — endpoint paths unknown.
 - source_key: gus_teryt_bulk
   cadence: monthly
-  window: 02:36 UTC 1st
+  window: 02:24 UTC 1st
   engine: run_bulk.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: All administrative units at every level (country, macroregion, voivodeship, regi
-- source_key: gus_transtat
-  cadence: monthly
-  window: 10:39 UTC 1st
-  engine: web_scraper_extractor.py
-  mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
-  priority: 3
-  notes: Nothing ingested.
 - source_key: hotel_market
   cadence: monthly
-  window: 10:42 UTC 1st
+  window: 10:27 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: tourism — private/association data, free.
 - source_key: ieo
   cadence: monthly
-  window: 10:45 UTC 1st
+  window: 10:30 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: 'Renewable energy market: PV/wind installations, investors, prices — free reports'
 - source_key: igg
   cadence: monthly
-  window: 10:48 UTC 1st
+  window: 10:33 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: energy — private/association data, free.
 - source_key: igte
   cadence: monthly
-  window: 10:51 UTC 1st
+  window: 10:36 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: finance — private/association data, free.
 - source_key: ilostat
   cadence: weekly
-  window: 05:18 UTC Mon
+  window: 05:15 UTC Mon
   engine: intl_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: 4 labour dataflows (unemployment, employment ratio, participation, employment) f
 - source_key: imf_weo
   cadence: weekly
-  window: 05:24 UTC Mon
+  window: 05:18 UTC Mon
   engine: intl_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: Curated 7-indicator WEO set (real GDP growth, GDP/capita USD, inflation, unemplo
 - source_key: imgw_api
   cadence: weekly
-  window: 02:27 UTC Mon
+  window: 02:21 UTC Mon
   engine: pl_api_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: Current + archival meteorological and hydrological measurements, all stations.
 - source_key: inspekcja_weterynaryjna_wete
   cadence: monthly
-  window: 10:54 UTC 1st
+  window: 10:39 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: ADIS/HPAI registers; no open API
 - source_key: instytut_pamieci_narodowej
   cadence: monthly
-  window: 10:57 UTC 1st
+  window: 10:42 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: IPN inwentarz.ipn.gov.pl 1.9M records; no open API
 - source_key: isws_justice
   cadence: weekly
-  window: 03:30 UTC Mon
+  window: 03:24 UTC Mon
   engine: danegovpl_institution_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: Court caseloads, sentencing, justice-system indicators (all common courts + MS u
 - source_key: izfia
   cadence: monthly
-  window: 11:00 UTC 1st
+  window: 10:45 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: Investment-fund market — assets under management, flows, structure (monthly). Fr
 - source_key: jakosci_handlowej_artykulow
   cadence: weekly
-  window: 03:33 UTC Mon
+  window: 03:27 UTC Mon
   engine: danegovpl_institution_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: IJHARS food-quality controls; dane.gov.pl
 - source_key: jsw
   cadence: monthly
-  window: 11:03 UTC 1st
+  window: 10:48 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: mining/coal — financial & periodic reports
 - source_key: kancelaria_prezesa_rady
   cadence: weekly
-  window: 03:36 UTC Mon
+  window: 03:30 UTC Mon
   engine: danegovpl_institution_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: KPRM dane.gov.pl + RCL legislation
 - source_key: kancelaria_senatu
   cadence: weekly
-  window: 03:39 UTC Mon
+  window: 03:33 UTC Mon
   engine: danegovpl_institution_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: senat.gov.pl data; modest — to assess
 - source_key: kasa_rolniczego_ubezpieczeni
   cadence: weekly
-  window: 03:42 UTC Mon
+  window: 03:36 UTC Mon
   engine: danegovpl_institution_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: KRUS farmer-insurance stats; dane.gov.pl
 - source_key: kghm
   cadence: monthly
-  window: 11:06 UTC 1st
+  window: 10:51 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: mining/copper — financial & periodic reports
 - source_key: kig
   cadence: monthly
-  window: 11:09 UTC 1st
+  window: 10:54 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: economy — private/association data, free.
 - source_key: knf_bulk
   cadence: monthly
-  window: 03:12 UTC 1st
+  window: 02:57 UTC 1st
   engine: universal_bulk_downloader.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: Currently only the statistics landing page snapshot (~3 files). Actual sector st
 - source_key: komenda_glowna_panstwowej
   cadence: weekly
-  window: 03:45 UTC Mon
+  window: 03:39 UTC Mon
   engine: danegovpl_institution_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: KG PSP fire/rescue statistics
 - source_key: komenda_glowna_strazy
   cadence: weekly
-  window: 03:48 UTC Mon
+  window: 03:42 UTC Mon
   engine: danegovpl_institution_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: border-guard statistics; dane.gov.pl
 - source_key: kpp_registry
   cadence: monthly
-  window: 09:15 UTC 1st
+  window: 09:00 UTC 1st
   engine: kpp_institution_registry.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: The authoritative catalogue of ALL ~87,000 Polish public entities (ministries, c
 - source_key: krajowa_informacja_skarbowa
   cadence: monthly
-  window: 11:18 UTC 1st
+  window: 11:03 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: KIS EUREKA tax interpretations; no API
 - source_key: krajowa_rada_radiofonii
   cadence: monthly
-  window: 11:21 UTC 1st
+  window: 11:06 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: KRRiT media-market reports
 - source_key: krajowa_rada_sadownictwa
   cadence: monthly
-  window: 11:24 UTC 1st
+  window: 11:09 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: judiciary council; reports
 - source_key: krajowa_stacja_chemiczno
   cadence: monthly
-  window: 11:27 UTC 1st
+  window: 11:12 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: soil/agri-chemistry reports
 - source_key: krajowy_zasob_nieruchomosci
   cadence: monthly
-  window: 11:30 UTC 1st
+  window: 11:15 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: KZN state real-estate registry
 - source_key: krd
   cadence: monthly
-  window: 11:33 UTC 1st
+  window: 11:18 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: finance/credit — private/association data, free.
 - source_key: krs_api
   cadence: monthly
-  window: 12:36 UTC 1st
+  window: 12:21 UTC 1st
   engine: krs_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: Register extracts (company name, address, share capital, board, PKD codes, statu
 - source_key: lasy_bdl
   cadence: monthly
-  window: 10:39 UTC 1st
+  window: 10:24 UTC 1st
   engine: wfs_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: Forest stand descriptions, National Forest Inventory, habitats, fires, hunting —
 - source_key: lewiatan
   cadence: monthly
-  window: 11:42 UTC 1st
+  window: 11:27 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: economy — private/association data, free.
 - source_key: men_api
   cadence: weekly
-  window: 03:51 UTC Mon
+  window: 03:45 UTC Mon
   engine: danegovpl_institution_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: All CIE/MEN education resources on dane.gov.pl (school, pupil, teacher statistic
 - source_key: mf_bulk
   cadence: weekly
-  window: 03:54 UTC Mon
+  window: 03:48 UTC Mon
   engine: danegovpl_institution_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: 'All downloadable resources MF publishes on dane.gov.pl: public debt, tax revenue'
 - source_key: money_pl
   cadence: monthly
-  window: 11:45 UTC 1st
+  window: 11:30 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: finance/markets — private/association data, free.
 - source_key: morizon
   cadence: monthly
-  window: 11:48 UTC 1st
+  window: 11:33 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: real estate — private/association data, free.
 - source_key: mrips_social
   cadence: monthly
-  window: 11:51 UTC 1st
+  window: 11:36 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: Social assistance, family benefits, foster care, maintenance fund — aggregated f
 - source_key: mrirw_api
   cadence: monthly
-  window: 03:54 UTC 1st
+  window: 03:39 UTC 1st
   engine: universal_bulk_downloader.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: All MRiRW agriculture resources on dane.gov.pl. Currently 0 files landed — needs
 - source_key: naczelna_dyrekcja_archiwow
   cadence: monthly
-  window: 11:57 UTC 1st
+  window: 11:42 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: szukajwarchiwach.gov.pl scans; no open API
 - source_key: naczelny_sad_administracyjny
   cadence: monthly
-  window: 12:00 UTC 1st
+  window: 11:45 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: orzeczenia.nsa.gov.pl rulings DB (cf. saos_api)
 - source_key: najwyzsza_izba_kontroli
   cadence: monthly
-  window: 12:03 UTC 1st
+  window: 11:48 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: NIK ~180 audit reports/yr via BIP; no API
 - source_key: narodowa_agencja_wymiany
   cadence: weekly
-  window: 03:57 UTC Mon
+  window: 03:51 UTC Mon
   engine: danegovpl_institution_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: NAWA academic-exchange reports
 - source_key: narodowe_archiwum_cyfrowe
   cadence: monthly
-  window: 12:06 UTC 1st
+  window: 11:51 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: archival search systems; no open API
 - source_key: narodowe_centrum_nauki
   cadence: monthly
-  window: 12:09 UTC 1st
+  window: 11:54 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: NCN projekty.ncn.gov.pl searchable DB; no API
 - source_key: narodowy_instytut_konserwacj
   cadence: monthly
-  window: 12:12 UTC 1st
+  window: 11:57 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
@@ -746,693 +711,693 @@ entries:
   notes: Daily FX rates (table A) upserted into DuckDB nightly; yearly FX archive spreads
 - source_key: nfz_bulk
   cadence: weekly
-  window: 04:00 UTC Mon
+  window: 03:54 UTC Mon
   engine: danegovpl_institution_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: 'All NFZ resources on dane.gov.pl (~61 files): contracts, queues, health statisti'
 - source_key: ninetyminut
   cadence: monthly
-  window: 12:15 UTC 1st
+  window: 12:00 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: Comprehensive historical Polish football data — matches, clubs, players, attenda
 - source_key: notoria
   cadence: monthly
-  window: 12:18 UTC 1st
+  window: 12:03 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: finance/markets — private/association data, free.
 - source_key: ochrony_roslin_nasiennictwa
   cadence: weekly
-  window: 04:03 UTC Mon
+  window: 03:57 UTC Mon
   engine: danegovpl_institution_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: GIORiN plant-protection registers
 - source_key: oecd_api
   cadence: weekly
-  window: 06:06 UTC Mon
+  window: 06:00 UTC Mon
   engine: intl_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: National Accounts at a Glance (DF_NAAG_I) — 5 GDP measures for Poland + EU/CEE c
 - source_key: olis_zpav
   cadence: monthly
-  window: 12:21 UTC 1st
+  window: 12:06 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: Official Polish music charts — sales + streaming, weekly since 2000 (the PL musi
 - source_key: olx
   cadence: monthly
-  window: 12:24 UTC 1st
+  window: 12:09 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: trade — private/association data, free.
 - source_key: opi_radon_api
   cadence: monthly
-  window: 04:27 UTC 1st
+  window: 04:12 UTC 1st
   engine: run_bulk.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: Directory snapshots of the three entity types (~3 files); detailed statistics no
 - source_key: orlen
   cadence: monthly
-  window: 12:30 UTC 1st
+  window: 12:15 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: fuel/gas — financial & periodic reports
 - source_key: otodom_analytics
   cadence: monthly
-  window: 12:33 UTC 1st
+  window: 12:18 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: real estate — private/association data, free.
 - source_key: otomoto
   cadence: monthly
-  window: 12:36 UTC 1st
+  window: 12:21 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: automotive — private/association data, free.
 - source_key: paliwa_izba
   cadence: monthly
-  window: 12:39 UTC 1st
+  window: 12:24 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: energy/fuel — private/association data, free.
 - source_key: panstwowa_agencja_atomistyki
   cadence: monthly
-  window: 12:42 UTC 1st
+  window: 12:27 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: PAA radiation monitoring (PMŚ) reports
 - source_key: panstwowa_agencja_rozwiazywa
   cadence: monthly
-  window: 12:45 UTC 1st
+  window: 12:30 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: PARPA/KCPU alcohol-problem reports
 - source_key: panstwowa_egzaminacyjna_dora
   cadence: monthly
-  window: 12:48 UTC 1st
+  window: 12:33 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: CKE exam results map/ZIU; no open API
 - source_key: panstwowa_inspekcja_pracy
   cadence: monthly
-  window: 12:51 UTC 1st
+  window: 12:36 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: PIP labour-inspection annual reports
 - source_key: panstwowy_fundusz_rehabilita
   cadence: weekly
-  window: 04:09 UTC Mon
+  window: 04:03 UTC Mon
   engine: danegovpl_institution_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: PFRON disability data; dane.gov.pl
 - source_key: pap_mediaroom
   cadence: monthly
-  window: 12:54 UTC 1st
+  window: 12:39 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: 'Open press-release feed. NB: PAP''s main news wire is subscription/paid; only Med'
 - source_key: pej
   cadence: monthly
-  window: 12:57 UTC 1st
+  window: 12:42 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: energy/nuclear — financial & periodic reports
 - source_key: pern
   cadence: monthly
-  window: 13:00 UTC 1st
+  window: 12:45 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: fuel/gas — financial & periodic reports
 - source_key: perspektywy
   cadence: monthly
-  window: 13:03 UTC 1st
+  window: 12:48 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: education — private/association data, free.
 - source_key: pex_pharma
   cadence: monthly
-  window: 13:06 UTC 1st
+  window: 12:51 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: Pharmacy/drug retail market — value, dynamics, statistical-pharmacy turnover.
 - source_key: pfr
   cadence: monthly
-  window: 13:09 UTC 1st
+  window: 12:54 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: PFR Group financials + PPK programme statistics (assets, participation).
 - source_key: pge
   cadence: monthly
-  window: 13:12 UTC 1st
+  window: 12:57 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: energy — financial & periodic reports
 - source_key: pgz
   cadence: monthly
-  window: 13:15 UTC 1st
+  window: 13:00 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: defense — financial & periodic reports
 - source_key: pie
   cadence: monthly
-  window: 13:18 UTC 1st
+  window: 13:03 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: 'Economic research & indicators — macro, trade, energy, social — free, regularly '
 - source_key: pig_cbdg
   cadence: monthly
-  window: 12:21 UTC 1st
+  window: 12:06 UTC 1st
   engine: wfs_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: Poland's central geological database — boreholes (870k+ docs), maps, raw geology
 - source_key: piit_telecom
   cadence: monthly
-  window: 13:24 UTC 1st
+  window: 13:09 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: IT & telecom sector reports — free (private complement to UKE).
 - source_key: piu
   cadence: monthly
-  window: 13:27 UTC 1st
+  window: 13:12 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: Insurance market — premiums, claims, by line — free reports (complements KNF).
 - source_key: pko_bp
   cadence: monthly
-  window: 13:30 UTC 1st
+  window: 13:15 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: finance/banking — financial & periodic reports
 - source_key: pkp_plk
   cadence: monthly
-  window: 13:33 UTC 1st
+  window: 13:18 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: transport/rail — financial & periodic reports
 - source_key: pkw_elections
   cadence: monthly
-  window: 13:36 UTC 1st
+  window: 13:21 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: 'All national elections + referendums 1990–present: results, turnout, by constitu'
 - source_key: pmr
   cadence: monthly
-  window: 13:39 UTC 1st
+  window: 13:24 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: sector analytics — private/association data, free.
 - source_key: poczta_polska
   cadence: monthly
-  window: 13:42 UTC 1st
+  window: 13:27 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: post — financial & periodic reports
 - source_key: pohid
   cadence: monthly
-  window: 13:45 UTC 1st
+  window: 13:30 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: trade — private/association data, free.
 - source_key: police_stats
   cadence: monthly
-  window: 13:48 UTC 1st
+  window: 13:33 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: National crime & safety statistics by category and year.
 - source_key: polska_agencja_antydopingowa
   cadence: monthly
-  window: 13:51 UTC 1st
+  window: 13:36 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: POLADA anti-doping reports
 - source_key: polska_agencja_inwestycji
   cadence: monthly
-  window: 13:54 UTC 1st
+  window: 13:39 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: PAIH investment/trade reports
 - source_key: polska_agencja_nadzoru
   cadence: weekly
-  window: 04:12 UTC Mon
+  window: 04:06 UTC Mon
   engine: danegovpl_institution_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: PANA audit-oversight registry
 - source_key: polska_agencja_rozwoju
   cadence: weekly
-  window: 04:15 UTC Mon
+  window: 04:09 UTC Mon
   engine: danegovpl_institution_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: PARP business-support data; dane.gov.pl
 - source_key: polska_akademia_nauk
   cadence: monthly
-  window: 13:57 UTC 1st
+  window: 13:42 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: PAN; reports/publications
 - source_key: polska_izba_inzynierow
   cadence: monthly
-  window: 14:00 UTC 1st
+  window: 13:45 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: construction-engineers chamber registry
 - source_key: polska_organizacja_turystycz
   cadence: monthly
-  window: 14:03 UTC 1st
+  window: 13:48 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: POT tourism reports; dane.gov.pl
 - source_key: polskie_centrum_akredytacji
   cadence: weekly
-  window: 04:18 UTC Mon
+  window: 04:12 UTC Mon
   engine: danegovpl_institution_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: PCA accreditation registry
 - source_key: pracuj_zarobki
   cadence: monthly
-  window: 14:06 UTC 1st
+  window: 13:51 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: Salary benchmarks by role/region + job-offer volume — private labour-market sign
 - source_key: press_circulation
   cadence: monthly
-  window: 14:09 UTC 1st
+  window: 13:54 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: media — private/association data, free.
 - source_key: prokuratura_krajowa
   cadence: monthly
-  window: 14:12 UTC 1st
+  window: 13:57 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: prosecution statistics/reports
 - source_key: pse
   cadence: monthly
-  window: 14:15 UTC 1st
+  window: 14:00 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: energy/grid — financial & periodic reports; operational/system data
 - source_key: psew
   cadence: monthly
-  window: 14:18 UTC 1st
+  window: 14:03 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: energy — private/association data, free.
 - source_key: psz_labour
   cadence: monthly
-  window: 14:21 UTC 1st
+  window: 14:06 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: Registered unemployment by region/month, all powiat labour offices; foreigner em
 - source_key: ptpiree
   cadence: monthly
-  window: 14:24 UTC 1st
+  window: 14:09 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: energy — private/association data, free.
 - source_key: pzfd
   cadence: monthly
-  window: 14:27 UTC 1st
+  window: 14:12 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: real estate — private/association data, free.
 - source_key: pzpm
   cadence: monthly
-  window: 14:30 UTC 1st
+  window: 14:15 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: 'Automotive sector: production, registrations, market structure — free industry r'
 - source_key: pzpn
   cadence: monthly
-  window: 14:33 UTC 1st
+  window: 14:18 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: sports — private/association data, free.
 - source_key: pzu
   cadence: monthly
-  window: 14:36 UTC 1st
+  window: 14:21 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: finance/insurance — financial & periodic reports
 - source_key: rada_doskonalosci_naukowej
   cadence: monthly
-  window: 14:39 UTC 1st
+  window: 14:24 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: RDN academic-degrees registry
 - source_key: rcn_property
   cadence: monthly
-  window: 14:42 UTC 1st
+  window: 14:27 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: Actual real-estate transaction prices from notarial deeds (type, location, area,
 - source_key: reflex
   cadence: monthly
-  window: 14:45 UTC 1st
+  window: 14:30 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: energy/fuel — private/association data, free.
 - source_key: rik_culture
   cadence: weekly
-  window: 05:21 UTC Mon
+  window: 05:15 UTC Mon
   engine: danegovpl_dataset_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: All cultural institutions (theatres, museums, cultural centres) per their organi
 - source_key: rpwdl
   cadence: weekly
-  window: 04:24 UTC Mon
+  window: 04:18 UTC Mon
   engine: danegovpl_institution_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: ALL healthcare providers in Poland (~4,600 entities) + doctor/dentist/ nurse/mid
 - source_key: rspo
   cadence: weekly
-  window: 05:27 UTC Mon
+  window: 05:21 UTC Mon
   engine: danegovpl_dataset_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: 'ALL ~40,000 Polish schools & educational facilities (public + private): primary,'
 - source_key: rybolowstwa_morskiego
   cadence: monthly
-  window: 14:48 UTC 1st
+  window: 14:33 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: marine fisheries; reports
 - source_key: rynek_ksiazki
   cadence: monthly
-  window: 14:51 UTC 1st
+  window: 14:36 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: culture/books — private/association data, free.
 - source_key: rynekpierwotny
   cadence: monthly
-  window: 14:54 UTC 1st
+  window: 14:39 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: real estate — private/association data, free.
 - source_key: rzadowe_centrum_bezpieczenst
   cadence: weekly
-  window: 04:30 UTC Mon
+  window: 04:24 UTC Mon
   engine: danegovpl_institution_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: RCB crisis alerts/reports
 - source_key: rzecznik_finansowy
   cadence: weekly
-  window: 04:33 UTC Mon
+  window: 04:27 UTC Mon
   engine: danegovpl_institution_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: financial ombudsman reports
 - source_key: sad_najwyzszy
   cadence: monthly
-  window: 14:57 UTC 1st
+  window: 14:42 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: SN rulings sn.pl (cf. saos_api)
 - source_key: samar
   cadence: monthly
-  window: 15:00 UTC 1st
+  window: 14:45 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: Car/LCV/motorcycle registrations & market structure (from CEPiK + MF).
 - source_key: sanitarny
   cadence: weekly
-  window: 04:36 UTC Mon
+  window: 04:30 UTC Mon
   engine: danegovpl_institution_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: GIS water-quality dane.gov.pl; sk.gis.gov.pl
 - source_key: saos_api
   cadence: monthly
-  window: 07:03 UTC 1st
+  window: 06:48 UTC 1st
   engine: run_bulk.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: Currently only the first 1-2 judgment pages + courts directory (sample). Full co
 - source_key: sedlak
   cadence: monthly
-  window: 15:06 UTC 1st
+  window: 14:51 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: labour — private/association data, free.
 - source_key: sejm_api
   cadence: weekly
-  window: 03:39 UTC Mon
+  window: 03:33 UTC Mon
   engine: pl_api_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: MPs, votings, interpellations, committees, full legislation (ELI) — current + hi
 - source_key: sonarhome
   cadence: monthly
-  window: 15:09 UTC 1st
+  window: 14:54 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: Residential offer prices & trends, 50+ cities (algorithmic, from portal listings
 - source_key: sotrender
   cadence: monthly
-  window: 15:12 UTC 1st
+  window: 14:57 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: media/digital — private/association data, free.
 - source_key: specjalistyczny_urzad_gornic
   cadence: monthly
-  window: 15:15 UTC 1st
+  window: 15:00 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: mining supervision → WUG
 - source_key: startup_data
   cadence: monthly
-  window: 15:18 UTC 1st
+  window: 15:03 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: digital/VC — private/association data, free.
 - source_key: stooq_api
   cadence: monthly
-  window: 07:21 UTC 1st
+  window: 07:06 UTC 1st
   engine: universal_bulk_downloader.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: Selected market tickers (WIG20, indices, commodities — 1 file landed so far). No
 - source_key: szef_sluzby_cywilnej
   cadence: monthly
-  window: 15:24 UTC 1st
+  window: 15:09 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: civil-service reports
 - source_key: tauron
   cadence: monthly
-  window: 15:27 UTC 1st
+  window: 15:12 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: energy — financial & periodic reports
 - source_key: tge
   cadence: monthly
-  window: 15:30 UTC 1st
+  window: 15:15 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: Wholesale electricity/gas/commodity market prices & volumes (the energy-market r
 - source_key: thinktanks_econ
   cadence: monthly
-  window: 15:33 UTC 1st
+  window: 15:18 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: Independent economic/social research & data — labour, tax-benefit, energy, publi
 - source_key: thinktanks_more
   cadence: monthly
-  window: 15:36 UTC 1st
+  window: 15:21 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: research — private/association data, free.
 - source_key: trans_eu
   cadence: monthly
-  window: 15:39 UTC 1st
+  window: 15:24 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: Road-freight load-board volumes & rates — transport-market activity signal (24 E
 - source_key: transfermarkt
   cadence: monthly
-  window: 15:42 UTC 1st
+  window: 15:27 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: sports — private/association data, free.
 - source_key: transportowy_dozor_techniczn
   cadence: weekly
-  window: 04:42 UTC Mon
+  window: 04:36 UTC Mon
   engine: danegovpl_institution_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: TDT transport technical inspection registry
 - source_key: trybunal_konstytucyjny
   cadence: monthly
-  window: 15:45 UTC 1st
+  window: 15:30 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: TK rulings DB (otk); ipo.trybunal.gov.pl
 - source_key: udsc_migration
   cadence: monthly
-  window: 15:48 UTC 1st
+  window: 15:33 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: Residence permits, asylum applications, foreigner proceedings — annual + maps.
 - source_key: uke_broadband
   cadence: monthly
-  window: 15:51 UTC 1st
+  window: 15:36 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: Broadband internet coverage, telecom infrastructure, public hotspots.
 - source_key: un_wpp
   cadence: weekly
-  window: 06:45 UTC Mon
+  window: 06:39 UTC Mon
   engine: intl_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: 7 demographic indicators (population, life expectancy, fertility, birth/death/mi
 - source_key: undata
   cadence: weekly
-  window: 06:48 UTC Mon
+  window: 06:42 UTC Mon
   engine: intl_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: 6 UN SDG series for Poland (poverty, mortality, renewables, unemployment, women-
 - source_key: ure_bulk
   cadence: weekly
-  window: 04:51 UTC Mon
+  window: 04:45 UTC Mon
   engine: danegovpl_institution_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: 'All URE resources (~3 files): energy market, tariffs, concessions.'
 - source_key: urpl_rpl
   cadence: monthly
-  window: 15:54 UTC 1st
+  window: 15:39 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: All medicinal products authorised in Poland — active substances, forms, marketin
 - source_key: urzad_dozoru_technicznego
   cadence: monthly
-  window: 15:57 UTC 1st
+  window: 15:42 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: UDT technical-inspection; dane.gov.pl
 - source_key: urzad_lotnictwa_cywilnego
   cadence: weekly
-  window: 04:54 UTC Mon
+  window: 04:48 UTC Mon
   engine: danegovpl_institution_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: ULC aviation stats; dane.gov.pl
 - source_key: urzad_ochrony_danych
   cadence: monthly
-  window: 16:00 UTC 1st
+  window: 15:45 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: UODO GDPR decisions/reports
 - source_key: urzad_ochrony_konkurencji
   cadence: weekly
-  window: 04:57 UTC Mon
+  window: 04:51 UTC Mon
   engine: danegovpl_institution_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: UOKiK dane.gov.pl id=26 (to wire)
 - source_key: urzad_panstwowej_komisji
   cadence: monthly
-  window: 16:03 UTC 1st
+  window: 15:48 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: child-protection commission reports
 - source_key: urzad_patentowy
   cadence: monthly
-  window: 16:06 UTC 1st
+  window: 15:51 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: UPRP e-Wyszukiwarka registers (patents/TM/designs); search UI
 - source_key: utk_stats
   cadence: monthly
-  window: 16:09 UTC 1st
+  window: 15:54 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
@@ -1446,56 +1411,56 @@ entries:
   notes: All public-procurement notices in the Biuletyn Zamówień Publicznych (2022+).
 - source_key: weglokoks
   cadence: monthly
-  window: 16:12 UTC 1st
+  window: 15:57 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: mining/coal — financial & periodic reports
 - source_key: wody_polskie
   cadence: monthly
-  window: 15:15 UTC 1st
+  window: 15:00 UTC 1st
   engine: wfs_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: Flood-risk & hazard maps, river-basin management boundaries, water-management sp
 - source_key: worldbank_wdi
   cadence: weekly
-  window: 07:00 UTC Mon
+  window: 06:54 UTC Mon
   engine: intl_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: Curated 12-indicator comparison set (GDP, GDP/capita, growth, inflation, unemplo
 - source_key: wto_stats
   cadence: weekly
-  window: 07:03 UTC Mon
+  window: 06:57 UTC Mon
   engine: intl_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: 'Curated 4-indicator set for Poland (reporter 616): merchandise exports & imports'
 - source_key: wyzszy_urzad_gorniczy
   cadence: weekly
-  window: 05:06 UTC Mon
+  window: 05:00 UTC Mon
   engine: danegovpl_institution_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
   notes: WUG mining stats; dane.gov.pl
 - source_key: zbp
   cadence: monthly
-  window: 16:18 UTC 1st
+  window: 16:03 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: 'Banking sector: e-banking, mortgages (AMRON-SARFiN), credit trends — free report'
 - source_key: zpl
   cadence: monthly
-  window: 16:21 UTC 1st
+  window: 16:06 UTC 1st
   engine: web_scraper_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence monthly'
   priority: 3
   notes: finance — private/association data, free.
 - source_key: zus_bulk
   cadence: weekly
-  window: 05:09 UTC Mon
+  window: 05:03 UTC Mon
   engine: danegovpl_institution_extractor.py
   mechanism: 'orchestrator: run_ingestion.py --cadence weekly'
   priority: 2
