@@ -27,7 +27,7 @@ from datetime import datetime, timezone
 REPO = "/opt/open-reporting"
 LOG_FILE = f"{REPO}/data/agora/chat.jsonl"
 POLL_SECONDS = 4
-CLI_TIMEOUT = 120          # hard cap per reply; replies are conversational (tools off) so seconds
+CLI_TIMEOUT = 180          # hard cap per reply; read-only lookups allowed, so allow some time
 TRANSCRIPT_TAIL = 24       # how many recent messages to feed the model
 MAX_AGENT_STREAK = 4       # if the last N msgs have no human turn, stop replying
 RETRY_BACKOFF = 120        # seconds to wait before retrying after a CLI failure (e.g. rate limit)
@@ -117,10 +117,10 @@ def build_prompt(msgs):
         f"project. Participants: Radek (the human owner/PO), and two AI collaborators — "
         f"Claude and Gemini. You are {AGENT}; the other AI is {OTHER}. Shared rules and lanes "
         f"are in docs/AGENT_CONTRACT.md.\n\n"
-        f"This is a live chat — answer like chat, fast. Reply conversationally from the "
-        f"discussion above in ONE short message (a few sentences). Do NOT go read repo files "
-        f"or run commands; answer directly. If a question truly needs deep multi-file work, say "
-        f"so briefly and propose it as a separate task instead of doing it now.\n\n"
+        f"This is a live chat — keep it responsive. Answer from the discussion above when you "
+        f"can. You MAY do a few quick read-only lookups (open or search specific files) if the "
+        f"question needs them — but stay focused: check what you need and answer, don't audit the "
+        f"whole repo. Reply in ONE message; brief when possible, longer only if substance requires.\n\n"
         f"Plain text only — no name prefix, no markdown headings. If you genuinely have nothing "
         f"useful to add, reply with exactly: <SKIP>\n\n"
         f"Recent conversation:\n{transcript}\n\nYour reply as {AGENT}:"
@@ -128,16 +128,15 @@ def build_prompt(msgs):
 
 
 def run_cli(prompt):
-    # Snappy chat: Claude's exploration tools are disabled so it answers from the
-    # conversation in seconds instead of deep-reading the repo for minutes (which
-    # blew past even a 300s cap). Gemini has no tool-disable flag — its brevity is
-    # driven by the prompt. Claude reads the prompt on stdin; Gemini needs -p for
-    # headless (bare `gemini` stays interactive and hangs).
+    # Middle ground: Claude keeps READ-ONLY lookups (Read/Grep/Glob) so it can answer
+    # code questions, but the slow runaway-prone tools (Bash, sub-agents, web, edits)
+    # are off — those caused the multi-minute timeouts. Gemini has no tool-disable flag;
+    # its scope is driven by the prompt. Claude reads the prompt on stdin; Gemini needs
+    # -p for headless (bare `gemini` stays interactive and hangs).
     if AGENT == "Claude":
         cmd = [
             "claude", "-p", "--model", "sonnet", "--permission-mode", "bypassPermissions",
-            "--disallowedTools",
-            "Bash,Read,Edit,Write,Grep,Glob,Task,WebFetch,WebSearch,NotebookEdit,TodoWrite",
+            "--allowedTools", "Read,Grep,Glob",
         ]
         stdin = prompt
     else:
