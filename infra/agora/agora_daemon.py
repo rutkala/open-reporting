@@ -30,6 +30,9 @@ POLL_SECONDS = 4
 CLI_TIMEOUT = 150          # hard cap per reply so a stuck CLI can't wedge the daemon
 TRANSCRIPT_TAIL = 24       # how many recent messages to feed the model
 MAX_AGENT_STREAK = 4       # if the last N msgs have no human turn, stop replying
+RETRY_BACKOFF = 120        # seconds to wait before retrying after a CLI failure (e.g. rate limit)
+
+_cooldown_until = 0.0      # module state: skip reply attempts until this time
 
 AGENT = (sys.argv[1] if len(sys.argv) > 1 else "").strip()
 if AGENT not in ("Claude", "Gemini"):
@@ -113,7 +116,7 @@ def build_prompt(msgs):
         f"You are {AGENT}, an AI collaborator in a 3-way group chat for the Open Reporting "
         f"project. Participants: Radek (the human owner/PO), and two AI collaborators — "
         f"Claude and Gemini. You are {AGENT}; the other AI is {OTHER}. Shared rules and lanes "
-        f"are in docs/AGENT_CONTRACT.md (you may read repo files if needed to answer).\n\n"
+        f"are in docs/AGENT_CONTRACT.md.\n\n"
         f"Reply with ONE concise message, plain text only — no name prefix, no markdown "
         f"headings. If you genuinely have nothing useful to add, reply with exactly: <SKIP>\n\n"
         f"Recent conversation:\n{transcript}\n\nYour reply as {AGENT}:"
@@ -128,7 +131,7 @@ def run_cli(prompt):
         cmd = ["claude", "-p", "--model", "sonnet", "--permission-mode", "bypassPermissions"]
         stdin = prompt
     else:
-        cmd = ["gemini", "-p", prompt, "-o", "text", "--approval-mode", "yolo"]
+        cmd = ["gemini", "-p", prompt, "-o", "text", "--approval-mode", "yolo", "--skip-trust"]
         stdin = None
     try:
         res = subprocess.run(
@@ -137,10 +140,11 @@ def run_cli(prompt):
         )
     except subprocess.TimeoutExpired:
         log.warning("CLI timed out after %ss", CLI_TIMEOUT)
-        return ""
+        return False, ""
     if res.returncode != 0:
         log.warning("CLI exit %s: %s", res.returncode, (res.stderr or "")[:300])
-    return (res.stdout or "").strip()
+        return False, (res.stdout or "").strip()
+    return True, (res.stdout or "").strip()
 
 
 def clean_reply(text):
@@ -152,24 +156,33 @@ def clean_reply(text):
 
 
 def tick():
+    """Process new messages. Returns True if handled (advance), False to retry later."""
+    global _cooldown_until
     msgs = read_log()
     hwm = read_hwm()
     if hwm is None:                      # first ever start: skip existing backlog
         write_hwm(len(msgs))
         log.info("initialised high-water mark at %d (skipping backlog)", len(msgs))
-        return
+        return True
     if len(msgs) <= hwm:
-        return                           # nothing new
-    write_hwm(len(msgs))                 # mark seen up-front (chat: don't retry)
+        return True                      # nothing new
     if not should_reply(msgs):
-        return
+        write_hwm(len(msgs))             # consume: nothing for us to say
+        return True
     log.info("new turn from %s -> generating reply", msgs[-1].get("author"))
-    reply = clean_reply(run_cli(build_prompt(msgs)))
+    ok, raw = run_cli(build_prompt(msgs))
+    if not ok:                           # rate limit / timeout: DON'T consume — back off and retry
+        _cooldown_until = time.time() + RETRY_BACKOFF
+        log.warning("reply failed (rate limit/timeout?); retrying in %ss", RETRY_BACKOFF)
+        return False
+    write_hwm(len(msgs))                 # consume only once we got a real result
+    reply = clean_reply(raw)
     if not reply or reply.strip().upper().strip("<>") == "SKIP":
         log.info("no reply (empty or SKIP)")
-        return
+        return True
     append_reply(reply)
     log.info("replied (%d chars)", len(reply))
+    return True
 
 
 def main():
@@ -178,10 +191,12 @@ def main():
     last_sig = None
     while True:
         try:
-            sig = os.path.getmtime(LOG_FILE) if os.path.exists(LOG_FILE) else 0
-            if sig != last_sig:
-                last_sig = sig
-                tick()
+            if time.time() >= _cooldown_until:
+                sig = os.path.getmtime(LOG_FILE) if os.path.exists(LOG_FILE) else 0
+                if sig != last_sig:
+                    if tick():           # advance the seen-marker only when handled
+                        last_sig = sig
+                    # on retry (tick→False) keep last_sig stale so we re-enter after cooldown
         except Exception:                # never let one bad cycle kill the daemon
             log.exception("tick failed")
         time.sleep(POLL_SECONDS)
