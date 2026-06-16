@@ -33,7 +33,7 @@ from datetime import datetime, timezone
 REPO = "/opt/open-reporting"
 LOG_FILE = f"{REPO}/data/agora/chat.jsonl"
 POLL_SECONDS = 4
-ORCH_TIMEOUT = 150         # orchestrator reply (read-only) — must stay snappy
+ORCH_TIMEOUT = 240         # orchestrator reply (read-only) — safety net; prompt keeps it brief
 WORKER_TIMEOUT = 900       # background worker — real multi-step changes get time
 TRANSCRIPT_TAIL = 24       # how many recent messages to feed the orchestrator
 MAX_AGENT_STREAK = 4       # if the last N msgs have no human turn, stop replying
@@ -135,9 +135,11 @@ def build_orchestrator_prompt(msgs):
         f"You are the {AGENT} ORCHESTRATOR in a 3-way chat for the Open Reporting project. "
         f"Participants: Radek (human owner/PO), and two AI orchestrators — Claude and Gemini. "
         f"You are {AGENT}; the other is {OTHER}.\n\n"
-        f"YOUR ROLE: talk with Radek, think, plan, and COORDINATE. You are READ-ONLY — you may "
-        f"read/search files to inform your answer, but you do NOT edit the repo yourself. Stay "
-        f"responsive: reply quickly and concisely.\n\n"
+        f"YOUR ROLE: talk with Radek, think, plan, and COORDINATE — and stay FAST. Keep replies "
+        f"SHORT (a few sentences). You are READ-ONLY: a quick file lookup is fine, but do NOT write "
+        f"long essays or deep-read many files — for any real investigation or multi-file analysis, "
+        f"DISPATCH a worker instead of doing it yourself. Responsiveness beats thoroughness in your "
+        f"chat replies; let workers handle depth.\n\n"
         f"TO MAKE CHANGES, DELEGATE. When real work (edits, builds, commits) is needed in your "
         f"lane, add ONE line per task starting with `DISPATCH:` followed by a precise, "
         f"self-contained spec a worker can execute alone — name the files, the exact change, and "
