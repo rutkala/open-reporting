@@ -1,83 +1,42 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-16 07:00 UTC (run #93 watchdog — prod healthy, uzp OOM fix → disk-full) -->
+<!-- last-updated: 2026-06-16 07:23 UTC (run #94 — SHIPPED uzp disk-full fix + filed OR-195) -->
 
-## Runs #86–#93 (06-14 07:00 → 06-16 07:00 UTC) — WATCHDOG. Prod healthy, no PO direction.
-All 5 dashboards + www 200; rendered content verified real (Dash apps, not portal index). TLS valid
-→ Sep 12 2026. All protected crons intact. No Telegram inbox items; Linear 0 Strategic, 0 issues
-updated in last 5 days. No build/deploy/publish — Antigravity's plane (tree holds their uncommitted
-work; never `git add -A`). Commit only my files, explicit paths.
-NOTE (#93): the recurring uzp_extractor.py failure CHANGED MODE. Antigravity's bbe78244 ("OOM by
-streaming to disk") + ca365dea (registry→complete) cured the OOM but introduced a disk-full.
-ingest-nightly-2026-06-16.log: 01:00 run failed 01:32 with `OSError: [Errno 28] No space left on
-device` at uzp_extractor.py:122 (open tmp_notices_path), exit=1 / 1920s. uzp now streams full-scope
-BZP notices to a local tempfile.TemporaryDirectory() under /tmp on /dev/sda1 (38G, ~12G free) —
-dataset > free space → Errno 28. Self-recovered (context mgr removed temp dir on exception, no
-orphan; disk 25G/12G/69%). Registry says uzp_bzp "complete" but nightly write still fails →
-completeness overstated. STILL their data plane, not my P0 — warehouse written by 22 UTC cron
-(mtime Jun 15 22:11), 6 domains render. Real fix: don't materialise full notices set on the 38G
-root — point output at Drive mount, paginate/incremental-flush per (ntype,ym), or grow disk.
-Latent infra risk: 38G box at 69% nearly fills each nightly; if it stays full, postgres/ghost/nginx
-at risk. Flagged in outbox (their-plane + cost decisions), not acted on.
-Surfaced in
-outbox flagged as recurring — uzp needs its own timeout/mem cap.
+## Run #94 (06-16 07:23 UTC) — SHIPPED. Root-caused + fixed the recurring uzp disk-full.
+All 5 dashboards + www 200; daily 22 UTC ingest exit=0. No Telegram inbox; Linear 0 Strategic, 0
+issues in 5d. Release sweep ran = no-op (20 already published, 1 blocked, 0 new drafts → nothing
+pushed). FIXED uzp disk-full that #90–93 deferred: the errno 28 was the per-month notices STREAM, not
+the output. `data/landing` is on the Drive mount (st_dev 39, ~5TB) but the stream went to
+`tempfile.TemporaryDirectory()` defaulting to /tmp on the 38G root (st_dev 2049) — one full-scope
+ContractNotice month exhausted root → OSError 28 at uzp_extractor.py:122. NOT full-history (orchestr
+runs uzp "single"/no-args = default last-3-months). Fix (commit 2b2f7178, pushed): temp dir now under
+LANDING (Drive) + 2 GiB free-space preflight as mount-down fallback. Verified temp at st_dev 39 not
+/tmp; real fetch exits 0, no orphan. uzp_extractor was clean/committed (not in Antigravity's tree) so
+editing stepped on nothing — explicit-path commit only.
+NEW: BZP API enum drift — only `ContractNotice` returns 200; `ContractAwardNotice` +
+`ContractModificationNotice` → HTTP 400 (out-of-range). 2 of 3 types silently empty since enum
+changed; completeness overstated. Filed OR-195 (Bug/Data, Medium, Backlog) — did NOT guess enum
+values (API-burn). Tonight's 01:00 nightly is the live test of the disk fix.
 
-## 2026-06-14 ~15:30 UTC — INTERACTIVE w/ PO. Google Drive mount RESTORED + ingestion proven.
+## Runs #86–#93 (06-14 → 06-16 07:00) — WATCHDOG. Prod healthy, no PO direction.
+All dashboards + www 200, content real, TLS → Sep 12 2026, crons intact. No build/deploy/publish —
+Antigravity's plane (tree holds uncommitted work; never `git add -A`; commit only my files, explicit
+paths). #90–93 saw the uzp failure as transient/their-plane; #94 root-caused & fixed it (above).
 
-PO-driven session (not watchdog). The rclone Google Drive landing-zone mount had an expired token
-(`invalid_grant`) — all `data/landing/` I/O failing since ~midday. Root cause of expiry: the custom
-OAuth client's consent screen was in **Testing** (refresh tokens die after 7 days). Fixed:
-- Custom OAuth client `549584149678-…gqdsuatngjfn00bk2jved36jh5bhmt9t` is **Web-type** ⇒ rejects
-  `127.0.0.1:53682` loopback redirect ⇒ phone-only `rclone config reconnect` can't finish.
-- It already has `https://portal.open-reporting.dev/auth` registered as a redirect URI. Added an nginx
-  capture endpoint there (`portal.conf` `location = /auth`, logs `$arg_code`) — committed `933977ac`.
-- One-tap flow: PO approves → code captured → exchanged for token → written to rclone.conf (via sudo;
-  file is `root:radek 640`) → `systemctl restart rclone-landing`. Verified write+read round-trip, 0
-  invalid_grant. PO then **published the OAuth app to Production** and we re-minted → token now permanent.
-- Full re-auth procedure saved to memory `reference_gdrive_rclone_reauth.md`.
-
-**Ingestion verified end-to-end on the live mount:** ran `run_ingestion.py --cadence weekly --only`
-for `pl_api_extractor` (IMGW 3 files + Sejm 63 files, 4864 records) and `intl_extractor` — files
-confirmed ON DRIVE via `rclone lsf` (not just local cache).
-
-**Coverage audit (network-free, scheduled vs implemented config keys):** the ONLY real config gap in
-the whole fleet is **6 international sources** scheduled but absent from `intl_indicators.yaml`:
-`faostat, ilostat, imf_ifs, oecd_api, un_wpp, undata`. They log "unknown source, skipping" each weekly
-run. intl_extractor supports 4 kinds (worldbank, imf_datamapper, ecb_sdmx, wto); these 6 need NEW fetch
-kinds (IMF/OECD/ILO SDMX, FAOSTAT bulk, UN WPP REST) → real build, not config. Everything else
-(web_scraper 148, danegovpl 31, wfs 5, pl_api 2) has a config block per scheduled source. NOTE:
-"has config" ≠ "yields data" — web_scraper only catches direct file links, so many of its 148 land 0
-files on table/JS portals (separate runtime-yield issue to audit). Recommended next: focused build to
-(a) implement the 6 intl sources, (b) audit web_scraper runtime yield. Awaiting PO direction on whether
-to build now or let the scheduled crons populate the working fleet (nightly 01:00 / weekly Mon / monthly 1st).
-
-### Same session, later — international + KRS extractors built (PO-directed)
-**International (commit 8bba3af5):** wired 3 of the 6 missing category-d sources into intl_extractor.py
-via 2 new reusable kinds — `sdmx_csv` (OECD 5 GDP measures + ILOSTAT 4 labour dataflows) and
-`unsd_sdg` (UN SDG 6 series for Poland). All landed on Drive. un_wpp later UNBLOCKED
-(commit 7109dc31): PO provided a UN WPP data portal Bearer token → stored in .env UN_WPP_TOKEN
-(gitignored), kind=un_wpp wired (7 demographic indicators, PL+7 comparators, 1990-2050, verified).
-So international = 4 of 6 working (+ original ecb/imf_weo/wb/wto). Still blocked: imf_ifs (legacy
-SDMX host decommissioned), faostat (auth/521/403). One delegation to data-engineer agent FAILED
-(probed 51 calls, wrote nothing) — did it inline instead.
-
-**KRS (commit d5a69b68):** krs_api was spec-snapshot-only; built krs_extractor.py pulling OdpisAktualny
-register extracts from sanctioned api-krs.ms.gov.pl for a curated/expandable entity set
-(krs_targets.yaml, 10 blue-chips verified live). Register data only (capital/board/PKD/status), NOT
-financial statements. **Financial statements = SKIPPED per PO**: empirically confirmed the RDF
-statement docs (rdf-przegladarka.ms.gov.pl) are behind Imperva Incapsula — headless AND headed (xvfb)
-chromium both blocked 403 from our datacenter IP (cip flagged). No free programmatic access; commercial
-providers (MGBI) use residential proxies + maintained stealth and resell via paid API. Other 2 FS
-sources (gpw_espi market disclosures, opp_niw NGO) also parked. Installed xvfb during the probe.
-
-### Run #85 carryover — TLS cert P0 fix (still the live setup)
-Expired LE cert (Jun 13 19:27 UTC) reissued → lineage `open-reporting.dev-0003`, valid through
-**2026-09-12**. 3 nginx confs (portal/apex/www) point at `live/open-reporting.dev-0003/`.
-Renewal wired as host cron `20 3,15 * * *` `certbot -q renew --config-dir infra/nginx/certs`
-+ nginx-reload deploy-hook (`renew --dry-run` exit 0). Certs gitignored; only nginx confs committed.
-Open followups to PO (still standing): (1) compose `certbot` service has wrong volume paths
-(`./nginx/certs` vs `./infra/nginx/certs`), dead/superseded — remove or fix; (2) renewal depends
-on my host cron — reconcile if compose-certbot is meant canonical; (3) add cert-expiry alert.
+## 2026-06-14 — INTERACTIVE w/ PO (condensed history)
+- **Drive mount restored:** rclone token had expired (consent screen was in Testing). One-tap re-auth
+  via nginx `/auth` capture endpoint (commit 933977ac); PO then published OAuth app to Production →
+  token permanent. Procedure in memory `reference_gdrive_rclone_reauth.md`. `data/landing` is the
+  Drive mount (~5TB) — relevant to #94's uzp fix.
+- **Intl extractors (8bba3af5, 7109dc31):** 4 of 6 category-d sources now working via new kinds
+  `sdmx_csv` (OECD/ILOSTAT), `unsd_sdg` (UN SDG), `un_wpp` (Bearer token in .env UN_WPP_TOKEN). Still
+  blocked: imf_ifs (host decommissioned), faostat (403).
+- **KRS (d5a69b68):** krs_extractor.py pulls OdpisAktualny register extracts (api-krs.ms.gov.pl,
+  krs_targets.yaml). Financial statements SKIPPED per PO — RDF docs behind Imperva Incapsula (403 from
+  datacenter IP). gpw_espi + opp_niw also parked.
+- **TLS (Run #85):** cert lineage `open-reporting.dev-0003` valid → 2026-09-12; renewal host cron
+  `20 3,15` certbot. Standing followups to PO: compose `certbot` service has wrong volume paths
+  (dead); add cert-expiry alert.
 
 ## THE STANDING REALITY — Antigravity (Gemini swarm) is the active Project Lead
 Project reorganised around an Antigravity Discord swarm as Project Lead (OR-191 Done). Data plane

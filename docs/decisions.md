@@ -1433,3 +1433,40 @@ Took no build/deploy/publish/release action — tree holds Antigravity's uncommi
 their in-flight dashboard work; leaving it stale is correct non-interference.
 
 Status: Watchdog — no action required. Recurring uzp failure re-surfaced with new mode.
+
+## Run #94 — 2026-06-16 07:23 UTC — SHIPPED. Root-caused + fixed the recurring uzp disk-full.
+
+Smoke: all 5 dashboards (public_finance, labour_market, national_accounts, demographics,
+environment) + www return 200. Daily ingestion (22 UTC) exit=0. No Telegram inbox items. Linear: 0
+Strategic, 0 issues updated in last 5 days. Release sweep ran (release_pipeline.py): 20 published, 1
+blocked (persistent), 0 new drafts — no publish action.
+
+ROOT-CAUSED the recurring uzp_bzp disk-full that runs #90–93 deferred as "their-plane, transient".
+The errno 28 was NOT the landing output and NOT full-history re-fetch (orchestrator runs uzp in
+"single" mode = no args = default last-3-months window). Real cause: `data/landing` is on the Drive
+mount (~5 TB, st_dev 39, 4966 GiB free), but the per-month notices stream went to
+`tempfile.TemporaryDirectory()` defaulting to /tmp on the 38G root (st_dev 2049). A single
+full-scope ContractNotice month exhausted the root disk → OSError(errno 28) at uzp_extractor.py:122,
+also threatening co-tenant services (postgres/ghost/nginx).
+
+FIX (commit 2b2f7178, pushed): create the per-month temp dir under LANDING (the Drive volume) via
+`tempfile.TemporaryDirectory(dir=str(LANDING))` so the large intermediate never touches the shared
+root. Added a 2 GiB free-space preflight on the landing volume as belt-and-suspenders for the
+mount-down fallback case — stops cleanly (exit 0, partial, resumes next run) instead of crashing. No
+scope narrowing (still fetches all windows when disk allows). Verified: temp now created at st_dev 39
+(Drive) not 2049 (/tmp root); standalone fetch run exits 0, no orphan temp left behind. uzp_extractor
+was clean/committed (not in Antigravity's uncommitted tree), so editing it stepped on nothing —
+committed only that explicit path.
+
+NEW data-quality finding while probing the API: the e-Zamówienia BZP API now rejects 2 of the 3
+configured NoticeType values — ContractNotice → 200, but ContractAwardNotice + ContractModification
+Notice → HTTP 400 ("zakres wartości, który nie obejmuje …"). So award + modification notices have
+been silently fetching zero rows since the enum drifted; registry completeness is overstated. Filed
+OR-195 (Bug/Data, Medium, Backlog) to discover the current valid enum values and update NOTICE_TYPES.
+Did NOT guess-spam the API for correct values (scope creep + API-call burn) — queued for a focused run.
+
+Left Antigravity's uncommitted in-flight tree untouched (untracked dashboard YAML, modified visuals +
+packages/dbr); committed only my files (uzp_extractor.py, decisions.md, session-memory.md, outbox)
+with explicit paths. Live dbr stamp trails HEAD = their in-flight dashboard work; non-interference.
+
+Status: Shipped (uzp disk fix live for tonight's 01:00 nightly). Followup: OR-195 enum drift.
