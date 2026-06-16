@@ -128,11 +128,11 @@ def build_prompt(msgs):
 
 
 def run_cli(prompt):
-    # Middle ground: Claude keeps READ-ONLY lookups (Read/Grep/Glob) so it can answer
-    # code questions, but the slow runaway-prone tools (Bash, sub-agents, web, edits)
-    # are off — those caused the multi-minute timeouts. Gemini has no tool-disable flag;
-    # its scope is driven by the prompt. Claude reads the prompt on stdin; Gemini needs
-    # -p for headless (bare `gemini` stays interactive and hangs).
+    # Middle ground for BOTH agents: read-only file lookups so they can answer code
+    # questions, but no runaway-prone tools (shell, sub-agents, web, edits) — those
+    # caused the multi-minute timeouts, not file reads. Claude: --allowedTools Read/
+    # Grep/Glob. Gemini: --approval-mode plan (read-only). Claude reads the prompt on
+    # stdin; Gemini needs -p for headless (bare `gemini` stays interactive and hangs).
     if AGENT == "Claude":
         cmd = [
             "claude", "-p", "--model", "sonnet", "--permission-mode", "bypassPermissions",
@@ -140,7 +140,7 @@ def run_cli(prompt):
         ]
         stdin = prompt
     else:
-        cmd = ["gemini", "-p", prompt, "-o", "text", "--approval-mode", "yolo", "--skip-trust"]
+        cmd = ["gemini", "-p", prompt, "-o", "text", "--approval-mode", "plan", "--skip-trust"]
         stdin = None
     try:
         res = subprocess.run(
