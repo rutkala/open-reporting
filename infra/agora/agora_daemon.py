@@ -27,7 +27,7 @@ from datetime import datetime, timezone
 REPO = "/opt/open-reporting"
 LOG_FILE = f"{REPO}/data/agora/chat.jsonl"
 POLL_SECONDS = 4
-CLI_TIMEOUT = 150          # hard cap per reply so a stuck CLI can't wedge the daemon
+CLI_TIMEOUT = 300          # hard cap per reply (substantive replies may read repo files)
 TRANSCRIPT_TAIL = 24       # how many recent messages to feed the model
 MAX_AGENT_STREAK = 4       # if the last N msgs have no human turn, stop replying
 RETRY_BACKOFF = 120        # seconds to wait before retrying after a CLI failure (e.g. rate limit)
@@ -144,7 +144,25 @@ def run_cli(prompt):
     if res.returncode != 0:
         log.warning("CLI exit %s: %s", res.returncode, (res.stderr or "")[:300])
         return False, (res.stdout or "").strip()
-    return True, (res.stdout or "").strip()
+    out = (res.stdout or "").strip()
+    if _looks_like_limit_notice(out):
+        # CLI printed a rate/usage-limit notice to stdout with a success code —
+        # treat as a transient failure so we back off and retry, NOT post it as a reply.
+        log.warning("CLI returned a limit notice, not a reply: %s", out[:120])
+        return False, ""
+    return True, out
+
+
+# Short CLI notices that are NOT real replies — usage/auth limits leaking to stdout.
+_LIMIT_MARKERS = (
+    "session limit", "usage limit", "rate limit", "hit your", "you've hit",
+    "limit reached", "overloaded", "please run /login", "/upgrade",
+)
+
+
+def _looks_like_limit_notice(text):
+    low = text.lower()
+    return len(text) < 200 and any(marker in low for marker in _LIMIT_MARKERS)
 
 
 def clean_reply(text):
