@@ -509,7 +509,7 @@ sources:
     extractor_path: products/ingestion/universal_bulk_downloader.py
     manifest_kind: null
     docs_url: https://dane.gov.pl/pl/institution/204
-    default_status: not_started
+    default_status: partial
 
   - source_key: knf_bulk
     category: b_pl_gov_institutional
@@ -866,7 +866,7 @@ sources:
     extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://api.stat.gov.pl/Home/RegonApi
-    default_status: not_started
+    default_status: partial
 
   - source_key: gus_sdp
     category: a_pl_gov_central
@@ -1206,7 +1206,7 @@ sources:
     extractor_path: products/ingestion/extractors/intl_extractor.py
     manifest_kind: null
     docs_url: https://apiportal.wto.org
-    default_status: not_started
+    default_status: partial
 
   - source_key: undata
     category: d_international
@@ -1435,7 +1435,7 @@ sources:
     extractor_path: products/ingestion/extractors/wfs_extractor.py
     manifest_kind: null
     docs_url: https://bdl.lasy.gov.pl/portal/uslugi-mapowe-ogc
-    default_status: not_started
+    default_status: partial
 
   - source_key: uke_broadband
     category: b_pl_gov_institutional
@@ -1488,7 +1488,7 @@ sources:
     extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.gunb.gov.pl/strona/dla-integratorow
-    default_status: not_started
+    default_status: partial
 
   - source_key: gdos_geo
     category: b_pl_gov_institutional
@@ -1515,7 +1515,7 @@ sources:
     extractor_path: products/ingestion/extractors/wfs_extractor.py
     manifest_kind: null
     docs_url: https://www.gov.pl/web/gdos/dostep-do-danych-geoprzestrzennych
-    default_status: not_started
+    default_status: partial
 
   - source_key: bfg_data
     category: b_pl_gov_institutional
@@ -1792,7 +1792,7 @@ sources:
     extractor_path: products/ingestion/extractors/danegovpl_dataset_extractor.py
     manifest_kind: null
     docs_url: https://api.rspo.gov.pl/
-    default_status: not_started
+    default_status: partial
 
   - source_key: rpwdl
     category: b_pl_gov_institutional
@@ -1841,7 +1841,7 @@ sources:
     extractor_path: products/ingestion/extractors/danegovpl_dataset_extractor.py
     manifest_kind: null
     docs_url: https://www.gov.pl/web/kultura/rejestr-instytucji-kultury-dla-ktorych-organizatorem-jest-mkidn
-    default_status: not_started
+    default_status: partial
 
   - source_key: isws_justice
     category: b_pl_gov_institutional
@@ -1863,7 +1863,7 @@ sources:
     extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://dane.gov.pl/pl/dataset/625
-    default_status: not_started
+    default_status: partial
 
   - source_key: psz_labour
     category: b_pl_gov_institutional
@@ -2001,7 +2001,7 @@ sources:
     extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://www.gov.pl/web/chemikalia
-    default_status: not_started
+    default_status: partial
   - source_key: biuro_komisji_akredytacyjnej
     category: b_pl_gov_institutional
     ingestion_mode: bulk
@@ -2162,7 +2162,7 @@ sources:
     extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.cdr.gov.pl
-    default_status: not_started
+    default_status: partial
   - source_key: centrum_unijnych_projektow
     category: b_pl_gov_institutional
     ingestion_mode: bulk
@@ -2185,7 +2185,7 @@ sources:
     extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://www.cupt.gov.pl
-    default_status: not_started
+    default_status: partial
   - source_key: centrum_lukasiewicz
     category: b_pl_gov_institutional
     ingestion_mode: bulk
@@ -2254,7 +2254,7 @@ sources:
     extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://www.gov.pl/web/ijhars
-    default_status: not_started
+    default_status: partial
   - source_key: ochrony_roslin_nasiennictwa
     category: b_pl_gov_institutional
     ingestion_mode: bulk
@@ -2392,7 +2392,7 @@ sources:
     extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://www.premier.gov.pl
-    default_status: not_started
+    default_status: partial
   - source_key: kancelaria_senatu
     category: b_pl_gov_institutional
     ingestion_mode: api_full
@@ -2438,7 +2438,7 @@ sources:
     extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://www.gov.pl/web/kgpsp
-    default_status: not_started
+    default_status: partial
   - source_key: komenda_glowna_strazy
     category: b_pl_gov_institutional
     ingestion_mode: bulk
@@ -2599,7 +2599,7 @@ sources:
     extractor_path: products/ingestion/extractors/danegovpl_institution_extractor.py
     manifest_kind: null
     docs_url: https://www.gov.pl/web/krus
-    default_status: not_started
+    default_status: partial
   - source_key: naczelna_dyrekcja_archiwow
     category: b_pl_gov_institutional
     ingestion_mode: bulk
@@ -3526,7 +3526,7 @@ sources:
     extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://ir.enea.pl/raporty-okresowe
-    default_status: not_started
+    default_status: partial
   - source_key: tauron
     category: e_state_companies
     ingestion_mode: bulk
@@ -3549,7 +3549,7 @@ sources:
     extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://raport.tauron.pl/
-    default_status: not_started
+    default_status: partial
   - source_key: orlen
     category: e_state_companies
     ingestion_mode: bulk
@@ -3687,7 +3687,7 @@ sources:
     extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.pkobp.pl/relacje-inwestorskie/raporty-finansowe/
-    default_status: not_started
+    default_status: partial
   - source_key: gpw_sa
     category: c_pl_private
     ingestion_mode: bulk
@@ -3710,7 +3710,7 @@ sources:
     extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.gpw.pl/raporty-okresowe
-    default_status: not_started
+    default_status: partial
   - source_key: pse
     category: e_state_companies
     ingestion_mode: bulk
@@ -3802,7 +3802,7 @@ sources:
     extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.arp.pl/
-    default_status: not_started
+    default_status: partial
   - source_key: pgz
     category: e_state_companies
     ingestion_mode: bulk
@@ -3848,7 +3848,7 @@ sources:
     extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.plk-sa.pl/dla-klientow-i-kontrahentow
-    default_status: not_started
+    default_status: partial
   - source_key: poczta_polska
     category: e_state_companies
     ingestion_mode: bulk
@@ -4089,7 +4089,7 @@ sources:
     extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.bankier.pl/
-    default_status: not_started
+    default_status: partial
 
   - source_key: biznesradar
     category: c_pl_private
@@ -4111,7 +4111,7 @@ sources:
     extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.biznesradar.pl/
-    default_status: not_started
+    default_status: partial
 
   - source_key: tge
     category: c_pl_private
@@ -4137,7 +4137,7 @@ sources:
     extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://tge.pl/uslugi-tge
-    default_status: not_started
+    default_status: partial
 
   # ── Category c, by domain: REAL ESTATE (L) ────────────────────────────────
   - source_key: sonarhome
@@ -4250,7 +4250,7 @@ sources:
     extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.cenyrolnicze.pl/
-    default_status: not_started
+    default_status: partial
 
   - source_key: epetrol
     category: c_pl_private
@@ -4385,7 +4385,7 @@ sources:
     extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.trans.eu/pl/gielda-transportowa/
-    default_status: not_started
+    default_status: partial
 
   - source_key: ewgt
     category: c_pl_private
@@ -4763,7 +4763,7 @@ sources:
     extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.izfa.pl/
-    default_status: not_started
+    default_status: partial
 
   - source_key: piu
     category: c_pl_private
@@ -4855,7 +4855,7 @@ sources:
     extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://ir.notoria.pl/
-    default_status: not_started
+    default_status: partial
   - source_key: big_infomonitor
     category: c_pl_private
     ingestion_mode: bulk
@@ -4924,7 +4924,7 @@ sources:
     extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.analizy.pl/
-    default_status: not_started
+    default_status: partial
   - source_key: amron
     category: c_pl_private
     ingestion_mode: bulk
@@ -4993,7 +4993,7 @@ sources:
     extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.morizon.pl/
-    default_status: not_started
+    default_status: partial
   - source_key: rynekpierwotny
     category: c_pl_private
     ingestion_mode: bulk
@@ -5039,7 +5039,7 @@ sources:
     extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.jll.pl/pl/trendy-i-badania
-    default_status: not_started
+    default_status: partial
   - source_key: reflex
     category: c_pl_private
     ingestion_mode: bulk
@@ -5108,7 +5108,7 @@ sources:
     extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.otomoto.pl/
-    default_status: not_started
+    default_status: partial
   - source_key: pmr
     category: c_pl_private
     ingestion_mode: bulk
@@ -5361,7 +5361,7 @@ sources:
     extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://startuppoland.org/
-    default_status: not_started
+    default_status: partial
   - source_key: hotel_market
     category: c_pl_private
     ingestion_mode: bulk
@@ -5384,7 +5384,7 @@ sources:
     extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.e-hotelarz.pl/
-    default_status: not_started
+    default_status: partial
   - source_key: pzfd
     category: c_pl_private
     ingestion_mode: bulk
@@ -5522,7 +5522,7 @@ sources:
     extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://psew.pl/
-    default_status: not_started
+    default_status: partial
   - source_key: ptpiree
     category: c_pl_private
     ingestion_mode: bulk
@@ -5545,7 +5545,7 @@ sources:
     extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.ptpiree.pl/
-    default_status: not_started
+    default_status: partial
   - source_key: igg
     category: c_pl_private
     ingestion_mode: bulk
@@ -5591,7 +5591,7 @@ sources:
     extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.igte.pl/
-    default_status: not_started
+    default_status: partial
   - source_key: zpl
     category: c_pl_private
     ingestion_mode: bulk
