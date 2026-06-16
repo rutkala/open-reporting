@@ -1401,7 +1401,7 @@ sources:
     description: >-
       Agency for Restructuring and Modernisation of Agriculture — manages EU farm
       payments; now publishes field-boundary + crop spatial data freely.
-    extraction_logic: "TO BUILD — WFS pull from geoportal.arimr.gov.pl + dane.gov.pl datasets."
+    extraction_logic: "BLOCKED — WFS endpoint https://geoportal.arimr.gov.pl/geoserver/wfs returns 404. No public WFS service confirmed accessible as of 2026-06-16."
     landing_layout: "arimr_geo/{layer}.{gml|json}"
     verification: "Compare with https://geoportal.arimr.gov.pl/"
     landing_folders: [arimr_geo]
@@ -1409,7 +1409,7 @@ sources:
     extractor_path: products/ingestion/extractors/web_scraper_extractor.py
     manifest_kind: null
     docs_url: https://www.gov.pl/web/arimr/arimr-otwiera-dane-przestrzenne-ze-swoich-zasobow
-    default_status: not_started
+    default_status: blocked
 
   - source_key: lasy_bdl
     category: b_pl_gov_institutional
@@ -1661,7 +1661,7 @@ sources:
     description: >-
       State Water Holding — flood-risk modelling (ISOK) and river-basin spatial
       data via INSPIRE WFS/WMS.
-    extraction_logic: "TO BUILD — WFS pull of flood-risk + basin layers."
+    extraction_logic: "BLOCKED — ISOK WFS endpoint https://wody.isok.gov.pl/geoserver/ows returns 404. Service may require institutional auth or has been moved. Revisit when URL confirmed."
     landing_layout: "wody_polskie/{layer}.{gml|shp}"
     verification: "Compare with https://isok.gov.pl/hydroportal.html"
     landing_folders: [wody_polskie]
@@ -1669,7 +1669,7 @@ sources:
     extractor_path: products/ingestion/extractors/wfs_extractor.py
     manifest_kind: null
     docs_url: https://www.gov.pl/web/wody-polskie
-    default_status: not_started
+    default_status: blocked
 
   - source_key: uzp_bzp
     category: b_pl_gov_institutional
