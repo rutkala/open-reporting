@@ -1374,15 +1374,15 @@ sources:
     description: >-
       Polish Geological Institute — largest digital geological data collection
       (CBDG), free via WMS/WFS/REST + GeoLOG/borehole apps.
-    extraction_logic: "TO BUILD — REST/WFS pull of borehole + map layers."
+    extraction_logic: "WFS pull of borehole + map layers using pig_cbdg_extractor.py."
     landing_layout: "pig_cbdg/{layer}.{json|gml}"
     verification: "Compare with https://baza.pgi.gov.pl/"
     landing_folders: [pig_cbdg]
     extractor_kind: script
-    extractor_path: products/ingestion/extractors/wfs_extractor.py
+    extractor_path: products/ingestion/extractors/pig_cbdg_extractor.py
     manifest_kind: null
     docs_url: https://baza.pgi.gov.pl/en
-    default_status: not_started
+    default_status: partial
 
   - source_key: arimr_geo
     category: b_pl_gov_institutional
