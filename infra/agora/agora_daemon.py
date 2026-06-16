@@ -1,38 +1,48 @@
 #!/usr/bin/env python3
-"""Agora chat daemon — a persistent presence for ONE agent (Claude or Gemini).
+"""Agora daemon — two-layer presence for ONE agent (Claude or Gemini).
 
-Runs as a systemd service, independent of any interactive CLI session. Watches the
-shared chat log (data/agora/chat.jsonl); when a new message arrives that this agent
-should answer, it invokes the agent's own CLI headless to generate ONE reply and
-appends it to the log. Reasoning is stateless per message (the log IS the memory),
-so the daemon survives restarts cleanly via a processed high-water mark.
+ORCHESTRATOR (this daemon): watches the shared chat log and replies FAST in
+read-only / plan mode. It talks with Radek, thinks, plans, coordinates with the
+other orchestrator, and DELEGATES. It never edits the repo itself, so it always
+stays responsive to chat — you can check in and steer mid-flight.
 
-Loop-guards live in CODE, not just the prompt, so the two agents cannot ping-pong
-and drain the shared rate-limit pool:
-  - never answer your own message
-  - answer Radek (the human) — unless he addressed ONLY the other agent by name
-  - answer the other agent only when it names/@mentions you
-  - hard stop if the last N messages are all agents with no human turn (anti-runaway)
+WORKER: when the orchestrator decides real work is needed, it emits one or more
+lines of the form `DISPATCH: <self-contained task spec>`. The daemon spawns each
+as a BACKGROUND worker — a full-tools CLI run that makes the changes and posts
+its result back to the chat — without blocking the orchestrator's chat loop.
+
+So: Radek always talks to orchestrators; orchestrators delegate to workers.
+
+Loop-guards (in code, not just prompt): never answer your own message; answer
+Radek unless he named only the other agent; answer the other agent only when it
+@mentions you; hard-stop on agent-only streaks. Survives restarts via a processed
+high-water mark.
 
 Usage:  agora_daemon.py <Claude|Gemini>
 """
 import json
 import logging
 import os
+import re
 import subprocess
 import sys
+import threading
 import time
 from datetime import datetime, timezone
 
 REPO = "/opt/open-reporting"
 LOG_FILE = f"{REPO}/data/agora/chat.jsonl"
 POLL_SECONDS = 4
-CLI_TIMEOUT = 600          # hard cap per reply; agents make real changes, so give them time
-TRANSCRIPT_TAIL = 24       # how many recent messages to feed the model
+ORCH_TIMEOUT = 150         # orchestrator reply (read-only) — must stay snappy
+WORKER_TIMEOUT = 900       # background worker — real multi-step changes get time
+TRANSCRIPT_TAIL = 24       # how many recent messages to feed the orchestrator
 MAX_AGENT_STREAK = 4       # if the last N msgs have no human turn, stop replying
-RETRY_BACKOFF = 120        # seconds to wait before retrying after a CLI failure (e.g. rate limit)
+RETRY_BACKOFF = 120        # seconds to back off after an orchestrator CLI failure
+MAX_WORKERS = 2            # cap concurrent background workers (shared rate-limit pool)
 
-_cooldown_until = 0.0      # module state: skip reply attempts until this time
+_cooldown_until = 0.0
+_append_lock = threading.Lock()
+_worker_slots = threading.BoundedSemaphore(MAX_WORKERS)
 
 AGENT = (sys.argv[1] if len(sys.argv) > 1 else "").strip()
 if AGENT not in ("Claude", "Gemini"):
@@ -47,7 +57,16 @@ logging.basicConfig(
 )
 log = logging.getLogger(f"agora.{AGENT.lower()}")
 
+DISPATCH_RE = re.compile(r"^\s*DISPATCH:\s*(.+)$", re.IGNORECASE)
 
+# Short CLI notices that are NOT real replies — usage/auth limits leaking to stdout.
+_LIMIT_MARKERS = (
+    "session limit", "usage limit", "rate limit", "hit your", "you've hit",
+    "limit reached", "overloaded", "please run /login", "/upgrade",
+)
+
+
+# ---------- log i/o ----------
 def read_log():
     if not os.path.exists(LOG_FILE):
         return []
@@ -63,9 +82,9 @@ def read_log():
     return out
 
 
-def append_reply(text):
-    rec = {"ts": datetime.now(timezone.utc).isoformat(), "author": AGENT, "text": text}
-    with open(LOG_FILE, "a", encoding="utf-8") as fh:
+def append_msg(author, text):
+    rec = {"ts": datetime.now(timezone.utc).isoformat(), "author": author, "text": text}
+    with _append_lock, open(LOG_FILE, "a", encoding="utf-8") as fh:
         fh.write(json.dumps(rec, ensure_ascii=False) + "\n")
         fh.flush()
 
@@ -83,8 +102,9 @@ def write_hwm(n):
         fh.write(str(n))
 
 
+# ---------- decision ----------
 def should_reply(msgs):
-    """Decide if this agent should answer the latest turn. Returns bool."""
+    """Decide if this orchestrator should answer the latest turn. Returns bool."""
     if not msgs:
         return False
     last = msgs[-1]
@@ -100,77 +120,68 @@ def should_reply(msgs):
     if author == "Radek":
         names_me = AGENT.lower() in text
         names_other = OTHER.lower() in text
-        # addressed to the other agent only -> stay out
         return not (names_other and not names_me) or names_me or not names_other
     if author == OTHER:
-        # answer another agent only when it names you
         return AGENT.lower() in text
     return False
 
 
-def build_prompt(msgs):
+# ---------- prompts ----------
+def build_orchestrator_prompt(msgs):
     transcript = "\n".join(
         f"{m.get('author')}: {m.get('text')}" for m in msgs[-TRANSCRIPT_TAIL:]
     )
     return (
-        f"You are {AGENT}, an AI collaborator in a 3-way group chat for the Open Reporting "
-        f"project. Participants: Radek (the human owner/PO), and two AI collaborators — "
-        f"Claude and Gemini. You are {AGENT}; the other AI is {OTHER}.\n\n"
-        f"You are a FULL agent: you can read, edit, and create files, run commands, and commit. "
-        f"When Radek (or the other agent) asks for work in your lane, actually DO it — make the "
-        f"changes, then report what you did. For plain discussion, just reply.\n\n"
-        f"Follow docs/AGENT_CONTRACT.md strictly:\n"
-        f"- Hard floors: never force-push main; never delete data/warehouse.duckdb or the "
-        f"telegram/discord dirs; never disable crons or bots.\n"
-        f"- Ownership lanes: Gemini leads data+content (products/ingestion, products/warehouse, "
-        f"products/blog); Claude leads engine/infra (packages/dbr, infra, .claude) + prod health. "
-        f"Cross-lane work: coordinate in chat first.\n"
-        f"- Git discipline: commit ONLY your own files with explicit paths; NEVER `git add -A` — "
-        f"the working tree holds other uncommitted work.\n\n"
-        f"Reply in plain text — no name prefix, no markdown headings. If a request isn't for you "
-        f"or needs nothing, reply with exactly: <SKIP>\n\n"
-        f"Recent conversation:\n{transcript}\n\nYour reply as {AGENT}:"
+        f"You are the {AGENT} ORCHESTRATOR in a 3-way chat for the Open Reporting project. "
+        f"Participants: Radek (human owner/PO), and two AI orchestrators — Claude and Gemini. "
+        f"You are {AGENT}; the other is {OTHER}.\n\n"
+        f"YOUR ROLE: talk with Radek, think, plan, and COORDINATE. You are READ-ONLY — you may "
+        f"read/search files to inform your answer, but you do NOT edit the repo yourself. Stay "
+        f"responsive: reply quickly and concisely.\n\n"
+        f"TO MAKE CHANGES, DELEGATE. When real work (edits, builds, commits) is needed in your "
+        f"lane, add ONE line per task starting with `DISPATCH:` followed by a precise, "
+        f"self-contained spec a worker can execute alone — name the files, the exact change, and "
+        f"that it must commit only its own files. A background worker does it and posts the result "
+        f"here. Anything you write that is NOT a DISPATCH line is your chat reply to Radek.\n\n"
+        f"Lanes: Gemini=data+content (products/ingestion, products/warehouse, products/blog); "
+        f"Claude=engine/infra (packages/dbr, infra, .claude) + prod health. To avoid overlap, "
+        f"coordinate with {OTHER} here BEFORE dispatching work that touches shared files "
+        f"(e.g. products/warehouse/source_registry.yaml).\n\n"
+        f"Hard floors (also bind your workers): never force-push main; never delete "
+        f"data/warehouse.duckdb or the telegram/discord dirs; never disable crons or bots.\n\n"
+        f"Plain text only — no name prefix, no markdown headings. If nothing here is for you, "
+        f"reply with exactly: <SKIP>\n\n"
+        f"Recent conversation:\n{transcript}\n\n"
+        f"Your reply as {AGENT} (chat text and/or DISPATCH lines):"
     )
 
 
-def run_cli(prompt):
-    # Full agents: both can read, edit, run, and commit to carry out chat requests,
-    # bound by the docs/AGENT_CONTRACT.md hard floors + git discipline (enforced via the
-    # prompt). Claude: bypassPermissions (all tools). Gemini: --approval-mode yolo (all
-    # tools auto-approved). Claude reads the prompt on stdin; Gemini needs -p for headless
-    # (bare `gemini` stays interactive and hangs). CLI_TIMEOUT is generous so real work
-    # (multi-step edits) can complete in one invocation.
-    if AGENT == "Claude":
-        cmd = ["claude", "-p", "--model", "sonnet", "--permission-mode", "bypassPermissions"]
-        stdin = prompt
-    else:
-        cmd = ["gemini", "-p", prompt, "-o", "text", "--approval-mode", "yolo", "--skip-trust"]
-        stdin = None
+def build_worker_prompt(task):
+    return (
+        f"You are a {AGENT} WORKER agent for the Open Reporting project (repo at {REPO}). An "
+        f"orchestrator has delegated ONE task to you. Execute it fully and autonomously with all "
+        f"tools (read, edit, run, commit), then report concisely (3-6 lines): what you changed, "
+        f"which files, and any commit hash.\n\n"
+        f"Follow docs/AGENT_CONTRACT.md: never force-push main; never delete data/warehouse.duckdb "
+        f"or the telegram/discord dirs; never disable crons or bots. Commit ONLY the files you "
+        f"created or changed, with explicit paths — NEVER `git add -A` (the tree holds other "
+        f"uncommitted work).\n\n"
+        f"TASK:\n{task}\n\nDo the work now, then give your concise report."
+    )
+
+
+# ---------- cli ----------
+def _run(cmd, stdin, timeout):
     try:
         res = subprocess.run(
-            cmd, input=stdin, capture_output=True, text=True,
-            timeout=CLI_TIMEOUT, cwd=REPO,
+            cmd, input=stdin, capture_output=True, text=True, timeout=timeout, cwd=REPO,
         )
     except subprocess.TimeoutExpired:
-        log.warning("CLI timed out after %ss", CLI_TIMEOUT)
-        return False, ""
-    if res.returncode != 0:
-        log.warning("CLI exit %s: %s", res.returncode, (res.stderr or "")[:300])
-        return False, (res.stdout or "").strip()
+        return False, "", "timeout"
     out = (res.stdout or "").strip()
-    if _looks_like_limit_notice(out):
-        # CLI printed a rate/usage-limit notice to stdout with a success code —
-        # treat as a transient failure so we back off and retry, NOT post it as a reply.
-        log.warning("CLI returned a limit notice, not a reply: %s", out[:120])
-        return False, ""
-    return True, out
-
-
-# Short CLI notices that are NOT real replies — usage/auth limits leaking to stdout.
-_LIMIT_MARKERS = (
-    "session limit", "usage limit", "rate limit", "hit your", "you've hit",
-    "limit reached", "overloaded", "please run /login", "/upgrade",
-)
+    if res.returncode != 0:
+        return False, out, (res.stderr or "")[:300]
+    return True, out, ""
 
 
 def _looks_like_limit_notice(text):
@@ -178,16 +189,77 @@ def _looks_like_limit_notice(text):
     return len(text) < 200 and any(marker in low for marker in _LIMIT_MARKERS)
 
 
+def run_orchestrator(prompt):
+    # Read-only: Claude gets only Read/Grep/Glob; Gemini runs in plan (read-only) mode.
+    if AGENT == "Claude":
+        cmd = ["claude", "-p", "--model", "sonnet", "--permission-mode", "bypassPermissions",
+               "--allowedTools", "Read,Grep,Glob"]
+        stdin = prompt
+    else:
+        cmd = ["gemini", "-p", prompt, "-o", "text", "--approval-mode", "plan", "--skip-trust"]
+        stdin = None
+    ok, out, err = _run(cmd, stdin, ORCH_TIMEOUT)
+    if not ok:
+        log.warning("orchestrator CLI failed: %s", err)
+        return False, ""
+    if _looks_like_limit_notice(out):
+        log.warning("orchestrator returned a limit notice, not a reply")
+        return False, ""
+    return True, out
+
+
+def run_worker(task):
+    # Full tools: Claude bypassPermissions (all), Gemini --approval-mode yolo (all).
+    prompt = build_worker_prompt(task)
+    if AGENT == "Claude":
+        cmd = ["claude", "-p", "--model", "sonnet", "--permission-mode", "bypassPermissions"]
+        stdin = prompt
+    else:
+        cmd = ["gemini", "-p", prompt, "-o", "text", "--approval-mode", "yolo", "--skip-trust"]
+        stdin = None
+    ok, out, err = _run(cmd, stdin, WORKER_TIMEOUT)
+    if not ok:
+        return f"(worker failed: {err or 'timeout'})"
+    if _looks_like_limit_notice(out):
+        return "(worker hit a usage limit — needs a retry later)"
+    return out or "(worker finished with no output)"
+
+
+# ---------- dispatch ----------
 def clean_reply(text):
-    # drop a stray "Claude:" / "Gemini:" prefix some models add
     for name in (AGENT, OTHER):
         if text.lower().startswith(name.lower() + ":"):
             text = text[len(name) + 1:].strip()
     return text
 
 
+def parse_reply(reply):
+    """Split an orchestrator reply into (chat_text, [task_specs])."""
+    chat_lines, tasks = [], []
+    for line in reply.splitlines():
+        m = DISPATCH_RE.match(line)
+        if m:
+            spec = m.group(1).strip()
+            if spec:
+                tasks.append(spec)
+        else:
+            chat_lines.append(line)
+    return "\n".join(chat_lines).strip(), tasks
+
+
+def spawn_worker(task):
+    def _job():
+        with _worker_slots:                       # cap concurrency on the shared pool
+            log.info("worker START: %s", task[:120])
+            result = run_worker(task)
+            append_msg(AGENT, f"\U0001f527 [worker] {result}")
+            log.info("worker DONE (%d chars)", len(result))
+    threading.Thread(target=_job, daemon=True).start()
+
+
+# ---------- tick / main ----------
 def tick():
-    """Process new messages. Returns True if handled (advance), False to retry later."""
+    """Process the latest turn. Returns True if handled, False to retry later."""
     global _cooldown_until
     msgs = read_log()
     hwm = read_hwm()
@@ -196,39 +268,44 @@ def tick():
         log.info("initialised high-water mark at %d (skipping backlog)", len(msgs))
         return True
     if len(msgs) <= hwm:
-        return True                      # nothing new
-    if not should_reply(msgs):
-        write_hwm(len(msgs))             # consume: nothing for us to say
         return True
-    log.info("new turn from %s -> generating reply", msgs[-1].get("author"))
-    ok, raw = run_cli(build_prompt(msgs))
-    if not ok:                           # rate limit / timeout: DON'T consume — back off and retry
+    if not should_reply(msgs):
+        write_hwm(len(msgs))
+        return True
+    log.info("new turn from %s -> orchestrator", msgs[-1].get("author"))
+    ok, raw = run_orchestrator(build_orchestrator_prompt(msgs))
+    if not ok:                           # rate limit / timeout: don't consume — back off
         _cooldown_until = time.time() + RETRY_BACKOFF
-        log.warning("reply failed (rate limit/timeout?); retrying in %ss", RETRY_BACKOFF)
+        log.warning("orchestrator failed; retrying in %ss", RETRY_BACKOFF)
         return False
     write_hwm(len(msgs))                 # consume only once we got a real result
     reply = clean_reply(raw)
     if not reply or reply.strip().upper().strip("<>") == "SKIP":
         log.info("no reply (empty or SKIP)")
         return True
-    append_reply(reply)
-    log.info("replied (%d chars)", len(reply))
+    chat, tasks = parse_reply(reply)
+    if tasks and not chat:               # always acknowledge a dispatch in chat
+        chat = f"On it — dispatching {len(tasks)} worker task(s); I'll post results here."
+    if chat:
+        append_msg(AGENT, chat)
+        log.info("orchestrator replied (%d chars), %d dispatch(es)", len(chat), len(tasks))
+    for task in tasks:
+        spawn_worker(task)
     return True
 
 
 def main():
     os.makedirs(os.path.dirname(LOG_FILE), exist_ok=True)
-    log.info("agora daemon up: agent=%s other=%s log=%s", AGENT, OTHER, LOG_FILE)
+    log.info("agora orchestrator up: agent=%s other=%s log=%s", AGENT, OTHER, LOG_FILE)
     last_sig = None
     while True:
         try:
             if time.time() >= _cooldown_until:
                 sig = os.path.getmtime(LOG_FILE) if os.path.exists(LOG_FILE) else 0
                 if sig != last_sig:
-                    if tick():           # advance the seen-marker only when handled
+                    if tick():
                         last_sig = sig
-                    # on retry (tick→False) keep last_sig stale so we re-enter after cooldown
-        except Exception:                # never let one bad cycle kill the daemon
+        except Exception:
             log.exception("tick failed")
         time.sleep(POLL_SECONDS)
 
