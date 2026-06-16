@@ -1330,7 +1330,8 @@ sources:
     extractor_path: products/ingestion/extractors/pl_api_extractor.py
     manifest_kind: null
     docs_url: https://danepubliczne.imgw.pl/apiinfo
-    default_status: not_started
+    default_status: partial
+    extraction_logic: "pl_api_extractor.py flat mode — synop/hydro/meteo current readings. Bulk archive (historical ZIPs) not yet wired."
 
   - source_key: gugik_geo
     category: b_pl_gov_institutional
@@ -1591,7 +1592,8 @@ sources:
     extractor_path: products/ingestion/extractors/pl_api_extractor.py
     manifest_kind: null
     docs_url: https://api.sejm.gov.pl/
-    default_status: not_started
+    default_status: partial
+    extraction_logic: "pl_api_extractor.py sejm mode — all terms, MPs/clubs/committees/proceedings/votings/interpellations. ELI legislation not yet wired."
 
   - source_key: police_stats
     category: b_pl_gov_institutional
