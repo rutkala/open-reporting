@@ -18,6 +18,7 @@ import argparse
 import json
 import logging
 import os
+import shutil
 import sys
 import tempfile
 import time
@@ -35,6 +36,20 @@ LANDING = Path(os.environ.get("OR_LANDING_DIR", str(REPO / "data/landing"))) / "
 HEADERS = {"Accept": "application/json", "User-Agent": "OpenReporting-DataPipeline/1.0"}
 PAGE_SIZE = 100
 NOTICE_TYPES = ["ContractNotice", "ContractAwardNotice", "ContractModificationNotice"]
+# Defensive free-space floor. Full-scope BZP notices stream to a local tempfile and
+# the landing JSON before dbt picks them up; on the shared 38G root this can drive the
+# disk to zero and OSError(errno 28), which also threatens co-tenant services
+# (postgres/ghost/nginx). Stop fetching further windows below this floor and exit
+# cleanly with what we have — the next run resumes the remaining windows.
+MIN_FREE_BYTES = 2 * 1024 ** 3  # 2 GiB
+
+
+def _free_bytes(path: Path) -> int:
+    """Free bytes on the filesystem backing `path` (walk up to an existing parent)."""
+    p = path
+    while not p.exists():
+        p = p.parent
+    return shutil.disk_usage(p).free
 
 
 def _months(frm: str, to: str):
@@ -107,6 +122,14 @@ def fetch_window(session, ntype, d_from, d_to, tmp_notices_file) -> int:
 def main(frm, to, types, dry_run) -> int:
     session = requests.Session()
     total = 0
+    # Co-locate the intermediate notices stream with the final output. LANDING is on
+    # the large Drive mount (~TB); the previous tempfile.TemporaryDirectory() default
+    # placed the per-month stream under /tmp on the 38G root, where a single full-scope
+    # ContractNotice month could exhaust the disk and OSError(errno 28). Streaming next
+    # to the output keeps the big intermediate off the shared root entirely.
+    if not dry_run:
+        LANDING.mkdir(parents=True, exist_ok=True)
+    tmp_base = str(LANDING)
     for ntype in types:
         for d_from, d_to in _months(frm, to):
             ym = d_from[:7]
@@ -116,8 +139,18 @@ def main(frm, to, types, dry_run) -> int:
                 logger.info(f"[uzp] would fetch {ntype} {ym}")
                 continue
 
-            # Create a temporary file for streaming notices
-            with tempfile.TemporaryDirectory() as tmpdir:
+            free = _free_bytes(LANDING)
+            if free < MIN_FREE_BYTES:
+                logger.warning(
+                    f"[uzp] free disk {free / 1024 ** 3:.1f} GiB < "
+                    f"{MIN_FREE_BYTES / 1024 ** 3:.1f} GiB floor on landing volume — "
+                    f"stopping after {total} notices. Remaining windows resume next run."
+                )
+                logger.info(f"[uzp] done (partial, low disk) — {total} notices → {LANDING}")
+                return 0
+
+            # Stream notices to a temp dir on the LANDING volume (not /tmp on the root).
+            with tempfile.TemporaryDirectory(dir=tmp_base) as tmpdir:
                 tmp_notices_path = Path(tmpdir) / f"{ntype}_{ym}.notices.tmp"
                 with open(tmp_notices_path, "w", encoding="utf-8") as tmp_notices_file:
                     total_rows = fetch_window(session, ntype, d_from, d_to, tmp_notices_file)
