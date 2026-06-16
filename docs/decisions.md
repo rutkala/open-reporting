@@ -1394,3 +1394,42 @@ Took no build/deploy/publish/release action — Antigravity's tree holds uncommi
 Committed only my own files (decisions.md, session-memory.md, outbox) with explicit paths.
 
 Status: Watchdog — no action required.
+
+## Run #93 — 2026-06-16 07:00 UTC — WATCHDOG. Prod healthy. uzp OOM fix → now disk-full.
+
+Smoke: all 5 dashboards (public_finance "Finanse publiczne Polski", labour_market "Rynek pracy w
+Polsce", national_accounts "Gospodarka: rachunki narodowe", demographics "Ludność Polski",
+environment "Środowisko: emisje i energia") + www return 200 with real Dash content (not portal
+index). TLS valid through Sep 12 2026 (lineage open-reporting.dev-0003). All protected crons intact
+(0 22 ingestion, 0 2,7,12,17 autonomous-lead, 20 3,15 certbot, GUS bulk, nightly/weekly/monthly
+orchestrator, danegovpl harvest). No Telegram inbox items. Linear: 0 Strategic, 0 issues updated in
+last 5 days — no PO instruction to the Claude cron.
+
+NEW FINDING — the recurring uzp_extractor.py failure CHANGED MODE. Antigravity shipped bbe78244
+("Fix: uzp_extractor OOM by streaming to disk") + ca365dea (registry status→complete). It cured the
+OOM but introduced a disk-full: ingest-nightly-2026-06-16.log shows the 01:00 nightly run failing at
+01:32 with `OSError: [Errno 28] No space left on device` at uzp_extractor.py:122 (the `open(
+tmp_notices_path, "w")` call), exit=1 after 1920s. So the same source (uzp_bzp, full-scope BZP
+procurement notices) that OOM-killed nights #90–92 now exhausts the 38G root filesystem instead. It
+streams the full-scope notices set to a local tempfile.TemporaryDirectory() under /tmp on /dev/sda1
+(38G, was only ~12G free); the dataset is larger than free space → Errno 28. Self-recovered: the
+context manager auto-removed the temp dir on the exception, so no orphan lingers — disk is back to
+25G used / 12G free / 69% at run time, no orphaned >500M files anywhere local. Registry now marks
+uzp_bzp "complete" but the nightly write still fails, so completeness is overstated.
+
+This is Antigravity's data-plane defect (their extractor, their fix, their full-scope mandate), not
+my P0: warehouse.duckdb still written by the 22 UTC daily cron (mtime Jun 15 22:11) and all six
+domains render. Did NOT edit uzp_extractor.py (their plane + their uncommitted in-flight tree).
+Surfaced precisely in outbox: the real fix is to stop materialising the full notices set on the 38G
+root — either point output at the Drive mount, paginate/cap per (ntype, ym) batch with incremental
+flush, or grow the disk. Latent infra risk worth PO attention: a 38G box at 69% with full-scope
+local writes nearly fills the disk each nightly run; if it ever stays full, postgres/ghost/nginx
+could be impacted. Disk-grow / output-relocation are their-plane or cost decisions → flagged, not
+acted on.
+
+Took no build/deploy/publish/release action — tree holds Antigravity's uncommitted in-flight work
+(untracked dashboard YAML, modified visuals + packages/dbr). Committed only my own files
+(decisions.md, session-memory.md, outbox) with explicit paths. Live dbr stamp 7e9e0496 trails HEAD =
+their in-flight dashboard work; leaving it stale is correct non-interference.
+
+Status: Watchdog — no action required. Recurring uzp failure re-surfaced with new mode.

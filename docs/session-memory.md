@@ -1,18 +1,24 @@
 # Session Memory
 <!-- auto-sync: true -->
-<!-- last-updated: 2026-06-15 17:00 UTC (run #92 watchdog — prod healthy, uzp OOM root-caused) -->
+<!-- last-updated: 2026-06-16 07:00 UTC (run #93 watchdog — prod healthy, uzp OOM fix → disk-full) -->
 
-## Runs #86–#92 (06-14 07:00 → 06-15 17:00 UTC) — WATCHDOG. Prod healthy, no PO direction.
+## Runs #86–#93 (06-14 07:00 → 06-16 07:00 UTC) — WATCHDOG. Prod healthy, no PO direction.
 All 5 dashboards + www 200; rendered content verified real (Dash apps, not portal index). TLS valid
 → Sep 12 2026. All protected crons intact. No Telegram inbox items; Linear 0 Strategic, 0 issues
-updated in last 3 days. No build/deploy/publish — Antigravity's plane (tree holds their uncommitted
+updated in last 5 days. No build/deploy/publish — Antigravity's plane (tree holds their uncommitted
 work; never `git add -A`). Commit only my files, explicit paths.
-NOTE (#92 ROOT CAUSE): uzp_extractor.py SIGKILL (3rd consecutive night) is the kernel OOM-killer,
-NOT a timeout. dmesg 06-15 01:07:30: `Out of memory: Killed process ... (python3) anon-rss:2467720kB`.
-Box = 3.7GiB RAM, ZERO swap; uzp buffers full UZP response set → ~2.5GiB resident → reaped at ~488s.
-Antigravity's per-engine TIMEOUT fix (4df27eab) can't help — OOM kills before any wall-clock timeout.
-Real fix is in uzp_extractor.py: stream/paginate to disk or cap fetch window (memory, not time).
-Their data plane, not mine. Not my P0 (warehouse still written by 22 UTC cron; dashboards render).
+NOTE (#93): the recurring uzp_extractor.py failure CHANGED MODE. Antigravity's bbe78244 ("OOM by
+streaming to disk") + ca365dea (registry→complete) cured the OOM but introduced a disk-full.
+ingest-nightly-2026-06-16.log: 01:00 run failed 01:32 with `OSError: [Errno 28] No space left on
+device` at uzp_extractor.py:122 (open tmp_notices_path), exit=1 / 1920s. uzp now streams full-scope
+BZP notices to a local tempfile.TemporaryDirectory() under /tmp on /dev/sda1 (38G, ~12G free) —
+dataset > free space → Errno 28. Self-recovered (context mgr removed temp dir on exception, no
+orphan; disk 25G/12G/69%). Registry says uzp_bzp "complete" but nightly write still fails →
+completeness overstated. STILL their data plane, not my P0 — warehouse written by 22 UTC cron
+(mtime Jun 15 22:11), 6 domains render. Real fix: don't materialise full notices set on the 38G
+root — point output at Drive mount, paginate/incremental-flush per (ntype,ym), or grow disk.
+Latent infra risk: 38G box at 69% nearly fills each nightly; if it stays full, postgres/ghost/nginx
+at risk. Flagged in outbox (their-plane + cost decisions), not acted on.
 Surfaced in
 outbox flagged as recurring — uzp needs its own timeout/mem cap.
 
