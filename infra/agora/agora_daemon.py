@@ -27,7 +27,7 @@ from datetime import datetime, timezone
 REPO = "/opt/open-reporting"
 LOG_FILE = f"{REPO}/data/agora/chat.jsonl"
 POLL_SECONDS = 4
-CLI_TIMEOUT = 180          # hard cap per reply; read-only lookups allowed, so allow some time
+CLI_TIMEOUT = 600          # hard cap per reply; agents make real changes, so give them time
 TRANSCRIPT_TAIL = 24       # how many recent messages to feed the model
 MAX_AGENT_STREAK = 4       # if the last N msgs have no human turn, stop replying
 RETRY_BACKOFF = 120        # seconds to wait before retrying after a CLI failure (e.g. rate limit)
@@ -115,32 +115,36 @@ def build_prompt(msgs):
     return (
         f"You are {AGENT}, an AI collaborator in a 3-way group chat for the Open Reporting "
         f"project. Participants: Radek (the human owner/PO), and two AI collaborators — "
-        f"Claude and Gemini. You are {AGENT}; the other AI is {OTHER}. Shared rules and lanes "
-        f"are in docs/AGENT_CONTRACT.md.\n\n"
-        f"This is a live chat — keep it responsive. Answer from the discussion above when you "
-        f"can. You MAY do a few quick read-only lookups (open or search specific files) if the "
-        f"question needs them — but stay focused: check what you need and answer, don't audit the "
-        f"whole repo. Reply in ONE message; brief when possible, longer only if substance requires.\n\n"
-        f"Plain text only — no name prefix, no markdown headings. If you genuinely have nothing "
-        f"useful to add, reply with exactly: <SKIP>\n\n"
+        f"Claude and Gemini. You are {AGENT}; the other AI is {OTHER}.\n\n"
+        f"You are a FULL agent: you can read, edit, and create files, run commands, and commit. "
+        f"When Radek (or the other agent) asks for work in your lane, actually DO it — make the "
+        f"changes, then report what you did. For plain discussion, just reply.\n\n"
+        f"Follow docs/AGENT_CONTRACT.md strictly:\n"
+        f"- Hard floors: never force-push main; never delete data/warehouse.duckdb or the "
+        f"telegram/discord dirs; never disable crons or bots.\n"
+        f"- Ownership lanes: Gemini leads data+content (products/ingestion, products/warehouse, "
+        f"products/blog); Claude leads engine/infra (packages/dbr, infra, .claude) + prod health. "
+        f"Cross-lane work: coordinate in chat first.\n"
+        f"- Git discipline: commit ONLY your own files with explicit paths; NEVER `git add -A` — "
+        f"the working tree holds other uncommitted work.\n\n"
+        f"Reply in plain text — no name prefix, no markdown headings. If a request isn't for you "
+        f"or needs nothing, reply with exactly: <SKIP>\n\n"
         f"Recent conversation:\n{transcript}\n\nYour reply as {AGENT}:"
     )
 
 
 def run_cli(prompt):
-    # Middle ground for BOTH agents: read-only file lookups so they can answer code
-    # questions, but no runaway-prone tools (shell, sub-agents, web, edits) — those
-    # caused the multi-minute timeouts, not file reads. Claude: --allowedTools Read/
-    # Grep/Glob. Gemini: --approval-mode plan (read-only). Claude reads the prompt on
-    # stdin; Gemini needs -p for headless (bare `gemini` stays interactive and hangs).
+    # Full agents: both can read, edit, run, and commit to carry out chat requests,
+    # bound by the docs/AGENT_CONTRACT.md hard floors + git discipline (enforced via the
+    # prompt). Claude: bypassPermissions (all tools). Gemini: --approval-mode yolo (all
+    # tools auto-approved). Claude reads the prompt on stdin; Gemini needs -p for headless
+    # (bare `gemini` stays interactive and hangs). CLI_TIMEOUT is generous so real work
+    # (multi-step edits) can complete in one invocation.
     if AGENT == "Claude":
-        cmd = [
-            "claude", "-p", "--model", "sonnet", "--permission-mode", "bypassPermissions",
-            "--allowedTools", "Read,Grep,Glob",
-        ]
+        cmd = ["claude", "-p", "--model", "sonnet", "--permission-mode", "bypassPermissions"]
         stdin = prompt
     else:
-        cmd = ["gemini", "-p", prompt, "-o", "text", "--approval-mode", "plan", "--skip-trust"]
+        cmd = ["gemini", "-p", prompt, "-o", "text", "--approval-mode", "yolo", "--skip-trust"]
         stdin = None
     try:
         res = subprocess.run(
