@@ -1353,10 +1353,10 @@ sources:
     verification: "Compare layers in QGIS against geoportal.gov.pl."
     landing_folders: [gugik_geo]
     extractor_kind: script
-    extractor_path: products/ingestion/extractors/wfs_extractor.py
+    extractor_path: products/ingestion/extractors/gugik_geo_extractor.py
     manifest_kind: null
     docs_url: https://www.geoportal.gov.pl/en/applications/
-    default_status: not_started
+    default_status: partial
 
   - source_key: pig_cbdg
     category: b_pl_gov_institutional
